@@ -1,9 +1,12 @@
 package com.utp_reporta_backend.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.utp_reporta_backend.dto.LoginDTO;
 import com.utp_reporta_backend.dto.RegistroDTO;
 import com.utp_reporta_backend.service.AuthService;
 
+@Service
 public class AuthServiceImpl implements AuthService{
 
 	@Override
