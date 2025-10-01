@@ -1,1 +1,184 @@
-<p>inicio works!</p>
+<div class="super-admin-dashboard">
+  <header class="dashboard-header">
+    <div class="logo">
+      <img src="assets/logo.png" alt="UTP+Report Logo">
+      <span>UTP+Report</span>
+    </div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#" class="active"><i class="fas fa-home"></i> INICIO</a></li>
+        <li><a href="#"><i class="fas fa-users"></i> GESTIÓN DE USUARIOS</a></li>
+        <li><a href="#"><i class="fas fa-file-alt"></i> REPORTES SENSIBLES</a></li>
+        <li><a href="#"><i class="fas fa-map-marker-alt"></i> ESTADO DE ZONAS</a></li>
+      </ul>
+    </nav>
+    <div class="user-profile">
+      <span class="user-name">{{ userName }}</span>
+      <span class="role">({{ userRole }})</span>
+      <span class="session-status" [class.active]="isSessionActive" [class.inactive]="!isSessionActive">
+        {{ isSessionActive ? 'Activa' : 'Cerrada' }}
+      </span>
+      <i class="fas fa-user-circle"></i>
+      <i class="fas fa-sign-out-alt" (click)="toggleSession()"></i>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+    <div class="panel-header">
+      <i class="fas fa-crown"></i>
+      <h1>Panel de Superusuario</h1>
+      <p>Control total del sistema de seguridad universitaria</p>
+    </div>
+
+    <section class="summary-section">
+      <h2><i class="fas fa-cog"></i> Resumen del Sistema</h2>
+      <div class="summary-cards">
+        <div class="card">
+          <i class="fas fa-building"></i>
+          <span>1</span>
+          <p>Sedes Activas</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-desktop"></i>
+          <span>4</span>
+          <p>Páginas Activas</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>7</span>
+          <p>Tipos de Incidentes</p>
+        </div>
+        <div class="card status-card">
+          <i class="fas fa-check-circle"></i>
+          <span>Activo</span>
+          <p>Estado del Sistema</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="navigation-tabs">
+      <ul>
+        <li><a href="#" class="active"><i class="fas fa-users-cog"></i> Gestión de Usuarios</a></li>
+        <li><a href="#"><i class="fas fa-file-alt"></i> Reportes Sensibles</a></li>
+        <li><a href="#"><i class="fas fa-file"></i> Páginas</a></li>
+        <li><a href="#"><i class="fas fa-building"></i> Sedes</a></li>
+        <li><a href="#"><i class="fas fa-exclamation-triangle"></i> Tipos de Incidentes</a></li>
+        <li><a href="#"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+      </ul>
+    </section> <!-- Closing tag for navigation-tabs section -->
+
+    <section class="user-management-section">
+      <div class="section-header">
+        <i class="fas fa-users-cog"></i>
+        <h2>Gestión de Usuarios</h2>
+      </div>
+      <p class="section-description">
+        - Panel exclusivo del SuperAdmin para administrar todos los usuarios del sistema UTP+Report.
+      </p>
+
+      <div class="user-stats">
+        <h2>Gestión de Usuarios del Sistema</h2>
+        <div class="stats-cards">
+          <div class="stat-card">
+            <i class="fas fa-user-graduate"></i>
+            <span>1</span>
+            <p>Estudiantes</p>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>0</span>
+            <p>Docentes</p>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-user-shield"></i>
+            <span>1</span>
+            <p>Administradores</p>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-user-tie"></i>
+            <span>1</span>
+            <p>Personal Seguridad</p>
+          </div>
+          <div class="stat-card active-users">
+            <i class="fas fa-users"></i>
+            <span>4</span>
+            <p>Usuarios Activos</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="user-filters">
+        <input type="text" placeholder="Buscar usuarios...">
+        <select>
+          <option>Todos los roles</option>
+        </select>
+        <select>
+          <option>Todos los estados</option>
+        </select>
+        <button class="clear-filters-btn">Limpiar Filtros</button>
+        <button class="create-user-btn"><i class="fas fa-user-plus"></i> Crear Usuario</button>
+      </div>
+
+      <div class="user-list">
+        <h3>Lista de Usuarios (3)</h3>
+        <div class="user-item">
+          <div class="user-info">
+            <i class="fas fa-user-circle user-icon admin"></i>
+            <div>
+              <p class="user-name">Admin García</p>
+              <p class="user-email">D1234567@utp.edu.pe</p>
+              <div class="user-tags">
+                <span class="tag admin-tag">Administrador</span>
+                <span class="tag active-tag">Activo</span>
+                <span class="tag location-tag"><i class="fas fa-map-marker-alt"></i> UTP Campus Principal</span>
+              </div>
+            </div>
+          </div>
+          <div class="user-actions">
+            <button><i class="fas fa-edit"></i> Editar</button>
+            <button><i class="fas fa-ban"></i> Desactivar</button>
+            <button><i class="fas fa-trash-alt"></i> Eliminar</button>
+          </div>
+        </div>
+        <div class="user-item">
+          <div class="user-info">
+            <i class="fas fa-user-circle user-icon security"></i>
+            <div>
+              <p class="user-name">Oficial Seguridad</p>
+              <p class="user-email">S001@utp.edu.pe</p>
+              <div class="user-tags">
+                <span class="tag security-tag">Seguridad</span>
+                <span class="tag active-tag">Activo</span>
+                <span class="tag location-tag"><i class="fas fa-map-marker-alt"></i> UTP Campus Principal</span>
+              </div>
+            </div>
+          </div>
+          <div class="user-actions">
+            <button><i class="fas fa-edit"></i> Editar</button>
+            <button><i class="fas fa-ban"></i> Desactivar</button>
+            <button><i class="fas fa-trash-alt"></i> Eliminar</button>
+          </div>
+        </div>
+        <div class="user-item">
+          <div class="user-info">
+            <i class="fas fa-user-circle user-icon user"></i>
+            <div>
+              <p class="user-name">Juan Pérez</p>
+              <p class="user-email">U1234567@utp.edu.pe</p>
+              <div class="user-tags">
+                <span class="tag user-tag">Usuario</span>
+                <span class="tag active-tag">Activo</span>
+                <span class="tag location-tag"><i class="fas fa-map-marker-alt"></i> UTP Campus Principal</span>
+              </div>
+            </div>
+          </div>
+          <div class="user-actions">
+            <button><i class="fas fa-edit"></i> Editar</button>
+            <button><i class="fas fa-ban"></i> Desactivar</button>
+            <button><i class="fas fa-trash-alt"></i> Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
