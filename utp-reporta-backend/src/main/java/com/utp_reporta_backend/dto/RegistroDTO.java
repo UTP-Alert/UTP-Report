@@ -10,4 +10,5 @@ public class RegistroDTO {
     private String correo;
     private String password;
     private TipoUsuario tipoUsuario;
+    
 }
