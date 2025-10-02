@@ -81,6 +81,7 @@
 					<!-- Bloque de credenciales eliminado -->
 
 					<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+						<div class="backend-error" *ngIf="backendError()" role="alert">{{ backendError() }}</div>
 						<div class="field-group">
 							<label for="username">Usuario: código UTP</label>
 							<div class="input-wrapper">
