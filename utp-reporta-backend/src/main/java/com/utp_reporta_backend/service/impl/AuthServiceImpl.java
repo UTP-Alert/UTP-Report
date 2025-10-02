@@ -53,6 +53,7 @@ public class AuthServiceImpl implements AuthService {
 		usuario.setPassword(passwordEncoder.encode(registroDTO.getPassword()));
 		Rol rol = rolRepository.findByNombre(ERol.ROLE_USUARIO)
 				.orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+		usuario.setTipoUsuario(registroDTO.getTipoUsuario());
 		usuario.getRoles().add(rol);
 		usuarioRepository.save(usuario);
 

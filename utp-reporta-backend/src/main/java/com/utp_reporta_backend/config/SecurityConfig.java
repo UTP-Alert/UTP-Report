@@ -32,9 +32,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/v1/SUPERADMIN/**").hasAnyRole("SUPERADMIN")
-                .requestMatchers("/api/v1/ADMIN/**").hasAnyRole("SUPERADMIN")
-                .requestMatchers("/api/v1/USUARIO/**").hasAnyRole("SUPERADMIN")
-                .requestMatchers("/api/v1/SEGURIDAD/**").hasAnyRole("USUARIO")
+                .requestMatchers("/api/v1/ADMIN/**").hasAnyRole("ADMIN")
+                .requestMatchers("/api/v1/USUARIO/**").hasAnyRole("USUARIO")
+                .requestMatchers("/api/v1/SEGURIDAD/**").hasAnyRole("SEGURIDAD")
                 .anyRequest().authenticated()
             );
         
