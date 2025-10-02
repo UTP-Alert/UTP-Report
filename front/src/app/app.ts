@@ -13,7 +13,7 @@ import { Inicio as SuperAdminInicio } from './SuperAdmin/inicio/inicio';
 })
 export class App {
   protected title = 'front';
-  showLogin: boolean = true; // Start with login view
+  showLogin: boolean = false; // Start with SuperAdmin view for testing
 
   toggleView() {
     this.showLogin = !this.showLogin;
