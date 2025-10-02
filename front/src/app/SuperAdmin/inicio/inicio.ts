@@ -95,54 +95,7 @@ export class Inicio {
       this.formData.assignedZones = [];
     }
   }
-/*
- handleCreateUser() {
-  // Validaciones básicas
-  if (!this.formData.username || this.formData.username.trim() === '') {
-    alert('El nombre de usuario es obligatorio');
-    return;
-  }
 
-  if (!this.formData.correo || this.formData.correo.trim() === '') {
-    alert('El correo es obligatorio');
-    return;
-  }
-
-  // Validar formato de correo
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(this.formData.correo)) {
-    alert('El correo no tiene un formato válido');
-    return;
-  }
-
-  if (!this.formData.password || this.formData.password.trim() === '') {
-    alert('La contraseña es obligatoria');
-    return;
-  }
-
-  // Construcción del DTO
-  const dto: RegistroDTO = {
-    username: this.formData.username.trim(),
-    correo: this.formData.correo.trim(),
-    password: this.formData.password,
-    tipoUsuario: this.formData.userType.toUpperCase()
-  };
-
-  console.log('📤 Enviando DTO al backend:', dto);
-
-  // Llamada al servicio
-  this.usuarioRolService.registrarUsuario(dto).subscribe({
-    next: (res) => {
-      console.log('✅ Usuario creado:', res);
-      alert('Usuario registrado exitosamente');
-      this.resetForm();
-    },
-    error: (err) => {
-      console.error('❌ Error al registrar:', err);
-      alert(err.error?.message || 'Error al registrar usuario');
-    }
-  });
-}*/
 handleCreateUser() {
   console.log('Creating user:', this.formData);
 
@@ -154,15 +107,17 @@ handleCreateUser() {
   };
 
   this.usuarioRolService.registrarUsuario(dto).subscribe({
-    next: (res) => {
+    next: (res: string) => { // Expect a string response
       console.log('✅ Usuario creado:', res);
-      alert('Usuario registrado correctamente ✅');
+      alert(res); // Display the success message from the backend
       this.resetForm(); // Limpia el formulario
       this.isCreating = false; // Cierra el formulario de creación
     },
     error: (err) => {
       console.error('❌ Error al registrar:', err);
-      alert(err.error.message || 'Error al registrar usuario');
+      // If the error is a string (e.g., from a non-200 response with responseType: 'text'), display it directly.
+      // Otherwise, try to access err.error.message or use a generic message.
+      alert(err.error?.message || err.message || 'Error al registrar usuario');
     }
   });
 }

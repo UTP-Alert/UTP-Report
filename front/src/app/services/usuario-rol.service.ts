@@ -16,9 +16,8 @@ export interface RegistroDTO {
 export class UsuarioRolService {
   private baseUrl = 'http://localhost:8080/api/auth';
     constructor(private http: HttpClient) {}
-     registrarUsuario(data: RegistroDTO): Observable<any> {
-    // CORREGIDO: ahora coincide con tu backend
-    return this.http.post(`${this.baseUrl}/registrar`, data);
+     registrarUsuario(data: RegistroDTO): Observable<string> {
+    return this.http.post(`${this.baseUrl}/registrar`, data, { responseType: 'text' });
   }
 
   
