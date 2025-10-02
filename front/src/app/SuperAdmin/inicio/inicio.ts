@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule, KeyValuePipe } from '@angular/common'; // Import CommonModule and KeyValuePipe
 import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
-import { RegistroDTO, UsuarioRolService } from '../../services/usuario-rol.service';
+import { RegistroAdminDTO, RegistroDTO, UsuarioRolService } from '../../services/usuario-rol.service';
+import { Sede, SedeService } from '../../services/sede.service';
 
 @Component({
   selector: 'app-inicio',
@@ -11,12 +12,24 @@ import { RegistroDTO, UsuarioRolService } from '../../services/usuario-rol.servi
   styleUrl: './inicio.scss'
 })
 export class Inicio {
+  sedes: Sede[] = [];
 
 
 
-  constructor(private usuarioRolService: UsuarioRolService) { }
-
-
+  constructor(private usuarioRolService: UsuarioRolService,private sedeService: SedeService) { }
+ngOnInit(): void {
+    this.cargarSedes();
+  }
+cargarSedes(): void {
+    this.sedeService.obtenerSedes().subscribe({
+      next: (data) => {
+        this.sedes = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar sedes', err);
+      }
+    });
+  }
 
   userName: string = 'Super Admin User';
   userRole: string = 'Super Admin';
@@ -32,9 +45,9 @@ export class Inicio {
     correo: '',
     password: '',
     phone: '',
-    role: 'user', // Default role
+    role: '', // Default role
     userType: '', // Default user type for 'user' role
-     campus: '',
+    campus: '',
     assignedZones: [] as string[]
   };
 
@@ -42,9 +55,9 @@ export class Inicio {
 
 
   roleConfig: { [key: string]: { label: string; icon: string } } = {
-    user: { label: 'Usuario', icon: 'fas fa-user' },
-    admin: { label: 'Administrador', icon: 'fas fa-user-shield' },
-    security: { label: 'Seguridad', icon: 'fas fa-user-tie' }
+    usuario: { label: 'Usuario', icon: 'fas fa-user' },
+    admin: { label: 'Admin', icon: 'fas fa-user-shield' },
+    seguridad: { label: 'Seguridad', icon: 'fas fa-user-tie' }
   };
 
   availableSedes = [
@@ -80,7 +93,7 @@ export class Inicio {
       correo: '',
       password: '',
       phone: '',
-      role: 'user',
+      role: '',
       userType: '',
       campus: '',
       assignedZones: []
@@ -91,19 +104,24 @@ export class Inicio {
     const selectElement = event.target as HTMLSelectElement;
     const value = selectElement.value;
     this.formData.role = value;
-    if (value !== 'security') {
+    if (value !== 'seguridad') {
       this.formData.assignedZones = [];
     }
   }
 
 handleCreateUser() {
-  console.log('Creating user:', this.formData);
+
+  if(this.formData.role === 'usuario'){
+    console.log('Creating user:', this.formData);
 
   const dto: RegistroDTO = {
+    nombreCompleto: this.formData.name,
     username: this.formData.username,
     correo: this.formData.correo,
     password: this.formData.password,
-    tipoUsuario: this.formData.userType.toUpperCase() // alumno -> ALUMNO, docente -> DOCENTE
+    tipoUsuario: this.formData.userType.toUpperCase(), // alumno -> ALUMNO, docente -> DOCENTE
+    telefono: this.formData.phone,
+    sede: { id: Number(this.formData.campus), nombre: '' } // Solo enviamos el ID de la sede
   };
 
   this.usuarioRolService.registrarUsuario(dto).subscribe({
@@ -120,8 +138,44 @@ handleCreateUser() {
       alert(err.error?.message || err.message || 'Error al registrar usuario');
     }
   });
-}
+    
+  }else if(this.formData.role === 'admin'){
+    console.log('Creating admin:', this.formData);
 
+  const dto: RegistroAdminDTO = {
+    nombreCompleto: this.formData.name,
+    username: this.formData.username,
+    correo: this.formData.correo,
+    password: this.formData.password,
+    telefono: this.formData.phone,
+    sede: { id: Number(this.formData.campus), nombre: '' } // Solo enviamos el ID de la sede
+  };
+
+  this.usuarioRolService.registrarAdmin(dto).subscribe({
+    next: (res: string) => { // Expect a string response
+      console.log('✅ Admin creado:', res);
+      alert(res); // Display the success message from the backend
+      this.resetForm(); // Limpia el formulario
+      this.isCreating = false; // Cierra el formulario de creación
+    },
+    error: (err) => {
+      console.error('❌ Error al registrar:', err);
+      // If the error is a string (e.g., from a non-200 response with responseType: 'text'), display it directly.
+      // Otherwise, try to access err.error.message or use a generic message.
+      alert(err.error?.message || err.message || 'Error al registrar usuario');
+    }
+  });
+  }else if(this.formData.role === 'seguridad'){
+    console.log('Creating security:', this.formData);
+    this.resetForm();
+    this.isCreating = false;
+
+  }else {
+    alert('Rol no válido. Por favor, seleccione un rol válido.');
+  }
+  
+
+}
   
 
 handleUpdateUser() {
