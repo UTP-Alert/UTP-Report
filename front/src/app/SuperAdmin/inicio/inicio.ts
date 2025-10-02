@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule, KeyValuePipe } from '@angular/common'; // Import CommonModule and KeyValuePipe
 import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
+import { RegistroDTO, UsuarioRolService } from '../../services/usuario-rol.service';
 
 @Component({
   selector: 'app-inicio',
@@ -10,6 +11,13 @@ import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
   styleUrl: './inicio.scss'
 })
 export class Inicio {
+
+
+
+  constructor(private usuarioRolService: UsuarioRolService) { }
+
+
+
   userName: string = 'Super Admin User';
   userRole: string = 'Super Admin';
   isSessionActive: boolean = true; // Simulate session status
@@ -20,14 +28,18 @@ export class Inicio {
 
   formData = {
     name: '',
-    email: '',
+    username: '',
+    correo: '',
     password: '',
     phone: '',
     role: 'user', // Default role
-    userType: 'estudiante', // Default user type for 'user' role
-    campus: '',
+    userType: '', // Default user type for 'user' role
+     campus: '',
     assignedZones: [] as string[]
   };
+
+
+
 
   roleConfig: { [key: string]: { label: string; icon: string } } = {
     user: { label: 'Usuario', icon: 'fas fa-user' },
@@ -60,15 +72,16 @@ export class Inicio {
   }
 
   resetForm() {
-    this.isCreating = false;
-    this.editingUser = null;
+    //this.isCreating = false;
+    //this.editingUser = null;
     this.formData = {
       name: '',
-      email: '',
+      username: '',
+      correo: '',
       password: '',
       phone: '',
       role: 'user',
-      userType: 'estudiante',
+      userType: '',
       campus: '',
       assignedZones: []
     };
@@ -82,37 +95,145 @@ export class Inicio {
       this.formData.assignedZones = [];
     }
   }
-
-  handleCreateUser() {
-    console.log('Creating user:', this.formData);
-    // Here you would typically send data to a backend service
-    this.resetForm();
+/*
+ handleCreateUser() {
+  // Validaciones básicas
+  if (!this.formData.username || this.formData.username.trim() === '') {
+    alert('El nombre de usuario es obligatorio');
+    return;
   }
 
-  handleUpdateUser() {
-    console.log('Updating user:', this.formData);
-    // Here you would typically send data to a backend service
-    this.resetForm();
+  if (!this.formData.correo || this.formData.correo.trim() === '') {
+    alert('El correo es obligatorio');
+    return;
   }
 
-  handleRemoveZone(zoneToRemove: string) {
-    this.formData.assignedZones = this.formData.assignedZones.filter(zone => zone !== zoneToRemove);
+  // Validar formato de correo
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(this.formData.correo)) {
+    alert('El correo no tiene un formato válido');
+    return;
   }
 
-  handleAddZone(zoneToAdd: string) {
-    if (zoneToAdd && !this.formData.assignedZones.includes(zoneToAdd)) {
-      this.formData.assignedZones = [...this.formData.assignedZones, zoneToAdd];
+  if (!this.formData.password || this.formData.password.trim() === '') {
+    alert('La contraseña es obligatoria');
+    return;
+  }
+
+  // Construcción del DTO
+  const dto: RegistroDTO = {
+    username: this.formData.username.trim(),
+    correo: this.formData.correo.trim(),
+    password: this.formData.password,
+    tipoUsuario: this.formData.userType.toUpperCase()
+  };
+
+  console.log('📤 Enviando DTO al backend:', dto);
+
+  // Llamada al servicio
+  this.usuarioRolService.registrarUsuario(dto).subscribe({
+    next: (res) => {
+      console.log('✅ Usuario creado:', res);
+      alert('Usuario registrado exitosamente');
+      this.resetForm();
+    },
+    error: (err) => {
+      console.error('❌ Error al registrar:', err);
+      alert(err.error?.message || 'Error al registrar usuario');
     }
-  }
+  });
+}*/
+handleCreateUser() {
+  console.log('Creating user:', this.formData);
 
-  onAddZoneChange(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    const zoneToAdd = selectElement.value;
-    this.handleAddZone(zoneToAdd);
-    selectElement.value = ''; // Reset the select field
-  }
+  const dto: RegistroDTO = {
+    username: this.formData.username,
+    correo: this.formData.correo,
+    password: this.formData.password,
+    tipoUsuario: this.formData.userType.toUpperCase() // alumno -> ALUMNO, docente -> DOCENTE
+  };
 
-  toggleMobileMenu() {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  this.usuarioRolService.registrarUsuario(dto).subscribe({
+    next: (res) => {
+      console.log('✅ Usuario creado:', res);
+      alert('Usuario registrado correctamente ✅');
+      this.resetForm(); // Limpia el formulario
+      this.isCreating = false; // Cierra el formulario de creación
+    },
+    error: (err) => {
+      console.error('❌ Error al registrar:', err);
+      alert(err.error.message || 'Error al registrar usuario');
+    }
+  });
+}
+
+  
+
+handleUpdateUser() {
+  console.log('Updating user:', this.formData);
+  // Here you would typically send data to a backend service
+  this.resetForm();
+}
+
+handleRemoveZone(zoneToRemove: string) {
+  this.formData.assignedZones = this.formData.assignedZones.filter(zone => zone !== zoneToRemove);
+}
+
+handleAddZone(zoneToAdd: string) {
+  if (zoneToAdd && !this.formData.assignedZones.includes(zoneToAdd)) {
+    this.formData.assignedZones = [...this.formData.assignedZones, zoneToAdd];
   }
+}
+
+onAddZoneChange(event: Event) {
+  const selectElement = event.target as HTMLSelectElement;
+  const zoneToAdd = selectElement.value;
+  this.handleAddZone(zoneToAdd);
+  selectElement.value = ''; // Reset the select field
+}
+
+toggleMobileMenu() {
+  this.isMobileMenuOpen = !this.isMobileMenuOpen;
+}
+//despues
+
+
+/*formData: RegistroDTO = {
+ username: '',
+ correo: '',
+ password: '',
+ tipoUsuario: 'ALUMNO' // Valor por defecto
+};*/
+/* resetForm() {
+   this.formData = {
+     username: '',
+     correo: '',
+     password: '',
+     tipoUsuario: 'ALUMNO' // Reiniciar al valor por defecto
+   };
+ }
+
+*/
+
+/*
+handleCreateUser() {
+  const dto: RegistroDTO = {
+    username: this.formData.username,
+    correo: this.formData.correo,
+    password: this.formData.password,
+    tipoUsuario: this.formData.tipoUsuario
+  };
+
+  this.usuarioRolService.registrarUsuario(dto).subscribe({
+    next: (res) => {
+      console.log('✅ Usuario creado:', res);
+      alert(res); // el backend devuelve un String: "Usuario registrado exitosamente"
+      this.resetForm();
+    },
+    error: (err) => {
+      console.error('❌ Error al registrar:', err);
+      alert(err.error.message || 'Error al registrar usuario');
+    }
+  });
+}*/
 }

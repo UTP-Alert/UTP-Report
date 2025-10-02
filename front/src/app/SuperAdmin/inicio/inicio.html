@@ -172,6 +172,19 @@
               />
             </div>
 
+            <div>
+              <label class="block text-sm font-medium mb-1">Username</label>
+              <input
+                type="text"
+                placeholder="Ej: U2234567"
+                [(ngModel)]="formData.username"
+                class="input-field"
+              />
+            </div>
+
+
+
+
             <!-- 2. EMAIL CON VALIDACIÓN AUTOMÁTICA POR ROL -->
             <div>
               <label class="block text-sm font-medium mb-1">Email</label>
@@ -179,18 +192,18 @@
                 type="email"
                 [placeholder]="
                   formData.role === 'user' ? (
-                    formData.userType === 'estudiante' ? 'U1234567@utp.edu.pe' : 'C54321@utp.edu.pe'
+                    formData.userType === 'alumno' ? 'U1234567@utp.edu.pe' : 'C54321@utp.edu.pe'
                   ) :
                   formData.role === 'admin' ? 'D1234567@utp.edu.pe' :
                   formData.role === 'security' ? 'S001@utp.edu.pe' :
                   'usuario@utp.edu.pe'
                 "
-                [(ngModel)]="formData.email"
+                [(ngModel)]="formData.correo"
                 class="input-field"
               />
 
               <!-- HINTS DINÁMICOS SEGÚN ROL -->
-              <p *ngIf="formData.role === 'user' && formData.userType === 'estudiante'" class="text-xs text-gray-500 mt-1">
+              <p *ngIf="formData.role === 'user' && formData.userType === 'alumno'" class="text-xs text-gray-500 mt-1">
                 Para estudiantes: usar código UTP (Ej: U1234567@utp.edu.pe)
               </p>
               <p *ngIf="formData.role === 'user' && formData.userType === 'docente'" class="text-xs text-gray-500 mt-1">
@@ -260,9 +273,9 @@
               👥 Tipo de Usuario (OBLIGATORIO)
             </label>
             <select [(ngModel)]="formData.userType" class="select-field border-blue-300">
-              <option value="estudiante">
+              <option value="alumno">
                 <i class="fas fa-graduation-cap h-4 w-4 text-blue-600"></i>
-                <span>👨‍🎓 Estudiante</span>
+                <span>👨‍🎓 alumno</span>
                 <span class="badge ml-2 bg-blue-100 text-blue-700">U1234567</span>
               </option>
               <option value="docente">
