@@ -44,7 +44,7 @@ public class Usuario implements UserDetails {
 	private String correo;
 	private String telefono;
 	@Enumerated(EnumType.STRING) // Esto almacena el nombre del enum como String
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private TipoUsuario tipoUsuario;
 	private int intentos;
 	@Column(nullable = false)
