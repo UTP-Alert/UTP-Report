@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Sede } from './sede.service';
+import { Zona } from './zona.service';
 
 /*export interface Sede {
   id: number;
@@ -24,6 +25,16 @@ export interface RegistroAdminDTO {
   password: string;
   telefono: string;
   sede: Sede;
+}
+export interface RegistroSecurityDTO {
+  nombreCompleto: string;
+  username: string;
+  correo: string;
+  password: string;
+  telefono: string;
+  sede: Sede;
+  assignedZones: Zona[]; // Array de zonas asignadas
+
 }
 
 
