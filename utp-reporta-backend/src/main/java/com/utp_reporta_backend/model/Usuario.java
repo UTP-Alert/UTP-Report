@@ -47,7 +47,7 @@ public class Usuario implements UserDetails {
 	@Enumerated(EnumType.STRING) // Esto almacena el nombre del enum como String
 	private TipoUsuario tipoUsuario;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "sede_id", nullable = false)
+	@JoinColumn(name = "sede_id")
 	private Sede sede;
 	
 	@ManyToMany(fetch = FetchType.LAZY)

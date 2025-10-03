@@ -10,6 +10,5 @@ public interface SedeRepository extends JpaRepository<Sede, Long>{
 
 	boolean existsByNombre(String nombre);
 	
-    Sede findByNombre(String nombre);
 
 }

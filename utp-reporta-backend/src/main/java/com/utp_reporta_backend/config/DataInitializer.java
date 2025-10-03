@@ -47,15 +47,10 @@ public class DataInitializer implements CommandLineRunner{
             rolSeguridad.setNombre(ERol.ROLE_SEGURIDAD);
             rolRepository.save(rolSeguridad);
         }
-		// 3. Verificar si no existen sedes, y si no, crear una sede predeterminada
-        if (sedeRepository.count() == 0) {
-            Sede sedeDefault = new Sede();
-            sedeDefault.setNombre("Sede Ate");
-            sedeRepository.save(sedeDefault);
-        }
+		
 		
 		// 2. Verificar si ya existe un usuario con el rol ROLE_SUPERADMIN
-        if (usuarioRepository.count() == 0 || usuarioRepository.findByRolesContains(rolRepository.findByNombre(ERol.ROLE_SUPERADMIN).orElseThrow()) == null) {
+        if (usuarioRepository.count() == 0) {
 
             // Si no existe ningún usuario con ROLE_SUPERADMIN, creamos uno
             Usuario superAdmin = new Usuario();
@@ -65,7 +60,6 @@ public class DataInitializer implements CommandLineRunner{
             superAdmin.setRoles(Set.of(rolRepository.findByNombre(ERol.ROLE_SUPERADMIN).orElseThrow()));
             superAdmin.setEnabled(true); // Habilitamos el usuario
             superAdmin.setIntentos(0); // Reiniciamos los intentos de login
-            superAdmin.setSede(sedeRepository.findByNombre("Sede Ate"));
 
             // Encriptar la contraseña usando BCryptPasswordEncoder
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
