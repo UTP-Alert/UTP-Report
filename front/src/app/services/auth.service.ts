@@ -1,6 +1,8 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, catchError, throwError } from 'rxjs';
+import { Router } from '@angular/router';
+import { ROLES } from '../constants/roles';
 
 interface LoginRequest {
   usernameOrCorreo: string;
@@ -10,21 +12,32 @@ interface LoginRequest {
 interface JwtResponse {
   token: string;
   tipoToken: string;
+  roles: string[];
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private baseUrl = 'http://localhost:8080/api/auth'; // Ajustar si cambia el puerto backend
   isAuthenticated = signal<boolean>(false);
+  private rolesSignal = signal<string[]>([]);
+  private adminActingAsUser = signal<boolean>(false); // flag cuando admin entra como usuario
+  roles = computed(() => this.rolesSignal());
+  private tokenExpirationTimer: any = null;
+  private readonly ADMIN_AS_USER_KEY = 'admin_as_user';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   login(username: string, password: string): Observable<JwtResponse> {
     const body: LoginRequest = { usernameOrCorreo: username, password };
     return this.http.post<JwtResponse>(`${this.baseUrl}/login`, body).pipe(
       tap(res => {
         localStorage.setItem('auth_token', res.token);
+        if (res.roles) {
+          this.rolesSignal.set(res.roles);
+          localStorage.setItem('auth_roles', JSON.stringify(res.roles));
+        }
         this.isAuthenticated.set(true);
+        this.scheduleTokenExpiration(res.token);
       }),
       catchError(err => {
         this.isAuthenticated.set(false);
@@ -35,10 +48,79 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_roles');
+    localStorage.removeItem(this.ADMIN_AS_USER_KEY);
     this.isAuthenticated.set(false);
+    this.rolesSignal.set([]);
+    this.adminActingAsUser.set(false);
+    if (this.tokenExpirationTimer) { clearTimeout(this.tokenExpirationTimer); this.tokenExpirationTimer = null; }
+    this.router.navigate(['/login']);
   }
 
   getToken(): string | null {
     return localStorage.getItem('auth_token');
+  }
+
+  loadFromStorage() {
+    const token = this.getToken();
+    if (token) {
+      this.isAuthenticated.set(true);
+      const stored = localStorage.getItem('auth_roles');
+      if (stored) {
+        try { this.rolesSignal.set(JSON.parse(stored)); } catch (_) {}
+      }
+      const acting = localStorage.getItem(this.ADMIN_AS_USER_KEY);
+      if (acting === '1') this.adminActingAsUser.set(true);
+      this.scheduleTokenExpiration(token);
+    }
+  }
+
+  hasRole(role: string) {
+    return this.rolesSignal().includes(role);
+  }
+
+  setAdminActingAsUser(value: boolean) { 
+    this.adminActingAsUser.set(value); 
+    if (value) localStorage.setItem(this.ADMIN_AS_USER_KEY,'1');
+    else localStorage.removeItem(this.ADMIN_AS_USER_KEY);
+  }
+  isAdminAsUser() { return this.adminActingAsUser(); }
+
+  // Prefijo para mostrar en navbar segun rol y tipoUsuario (cuando admin actua como user se usa Admin.)
+  buildDisplayName(nombreCompleto: string, tipoUsuario?: string): string {
+  if (this.hasRole(ROLES.SUPERADMIN)) return `Super Admin`;
+    if (this.isAdminAsUser()) return `Admin. ${nombreCompleto}`;
+  if (this.hasRole(ROLES.ADMIN)) return `Admin. ${nombreCompleto}`; // en vista admin
+    if (tipoUsuario) {
+      const upper = tipoUsuario.toUpperCase();
+      if (upper === 'ALUMNO') return `Alum. ${nombreCompleto}`;
+      if (upper === 'DOCENTE') return `Doc. ${nombreCompleto}`;
+    }
+    if (this.hasRole(ROLES.SEGURIDAD)) return nombreCompleto; // luego se puede prefijar
+    return nombreCompleto;
+  }
+
+  private decodeToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      const json = atob(payload.replace(/-/g,'+').replace(/_/g,'/'));
+      return JSON.parse(json);
+    } catch { return null; }
+  }
+
+  private scheduleTokenExpiration(token: string) {
+    const decoded = this.decodeToken(token);
+    if (!decoded || !decoded.exp) return; // exp en segundos
+    const expMs = decoded.exp * 1000;
+    const now = Date.now();
+    const remaining = expMs - now;
+    if (remaining <= 0) {
+      this.logout();
+      return;
+    }
+    if (this.tokenExpirationTimer) clearTimeout(this.tokenExpirationTimer);
+    // Logout 5 segundos antes para margen
+    const timeout = remaining - 5000;
+    this.tokenExpirationTimer = setTimeout(() => this.logout(), timeout > 0 ? timeout : 0);
   }
 }

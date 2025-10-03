@@ -1,1 +1,11 @@
-<p>inicio works!</p>
+<header class="top-nav">
+  <div class="logo">🛡️ UTP+Report</div>
+  <nav class="links">
+    <span class="active">INICIO</span>
+  </nav>
+  <div class="right">
+    <div class="user-tag">{{ nombreSeguridad || 'Seguridad' }}</div>
+    <button class="logout" title="Cerrar sesión" (click)="logout()">⏻</button>
+  </div>
+</header>
+<main class="content"><!-- vacío --></main>

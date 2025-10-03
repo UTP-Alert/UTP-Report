@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { PerfilService } from '../../services/perfil.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,7 +20,7 @@ export class InicioSesion {
   // Señal para futura integración (ej: mostrar mensaje de error backend)
   backendError = signal<string | null>(null);
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, private perfilSrv: PerfilService) {
     this.form = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]],
@@ -41,10 +42,24 @@ export class InicioSesion {
     this.auth.login(username, password).subscribe({
       next: res => {
         this.loading = false;
-        // Futuro: decodificar token para rol y redirigir adecuadamente.
-        this.router.navigate(['/superadmin/dashboard']);
+        const roles = res.roles || [];
+        if (roles.includes('ROLE_SUPERADMIN')) {
+          this.router.navigate(['/superadmin/dashboard']);
+        } else if (roles.includes('ROLE_ADMIN')) {
+          // Administrador: primero elige rol
+          this.router.navigate(['/select-role']);
+        } else if (roles.includes('ROLE_SEGURIDAD')) {
+          this.router.navigate(['/seguridad']);
+        } else if (roles.includes('ROLE_USUARIO')) {
+          this.router.navigate(['/usuario']);
+        } else {
+          // fallback
+          this.router.navigate(['/login']);
+        }
+        // Intentar cargar perfil (si el backend permite inmediatamente)
+        this.perfilSrv.cargarPerfil();
         if (rememberMe) {
-          // Podrías implementar lógica adicional para refresh tokens u otro almacenamiento.
+          // Espacio para refresh token
         }
       },
       error: err => {

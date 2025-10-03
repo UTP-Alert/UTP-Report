@@ -24,10 +24,17 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponseDTO> login(@RequestBody LoginDTO loginDTO) {
         String token = authService.login(loginDTO);
-        
+
         JwtAuthResponseDTO jwtAuthResponse = new JwtAuthResponseDTO();
         jwtAuthResponse.setToken(token);
-        
+        // Extraer roles del SecurityContext (ya autenticado en AuthServiceImpl)
+        var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getAuthorities() != null) {
+            java.util.List<String> roles = auth.getAuthorities().stream()
+                    .map(a -> a.getAuthority())
+                    .toList();
+            jwtAuthResponse.setRoles(roles);
+        }
         return ResponseEntity.ok(jwtAuthResponse);
     }
 

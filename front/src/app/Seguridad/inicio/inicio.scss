@@ -1,0 +1,10 @@
+.top-nav{display:flex;align-items:center;gap:1rem;background:#0c0c0c;color:#fff;padding:.55rem 1.1rem;font-family:system-ui,Roboto,"Segoe UI",Arial,sans-serif;font-size:.75rem;letter-spacing:.5px}
+.logo{font-weight:600;display:flex;align-items:center;gap:.35rem}
+.links{display:flex;gap:.45rem}
+.links span{background:transparent;border:none;color:#fff;padding:.5rem .85rem;border-radius:6px;font-weight:600;display:inline-block}
+.links span.active,.links span:hover{background:#ff2f55}
+.right{margin-left:auto;display:flex;align-items:center;gap:.55rem}
+.user-tag{background:#222;padding:.5rem .85rem;border-radius:6px;font-weight:500}
+.logout{background:#222;border:none;color:#fff;padding:.5rem .65rem;border-radius:6px;cursor:pointer}
+.logout:hover{background:#ff2f55}
+.content{padding:0}

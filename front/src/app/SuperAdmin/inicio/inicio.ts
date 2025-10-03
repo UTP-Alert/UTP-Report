@@ -41,10 +41,6 @@ export class Inicio implements OnInit {
   }
 
 
-
-
-
-
   cargarSedes(): void {
     this.sedeService.obtenerSedes().subscribe({
       next: (data) => {
