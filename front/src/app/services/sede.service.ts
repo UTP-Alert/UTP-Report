@@ -13,6 +13,7 @@ export class SedeService {
  constructor(private http: HttpClient) {}
 
   obtenerSedes(): Observable<Sede[]> {
-    return this.http.get<Sede[]>(this.baseUrl);
+    return this.http.get<Sede[]>(`${this.baseUrl}`);
+   
   }
 }
