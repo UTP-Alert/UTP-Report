@@ -19,7 +19,7 @@
     <!-- SECCIÓN USUARIO (Lado Derecho) -->
     <div class="user-profile">
       <!-- Notification Bell (Solo visible para admin, user, security) -->
-      <i *ngIf="userRole === 'admin' || userRole === 'user' || userRole === 'security'" class="fas fa-bell notification-bell"></i>
+      <i *ngIf="userRole === 'admin' || userRole === 'usuario' || userRole === 'seguridad'" class="fas fa-bell notification-bell"></i>
 
       <!-- SuperUser Badge -->
       <span *ngIf="userRole === 'Super Admin'" class="superuser-badge">
@@ -172,6 +172,19 @@
               />
             </div>
 
+            <div>
+              <label class="block text-sm font-medium mb-1">Username</label>
+              <input
+                type="text"
+                placeholder="Ej: U2234567"
+                [(ngModel)]="formData.username"
+                class="input-field"
+              />
+            </div>
+
+
+
+
             <!-- 2. EMAIL CON VALIDACIÓN AUTOMÁTICA POR ROL -->
             <div>
               <label class="block text-sm font-medium mb-1">Email</label>
@@ -179,27 +192,27 @@
                 type="email"
                 [placeholder]="
                   formData.role === 'user' ? (
-                    formData.userType === 'estudiante' ? 'U1234567@utp.edu.pe' : 'C54321@utp.edu.pe'
+                    formData.userType === 'alumno' ? 'U1234567@utp.edu.pe' : 'C54321@utp.edu.pe'
                   ) :
                   formData.role === 'admin' ? 'D1234567@utp.edu.pe' :
-                  formData.role === 'security' ? 'S001@utp.edu.pe' :
+                  formData.role === 'seguridad' ? 'S001@utp.edu.pe' :
                   'usuario@utp.edu.pe'
                 "
-                [(ngModel)]="formData.email"
+                [(ngModel)]="formData.correo"
                 class="input-field"
               />
 
               <!-- HINTS DINÁMICOS SEGÚN ROL -->
-              <p *ngIf="formData.role === 'user' && formData.userType === 'estudiante'" class="text-xs text-gray-500 mt-1">
+              <p *ngIf="formData.role === 'usuario' && formData.userType === 'alumno'" class="text-xs text-gray-500 mt-1">
                 Para estudiantes: usar código UTP (Ej: U1234567@utp.edu.pe)
               </p>
-              <p *ngIf="formData.role === 'user' && formData.userType === 'docente'" class="text-xs text-gray-500 mt-1">
+              <p *ngIf="formData.role === 'usuario' && formData.userType === 'docente'" class="text-xs text-gray-500 mt-1">
                 Para docentes: usar código UTP (Ej: C54321@utp.edu.pe)
               </p>
               <p *ngIf="formData.role === 'admin'" class="text-xs text-gray-500 mt-1">
                 Para administradores: usar código personal (Ej: D1234567@utp.edu.pe)
               </p>
-              <p *ngIf="formData.role === 'security'" class="text-xs text-gray-500 mt-1">
+              <p *ngIf="formData.role === 'seguridad'" class="text-xs text-gray-500 mt-1">
                 Para seguridad: usar código de empleado (Ej: S001@utp.edu.pe)
               </p>
             </div>
@@ -246,23 +259,23 @@
                 <option *ngIf="availableSedes.length === 0" value="" disabled>
                   No hay sedes disponibles
                 </option>
-                <option *ngFor="let sede of availableSedes" [value]="sede.name">
-                  <i class="fas fa-building"></i> {{ sede.name }}
+                <option *ngFor="let sede of sedes" [value]="sede.id">
+                  <i class="fas fa-building"></i> {{ sede.nombre }}
                 </option>
               </select>
             </div>
           </div>
 
           <!-- SECCIÓN ESPECIAL: TIPO DE USUARIO (Solo para rol 'user') -->
-          <div *ngIf="formData.role === 'user'" class="bg-blue-50 border-2 border-blue-200 p-4 rounded-lg">
+          <div *ngIf="formData.role === 'usuario'" class="bg-blue-50 border-2 border-blue-200 p-4 rounded-lg">
             <label class="block text-sm font-medium mb-2 text-blue-800 flex items-center gap-2">
               <i class="fas fa-user h-4 w-4"></i>
               👥 Tipo de Usuario (OBLIGATORIO)
             </label>
             <select [(ngModel)]="formData.userType" class="select-field border-blue-300">
-              <option value="estudiante">
+              <option value="alumno">
                 <i class="fas fa-graduation-cap h-4 w-4 text-blue-600"></i>
-                <span>👨‍🎓 Estudiante</span>
+                <span>👨‍🎓 alumno</span>
                 <span class="badge ml-2 bg-blue-100 text-blue-700">U1234567</span>
               </option>
               <option value="docente">
@@ -277,7 +290,7 @@
           </div>
 
           <!-- SECCIÓN ESPECIAL: ZONAS ASIGNADAS (Solo para rol 'security') -->
-          <div *ngIf="formData.role === 'security'" class="border-t-2 border-primary pt-6 mt-4 bg-green-50 p-4 rounded-lg">
+          <div *ngIf="formData.role === 'seguridad'" class="border-t-2 border-primary pt-6 mt-4 bg-green-50 p-4 rounded-lg">
             <label class="block text-lg font-medium mb-4 flex items-center gap-2 text-green-800">
               <i class="fas fa-map-marker-alt h-5 w-5 text-green-600"></i>
               🗺️ Zonas Designadas para Patrullaje (OBLIGATORIO)
