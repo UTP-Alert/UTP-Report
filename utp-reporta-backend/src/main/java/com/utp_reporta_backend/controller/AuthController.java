@@ -42,7 +42,7 @@ public class AuthController {
         String respuesta = authService.registrarAdmin(registroAdminDTO);
         return ResponseEntity.ok(respuesta);
     }
-    @PostMapping("/registroSeguridad")
+    @PostMapping("/registrarSeguridad")
     public ResponseEntity<String> registrarSeguridad(@RequestBody RegistroSeguridadDTO dto) {
         String resultado = authService.registrarSeguridad(dto);
         return ResponseEntity.ok(resultado);

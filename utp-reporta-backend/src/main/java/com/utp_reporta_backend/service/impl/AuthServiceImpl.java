@@ -58,6 +58,9 @@ public class AuthServiceImpl implements AuthService {
 		if (usuarioRepository.existsByCorreo(registroUsuarioDTO.getCorreo())) {
 			return "El email ya está en uso";
 		}
+		 // Buscar sede (Ahora, getSedeId() no es nulo)
+	    Sede sede = sedeRepository.findById(registroUsuarioDTO.getSedeId())
+	             .orElseThrow(() -> new RuntimeException("Sede no encontrada"));
 		Usuario usuario = new Usuario();
 		usuario.setNombreCompleto(registroUsuarioDTO.getNombreCompleto());
 		usuario.setUsername(registroUsuarioDTO.getUsername());
@@ -67,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
 		Rol rol = rolRepository.findByNombre(ERol.ROLE_USUARIO)
 				.orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 		usuario.setTipoUsuario(registroUsuarioDTO.getTipoUsuario());
-		usuario.setSede(registroUsuarioDTO.getSede());
+		usuario.setSede(sede);
 		
 		
 		usuario.getRoles().add(rol);
@@ -87,6 +90,11 @@ public class AuthServiceImpl implements AuthService {
 		if (usuarioRepository.existsByCorreo(registroAdminDTO.getCorreo())) {
 			return "El email ya está en uso";
 		}
+		
+		 // Buscar sede (Ahora, getSedeId() no es nulo)
+	    Sede sede = sedeRepository.findById(registroAdminDTO.getSedeId())
+	             .orElseThrow(() -> new RuntimeException("Sede no encontrada"));
+	    
 		Usuario usuario = new Usuario();
 		usuario.setNombreCompleto(registroAdminDTO.getNombreCompleto());
 		usuario.setUsername(registroAdminDTO.getUsername());
@@ -95,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
 		usuario.setTelefono(registroAdminDTO.getTelefono());
 		Rol rol = rolRepository.findByNombre(ERol.ROLE_ADMIN)
 				.orElseThrow(() -> new RuntimeException("Rol no encontrado"));
-		usuario.setSede(registroAdminDTO.getSede());
+		usuario.setSede(sede);
 		
 		
 		usuario.getRoles().add(rol);
@@ -107,45 +115,55 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public String registrarSeguridad(RegistroSeguridadDTO registroSeguridadDTO) {
 		
-		    // Validar username y correo
-		    if (usuarioRepository.existsByUsername(registroSeguridadDTO.getUsername())) {
-		        return "El nombre de usuario ya existe";
-		    }
+		 // 1. VALIDACIÓN CLAVE: El ID de Sede NO debe ser nulo.
+	    if (registroSeguridadDTO.getSedeId() == null) {
+	        return "El ID de la sede (sedeId) no puede ser nulo."; 
+	    }
+	    
+	    // 2. VALIDACIÓN ADICIONAL: El conjunto de IDs de Zona NO debe ser nulo.
+	    if (registroSeguridadDTO.getZonaIds() == null) {
+	        return "La lista de IDs de zona (zonaIds) no puede ser nula.";
+	    }
 
-		    if (usuarioRepository.existsByCorreo(registroSeguridadDTO.getCorreo())) {
-		        return "El correo ya está en uso";
-		    }
+	    // Validar username y correo
+	    if (usuarioRepository.existsByUsername(registroSeguridadDTO.getUsername())) {
+	        return "El nombre de usuario ya existe";
+	    }
 
-		    // Buscar sede
-		    Sede sede = sedeRepository.findById(registroSeguridadDTO.getSedeId())
-		            .orElseThrow(() -> new RuntimeException("Sede no encontrada"));
+	    if (usuarioRepository.existsByCorreo(registroSeguridadDTO.getCorreo())) {
+	        return "El correo ya está en uso";
+	    }
 
-		    // Buscar zonas
-		    Set<Zona> zonas = new HashSet<>(zonaRepository.findAllById(registroSeguridadDTO.getZonaIds()));
-		    if (zonas.isEmpty()) {
-		        return "Debe seleccionar al menos una zona válida";
-		    }
+	    // Buscar sede (Ahora, getSedeId() no es nulo)
+	    Sede sede = sedeRepository.findById(registroSeguridadDTO.getSedeId())
+	             .orElseThrow(() -> new RuntimeException("Sede no encontrada"));
 
-		    // Buscar rol de seguridad
-		    Rol rolSeguridad = rolRepository.findByNombre(ERol.ROLE_SEGURIDAD)
-		            .orElseThrow(() -> new RuntimeException("Rol de seguridad no encontrado"));
+	    // Buscar zonas
+	    Set<Zona> zonas = new HashSet<>(zonaRepository.findAllById(registroSeguridadDTO.getZonaIds()));
+	    if (zonas.isEmpty()) {
+	        return "Debe seleccionar al menos una zona válida";
+	    }
 
-		    // Crear usuario
-		    Usuario usuario = new Usuario();
-		    usuario.setNombreCompleto(registroSeguridadDTO.getNombreCompleto());
-		    usuario.setUsername(registroSeguridadDTO.getUsername());
-		    usuario.setCorreo(registroSeguridadDTO.getCorreo());
-		    usuario.setTelefono(registroSeguridadDTO.getTelefono());
-		    usuario.setPassword(passwordEncoder.encode(registroSeguridadDTO.getPassword()));
-		    usuario.setSede(sede);
-		    usuario.setZonas(zonas);
-		    usuario.setEnabled(true);
-		    usuario.setIntentos(0);
-		    usuario.getRoles().add(rolSeguridad);
+	    // Buscar rol de seguridad
+	    Rol rolSeguridad = rolRepository.findByNombre(ERol.ROLE_SEGURIDAD)
+	                .orElseThrow(() -> new RuntimeException("Rol de seguridad no encontrado"));
 
-		    usuarioRepository.save(usuario);
+	    // Crear y guardar usuario
+	    Usuario usuario = new Usuario();
+	    usuario.setNombreCompleto(registroSeguridadDTO.getNombreCompleto());
+	    usuario.setUsername(registroSeguridadDTO.getUsername());
+	    usuario.setCorreo(registroSeguridadDTO.getCorreo());
+	    usuario.setTelefono(registroSeguridadDTO.getTelefono());
+	    usuario.setPassword(passwordEncoder.encode(registroSeguridadDTO.getPassword()));
+	    usuario.setSede(sede);
+	    usuario.setZonas(zonas);
+	    usuario.setEnabled(true);
+	    usuario.setIntentos(0);
+	    usuario.getRoles().add(rolSeguridad);
 
-		    return "Usuario de seguridad registrado exitosamente";
+	    usuarioRepository.save(usuario);
+
+	    return "Usuario de seguridad registrado exitosamente";
 	}
 
 }
