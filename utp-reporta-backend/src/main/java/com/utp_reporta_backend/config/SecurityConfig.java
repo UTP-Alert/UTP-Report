@@ -30,7 +30,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**","/api/sedes/**").permitAll()
+                .requestMatchers("/api/auth/**","/api/sedes/**","/api/zonas/**").permitAll()
                 .requestMatchers("/api/v1/SUPERADMIN/**").hasAnyRole("SUPERADMIN")
                 .requestMatchers("/api/v1/ADMIN/**").hasAnyRole("ADMIN")
                 .requestMatchers("/api/v1/USUARIO/**").hasAnyRole("USUARIO")

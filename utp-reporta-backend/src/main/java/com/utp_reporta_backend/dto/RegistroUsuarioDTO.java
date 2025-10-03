@@ -1,7 +1,6 @@
 package com.utp_reporta_backend.dto;
 
 import com.utp_reporta_backend.enums.TipoUsuario;
-import com.utp_reporta_backend.model.Sede;
 
 import lombok.Data;
 
@@ -13,6 +12,5 @@ public class RegistroUsuarioDTO {
     private String password;
     private String telefono;
     private TipoUsuario tipoUsuario;
-    private Sede sede;
-    
+    private Long sedeId;     
 }
