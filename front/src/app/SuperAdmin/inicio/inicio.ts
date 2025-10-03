@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, KeyValuePipe } from '@angular/common'; // Import CommonModule and KeyValuePipe
 import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
-import { RegistroAdminDTO, RegistroDTO, UsuarioRolService } from '../../services/usuario-rol.service';
+import { RegistroAdminDTO, RegistroDTO, RegistroSecurityDTO, UsuarioRolService } from '../../services/usuario-rol.service';
 import { Sede, SedeService } from '../../services/sede.service';
+import { Zona, ZonaService } from '../../services/zona.service';
 
 @Component({
   selector: 'app-inicio',
@@ -11,82 +12,75 @@ import { Sede, SedeService } from '../../services/sede.service';
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss'
 })
-export class Inicio {
+export class Inicio implements OnInit {
+  // -------------------------------
+  // 🔹 1. Variables de datos
+  // -------------------------------
   sedes: Sede[] = [];
-
-
-
-  constructor(private usuarioRolService: UsuarioRolService,private sedeService: SedeService) { }
-ngOnInit(): void {
-    this.cargarSedes();
-  }
-cargarSedes(): void {
-    this.sedeService.obtenerSedes().subscribe({
-      next: (data) => {
-        this.sedes = data;
-      },
-      error: (err) => {
-        console.error('Error al cargar sedes', err);
-      }
-    });
-  }
+  zonas: Zona[] = [];
 
   userName: string = 'Super Admin User';
   userRole: string = 'Super Admin';
-  isSessionActive: boolean = true; // Simulate session status
+  isSessionActive: boolean = true;
 
   isCreating: boolean = false;
-  editingUser: any = null; // Will hold user object if editing
-  isMobileMenuOpen: boolean = false; // For mobile navigation
+  editingUser: any = null;
+  isMobileMenuOpen: boolean = false;
 
+  // -------------------------------
+  // 🔹 2. Constructor e inicialización
+  // -------------------------------
+  constructor(
+    private usuarioRolService: UsuarioRolService,
+    private sedeService: SedeService,
+    private zonaService: ZonaService
+  ) { }
+  ngOnInit(): void {
+    this.cargarSedes();
+    this.cargarZonas();
+  }
+
+
+
+
+
+
+  cargarSedes(): void {
+    this.sedeService.obtenerSedes().subscribe({
+      next: (data) => {
+        this.sedes = data;
+        console.log('Sedes cargadas:', this.sedes);
+      },
+      error: (err) => console.error('Error al cargar sedes', err)
+    });
+  }
+
+  cargarZonas(): void {
+    this.zonaService.obtenerZonas().subscribe({
+      next: (data) => {
+        this.zonas = data;
+        console.log('Zonas cargadas:', this.zonas);
+      },
+      error: (err) => console.error('Error al cargar zonas', err)
+    });
+  }
+
+  // -------------------------------
+  // 🔹 3. Formulario de usuario
+  // -------------------------------
   formData = {
     name: '',
     username: '',
     correo: '',
     password: '',
     phone: '',
-    role: '', // Default role
-    userType: '', // Default user type for 'user' role
+    role: '',
+    userType: '',
     campus: '',
-    assignedZones: [] as string[]
+    assignedZones: [] as Zona[]
   };
-
-
-
-
-  roleConfig: { [key: string]: { label: string; icon: string } } = {
-    usuario: { label: 'Usuario', icon: 'fas fa-user' },
-    admin: { label: 'Admin', icon: 'fas fa-user-shield' },
-    seguridad: { label: 'Seguridad', icon: 'fas fa-user-tie' }
-  };
-
-  availableSedes = [
-    { id: '1', name: 'UTP Campus Principal' },
-    { id: '2', name: 'UTP Sede Lima Centro' },
-    { id: '3', name: 'UTP Sede Arequipa' }
-  ];
-
-  availableZones = [
-    'Zona A - Edificio Principal',
-    'Zona B - Biblioteca',
-    'Zona C - Laboratorios',
-    'Zona D - Cafetería',
-    'Zona E - Estacionamiento'
-  ];
-
-  // Getter for filtered available zones
-  get filteredAvailableZones(): string[] {
-    return this.availableZones.filter(zone => !this.formData.assignedZones.includes(zone));
-  }
-
-  // For demonstration purposes, a method to toggle session status
-  toggleSession() {
-    this.isSessionActive = !this.isSessionActive;
-  }
 
   resetForm() {
-    //this.isCreating = false;
-    //this.editingUser = null;
     this.formData = {
       name: '',
       username: '',
@@ -96,9 +90,19 @@ cargarSedes(): void {
       role: '',
       userType: '',
       campus: '',
-      assignedZones: []
+      assignedZones: [] as Zona[]
     };
   }
+
+
+  // -------------------------------
+  // 🔹 4. Configuración de roles
+  // -------------------------------
+  roleConfig: { [key: string]: { label: string; icon: string } } = {
+    usuario: { label: 'Usuario', icon: 'fas fa-user' },
+    admin: { label: 'Admin', icon: 'fas fa-user-shield' },
+    seguridad: { label: 'Seguridad', icon: 'fas fa-user-tie' }
+  };
 
   onRoleChange(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
@@ -109,140 +113,168 @@ cargarSedes(): void {
     }
   }
 
-handleCreateUser() {
+  // -------------------------------
+  // 🔹 5. Gestión de zonas
+  // -------------------------------
 
-  if(this.formData.role === 'usuario'){
-    console.log('Creating user:', this.formData);
+  // Nueva variable para mantener el valor seleccionado en el select
+  zonasDisponibles: Zona[] = [];
+  //selectedZoneId: string = '';
 
-  const dto: RegistroDTO = {
-    nombreCompleto: this.formData.name,
-    username: this.formData.username,
-    correo: this.formData.correo,
-    password: this.formData.password,
-    tipoUsuario: this.formData.userType.toUpperCase(), // alumno -> ALUMNO, docente -> DOCENTE
-    telefono: this.formData.phone,
-    sede: { id: Number(this.formData.campus), nombre: '' } // Solo enviamos el ID de la sede
-  };
-
-  this.usuarioRolService.registrarUsuario(dto).subscribe({
-    next: (res: string) => { // Expect a string response
-      console.log('✅ Usuario creado:', res);
-      alert(res); // Display the success message from the backend
-      this.resetForm(); // Limpia el formulario
-      this.isCreating = false; // Cierra el formulario de creación
-    },
-    error: (err) => {
-      console.error('❌ Error al registrar:', err);
-      // If the error is a string (e.g., from a non-200 response with responseType: 'text'), display it directly.
-      // Otherwise, try to access err.error.message or use a generic message.
-      alert(err.error?.message || err.message || 'Error al registrar usuario');
+  // Método para agregar zona
+  handleAddZone(zoneId: string) {
+    const zoneToAdd = this.zonas.find(z => z.id === Number(zoneId));
+    if (zoneToAdd && !this.formData.assignedZones.some(z => z.id === zoneToAdd.id)) {
+      this.formData.assignedZones.push(zoneToAdd);
+      // ❌ REMOVER: this.selectedZoneId = ''; // Resetear el valor seleccionado en el select
+    } else {
+      alert('La zona ya está asignada o no es válida.');
     }
-  });
-    
-  }else if(this.formData.role === 'admin'){
-    console.log('Creating admin:', this.formData);
+  }
 
-  const dto: RegistroAdminDTO = {
-    nombreCompleto: this.formData.name,
-    username: this.formData.username,
-    correo: this.formData.correo,
-    password: this.formData.password,
-    telefono: this.formData.phone,
-    sede: { id: Number(this.formData.campus), nombre: '' } // Solo enviamos el ID de la sede
-  };
 
-  this.usuarioRolService.registrarAdmin(dto).subscribe({
-    next: (res: string) => { // Expect a string response
-      console.log('✅ Admin creado:', res);
-      alert(res); // Display the success message from the backend
-      this.resetForm(); // Limpia el formulario
-      this.isCreating = false; // Cierra el formulario de creación
-    },
-    error: (err) => {
-      console.error('❌ Error al registrar:', err);
-      // If the error is a string (e.g., from a non-200 response with responseType: 'text'), display it directly.
-      // Otherwise, try to access err.error.message or use a generic message.
-      alert(err.error?.message || err.message || 'Error al registrar usuario');
+
+
+  // Método para remover zona
+  handleRemoveZone(zoneToRemove: Zona) {
+    this.formData.assignedZones = this.formData.assignedZones.filter(
+      z => z.id !== zoneToRemove.id
+    );
+  }
+
+
+
+  // Evento de select para agregar zona
+  onAddZoneChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const zoneToAddId = selectElement.value;
+
+    // 1. Llama a la lógica de agregar zona con el valor obtenido del select
+    this.handleAddZone(zoneToAddId);
+
+    // 2. 🔑 SOLUCIÓN: Resetear el valor seleccionado en el elemento <select>
+    // Esto obliga al select a mostrar el <option value="" disabled selected> nuevamente
+    selectElement.value = '';
+  }
+
+
+
+
+
+  // Zonas disponibles filtradas que no están asignadas
+  get filteredAvailableZones(): Zona[] {
+    return this.zonas.filter(
+      zone => !this.formData.assignedZones.some(z => z.id === zone.id)
+    );
+  }
+
+
+  // -------------------------------
+  // 🔹 6. Crear usuario
+  // -------------------------------
+  handleCreateUser() {
+    const { role } = this.formData;
+
+    if (role === 'usuario') {
+      const dto: RegistroDTO = {
+        nombreCompleto: this.formData.name,
+        username: this.formData.username,
+        correo: this.formData.correo,
+        password: this.formData.password,
+        tipoUsuario: this.formData.userType.toUpperCase(),
+        telefono: this.formData.phone,
+        sedeId: Number(this.formData.campus)
+      };
+
+      this.usuarioRolService.registrarUsuario(dto).subscribe({
+        next: (res: string) => {
+          console.log('✅ Usuario creado:', res);
+          alert(res);
+          this.resetForm();
+          this.isCreating = false;
+        },
+        error: (err) => {
+          console.error('❌ Error al registrar:', err);
+          alert(err.error?.message || err.message || 'Error al registrar usuario');
+        }
+      });
+
+    } else if (role === 'admin') {
+      const dto: RegistroAdminDTO = {
+        nombreCompleto: this.formData.name,
+        username: this.formData.username,
+        correo: this.formData.correo,
+        password: this.formData.password,
+        telefono: this.formData.phone,
+        sedeId: Number(this.formData.campus)
+      };
+
+      this.usuarioRolService.registrarAdmin(dto).subscribe({
+        next: (res: string) => {
+          console.log('✅ Admin creado:', res);
+          alert(res);
+          this.resetForm();
+          this.isCreating = false;
+        },
+        error: (err) => {
+          console.error('❌ Error al registrar:', err);
+          alert(err.error?.message || err.message || 'Error al registrar usuario');
+        }
+      });
+
+    } else if (role === 'seguridad') {
+      const dto: RegistroSecurityDTO = {
+        nombreCompleto: this.formData.name,
+        username: this.formData.username,
+        correo: this.formData.correo,
+        password: this.formData.password,
+        telefono: this.formData.phone,
+        sedeId: Number(this.formData.campus),
+        zonaIds: this.formData.assignedZones.map(z => z.id)
+      };
+      this.usuarioRolService.registrarSecurity(dto).subscribe({
+        next: (res: string) => {
+          //quiero formdata
+          console.log('Form Data:', this.formData);
+
+
+
+          console.log('✅ Seguridad creada:', res);
+          alert(res);
+          this.resetForm();
+          this.isCreating = false;
+        }
+        , error: (err) => {
+          console.error('❌ Error al registrar:', err);
+          alert(err.error?.message || err.message || 'Error al registrar usuario');
+        }
+      });
+
+
+    } else {
+      alert('Rol no válido. Por favor, seleccione un rol válido.');
     }
-  });
-  }else if(this.formData.role === 'seguridad'){
-    console.log('Creating security:', this.formData);
-    this.resetForm();
+  }
+
+  // -------------------------------
+  // 🔹 7. update user
+  // -------------------------------
+
+  handleUpdateUser() {
+    console.log('Updating user:', this.editingUser);
+    this.editingUser = null;
     this.isCreating = false;
-
-  }else {
-    alert('Rol no válido. Por favor, seleccione un rol válido.');
+    this.resetForm();
   }
-  
 
-}
-  
-
-handleUpdateUser() {
-  console.log('Updating user:', this.formData);
-  // Here you would typically send data to a backend service
-  this.resetForm();
-}
-
-handleRemoveZone(zoneToRemove: string) {
-  this.formData.assignedZones = this.formData.assignedZones.filter(zone => zone !== zoneToRemove);
-}
-
-handleAddZone(zoneToAdd: string) {
-  if (zoneToAdd && !this.formData.assignedZones.includes(zoneToAdd)) {
-    this.formData.assignedZones = [...this.formData.assignedZones, zoneToAdd];
+  // -------------------------------
+  // 🔹 8. Utilidades generales
+  // -------------------------------
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
-}
 
-onAddZoneChange(event: Event) {
-  const selectElement = event.target as HTMLSelectElement;
-  const zoneToAdd = selectElement.value;
-  this.handleAddZone(zoneToAdd);
-  selectElement.value = ''; // Reset the select field
-}
-
-toggleMobileMenu() {
-  this.isMobileMenuOpen = !this.isMobileMenuOpen;
-}
-//despues
-
-
-/*formData: RegistroDTO = {
- username: '',
- correo: '',
- password: '',
- tipoUsuario: 'ALUMNO' // Valor por defecto
-};*/
-/* resetForm() {
-   this.formData = {
-     username: '',
-     correo: '',
-     password: '',
-     tipoUsuario: 'ALUMNO' // Reiniciar al valor por defecto
-   };
- }
-
-*/
-
-/*
-handleCreateUser() {
-  const dto: RegistroDTO = {
-    username: this.formData.username,
-    correo: this.formData.correo,
-    password: this.formData.password,
-    tipoUsuario: this.formData.tipoUsuario
-  };
-
-  this.usuarioRolService.registrarUsuario(dto).subscribe({
-    next: (res) => {
-      console.log('✅ Usuario creado:', res);
-      alert(res); // el backend devuelve un String: "Usuario registrado exitosamente"
-      this.resetForm();
-    },
-    error: (err) => {
-      console.error('❌ Error al registrar:', err);
-      alert(err.error.message || 'Error al registrar usuario');
-    }
-  });
-}*/
+  toggleSession() {
+    this.isSessionActive = !this.isSessionActive;
+  }
 }

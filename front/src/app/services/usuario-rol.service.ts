@@ -15,7 +15,7 @@ export interface RegistroDTO {
   password: string;
   telefono: string;
   tipoUsuario: string; // puede ser "USER", "ADMIN", "SECURITY", etc.
-  sede: Sede;
+ sedeId: number; 
 
 }
 export interface RegistroAdminDTO {
@@ -24,17 +24,18 @@ export interface RegistroAdminDTO {
   correo: string;
   password: string;
   telefono: string;
-  sede: Sede;
+  sedeId: number; 
 }
 export interface RegistroSecurityDTO {
-  nombreCompleto: string;
-  username: string;
-  correo: string;
-  password: string;
-  telefono: string;
-  sede: Sede;
-  assignedZones: Zona[]; // Array de zonas asignadas
-
+    nombreCompleto: string;
+    username: string;
+    correo: string;
+    password: string;
+    telefono: string;
+    // 🔑 CAMBIO: Enviar solo el ID de la sede (sedeId: Long)
+    sedeId: number; 
+    // 🔑 CAMBIO: Enviar un array/set de IDs de zona (zonaIds: Set<Long>)
+    zonaIds: number[]; 
 }
 
 
@@ -43,13 +44,17 @@ export interface RegistroSecurityDTO {
 })
 export class UsuarioRolService {
   private baseUrl = 'http://localhost:8080/api/auth';
-    constructor(private http: HttpClient) {}
-     registrarUsuario(data: RegistroDTO): Observable<string> {
+  constructor(private http: HttpClient) { }
+  registrarUsuario(data: RegistroDTO): Observable<string> {
     return this.http.post(`${this.baseUrl}/registrarUsuario`, data, { responseType: 'text' });
   }
-      registrarAdmin(data: RegistroAdminDTO): Observable<string> {
+  registrarAdmin(data: RegistroAdminDTO): Observable<string> {
     return this.http.post(`${this.baseUrl}/registrarAdmin`, data, { responseType: 'text' });
   }
+  registrarSecurity(data: RegistroSecurityDTO): Observable<string> {
+    return this.http.post(`${this.baseUrl}/registrarSeguridad`, data, { responseType: 'text' });
 
-  
+  }
+
+
 }
