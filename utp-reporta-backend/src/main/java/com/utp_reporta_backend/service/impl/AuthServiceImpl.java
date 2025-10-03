@@ -101,12 +101,15 @@ public class AuthServiceImpl implements AuthService {
 		usuario.setCorreo(registroAdminDTO.getCorreo());
 		usuario.setPassword(passwordEncoder.encode(registroAdminDTO.getPassword()));
 		usuario.setTelefono(registroAdminDTO.getTelefono());
-		Rol rol = rolRepository.findByNombre(ERol.ROLE_ADMIN)
+		Rol rolAdmin = rolRepository.findByNombre(ERol.ROLE_ADMIN)
 				.orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 		usuario.setSede(sede);
+		Rol rolUser = rolRepository.findByNombre(ERol.ROLE_USUARIO)
+	            .orElseThrow(() -> new RuntimeException("Rol USER no encontrado"));
 		
 		
-		usuario.getRoles().add(rol);
+		usuario.getRoles().add(rolAdmin);
+		usuario.getRoles().add(rolUser);
 		usuarioRepository.save(usuario);
 
 		return "Admin registrado exitosamente";
