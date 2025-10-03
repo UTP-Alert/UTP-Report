@@ -1,5 +1,8 @@
 package com.utp_reporta_backend.service.impl;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,12 +13,18 @@ import org.springframework.stereotype.Service;
 
 import com.utp_reporta_backend.config.JwtTokenProvider;
 import com.utp_reporta_backend.dto.LoginDTO;
-import com.utp_reporta_backend.dto.RegistroDTO;
+import com.utp_reporta_backend.dto.RegistroAdminDTO;
+import com.utp_reporta_backend.dto.RegistroSeguridadDTO;
+import com.utp_reporta_backend.dto.RegistroUsuarioDTO;
 import com.utp_reporta_backend.enums.ERol;
 import com.utp_reporta_backend.model.Rol;
+import com.utp_reporta_backend.model.Sede;
 import com.utp_reporta_backend.model.Usuario;
+import com.utp_reporta_backend.model.Zona;
 import com.utp_reporta_backend.repository.RolRepository;
+import com.utp_reporta_backend.repository.SedeRepository;
 import com.utp_reporta_backend.repository.UsuarioRepository;
+import com.utp_reporta_backend.repository.ZonaRepository;
 import com.utp_reporta_backend.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +37,8 @@ public class AuthServiceImpl implements AuthService {
 	private final RolRepository rolRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final ZonaRepository zonaRepository;
+	private final SedeRepository sedeRepository;
 
 	@Override
 	public String login(LoginDTO loginDTO) {
@@ -40,25 +51,101 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public String registrar(RegistroDTO registroDTO) {
-		if (usuarioRepository.existsByUsername(registroDTO.getUsername())) {
-			throw new RuntimeException("El nombre de usuario ya existe");
+	public String registrarUsuario(RegistroUsuarioDTO registroUsuarioDTO) {
+		if (usuarioRepository.existsByUsername(registroUsuarioDTO.getUsername())) {
+			return "El nombre de usuario ya existe";
 		}
-		if (usuarioRepository.existsByCorreo(registroDTO.getCorreo())) {
-			throw new RuntimeException("El email ya está en uso");
+		if (usuarioRepository.existsByCorreo(registroUsuarioDTO.getCorreo())) {
+			return "El email ya está en uso";
 		}
 		Usuario usuario = new Usuario();
-		usuario.setUsername(registroDTO.getUsername());
-		usuario.setCorreo(registroDTO.getCorreo());
-		usuario.setPassword(passwordEncoder.encode(registroDTO.getPassword()));
+		usuario.setNombreCompleto(registroUsuarioDTO.getNombreCompleto());
+		usuario.setUsername(registroUsuarioDTO.getUsername());
+		usuario.setCorreo(registroUsuarioDTO.getCorreo());
+		usuario.setPassword(passwordEncoder.encode(registroUsuarioDTO.getPassword()));
+		usuario.setTelefono(registroUsuarioDTO.getTelefono());
 		Rol rol = rolRepository.findByNombre(ERol.ROLE_USUARIO)
 				.orElseThrow(() -> new RuntimeException("Rol no encontrado"));
-		usuario.setTipoUsuario(registroDTO.getTipoUsuario());
+		usuario.setTipoUsuario(registroUsuarioDTO.getTipoUsuario());
+		usuario.setSede(registroUsuarioDTO.getSede());
+		
+		
 		usuario.getRoles().add(rol);
 		usuarioRepository.save(usuario);
 
 		return "Usuario registrado exitosamente";
 
+	}
+
+	@Override
+	public String registrarAdmin(RegistroAdminDTO registroAdminDTO) {
+		
+		if (usuarioRepository.existsByUsername(registroAdminDTO.getUsername())) {
+			//throw new RuntimeException("El nombre de admin ya existe");
+			return "el nombre de admin ya existe";
+		}
+		if (usuarioRepository.existsByCorreo(registroAdminDTO.getCorreo())) {
+			return "El email ya está en uso";
+		}
+		Usuario usuario = new Usuario();
+		usuario.setNombreCompleto(registroAdminDTO.getNombreCompleto());
+		usuario.setUsername(registroAdminDTO.getUsername());
+		usuario.setCorreo(registroAdminDTO.getCorreo());
+		usuario.setPassword(passwordEncoder.encode(registroAdminDTO.getPassword()));
+		usuario.setTelefono(registroAdminDTO.getTelefono());
+		Rol rol = rolRepository.findByNombre(ERol.ROLE_ADMIN)
+				.orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+		usuario.setSede(registroAdminDTO.getSede());
+		
+		
+		usuario.getRoles().add(rol);
+		usuarioRepository.save(usuario);
+
+		return "Admin registrado exitosamente";
+	}
+
+	@Override
+	public String registrarSeguridad(RegistroSeguridadDTO registroSeguridadDTO) {
+		
+		    // Validar username y correo
+		    if (usuarioRepository.existsByUsername(registroSeguridadDTO.getUsername())) {
+		        return "El nombre de usuario ya existe";
+		    }
+
+		    if (usuarioRepository.existsByCorreo(registroSeguridadDTO.getCorreo())) {
+		        return "El correo ya está en uso";
+		    }
+
+		    // Buscar sede
+		    Sede sede = sedeRepository.findById(registroSeguridadDTO.getSedeId())
+		            .orElseThrow(() -> new RuntimeException("Sede no encontrada"));
+
+		    // Buscar zonas
+		    Set<Zona> zonas = new HashSet<>(zonaRepository.findAllById(registroSeguridadDTO.getZonaIds()));
+		    if (zonas.isEmpty()) {
+		        return "Debe seleccionar al menos una zona válida";
+		    }
+
+		    // Buscar rol de seguridad
+		    Rol rolSeguridad = rolRepository.findByNombre(ERol.ROLE_SEGURIDAD)
+		            .orElseThrow(() -> new RuntimeException("Rol de seguridad no encontrado"));
+
+		    // Crear usuario
+		    Usuario usuario = new Usuario();
+		    usuario.setNombreCompleto(registroSeguridadDTO.getNombreCompleto());
+		    usuario.setUsername(registroSeguridadDTO.getUsername());
+		    usuario.setCorreo(registroSeguridadDTO.getCorreo());
+		    usuario.setTelefono(registroSeguridadDTO.getTelefono());
+		    usuario.setPassword(passwordEncoder.encode(registroSeguridadDTO.getPassword()));
+		    usuario.setSede(sede);
+		    usuario.setZonas(zonas);
+		    usuario.setEnabled(true);
+		    usuario.setIntentos(0);
+		    usuario.getRoles().add(rolSeguridad);
+
+		    usuarioRepository.save(usuario);
+
+		    return "Usuario de seguridad registrado exitosamente";
 	}
 
 }

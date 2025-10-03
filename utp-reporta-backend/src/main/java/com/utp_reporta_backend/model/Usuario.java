@@ -21,6 +21,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,8 +45,20 @@ public class Usuario implements UserDetails {
 	private String correo;
 	private String telefono;
 	@Enumerated(EnumType.STRING) // Esto almacena el nombre del enum como String
-	@Column(nullable = false, unique = true)
 	private TipoUsuario tipoUsuario;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "sede_id", nullable = false)
+	private Sede sede;
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+	    name = "usuario_zona",
+	    joinColumns = @JoinColumn(name = "usuario_id"),
+	    inverseJoinColumns = @JoinColumn(name = "zona_id")
+	)
+	private Set<Zona> zonas = new HashSet<>();
+
+	
 	private int intentos;
 	@Column(nullable = false)
 	private boolean enabled = true;

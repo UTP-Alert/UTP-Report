@@ -5,18 +5,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.utp_reporta_backend.dto.JwtAuthResponseDTO;
 import com.utp_reporta_backend.dto.LoginDTO;
-import com.utp_reporta_backend.dto.RegistroDTO;
+import com.utp_reporta_backend.dto.RegistroAdminDTO;
+import com.utp_reporta_backend.dto.RegistroSeguridadDTO;
+import com.utp_reporta_backend.dto.RegistroUsuarioDTO;
 import com.utp_reporta_backend.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "false")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
@@ -31,12 +31,24 @@ public class AuthController {
         return ResponseEntity.ok(jwtAuthResponse);
     }
 
-    @PostMapping("/registrar")
-    public ResponseEntity<String> registrar(@RequestBody RegistroDTO registroDTO) {
-        String respuesta = authService.registrar(registroDTO);
+    //Registar usuario con con roles alumno y docente
+    @PostMapping("/registrarUsuario")
+    public ResponseEntity<String> registrarUsuario(@RequestBody RegistroUsuarioDTO registroDTO) {
+        String respuesta = authService.registrarUsuario(registroDTO);
         return ResponseEntity.ok(respuesta);
     }
-    
+    @PostMapping("/registrarAdmin")
+    public ResponseEntity<String> registrarAdmin(@RequestBody RegistroAdminDTO registroAdminDTO) {
+        String respuesta = authService.registrarAdmin(registroAdminDTO);
+        return ResponseEntity.ok(respuesta);
+    }
+    @PostMapping("/registroSeguridad")
+    public ResponseEntity<String> registrarSeguridad(@RequestBody RegistroSeguridadDTO dto) {
+        String resultado = authService.registrarSeguridad(dto);
+        return ResponseEntity.ok(resultado);
+    }
 
+    
+    
 
 }
