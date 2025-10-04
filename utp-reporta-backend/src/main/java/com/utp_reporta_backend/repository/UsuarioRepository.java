@@ -9,12 +9,18 @@ import org.springframework.stereotype.Repository;
 import com.utp_reporta_backend.model.Usuario;
 
 
-
+//Repositorio para manejar las operaciones CRUD de los usuarios.
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
-	Optional<Usuario> findByUsername(String username);
-    Optional<Usuario> findByCorreo(String correo);
-    Boolean existsByUsername(String username);
-    Boolean existsByCorreo(String correo);
-    Optional<Usuario> findByUsernameOrCorreo(String username, String correo);
+    //Buscar un usuario por su nombre de usuario.
+	Optional<Usuario> findByUsername(String username); 
+    //Buscar un usuario por su correo electrónico.
+    Optional<Usuario> findByCorreo(String correo);  
+    //Verificar si un usuario existe por su nombre de usuario.
+    Boolean existsByUsername(String username);  
+    //Verificar si un usuario existe por su correo electrónico.
+    Boolean existsByCorreo(String correo); 
+    //Verificar si un usuario existe por su nombre de usuario.
+    Optional<Usuario> findByUsernameOrCorreo(String username, String correo); 
+    //Buscar un usuario por su nombre de usuario o correo electrónico.
 }

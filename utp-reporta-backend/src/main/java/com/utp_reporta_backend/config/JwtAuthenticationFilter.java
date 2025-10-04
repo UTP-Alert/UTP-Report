@@ -17,6 +17,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+//Filtro que valida el JWT en cada petición.
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
@@ -29,9 +30,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-
+        //Obtener el token del header
         String token = getJWTFromRequest(request);
-
+        //Validar token y autenticar usuario
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
             String username = jwtTokenProvider.getUsernameFromJWT(token);
             
@@ -43,10 +44,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
-        
+        //Continuar con la cadena de filtros
         filterChain.doFilter(request, response);
 	}
-	
+    // Extraer el token JWT del encabezado Authorization
 	private String getJWTFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
