@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
 import { RegistroAdminDTO, RegistroDTO, RegistroSecurityDTO, UsuarioRolService } from '../../services/usuario-rol.service';
 import { Sede, SedeService } from '../../services/sede.service';
 import { Zona, ZonaService } from '../../services/zona.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-inicio',
@@ -33,9 +34,11 @@ export class Inicio implements OnInit {
   constructor(
     private usuarioRolService: UsuarioRolService,
     private sedeService: SedeService,
-    private zonaService: ZonaService
+    private zonaService: ZonaService,
+    private auth: AuthService,
   ) { }
   ngOnInit(): void {
+    
     this.cargarSedes();
     this.cargarZonas();
   }
@@ -263,6 +266,10 @@ export class Inicio implements OnInit {
     this.resetForm();
   }
 
+
+  //logout
+  logout(){ this.auth.logout(); }
+
   // -------------------------------
   // 🔹 8. Utilidades generales
   // -------------------------------
@@ -273,4 +280,8 @@ export class Inicio implements OnInit {
   toggleSession() {
     this.isSessionActive = !this.isSessionActive;
   }
+
+
+
+
 }
