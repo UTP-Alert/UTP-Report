@@ -27,6 +27,7 @@ export class Inicio implements OnInit {
   isCreating: boolean = false;
   editingUser: any = null;
   isMobileMenuOpen: boolean = false;
+  showPassword = false; // New property for password visibility
 
   // -------------------------------
   // 🔹 2. Constructor e inicialización
@@ -79,6 +80,18 @@ export class Inicio implements OnInit {
     assignedZones: [] as Zona[]
   };
 
+  formErrors = {
+    name: '',
+    username: '',
+    correo: '',
+    password: '',
+    phone: '',
+    role: '',
+    userType: '',
+    campus: '',
+    assignedZones: ''
+  };
+
   resetForm() {
     this.formData = {
       name: '',
@@ -91,8 +104,101 @@ export class Inicio implements OnInit {
       campus: '',
       assignedZones: [] as Zona[]
     };
+    this.formErrors = {
+      name: '',
+      username: '',
+      correo: '',
+      password: '',
+      phone: '',
+      role: '',
+      userType: '',
+      campus: '',
+      assignedZones: ''
+    };
   }
 
+  validateForm(): boolean {
+    let isValid = true;
+    // Reset errors
+    this.formErrors = {
+      name: '',
+      username: '',
+      correo: '',
+      password: '',
+      phone: '',
+      role: '',
+      userType: '',
+      campus: '',
+      assignedZones: ''
+    };
+
+    // Name validation
+    if (!this.formData.name.trim()) {
+      this.formErrors.name = 'El nombre completo es obligatorio.';
+      isValid = false;
+    }
+
+    // Username validation
+    if (!this.formData.username.trim()) {
+      this.formErrors.username = 'El username es obligatorio.';
+      isValid = false;
+    }
+
+    // Email validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!this.formData.correo.trim()) {
+      this.formErrors.correo = 'El correo es obligatorio.';
+      isValid = false;
+    } else if (!emailRegex.test(this.formData.correo)) {
+      this.formErrors.correo = 'Formato de correo inválido.';
+      isValid = false;
+    }
+
+    // Password validation
+    if (!this.formData.password) {
+      this.formErrors.password = 'La contraseña es obligatoria.';
+      isValid = false;
+    } else if (this.formData.password.length < 6) {
+      this.formErrors.password = 'La contraseña debe tener al menos 6 caracteres.';
+      isValid = false;
+    }
+
+    // Phone validation (exactly 9 digits)
+    const phoneRegex = /^\d{9}$/; // Accepts exactly 9 digits
+    if (!this.formData.phone.trim()) {
+      this.formErrors.phone = 'El teléfono es obligatorio.';
+      isValid = false;
+    } else if (!phoneRegex.test(this.formData.phone)) {
+      this.formErrors.phone = 'Formato de teléfono inválido. Debe ser 9 dígitos numéricos (Ej: 999000000).';
+      isValid = false;
+    }
+
+    // Role validation
+    if (!this.formData.role) {
+      this.formErrors.role = 'El rol es obligatorio.';
+      isValid = false;
+    }
+
+    // Campus validation
+    if (!this.formData.campus) {
+      this.formErrors.campus = 'La sede es obligatoria.';
+      isValid = false;
+    }
+
+    // UserType validation (only for 'usuario' role)
+    if (this.formData.role === 'usuario' && !this.formData.userType) {
+      this.formErrors.userType = 'El tipo de usuario es obligatorio para el rol de Usuario.';
+      isValid = false;
+    }
+
+    // Assigned Zones validation (only for 'seguridad' role)
+    if (this.formData.role === 'seguridad' && this.formData.assignedZones.length === 0) {
+      this.formErrors.assignedZones = 'Debe asignar al menos una zona para el rol de Seguridad.';
+      isValid = false;
+    }
+
+    return isValid;
+  }
 
   // -------------------------------
   // 🔹 4. Configuración de roles
@@ -172,6 +278,11 @@ export class Inicio implements OnInit {
   // 🔹 6. Crear usuario
   // -------------------------------
   handleCreateUser() {
+    if (!this.validateForm()) {
+      alert('Por favor, corrija los errores del formulario.');
+      return;
+    }
+
     const { role } = this.formData;
 
     if (role === 'usuario') {
@@ -281,7 +392,9 @@ export class Inicio implements OnInit {
     this.isSessionActive = !this.isSessionActive;
   }
 
-
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
 
 
 }

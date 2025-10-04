@@ -175,12 +175,16 @@
             <!-- 1. NOMBRE COMPLETO -->
             <div>
               <label class="block text-sm font-medium mb-1">Nombre Completo</label>
-              <input type="text" placeholder="Ej: Juan Pérez" [(ngModel)]="formData.name" class="input-field" />
+              <input type="text" placeholder="Ej: Juan Pérez" [(ngModel)]="formData.name"
+                [class.border-red-500]="formErrors.name" class="input-field" />
+              <p *ngIf="formErrors.name" class="text-xs text-red-500 mt-1">{{ formErrors.name }}</p>
             </div>
 
             <div>
               <label class="block text-sm font-medium mb-1">Username</label>
-              <input type="text" placeholder="Ej: U2234567" [(ngModel)]="formData.username" class="input-field" />
+              <input type="text" placeholder="Ej: U2234567" [(ngModel)]="formData.username"
+                [class.border-red-500]="formErrors.username" class="input-field" />
+              <p *ngIf="formErrors.username" class="text-xs text-red-500 mt-1">{{ formErrors.username }}</p>
             </div>
 
 
@@ -196,7 +200,8 @@
                   formData.role === 'admin' ? 'D1234567@utp.edu.pe' :
                   formData.role === 'seguridad' ? 'S001@utp.edu.pe' :
                   'usuario@utp.edu.pe'
-                " [(ngModel)]="formData.correo" class="input-field" />
+                " [(ngModel)]="formData.correo" [class.border-red-500]="formErrors.correo" class="input-field" />
+              <p *ngIf="formErrors.correo" class="text-xs text-red-500 mt-1">{{ formErrors.correo }}</p>
 
               <!-- HINTS DINÁMICOS SEGÚN ROL -->
               <p *ngIf="formData.role === 'usuario' && formData.userType === 'alumno'"
@@ -216,10 +221,15 @@
             </div>
 
             <!-- 3. CONTRASEÑA -->
-            <div>
+            <div class="relative">
               <label class="block text-sm font-medium mb-1">Contraseña</label>
-              <input type="password" placeholder="Mínimo 6 caracteres" [(ngModel)]="formData.password"
-                class="input-field" />
+              <input [type]="showPassword ? 'text' : 'password'" placeholder="Mínimo 6 caracteres"
+                [(ngModel)]="formData.password" [class.border-red-500]="formErrors.password" class="input-field pr-10" />
+              <button type="button" (click)="togglePasswordVisibility()"
+                class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 h-full password-toggle-btn">
+                <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+              </button>
+              <p *ngIf="formErrors.password" class="text-xs text-red-500 mt-1">{{ formErrors.password }}</p>
               <p class="text-xs text-gray-500 mt-1">
                 {{ editingUser ? 'Dejar en blanco para mantener contraseña actual' : 'Contraseña para acceder al
                 sistema' }}
@@ -229,23 +239,29 @@
             <!-- 4. TELÉFONO -->
             <div>
               <label class="block text-sm font-medium mb-1">Teléfono</label>
-              <input type="text" placeholder="+51 999-000-000" [(ngModel)]="formData.phone" class="input-field" />
+              <input type="text" placeholder="999000000" [(ngModel)]="formData.phone" maxlength="9"
+                [class.border-red-500]="formErrors.phone" class="input-field" />
+              <p *ngIf="formErrors.phone" class="text-xs text-red-500 mt-1">{{ formErrors.phone }}</p>
             </div>
 
             <!-- 5. ROL CON ICONOS -->
             <div>
               <label class="block text-sm font-medium mb-1">Rol</label>
-              <select [(ngModel)]="formData.role" (change)="onRoleChange($event)" class="select-field">
+              <select [(ngModel)]="formData.role" (change)="onRoleChange($event)"
+                [class.border-red-500]="formErrors.role" class="select-field">
+                <option value="" disabled selected>Seleccionar Rol</option> <!-- Added default option -->
                 <option *ngFor="let roleKey of (roleConfig | keyvalue)" [value]="roleKey.key">
                   <i [class]="roleKey.value.icon"></i> {{ roleKey.value.label }}
                 </option>
               </select>
+              <p *ngIf="formErrors.role" class="text-xs text-red-500 mt-1">{{ formErrors.role }}</p>
             </div>
 
             <!-- 6. SEDE -->
             <div>
               <label class="block text-sm font-medium mb-1">Sede</label>
-              <select [(ngModel)]="formData.campus" class="select-field">
+              <select [(ngModel)]="formData.campus" [class.border-red-500]="formErrors.campus" class="select-field">
+                <option value="" disabled selected>Seleccionar Sede</option> <!-- Added default option -->
                 <!-- Mostrar mensaje cuando no haya sedes -->
                 <option *ngIf="sedes.length === 0" value="" disabled>
                   No hay sedes disponibles
@@ -256,6 +272,7 @@
                   <i class="fas fa-building"></i> {{ sede.nombre }}
                 </option>
               </select>
+              <p *ngIf="formErrors.campus" class="text-xs text-red-500 mt-1">{{ formErrors.campus }}</p>
             </div>
           </div>
 
@@ -265,7 +282,9 @@
               <i class="fas fa-user h-4 w-4"></i>
               👥 Tipo de Usuario (OBLIGATORIO)
             </label>
-            <select [(ngModel)]="formData.userType" class="select-field border-blue-300">
+            <select [(ngModel)]="formData.userType" [class.border-red-500]="formErrors.userType"
+              class="select-field border-blue-300">
+              <option value="" disabled selected>Seleccionar Tipo de Usuario</option> <!-- Added default option -->
               <option value="alumno">
                 <i class="fas fa-graduation-cap h-4 w-4 text-blue-600"></i>
                 <span>👨‍🎓 alumno</span>
@@ -277,6 +296,7 @@
                 <span class="badge ml-2 bg-purple-100 text-purple-700">C54321</span>
               </option>
             </select>
+            <p *ngIf="formErrors.userType" class="text-xs text-red-500 mt-1">{{ formErrors.userType }}</p>
             <p class="text-xs text-blue-600 mt-2">
               ℹ️ Selecciona si es estudiante o docente para determinar el formato del código UTP
             </p>
@@ -300,7 +320,8 @@
 
             <div class="space-y-3">
               <!-- ALERTA CUANDO NO HAY ZONAS -->
-              <div *ngIf="formData.assignedZones.length === 0" class="bg-red-50 border-2 border-red-200 p-4 rounded-lg">
+              <div *ngIf="formData.assignedZones.length === 0"
+                class="bg-red-50 border-2 border-red-200 p-4 rounded-lg">
                 <div class="flex items-center gap-2 text-red-800 mb-2">
                   <i class="fas fa-map-marker-alt h-5 w-5"></i>
                   <span class="font-medium">🚨 SIN ZONAS ASIGNADAS</span>
@@ -319,7 +340,7 @@
                 </p>
                 <div class="flex flex-wrap gap-2">
                   <span *ngFor="let zone of formData.assignedZones"
-                    class="badge pr-1 bg-white border-green-300 font-bold text-black">
+                    class="badge pr-1 bg-white border-green-300 font-bold text-green-800">
                     {{ zone.nombre }}
                     <button type="button" (click)="handleRemoveZone(zone)"
                       class="ml-2 h-4 w-4 p-0 hover:bg-red-100 remove-zone-btn">
@@ -336,8 +357,8 @@
                   Agregar zona de la sede:
                 </p>
                 <select (change)="onAddZoneChange($event)" class="select-field"
-                  [class.border-red-300]="formData.assignedZones.length === 0"
-                  [class.bg-red-50]="formData.assignedZones.length === 0"
+                  [class.border-red-300]="formData.assignedZones.length === 0 || formErrors.assignedZones"
+                  [class.bg-red-50]="formData.assignedZones.length === 0 || formErrors.assignedZones"
                   [class.border-green-300]="formData.assignedZones.length > 0">
                   <option value="" disabled selected>
                     {{ filteredAvailableZones.length === 0
@@ -353,6 +374,7 @@
                     {{ zone.nombre }}
                   </option>
                 </select>
+                <p *ngIf="formErrors.assignedZones" class="text-xs text-red-500 mt-1">{{ formErrors.assignedZones }}</p>
             </div>
 
 

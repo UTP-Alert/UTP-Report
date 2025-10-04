@@ -999,3 +999,27 @@
 .select-field.border-green-300 {
   border-color: #6ee7b7; /* Green, consider a variable */
 }
+
+/* Styles for password toggle button */
+.password-toggle-btn {
+  background-color: transparent; /* Fondo transparente */
+  border: none;
+  cursor: pointer;
+  color: var(--muted-foreground); /* Un color visible */
+  padding: 0; /* Eliminar el padding predeterminado del botón */
+  width: 2.5rem; /* Darle un ancho fijo */
+  height: 2.5rem; /* Darle una altura fija */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10; /* Asegurar que esté por encima del campo de entrada */
+}
+
+.password-toggle-btn:hover {
+  color: var(--foreground); /* Color más oscuro al pasar el ratón */
+}
+
+.password-toggle-btn i { /* Apuntar directamente al icono */
+  font-size: 1rem; /* Tamaño de icono estándar */
+  color: var(--primary); /* Color del icono, más visible */
+}
