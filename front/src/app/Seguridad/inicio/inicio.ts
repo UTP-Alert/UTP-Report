@@ -11,11 +11,18 @@ import { RouterModule } from '@angular/router';
 })
 export class InicioSeguridad {
   nombreSeguridad: string = '';
+  secLabel: string = 'Sec.';
   constructor(private auth: AuthService, private perfil: PerfilService){
     this.perfil.cargarPerfil();
     setTimeout(()=>{
       const p = this.perfil.perfil();
-      if(p) this.nombreSeguridad = p.nombreCompleto;
+      if(p){
+        this.nombreSeguridad = p.nombreCompleto;
+        const nombre = this.nombreSeguridad?.trim() || '';
+        this.secLabel = `Sec. ${nombre || 'Seguridad'}`;
+      } else {
+        this.secLabel = 'Sec. Seguridad';
+      }
     },300);
   }
   logout(){ this.auth.logout(); }

@@ -44,17 +44,17 @@ export class InicioSesion {
         this.loading = false;
         const roles = res.roles || [];
         if (roles.includes('ROLE_SUPERADMIN')) {
-          this.router.navigate(['/superadmin/dashboard']);
+          this.router.navigate(['/superadmin/dashboard'], { replaceUrl: true });
         } else if (roles.includes('ROLE_ADMIN')) {
           // Administrador: primero elige rol
-          this.router.navigate(['/select-role']);
+          this.router.navigate(['/select-role'], { replaceUrl: true });
         } else if (roles.includes('ROLE_SEGURIDAD')) {
-          this.router.navigate(['/seguridad']);
+          this.router.navigate(['/seguridad'], { replaceUrl: true });
         } else if (roles.includes('ROLE_USUARIO')) {
-          this.router.navigate(['/usuario']);
+          this.router.navigate(['/usuario'], { replaceUrl: true });
         } else {
           // fallback
-          this.router.navigate(['/login']);
+          this.router.navigate(['/login'], { replaceUrl: true });
         }
         // Intentar cargar perfil (si el backend permite inmediatamente)
         this.perfilSrv.cargarPerfil();

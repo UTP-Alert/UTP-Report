@@ -10,18 +10,18 @@ export const roleGuard: CanActivateFn = (route) => {
   const expected: string[] = route.data?.['roles'] || [];
   auth.loadFromStorage();
   if (!auth.isAuthenticated()) {
-    router.navigate(['/login']);
+    router.navigate(['/login'], { replaceUrl: true });
     return false;
   }
   if (expected.length && !expected.some(r => auth.hasRole(r))) {
     // Redirigir a página genérica según primer rol
-    if (auth.hasRole(ROLES.SUPERADMIN)) router.navigate(['/superadmin/dashboard']);
+    if (auth.hasRole(ROLES.SUPERADMIN)) router.navigate(['/superadmin/dashboard'], { replaceUrl: true });
     else if (auth.hasRole(ROLES.ADMIN)) {
-      if (auth.isAdminAsUser()) router.navigate(['/usuario']);
-      else router.navigate(['/admin']);
+      if (auth.isAdminAsUser()) router.navigate(['/usuario'], { replaceUrl: true });
+      else router.navigate(['/admin'], { replaceUrl: true });
     }
-    else if (auth.hasRole(ROLES.SEGURIDAD)) router.navigate(['/seguridad']);
-    else router.navigate(['/usuario']);
+    else if (auth.hasRole(ROLES.SEGURIDAD)) router.navigate(['/seguridad'], { replaceUrl: true });
+    else router.navigate(['/usuario'], { replaceUrl: true });
     return false;
   }
   return true;

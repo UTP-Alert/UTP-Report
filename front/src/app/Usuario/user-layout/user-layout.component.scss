@@ -18,8 +18,14 @@ $cta-color-hover: #ff5f78;
 
 :host { display:block; }
 :host {
-	--brand-extra-left: 20rem; /* aumenta para mover marca hacia la derecha */
-	--cta-extra-right: -20rem;  /* aumenta para mover CTA hacia el centro (reduce offset derecho) */
+	/* === Control independiente de la marca (UTP+Report) === */
+	--brand-extra-left: 15rem; /* mueve horizontalmente la marca; sube este valor para empujarla a la derecha */
+	--brand-extra-top: 0rem;   /* mueve verticalmente la marca: positivo baja, negativo sube */
+	--brand-font-size: 1.5rem;/* tamaño del texto de la marca (ej: 1.1rem, 1.2rem) */
+	--brand-icon-size: 24px;   /* tamaño del ícono del escudo (ej: 22px, 26px) */
+
+	/* === Control independiente del CTA === */
+	--cta-extra-right: -15rem;  /* aumenta para mover CTA hacia el centro (reduce offset derecho) */
 	--cta-reserve: 10.5rem;      /* espacio reservado dentro de la nav para que no tape los últimos botones */
 }
 
@@ -34,8 +40,8 @@ header.top-nav {
 
 /* Marca independiente */
 .left-cluster { display:flex; align-items:center; }
-.brand { display:flex; align-items:center; gap:.6rem; font-weight:600; font-size:1.05rem; cursor:pointer; margin-left:var(--brand-extra-left); }
-.brand svg { width:22px; height:22px; color:$brand-color; }
+.brand { display:flex; align-items:center; gap:.6rem; font-weight:600; font-size:var(--brand-font-size, 1.05rem); cursor:pointer; margin-left:var(--brand-extra-left); position:relative; top:var(--brand-extra-top); }
+.brand svg { width:var(--brand-icon-size, 24px); height:var(--brand-icon-size, 24px); color:$brand-color; }
 .brand-text { white-space:nowrap; }
 
 /* Centro absoluto: no depende de márgenes laterales */

@@ -24,6 +24,7 @@ export class AuthService {
   roles = computed(() => this.rolesSignal());
   private tokenExpirationTimer: any = null;
   private readonly ADMIN_AS_USER_KEY = 'admin_as_user';
+  private readonly ADMIN_ROLE_SELECTED_KEY = 'admin_role_selected';
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -50,11 +51,12 @@ export class AuthService {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_roles');
     localStorage.removeItem(this.ADMIN_AS_USER_KEY);
+    localStorage.removeItem(this.ADMIN_ROLE_SELECTED_KEY);
     this.isAuthenticated.set(false);
     this.rolesSignal.set([]);
     this.adminActingAsUser.set(false);
     if (this.tokenExpirationTimer) { clearTimeout(this.tokenExpirationTimer); this.tokenExpirationTimer = null; }
-    this.router.navigate(['/login']);
+  this.router.navigate(['/login'], { replaceUrl: true });
   }
 
   getToken(): string | null {
@@ -85,6 +87,13 @@ export class AuthService {
     else localStorage.removeItem(this.ADMIN_AS_USER_KEY);
   }
   isAdminAsUser() { return this.adminActingAsUser(); }
+
+  // Marca si el admin ya eligió un rol en el selector (User/Admin)
+  setAdminRoleSelected(value: boolean) {
+    if (value) localStorage.setItem(this.ADMIN_ROLE_SELECTED_KEY, '1');
+    else localStorage.removeItem(this.ADMIN_ROLE_SELECTED_KEY);
+  }
+  isAdminRoleSelected(): boolean { return localStorage.getItem(this.ADMIN_ROLE_SELECTED_KEY) === '1'; }
 
   // Prefijo para mostrar en navbar segun rol y tipoUsuario (cuando admin actua como user se usa Admin.)
   buildDisplayName(nombreCompleto: string, tipoUsuario?: string): string {

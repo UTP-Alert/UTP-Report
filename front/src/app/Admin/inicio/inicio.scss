@@ -1,74 +1,95 @@
-// === Configuración de posición de la marca (solo SCSS) ===
-// Lado de la marca: left | right
+/* =====================================================================
+	Variables de posición de marca (solo SCSS)
+	- $brand-side: left | right
+	- $brand-x: distancia horizontal (rem, px, %)
+	- $brand-y: ajuste vertical adicional (rem, px)
+	- $brand-safety: margen para evitar solape con el menú
+	===================================================================== */
 $brand-side: left !default; // Cambia 'left' a 'right' para mover el logo a la derecha
-// Desplazamiento horizontal desde el borde elegido (cualquier unidad: rem, px, %)
-$brand-x: 25rem !default; // Ej: 0.75rem, 20px, 5%
-// Desplazamiento vertical adicional respecto al centrado vertical (cualquier unidad)
-$brand-y: 0rem !default;   // Ej: -2px (sube), 4px (baja)
-// Espacio de seguridad para que el menú no se superponga con la marca
-$brand-safety: -20rem !default; // Se suma al padding del header
-/* === Navbar Admin === */
+$brand-x: 20rem !default;   // Ej: 0.75rem, 20px, 5%
+$brand-y: 0rem !default;    // Ej: -2px (sube), 4px (baja)
+$brand-safety: -15rem !default; // Se suma al padding del header
 
-button{font:inherit}
+/* =====================================================================
+	Reset mínimo
+	===================================================================== */
+button { font: inherit }
 
-.top-nav{display:flex;align-items:center;background:#0c0c0c;color:#fff;padding:.55rem 0;font-family:system-ui,Roboto,"Segoe UI",Arial,sans-serif;font-size:.8rem;letter-spacing:.5px;position:relative}
-.brand-floating{position:absolute;top:50%;transform:translateY(-50%);z-index:2}
-.brand-left .brand-floating{left:1.1rem}
-.brand-right .brand-floating{right:1.1rem}
-.left-cluster,.center-cluster,.right-cluster{display:flex;align-items:center}
-.left-cluster{flex:1;gap:.75rem}
-.center-cluster{flex:2;gap:1rem;justify-content:center}
-.right-cluster{flex:1;gap:.75rem;justify-content:flex-end}
-
-// Evita superposición con la marca flotante (padding según desplazamiento configurado)
-.top-nav{
-	padding-left: if($brand-side == left, calc(#{$brand-x} + #{$brand-safety}), .55rem);
-	padding-right: if($brand-side == right, calc(#{$brand-x} + #{$brand-safety}), .55rem);
+/* =====================================================================
+	Layout del header
+	===================================================================== */
+.top-nav {
+  display: flex;
+  align-items: center;
+  background: #0c0c0c;
+  color: #fff;
+  padding: .55rem 0;
+  font-family: system-ui, Roboto, "Segoe UI", Arial, sans-serif;
+  font-size: .8rem;
+  letter-spacing: .5px;
+  position: relative;
+  // Padding lateral dinámico según la posición de la marca
+  padding-left: if($brand-side == left, calc(#{$brand-x} + #{$brand-safety}), .55rem);
+  padding-right: if($brand-side == right, calc(#{$brand-x} + #{$brand-safety}), .55rem);
 }
 
-.brand{display:inline-flex;align-items:center;gap:.6rem;font-weight:600;color:#fff;text-decoration:none;user-select:none;cursor:pointer;position:absolute;top:50%;transform:translateY(calc(-50% + #{$brand-y}));margin-left:0;z-index:2}
-@if $brand-side == left {
-	.brand{left:$brand-x;right:auto}
+.left-cluster, .center-cluster, .right-cluster { display:flex; align-items:center }
+.left-cluster  { flex:1; gap:.75rem }
+.center-cluster{ flex:2; gap:1rem; justify-content:center }
+.right-cluster { flex:1; gap:.75rem; justify-content:flex-end }
+
+/* =====================================================================
+	Marca (logo + texto)
+	===================================================================== */
+.brand {
+  display:inline-flex; align-items:center; gap:.6rem;
+  font-weight:600; color:#fff; text-decoration:none; user-select:none; cursor:pointer;
+  position:absolute; top:50%; transform:translateY(calc(-50% + #{$brand-y})); margin-left:0; z-index:2;
 }
-@else if $brand-side == right {
-	.brand{right:$brand-x;left:auto}
-}
-.brand .ic{width:22px;height:22px}
-.ic-accent{color:#ff2f55}
-.brand-text{white-space:nowrap}
+@if $brand-side == left { .brand{ left:$brand-x; right:auto } }
+@else if $brand-side == right { .brand{ right:$brand-x; left:auto } }
+.brand .ic{ width:24px; height:24px }
+.ic-accent{ color:#ff2f55 }
+.brand-text{ white-space:nowrap; font-size:1.5rem } // Ajusta este valor para cambiar el tamaño del texto del logo
 
-.nav-toggle{background:#222;border:none;color:#fff;padding:.55rem .7rem;border-radius:6px;display:none;align-items:center;justify-content:center;cursor:pointer}
-.nav-toggle:hover{background:#ff2f55}
-.nav-toggle .ic{width:22px;height:22px}
+/* =====================================================================
+	Botón hamburguesa
+	===================================================================== */
+.nav-toggle{ background:#222; border:none; color:#fff; padding:.55rem .7rem; border-radius:6px; display:none; align-items:center; justify-content:center; cursor:pointer }
+.nav-toggle:hover{ background:#ff2f55 }
+.nav-toggle .ic{ width:22px; height:22px }
 
-.main-nav{display:flex;align-items:center;gap:.5rem}
-.main-nav button{display:inline-flex;align-items:center;gap:.5rem;background:transparent;border:none;color:#fff;padding:.55rem .95rem;border-radius:10px;cursor:pointer;font-weight:700;white-space:nowrap;transition:background .2s,color .2s}
-.main-nav button:hover,.main-nav button.active{background:#ff2f55;color:#fff}
-.main-nav .icon{width:16px;height:16px}
-.icon-btn{padding:.55rem .65rem}
-.brand-switch{opacity:.8}
-.brand-switch:hover{opacity:1}
+/* =====================================================================
+	Navegación principal
+	===================================================================== */
+.main-nav{ display:flex; align-items:center; gap:.5rem }
+.main-nav button{ display:inline-flex; align-items:center; gap:.5rem; background:transparent; border:none; color:#fff; padding:.55rem .95rem; border-radius:10px; cursor:pointer; font-weight:700; white-space:nowrap; transition:background .2s, color .2s }
+.main-nav button:hover, .main-nav button.active{ background:#ff2f55; color:#fff }
+.main-nav .icon{ width:16px; height:16px }
+.icon-btn{ padding:.55rem .65rem }
 
-.user-chip{display:inline-flex;align-items:center;gap:.45rem;background:#222;padding:.5rem .85rem;border-radius:10px;font-weight:600;max-width:220px}
-.user-chip .icon{width:20px;height:20px}
+/* =====================================================================
+	Chip de usuario
+	===================================================================== */
+.user-chip{ display:inline-flex; align-items:center; gap:.45rem; background:#222; padding:.5rem .85rem; border-radius:10px; font-weight:600; max-width:220px }
+.user-chip .icon{ width:20px; height:20px }
 
-.report-cta{display:inline-flex;align-items:center;gap:.6rem;background:#ff2f55;border:none;color:#fff;padding:.6rem 1.1rem;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:0 0 0 0 rgba(255,47,85,.35);transition:box-shadow .25s,transform .25s}
-.report-cta:hover{box-shadow:0 0 0 4px rgba(255,47,85,.15)}
-.report-cta:active{transform:translateY(1px)}
-.report-cta .icon{width:18px;height:18px}
+/* =====================================================================
+	Contenido
+	===================================================================== */
+.content{ padding:1.25rem }
 
-.content{padding:1.25rem}
-
+/* =====================================================================
+	Breakpoints
+	===================================================================== */
 @media (max-width: 960px){
-	.brand-text{font-size:.85rem}
-	.user-chip{display:none}
+  .brand-text{ font-size:.85rem }
+  .user-chip{ display:none }
 }
 
 @media (max-width: 720px){
-	.nav-toggle{display:inline-flex;margin-right:1.1rem;margin-left:auto}
-	.main-nav{position:absolute;top:100%;left:0;right:0;background:#111;flex-direction:column;align-items:stretch;padding:.6rem .75rem;border-bottom:1px solid #1d1d1d;display:none;z-index:5}
-	.main-nav.open{display:flex}
-	.main-nav button{width:100%;justify-content:flex-start}
-	.report-cta-desktop{display:none}
-	.nav-cta{display:inline-flex;width:100%;justify-content:center;margin-top:.25rem}
+  .nav-toggle{ display:inline-flex; margin-right:1.1rem; margin-left:auto }
+  .main-nav{ position:absolute; top:100%; left:0; right:0; background:#111; flex-direction:column; align-items:stretch; padding:.6rem .75rem; border-bottom:1px solid #1d1d1d; display:none; z-index:5 }
+  .main-nav.open{ display:flex }
+  .main-nav button{ width:100%; justify-content:flex-start }
 }

@@ -15,11 +15,13 @@ export class RoleSelectorComponent {
 
   goAsUser(){
     this.auth.setAdminActingAsUser(true);
-    this.router.navigate(['/usuario']);
+    this.auth.setAdminRoleSelected(true);
+    this.router.navigate(['/usuario'], { replaceUrl: true });
   }
   goAsAdmin(){
     this.auth.setAdminActingAsUser(false);
-    this.router.navigate(['/admin']);
+    this.auth.setAdminRoleSelected(true);
+    this.router.navigate(['/admin'], { replaceUrl: true });
   }
   backLogin(){
     this.auth.logout();
