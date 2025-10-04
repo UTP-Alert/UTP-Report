@@ -1,12 +1,26 @@
 import { Component } from '@angular/core';
-import { RegistroDTO, UsuarioRolService } from '../../services/usuario-rol.service';
+import { AuthService } from '../../services/auth.service';
+import { PerfilService } from '../../services/perfil.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-inicio',
-  imports: [],
+  selector: 'app-inicio-admin',
+  imports: [RouterModule],
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss'
 })
-export class Inicio {
- 
+export class InicioAdmin {
+  nombreAdmin: string = '';
+  // Estado del panel móvil del navbar
+  mobileOpen: boolean = false;
+  constructor(public auth: AuthService, private perfil: PerfilService){
+    this.perfil.cargarPerfil();
+    setTimeout(()=>{
+      const p = this.perfil.perfil();
+      if(p) this.nombreAdmin = p.nombreCompleto;
+    },300);
+  }
+  logout(){ this.auth.logout(); }
+  toggleMobile(){ this.mobileOpen = !this.mobileOpen; }
+  closeMobile(){ this.mobileOpen = false; }
 }

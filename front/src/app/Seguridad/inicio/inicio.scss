@@ -1,0 +1,54 @@
+/* Header Seguridad: estilos alineados al Admin
+	 y control de posición independiente del logo (solo SCSS) */
+
+/* === Variables para mover el logo === */
+$brand-side: left !default;           // Cambia 'left' a 'right' para anclar a la derecha
+$brand-x: 20rem !default;            // Distancia horizontal desde el borde elegido (ajústalo a tu gusto: 0.75rem, 20px, 5%)
+$brand-y: 0rem !default;              // Ajuste vertical adicional (negativo sube, positivo baja)
+$brand-safety: -15rem !default;       // Margen extra para que el menú no se solape con el logo
+// Altura del nav (ajústalo a tu gusto)
+$nav-padding-y: 0.95rem !default;     // Ej: 0.8rem, 1rem
+
+button{font:inherit}
+.top-nav{
+	display:flex;align-items:center;background:#0c0c0c;color:#fff;padding:0;
+	font-family:system-ui,Roboto,"Segoe UI",Arial,sans-serif;font-size:.8rem;letter-spacing:.5px;position:relative;
+	/* Modifica $brand-side y $brand-x arriba para mover el logo; este padding se ajusta solo */
+	padding-left: if($brand-side == left, calc(#{$brand-x} + #{$brand-safety}), .55rem);
+	padding-right: if($brand-side == right, calc(#{$brand-x} + #{$brand-safety}), .55rem);
+	padding-top: $nav-padding-y;
+	padding-bottom: $nav-padding-y;
+}
+.left-cluster,.center-cluster,.right-cluster{display:flex;align-items:center}
+.left-cluster{flex:1;gap:.75rem}
+.center-cluster{flex:2;gap:1rem;justify-content:center}
+.right-cluster{flex:1;gap:.75rem;justify-content:flex-end}
+
+/* === Logo (movible) === */
+.brand{
+	display:inline-flex;align-items:center;gap:.6rem;font-weight:600;color:#fff;text-decoration:none;user-select:none;cursor:pointer;
+	position:absolute;top:50%;transform:translateY(calc(-50% + #{$brand-y}));z-index:2;
+}
+@if $brand-side == left { .brand{ left:$brand-x; right:auto } }
+@else if $brand-side == right { .brand{ right:$brand-x; left:auto } }
+.brand .ic{width:24px;height:24px}
+.ic-accent{color:#ff2f55}
+.brand-text{white-space:nowrap; font-size:1.5rem} // Ajusta este valor para cambiar el tamaño del texto del logo
+
+/* === Navegación === */
+.main-nav{display:flex;align-items:center;gap:.5rem}
+.main-nav button{display:inline-flex;align-items:center;gap:.5rem;background:transparent;border:none;color:#fff;padding:.7rem 1rem;border-radius:10px;cursor:pointer;font-weight:700;white-space:nowrap;transition:background .2s,color .2s}
+.main-nav button:hover,.main-nav button.active{background:#ff2f55;color:#fff}
+.main-nav .icon{width:18px;height:18px}
+.icon-btn{padding:.65rem .75rem}
+
+/* === Chip de usuario === */
+.user-chip{display:inline-flex;align-items:center;gap:.45rem;background:#222;padding:.6rem 1rem;border-radius:10px;font-weight:600;max-width:220px}
+.user-chip .icon{width:20px;height:20px}
+
+/* === Badge de estado (Activo) === */
+.status-badge{display:inline-flex;align-items:center;gap:.4rem;margin-left:.4rem;padding:.35rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;letter-spacing:.4px;background:#102a17;color:#67ff9a;border:1px solid rgba(103,255,154,.25)}
+.status-badge .dot{width:.5rem;height:.5rem;border-radius:999px;background:#18e06f;box-shadow:0 0 0 2px rgba(24,224,111,.15)}
+
+/* === Contenido === */
+.content{padding:1.25rem}
