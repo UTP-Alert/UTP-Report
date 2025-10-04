@@ -13,7 +13,7 @@ export class InicioAdmin {
   nombreAdmin: string = '';
   // Estado del panel móvil del navbar
   mobileOpen: boolean = false;
-  constructor(private auth: AuthService, private perfil: PerfilService){
+  constructor(public auth: AuthService, private perfil: PerfilService){
     this.perfil.cargarPerfil();
     setTimeout(()=>{
       const p = this.perfil.perfil();

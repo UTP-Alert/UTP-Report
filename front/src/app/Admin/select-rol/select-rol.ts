@@ -7,8 +7,8 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-admin-role-selector',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './role-selector.component.html',
-  styleUrl: './role-selector.component.scss'
+  templateUrl: './select-rol.html',
+  styleUrl: './select-rol.scss'
 })
 export class RoleSelectorComponent {
   constructor(private router: Router, private auth: AuthService) {}

@@ -68,6 +68,15 @@ button.icon-btn svg { width:20px; height:20px; }
 /* Chip usuario */
 .user-chip { text-transform:none; background:#161616; color:$color-text; font-size:.78rem; }
 
+/* Badge de estado (Activo) */
+.status-badge {
+	display:inline-flex; align-items:center; gap:.4rem; margin-left:.4rem;
+	padding:.35rem .6rem; border-radius:999px; font-size:.72rem; font-weight:700; letter-spacing:.4px;
+	background:#102a17; color:#67ff9a; /* verde sutil sobre negro */
+	border:1px solid rgba(103,255,154,.25);
+}
+.status-badge .dot { width:.5rem; height:.5rem; border-radius:999px; background:#18e06f; box-shadow:0 0 0 2px rgba(24,224,111,.15); }
+
 /* Icon buttons */
 button.icon-btn { width:55px; justify-content:center; padding:.6rem; }
 button.icon-btn:hover { background:rgba(255,255,255,.12); color:$color-text; }
@@ -103,6 +112,7 @@ main.content { min-height:calc(100dvh - 64px); padding:1.25rem; }
 	.main-nav.open { display:flex; }
 	.main-nav button, .user-chip, button.icon-btn { width:100%; justify-content:flex-start; font-size:.75rem; padding:.85rem 1rem; border-radius:.65rem; }
 	button.icon-btn { width:100%; }
+	.status-badge { width:100%; justify-content:flex-start; margin-left:0; }
 	/* CTA pasa al menú */
 	.main-nav.open + .report-cta-desktop, .report-cta-desktop { display:inline-flex; width:100%; justify-content:center; background:$cta-color; color:#fff; margin-top:.95rem; padding:1rem 1.1rem; font-size:.78rem; border-radius:.7rem; box-shadow:0 2px 4px -1px rgba(0,0,0,.5); }
 	.main-nav.open + .report-cta-desktop:hover { background:$cta-color-hover; }
