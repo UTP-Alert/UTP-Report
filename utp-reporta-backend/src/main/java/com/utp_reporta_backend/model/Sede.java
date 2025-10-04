@@ -9,15 +9,17 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+//Entidad para representar una sede en el sistema.
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+//Entidad para representar una sede en el sistema.
 public class Sede {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@Column(nullable = false, unique = true)
-	private String nombre;
+	@Id//Clave primaria de la entidad.
+	@GeneratedValue(strategy = GenerationType.IDENTITY)//Generación automática del ID.
+	private Long id;//Identificador único de la sede.
+	@Column(nullable = false, unique = true)//El nombre de la sede debe ser único y no nulo.
+	private String nombre;//Nombre de la sede.
 
 }

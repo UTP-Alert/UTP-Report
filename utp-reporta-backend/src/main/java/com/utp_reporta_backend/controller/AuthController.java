@@ -14,20 +14,21 @@ import com.utp_reporta_backend.dto.RegistroUsuarioDTO;
 import com.utp_reporta_backend.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
-
+//Controlador para manejar la autenticación y registro de usuarios.
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+//Controlador para manejar la autenticación y registro de usuarios.
 public class AuthController {
     private final AuthService authService;
-    
+    // Endpoint para el login de usuarios
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponseDTO> login(@RequestBody LoginDTO loginDTO) {
         String token = authService.login(loginDTO);
-        
+        // Crear la respuesta con el token JWT
         JwtAuthResponseDTO jwtAuthResponse = new JwtAuthResponseDTO();
         jwtAuthResponse.setToken(token);
-        
+        // Devolver el token JWT en la respuesta
         return ResponseEntity.ok(jwtAuthResponse);
     }
 
@@ -37,11 +38,13 @@ public class AuthController {
         String respuesta = authService.registrarUsuario(registroDTO);
         return ResponseEntity.ok(respuesta);
     }
+    //Registar usuario con rol admin
     @PostMapping("/registrarAdmin")
     public ResponseEntity<String> registrarAdmin(@RequestBody RegistroAdminDTO registroAdminDTO) {
         String respuesta = authService.registrarAdmin(registroAdminDTO);
         return ResponseEntity.ok(respuesta);
     }
+    //Registar usuario con rol seguridad
     @PostMapping("/registrarSeguridad")
     public ResponseEntity<String> registrarSeguridad(@RequestBody RegistroSeguridadDTO dto) {
         String resultado = authService.registrarSeguridad(dto);

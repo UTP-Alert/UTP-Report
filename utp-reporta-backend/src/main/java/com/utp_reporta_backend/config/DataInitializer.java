@@ -16,7 +16,13 @@ import com.utp_reporta_backend.repository.SedeRepository;
 import com.utp_reporta_backend.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
-
+ /**
+ * Clase: DataInitializer
+ * Esta clase sirve para inicializar datos básicos en la base de datos cuando el sistema arranca por primera vez.
+ * Crea los roles principales (SUPERADMIN, ADMIN, USUARIO, SEGURIDAD) si no existen.
+ * Crea un usuario por defecto con rol SUPERADMIN para poder entrar al sistema.
+ * Se ejecuta automáticamente porque implementa la interfaz CommandLineRunner.
+ */
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner{
@@ -28,7 +34,11 @@ public class DataInitializer implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-
+ /**
+ * Crear los roles por defecto
+ * Verificamos si la tabla de roles está vacía (count == 0).
+ * Si es así, insertamos los roles necesarios para el sistema.
+ */
 
 		if (rolRepository.count() == 0) {
             Rol rolSuperAdmin = new Rol();
@@ -49,7 +59,7 @@ public class DataInitializer implements CommandLineRunner{
         }
 		
 		
-		// 2. Verificar si ya existe un usuario con el rol ROLE_SUPERADMIN
+		// Verificar si ya existe un usuario con el rol ROLE_SUPERADMIN
         if (usuarioRepository.count() == 0) {
 
             // Si no existe ningún usuario con ROLE_SUPERADMIN, creamos uno

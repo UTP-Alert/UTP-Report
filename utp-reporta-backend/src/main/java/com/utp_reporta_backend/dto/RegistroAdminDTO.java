@@ -2,6 +2,7 @@ package com.utp_reporta_backend.dto;
 
 
 import lombok.Data;
+//DTO para encapsular los datos necesarios para registrar un administrador.
 @Data
 public class RegistroAdminDTO {
 	
