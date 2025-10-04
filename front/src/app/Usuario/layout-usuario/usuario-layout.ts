@@ -8,8 +8,8 @@ import { PerfilService } from '../../services/perfil.service';
   selector: 'app-user-layout',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './user-layout.component.html',
-  styleUrl: './user-layout.component.scss'
+  templateUrl: './usuario-layout.html',
+  styleUrl: './usuario-layout.scss'
 })
 export class UserLayoutComponent implements OnInit {
   @Input() nombreCompleto: string = 'Juan Pérez'; // luego se puede obtener desde endpoint de perfil
