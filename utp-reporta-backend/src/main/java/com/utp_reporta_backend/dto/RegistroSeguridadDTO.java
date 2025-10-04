@@ -3,6 +3,7 @@ package com.utp_reporta_backend.dto;
 import java.util.Set;
 
 import lombok.Data;
+//DTO para encapsular los datos necesarios para registrar un personal de seguridad.
 @Data
 public class RegistroSeguridadDTO {
 	  private String nombreCompleto;

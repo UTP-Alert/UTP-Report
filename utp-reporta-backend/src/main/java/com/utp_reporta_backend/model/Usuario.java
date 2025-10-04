@@ -27,46 +27,55 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+//Entidad que representa a un usuario en el sistema e implementa UserDetails para integración con Spring Security.
 public class Usuario implements UserDetails {
+	//Identificador único del usuario.
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	//Nombre completo del usuario.
 	private String nombreCompleto;
+	//Nombre de usuario único para login.
 	 @Column(nullable = false, unique = true)
 	private String username;
 	private String password;
 	 @Column(nullable = false, unique = true)
-	private String correo;
+	//Correo electrónico único del usuario.
+	 private String correo;
+	//Número de teléfono del usuario.
 	private String telefono;
+	//Tipo de usuario basado en el enum TipoUsuario.
 	@Enumerated(EnumType.STRING) // Esto almacena el nombre del enum como String
-	private TipoUsuario tipoUsuario;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "sede_id")
-	private Sede sede;
+	private TipoUsuario tipoUsuario; // ADMIN, PERSONAL_SEGURIDAD, USUARIO_COMUN
+	@ManyToOne(fetch = FetchType.LAZY) // Muchas usuarios pueden pertenecer a una sede
+	@JoinColumn(name = "sede_id") // Nombre de la columna en la tabla usuario que referencia a sede
+	private Sede sede; // La sede a la que pertenece el usuario
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)// Un usuario puede estar asociado a muchas zonas y viceversa	
 	@JoinTable(
+		// Nombre de la tabla intermedia para la relación muchos a muchos
 	    name = "usuario_zona",
 	    joinColumns = @JoinColumn(name = "usuario_id"),
 	    inverseJoinColumns = @JoinColumn(name = "zona_id")
 	)
+	// Conjunto de zonas asociadas al usuario
 	private Set<Zona> zonas = new HashSet<>();
 
-	
+	//Número de intentos fallidos de inicio de sesión.
 	private int intentos;
-	@Column(nullable = false)
-	private boolean enabled = true;
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
-	private Set<Rol> roles = new HashSet<>();
+	@Column(nullable = false)// El campo no puede ser nulo
+	private boolean enabled = true;// Indica si el usuario está habilitado o no
+	@ManyToMany(fetch = FetchType.EAGER)// Un usuario puede tener muchos roles y un rol puede ser asignado a muchos usuarios
+	@JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))//Tabla intermedia para la relación muchos a muchos entre usuarios y roles.
+	private Set<Rol> roles = new HashSet<>();//Roles asociados al usuario.
 
 	@Override
+	//Obtener las autoridades (roles) del usuario para Spring Security
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
 		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getNombre().name())) // Usa .name() para
@@ -74,21 +83,22 @@ public class Usuario implements UserDetails {
 																								// String
 				.collect(Collectors.toList());
 	}
+	//Cuenta no expirada
 	@Override
     public boolean isAccountNonExpired() {
         return true;
     }
-
+	//Cuenta no bloqueada
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
-
+	//Credenciales no expiradas
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
+	//Usuario habilitado
     @Override
     public boolean isEnabled() {
         return true;

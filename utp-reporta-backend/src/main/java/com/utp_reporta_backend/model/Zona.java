@@ -8,14 +8,14 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+//Entidad para representar una zona en el sistema.
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Zona {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id//Clave primaria de la entidad.
+	@GeneratedValue(strategy = GenerationType.IDENTITY)//Generación automática del ID.
 	private Long id;
 	private String nombre;
 }

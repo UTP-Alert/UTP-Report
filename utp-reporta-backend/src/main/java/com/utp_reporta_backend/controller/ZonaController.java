@@ -11,10 +11,11 @@ import com.utp_reporta_backend.dto.ZonaDTO;
 import com.utp_reporta_backend.service.ZonaService;
 
 import lombok.RequiredArgsConstructor;
-
+//Controlador para manejar las operaciones CRUD de las zonas.
 @RestController
 @RequestMapping("/api/zonas")
 @RequiredArgsConstructor
+//Controlador para manejar las operaciones CRUD de las zonas.
 public class ZonaController {
 	private final ZonaService zonaService;
 	@GetMapping
