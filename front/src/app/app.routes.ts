@@ -4,7 +4,7 @@ import { InicioSesion } from './Login/inicio-sesion/inicio-sesion';
 import { Inicio as SuperAdminInicio } from './SuperAdmin/inicio/inicio';
 import { roleGuard } from './guards/role.guard';
 import { guestGuard } from './guards/guest.guard';
-import { RoleSelectorComponent } from './Admin/role-selector/select-rol';
+import { RoleSelectorComponent } from './Admin/select-rol/select-rol';
 import { UserLayoutComponent } from './Usuario/user-layout/user-layout.component';
 import { InicioUsuario } from './Usuario/inicio/inicio';
 import { InicioAdmin } from './Admin/inicio/inicio';
