@@ -78,7 +78,6 @@
 						<p class="card-desc">Ingresa tus datos para iniciar sesión.</p>
 					</header>
 
-					<!-- Bloque de credenciales eliminado -->
 
 					<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
 						<div class="backend-error" *ngIf="backendError()" role="alert">{{ backendError() }}</div>

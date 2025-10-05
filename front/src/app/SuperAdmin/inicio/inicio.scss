@@ -227,6 +227,26 @@
   background-color: rgba(255, 255, 255, 0.1); /* hover:bg-white/10 */
 }
 
+/* Icon button in user-profile (logout, etc.) */
+.dashboard-header .user-profile .icon-btn {
+  background-color: transparent;
+  border: none;
+  color: var(--secondary-foreground);
+  padding: 0.25rem; /* compact for icon */
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-header .user-profile .icon-btn:hover,
+.dashboard-header .user-profile .icon-btn:focus {
+  background-color: transparent; /* no white background */
+  color: var(--primary-foreground);
+  outline: none;
+}
+
 /* Mobile Menu */
 .mobile-nav-menu {
   border-top: 1px solid rgba(255, 255, 255, 0.2); /* border-t border-white/20 */
