@@ -1,0 +1,191 @@
+.utp-navbar {
+  /* Base */
+  background: #000 !important;
+
+  /* Marca */
+  .navbar-brand {
+    color: #fff;
+    cursor: pointer; /* mano al pasar */
+    user-select: none; /* evita selección de texto */
+  }
+
+  .brand-text {
+    /* Mantener tamaño pero bajar grosor y usar una fuente más compacta */
+    font-weight: 500;
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    letter-spacing: -0.2px;
+  }
+
+  .shield {
+    width: 22px;
+    height: 22px;
+    color: #ff3252;
+  }
+
+  /* Links del navbar */
+  .nav-link {
+    color: #fff;
+    opacity: .9;
+    padding: .375rem .75rem;
+    border-radius: .5rem;
+    transition: background-color .15s ease, color .15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    font-size: .9rem; /* reducir tamaño de letra */
+    cursor: pointer; /* mano al pasar */
+    user-select: none; /* evita selección de texto */
+  }
+
+  .nav-link:hover,
+  .nav-link:focus {
+    color: #fff;
+    opacity: 1;
+    background-color: rgba(128,128,128,.2); /* gris translúcido en hover */
+  }
+
+  .nav-link.active {
+    color: #fff;
+    opacity: 1;
+    background-color: #ff3252;
+  }
+
+  /* Grupo de páginas (izquierda/centro) */
+  .left-nav {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  .left-nav .nav-item {
+    display: flex;
+  }
+
+
+  .left-nav .nav-link.icon-only {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: .375rem .6rem;
+  }
+
+
+  .left-nav .logout-link {
+    padding: .375rem .5rem;
+    border-radius: .5rem;
+    color: #fff;
+  }
+
+  .left-nav .logout-link:hover {
+    background-color: rgba(255,255,255,.12);
+    color: #fff;
+  }
+
+  .left-nav .nav-item .navbar-text.user-name {
+    margin-left: .35rem;
+  }
+
+  .left-nav .nav-link span {
+    white-space: nowrap;
+  }
+
+  /* Íconos y botones utilitarios */
+  .icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .25rem;
+  }
+
+  /* Botón CTA Reportar Ahora */
+  .report-cta {
+    background-color: #ff3252;
+    border-color: #ff3252;
+    font-weight: 500; /* bajar grosor del texto */
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+  }
+
+  .report-cta:hover {
+    filter: brightness(1.05);
+  }
+
+  /* Área de usuario */
+  .user-name {
+    color: #fff;
+    font-weight: 500; /* bajar grosor del texto de usuario */
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    font-size: .9rem; /* reducir tamaño de letra del usuario */
+    background-color: rgba(128,128,128,.2); /* sombreado gris translúcido permanente */
+    padding: .375rem .5rem;
+    border-radius: .5rem;
+  }
+
+  .user-status {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    color: #fff;
+    opacity: .85;
+    margin-left: .25rem;
+  }
+
+  .user-status .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .user-status.active .dot {
+    background-color: #28a745;
+  }
+
+  .user-status.inactive .dot {
+    background-color: #6c757d;
+  }
+
+  .user-status .label {
+    font-size: .875rem;
+  }
+
+  /* Layout responsive (≥992px) */
+  @media (min-width: 992px) {
+    .navbar-brand {
+      margin-right: 0rem;
+      margin-left: .75rem;
+    }
+
+    .navbar-collapse {
+      display: flex;
+      align-items: center;
+    }
+
+    .left-nav {
+      justify-content: center;
+      flex: 1 1 auto;
+    }
+  }
+}
+
+/* Evitar que el contenido quede oculto bajo el navbar fijo */
+body {
+  padding-top: 64px;
+}
+
+@media (max-width: 992px) {
+  body {
+    padding-top: 56px;
+  }
+}

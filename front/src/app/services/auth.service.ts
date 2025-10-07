@@ -95,18 +95,21 @@ export class AuthService {
   }
   isAdminRoleSelected(): boolean { return localStorage.getItem(this.ADMIN_ROLE_SELECTED_KEY) === '1'; }
 
-  // Prefijo para mostrar en navbar segun rol y tipoUsuario (cuando admin actua como user se usa Admin.)
+  // Prefijo según requisitos:
+  // Alumno: "alum.[nombre]"  Docente: "doc.[nombre]"  Admin como usuario: "Admin.[nombre]"
+  // Seguridad: "seg.[nombre]"  Superadmin: "superadmin.[nombre]"
   buildDisplayName(nombreCompleto: string, tipoUsuario?: string): string {
-  if (this.hasRole(ROLES.SUPERADMIN)) return `Super Admin`;
-    if (this.isAdminAsUser()) return `Admin. ${nombreCompleto}`;
-  if (this.hasRole(ROLES.ADMIN)) return `Admin. ${nombreCompleto}`; // en vista admin
-    if (tipoUsuario) {
+    const name = nombreCompleto?.trim() || 'Usuario';
+    if (this.hasRole(ROLES.SUPERADMIN)) return `superadmin. ${name}`;
+    if (this.isAdminAsUser()) return `Admin. ${name}`;
+    if (this.hasRole(ROLES.ADMIN)) return `Admin. ${name}`;
+    if (this.hasRole(ROLES.SEGURIDAD)) return `seg. ${name}`;
+    if (this.hasRole(ROLES.USUARIO) && tipoUsuario) {
       const upper = tipoUsuario.toUpperCase();
-      if (upper === 'ALUMNO') return `Alum. ${nombreCompleto}`;
-      if (upper === 'DOCENTE') return `Doc. ${nombreCompleto}`;
+      if (upper === 'ALUMNO') return `alum. ${name}`;
+      if (upper === 'DOCENTE') return `doc. ${name}`;
     }
-    if (this.hasRole(ROLES.SEGURIDAD)) return nombreCompleto; // luego se puede prefijar
-    return nombreCompleto;
+    return name;
   }
 
   private decodeToken(token: string): any {
