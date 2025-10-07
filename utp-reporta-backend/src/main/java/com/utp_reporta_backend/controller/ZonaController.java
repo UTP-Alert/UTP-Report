@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,4 +24,8 @@ public class ZonaController {
         return ResponseEntity.ok(zonaService.obtenerTodasLasZonas());
     }
 
+    @GetMapping("/sede/{sedeId}")
+    public ResponseEntity<List<ZonaDTO>> listarZonasPorSede(@PathVariable Long sedeId) {
+        return ResponseEntity.ok(zonaService.obtenerZonasPorSedeId(sedeId));
+    }
 }

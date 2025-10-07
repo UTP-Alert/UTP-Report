@@ -6,5 +6,5 @@ import lombok.Data;
 public class ZonaDTO {
 	private Long id;
 	private String nombre;
-
+	private Long sedeId;
 }
