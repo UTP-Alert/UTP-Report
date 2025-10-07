@@ -20,13 +20,10 @@ export class Inicio implements OnInit {
   sedes: Sede[] = [];
   zonas: Zona[] = [];
 
-  userName: string = 'Super Admin User';
-  userRole: string = 'Super Admin';
   isSessionActive: boolean = true;
 
   isCreating: boolean = false;
   editingUser: any = null;
-  isMobileMenuOpen: boolean = false;
   showPassword = false; // New property for password visibility
 
   // -------------------------------
@@ -384,10 +381,6 @@ export class Inicio implements OnInit {
   // -------------------------------
   // 🔹 8. Utilidades generales
   // -------------------------------
-  toggleMobileMenu() {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
-  }
-
   toggleSession() {
     this.isSessionActive = !this.isSessionActive;
   }

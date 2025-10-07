@@ -5,7 +5,6 @@ import { Inicio as SuperAdminInicio } from './SuperAdmin/inicio/inicio';
 import { roleGuard } from './guards/role.guard';
 import { guestGuard } from './guards/guest.guard';
 import { RoleSelectorComponent } from './Admin/select-rol/select-rol';
-import { UserLayoutComponent } from './Usuario/layout-usuario/usuario-layout';
 import { InicioUsuario } from './Usuario/inicio/inicio';
 import { InicioAdmin } from './Admin/inicio/inicio';
 import { InicioSeguridad } from './Seguridad/inicio/inicio';
@@ -26,9 +25,7 @@ export const routes: Routes = [
 		}
 		return true;
 	}] },
-	{ path: 'usuario', component: UserLayoutComponent, canActivate: [roleGuard], data: { roles: ['ROLE_USUARIO','ROLE_ADMIN'] }, children: [
-		{ path: '', component: InicioUsuario }
-	]},
+	{ path: 'usuario', component: InicioUsuario, canActivate: [roleGuard], data: { roles: ['ROLE_USUARIO','ROLE_ADMIN'] } },
 	{ path: 'admin', component: InicioAdmin, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
 	{ path: 'seguridad', component: InicioSeguridad, canActivate: [roleGuard], data: { roles: ['ROLE_SEGURIDAD'] } },
 	{ path: '', pathMatch: 'full', redirectTo: 'superadmin/dashboard' },
