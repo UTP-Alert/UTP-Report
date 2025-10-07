@@ -19,14 +19,23 @@ public class ZonaServiceImpl implements ZonaService{
 	
 	@Override
 	public List<ZonaDTO> obtenerTodasLasZonas() {
-		return zonaRepository.findAll().stream().map(sede -> {
+		return zonaRepository.findAll().stream().map(zona -> {
 			ZonaDTO dto = new ZonaDTO();
-			dto.setId(sede.getId());
-			dto.setNombre(sede.getNombre());
+			dto.setId(zona.getId());
+			dto.setNombre(zona.getNombre());
+			dto.setSedeId(zona.getSede().getId()); // Set sedeId
 			return dto;
 		}).collect(Collectors.toList());
 	}
 
-	
-
+	@Override
+	public List<ZonaDTO> obtenerZonasPorSedeId(Long sedeId) {
+		return zonaRepository.findBySedeId(sedeId).stream().map(zona -> {
+			ZonaDTO dto = new ZonaDTO();
+			dto.setId(zona.getId());
+			dto.setNombre(zona.getNombre());
+			dto.setSedeId(zona.getSede().getId()); // Set sedeId
+			return dto;
+		}).collect(Collectors.toList());
+	}
 }

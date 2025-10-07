@@ -7,5 +7,5 @@ import com.utp_reporta_backend.dto.ZonaDTO;
 
 public interface ZonaService {
 	List<ZonaDTO> obtenerTodasLasZonas();
-
+	List<ZonaDTO> obtenerZonasPorSedeId(Long sedeId);
 }
