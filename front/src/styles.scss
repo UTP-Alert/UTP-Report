@@ -4,9 +4,9 @@ html, body { height: 100%; }
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 body { margin:0; font-family: 'Poppins', 'Inter', 'Segoe UI', Roboto, system-ui, Arial, sans-serif; background:#ffffff; -webkit-font-smoothing: antialiased; }
-/* Compensación por navbar fixed-top */
-body { padding-top: 72px; }
-@media (max-width: 992px) { body { padding-top: 64px; } }
+/* Compensación por navbar fixed-top: solo cuando el navbar está visible */
+body.with-fixed-navbar { padding-top: 72px; }
+@media (max-width: 992px) { body.with-fixed-navbar { padding-top: 64px; } }
 img, svg { display:block; max-width:100%; }
 button { font: inherit; }
 input, button { outline: none; }

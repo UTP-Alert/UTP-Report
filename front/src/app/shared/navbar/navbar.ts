@@ -105,6 +105,15 @@ export class NavbarComponent {
       // Build con prefijo exacto visible vía CSS + contenido simple en texto
       this.userName.set(nombre);
     });
+
+    // Marcar el body cuando el navbar está visible para aplicar padding-top
+    effect(() => {
+      const visible = this.showNavbar();
+      const body = document?.body;
+      if (!body) return;
+      if (visible) body.classList.add('with-fixed-navbar');
+      else body.classList.remove('with-fixed-navbar');
+    });
   }
 
   getHomePath(): string[] {
@@ -127,7 +136,8 @@ export class NavbarComponent {
 
   // Chequeo de página habilitada para el rol actual
   canShow(page: PageKey): boolean {
-    const role = this.primaryRole();
+    // Si el admin está actuando como usuario, usar la configuración de páginas del rol USUARIO
+    const role = this.auth.isAdminAsUser() ? ROLES.USUARIO : this.primaryRole();
     return this.pageCfg.isEnabled(role as any, page);
   }
 
