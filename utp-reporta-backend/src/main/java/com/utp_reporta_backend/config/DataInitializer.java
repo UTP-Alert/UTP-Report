@@ -9,10 +9,8 @@ import org.springframework.stereotype.Component;
 
 import com.utp_reporta_backend.enums.ERol;
 import com.utp_reporta_backend.model.Rol;
-import com.utp_reporta_backend.model.Sede;
 import com.utp_reporta_backend.model.Usuario;
 import com.utp_reporta_backend.repository.RolRepository;
-import com.utp_reporta_backend.repository.SedeRepository;
 import com.utp_reporta_backend.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +27,6 @@ public class DataInitializer implements CommandLineRunner{
 
 	private final RolRepository rolRepository;
     private final UsuarioRepository usuarioRepository;
-    private final SedeRepository sedeRepository;
     
 
 	@Override
