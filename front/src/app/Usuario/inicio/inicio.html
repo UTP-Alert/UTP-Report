@@ -1,0 +1,526 @@
+<div class="min-h-screen bg-white">
+<main class="max-w-6xl mx-auto px-2 sm:px-4 py-4 sm:py-8 mt-20">
+    <!-- Welcome Header -->
+    <!-- Sección de bienvenida al usuario. Puede mostrar mensajes dinámicos del backend. -->
+    <div class="mb-4 sm:mb-8 user-dashboard-welcome">
+      <!-- Alerta de bienvenida. El borde primario puede indicar importancia o estado. -->
+      <div class="border-l-4 border-primary bg-blue-50 p-4 rounded-lg flex items-center gap-2">
+        <!-- Icono de usuario verificado, relevante para el contexto del dashboard. -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 sm:h-6 sm:w-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11v12h-2"/><path d="M22 11l-3 3-3-3"/></svg>
+        <!-- Descripción de bienvenida. El texto podría ser dinámico desde el backend. -->
+        <p class="text-base sm:text-lg mt-4">
+  Bienvenido a tu Dashboard de Usuario - Aquí puedes reportar incidentes y consultar el estado de seguridad del campus.
+</p>
+      </div>
+    </div>
+
+    <!-- User Stats -->
+    <!-- Sección de estadísticas del usuario. Los datos se cargarían desde el backend. -->
+    <section class="mb-4 sm:mb-8">
+      <!-- Título de la sección "Mi Actividad". -->
+      <h2 class="text-xl sm:text-2xl mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+        <!-- Icono representativo de actividad del usuario. -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-primary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11v12h-2"/><path d="M22 11l-3 3-3-3"/></svg>
+        Mi Actividad
+      </h2>
+      <!-- Contenedor de las tarjetas de estadísticas. Se adapta a diferentes tamaños de pantalla. -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <!-- Tarjeta de "Reportes Creados". El número sería dinámico. -->
+        <div class="bg-blue-50 border-blue-200 rounded-lg shadow-sm">
+          <div class="p-3 sm:p-4">
+            <div class="flex items-center gap-2 sm:gap-3">
+              <!-- Icono de archivo de texto. -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-blue-600"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <div>
+                <!-- Número de reportes creados. -->
+                <p class="text-xl sm:text-2xl">1</p>
+                <!-- Etiqueta descriptiva. -->
+                <p class="text-xs sm:text-sm text-gray-600">Reportes Creados</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta de "Alertas Confirmadas". El número sería dinámico. -->
+        <div class="bg-green-50 border-green-200 rounded-lg shadow-sm">
+          <div class="p-3 sm:p-4">
+            <div class="flex items-center gap-2 sm:gap-3">
+              <!-- Icono de campana para alertas. -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 sm:h-10 sm:w-10 text-green-600"><path d="M6 8.5a.5 .5 0 0 1 .5-.5h11a.5 .5 0 0 1 .5.5v1a.5 .5 0 0 1-.5.5h-11a.5 .5 0 0 1-.5-.5v-1z"/><path d="M10 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M14 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M16 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M18 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M20 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M22 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M2 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M4 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M6 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M8 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M10 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M12 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M14 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M16 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M18 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M20 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M22 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M2 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M4 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M6 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M8 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+              <div>
+                <!-- Número de alertas confirmadas. -->
+                <p class="text-xl sm:text-2xl">0</p>
+                <!-- Etiqueta descriptiva. -->
+                <p class="text-xs sm:text-sm text-gray-600">Alertas Confirmadas</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta de "Nivel de Confianza". El texto sería dinámico. -->
+        <div class="bg-purple-50 border-purple-200 rounded-lg shadow-sm sm:col-span-2 lg:col-span-1">
+          <div class="p-3 sm:p-4">
+            <div class="flex items-center gap-2 sm:gap-3">
+              <!-- Icono de escudo para nivel de confianza. -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-purple-600"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <div>
+                <!-- Nivel de confianza del usuario. -->
+                <p class="text-lg sm:text-xl">Nuevo</p>
+                <!-- Etiqueta descriptiva. -->
+                <p class="text-xs sm:text-sm text-gray-600">Nivel de Confianza</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Action Button -->
+    <!-- Sección del botón principal para reportar incidentes. -->
+    <div class="flex justify-center mb-6 sm:mb-12 report-main-button">
+      <!-- Tarjeta que contiene los botones de reporte. -->
+      <div class="border-2 hover:shadow-lg transition-shadow max-w-md w-full rounded-lg">
+        <div class="text-center pb-3 sm:pb-4 p-4">
+          <!-- Título principal para reportar incidente. -->
+          <h2 class="flex items-center justify-center gap-2 sm:gap-3 text-xl sm:text-2xl">
+            <!-- Icono de alerta triangular. -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 sm:h-10 sm:w-10 text-primary"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            REPORTAR INCIDENTE
+          </h2>
+          <!-- Descripción del botón de reporte. -->
+          <p class="text-base sm:text-lg text-gray-600 mt-2">
+            ¿Has sido víctima de un incidente? Reporta de forma inmediata y anónima
+          </p>
+        </div>
+        <div class="space-y-3 sm:space-y-4 p-4 pt-0">
+          <!-- Botón para reporte rápido. -->
+          <button
+            class="w-full h-12 sm:h-16 text-lg sm:text-xl bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md flex items-center justify-center"
+            aria-label="Botón para reportar un incidente"
+          >
+            <!-- Icono de ojo. -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 mr-2 sm:mr-3"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            REPORTAR AHORA
+          </button>
+
+          <!-- Botón para reporte detallado. -->
+          <button
+            class="w-full h-10 sm:h-12 text-base sm:text-lg border-2 border-primary text-primary hover:bg-primary/5 font-medium py-2 px-4 rounded-md bg-transparent flex items-center justify-center"
+            aria-label="Botón para abrir formulario detallado de reporte"
+          >
+            <!-- Icono de archivo de texto. -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 sm:h-6 sm:w-6 mr-1 sm:mr-2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Reporte Detallado
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- University Zones Status -->
+    <!-- Sección del estado de las zonas universitarias. Los datos de estado serían dinámicos. -->
+    <section class="mb-6 sm:mb-12 zones-status-section">
+      <!-- Título de la sección "Estado de Zonas Universitarias". -->
+      <h2 class="text-xl sm:text-2xl mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+        <!-- Icono de marcador de mapa. -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-primary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        Estado de Zonas Universitarias
+      </h2>
+
+      <!-- Contenedor de las tarjetas de zonas. -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <!-- Tarjeta de ejemplo para una zona. Los datos serían dinámicos. -->
+        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+          <div class="pb-2 sm:pb-3 p-4">
+            <div class="flex items-center justify-between">
+              <!-- Nombre de la zona. -->
+              <h3 class="text-base sm:text-lg">Campus Principal</h3>
+              <!-- Badge de estado de la zona. El color y texto serían dinámicos. -->
+              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
+                ZONA SEGURA
+              </span>
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1 sm:gap-2">
+                <!-- Icono de alerta. -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                <span class="text-base sm:text-lg">0 incidentes</span>
+              </div>
+              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
+                <!-- Icono de reloj. -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <!-- Indicador de tiempo. -->
+                <span class="text-sm sm:text-base">Hoy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Repetición de tarjetas de zona para demostración estática. -->
+        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+          <div class="pb-2 sm:pb-3 p-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base sm:text-lg">Biblioteca Central</h3>
+              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
+                ZONA SEGURA
+              </span>
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1 sm:gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                <span class="text-base sm:text-lg">0 incidentes</span>
+              </div>
+              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="text-sm sm:text-base">Hoy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+          <div class="pb-2 sm:pb-3 p-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base sm:text-lg">Cafetería Norte</h3>
+              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
+                ZONA SEGURA
+              </span>
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1 sm:gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                <span class="text-base sm:text-lg">0 incidentes</span>
+              </div>
+              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="text-sm sm:text-base">Hoy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+          <div class="pb-2 sm:pb-3 p-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base sm:text-lg">Estacionamiento Este</h3>
+              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
+                ZONA SEGURA
+              </span>
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1 sm:gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                <span class="text-base sm:text-lg">0 incidentes</span>
+              </div>
+              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="text-sm sm:text-base">Hoy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+          <div class="pb-2 sm:pb-3 p-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base sm:text-lg">Laboratorios</h3>
+              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
+                ZONA SEGURA
+              </span>
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1 sm:gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                <span class="text-base sm:text-lg">0 incidentes</span>
+              </div>
+              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="text-sm sm:text-base">Hoy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+          <div class="pb-2 sm:pb-3 p-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base sm:text-lg">Zona Deportiva</h3>
+              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
+                ZONA SEGURA
+              </span>
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1 sm:gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                <span class="text-base sm:text-lg">0 incidentes</span>
+              </div>
+              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="text-sm sm:text-base">Hoy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="mb-6 sm:mb-12 quick-actions-section">
+      <h2 class="text-xl sm:text-2xl mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-primary"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+        Acciones Rápidas
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <button
+          class="h-16 sm:h-20 text-base sm:text-lg border-2 border-gray-300 hover:border-primary hover:bg-primary/5 text-gray-800 font-medium py-2 px-4 rounded-md bg-transparent flex items-center justify-center"
+          aria-label="Ver mis reportes anteriores"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Mis Reportes
+        </button>
+
+        <button
+          class="h-16 sm:h-20 text-base sm:text-lg border-2 border-gray-300 hover:border-primary hover:bg-primary/5 text-gray-800 font-medium py-2 px-4 rounded-md bg-transparent flex items-center justify-center"
+          aria-label="Ver tour interactivo nuevamente"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Tour Interactivo</span>
+        </button>
+
+        <button
+          class="h-16 sm:h-20 text-base sm:text-lg border-2 border-gray-300 hover:border-primary hover:bg-primary/5 text-gray-800 font-medium py-2 px-4 rounded-md bg-transparent sm:col-span-2 lg:col-span-1 flex items-center justify-center"
+          aria-label="Contactar con seguridad universitaria"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>Contactar Seguridad</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- User Report Tracker -->
+    <section class="mb-6 sm:mb-12 user-report-tracker">
+      <h2 class="text-xl sm:text-2xl mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-primary"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Seguimiento de Mis Reportes
+      </h2>
+      <div class="border-2 hover:shadow-md transition-shadow rounded-lg">
+        <div class="p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-medium">Mis Reportes</h3>
+            <span class="text-sm text-gray-500">1 reportes</span>
+          </div>
+          <div class="border-2 rounded-lg p-4">
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <div>
+                  <p class="font-medium">ROBO <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs ml-2">Pendiente</span></p>
+                  <p class="text-sm text-gray-600 flex items-center gap-1 mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Biblioteca Central
+                  </p>
+                </div>
+              </div>
+              <div class="text-sm text-gray-500">07/10/2025, 12:26</div>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
+              <div class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">Estado desconocido</p>
+            <p class="text-xs text-gray-500 mt-4">Recibirás notificaciones cuando el estado de tus reportes cambie</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Explicación del Flujo con Notificaciones -->
+    <section class="mb-6 sm:mb-12">
+      <h2 class="text-xl sm:text-2xl mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-primary"><path d="M6 8.5a.5 .5 0 0 1 .5-.5h11a.5 .5 0 0 1 .5.5v1a.5 .5 0 0 1-.5.5h-11a.5 .5 0 0 1-.5-.5v-1z"/><path d="M10 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M14 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M16 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M18 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M20 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M22 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M2 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M4 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M6 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M8 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+        Cómo Funciona el Sistema de Notificaciones
+      </h2>
+      <div class="border-2 border-blue-200 bg-blue-50 rounded-lg shadow-sm">
+        <div class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <div>
+              <h3 class="text-lg font-medium mb-4 text-blue-800">
+                🚨 Reportes de Alta Prioridad
+              </h3>
+              <ul class="space-y-2 text-sm text-blue-700">
+                <li class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                  <span><strong>Vibración intensa</strong> + sonido de alerta</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                  <span>Notificación visual destacada</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                  <span>Seguimiento en tiempo real</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                  <span>Resolución prioritaria</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="text-lg font-medium mb-4 text-blue-800">
+                📋 Reportes Normales
+              </h3>
+              <ul class="space-y-2 text-sm text-blue-700">
+                <li class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                  <span>Vibración suave informativa</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                  <span>Notificación estándar</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                  <span>Actualización en dashboard</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                  <span>Proceso de resolución normal</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mt-6 p-4 bg-white rounded-lg border border-blue-200">
+            <h4 class="font-medium text-blue-800 mb-2">
+              🔄 Flujo del Proceso
+            </h4>
+            <div class="flex flex-wrap items-center gap-2 text-sm text-blue-700">
+              <span class="px-2 py-1 bg-blue-100 rounded">Usuario Reporta</span>
+              <span>→</span>
+              <span class="px-2 py-1 bg-yellow-100 rounded">Admin Revisa</span>
+              <span>→</span>
+              <span class="px-2 py-1 bg-red-100 rounded">¿Es Alta Prioridad?</span>
+              <span>→</span>
+              <span class="px-2 py-1 bg-purple-100 rounded">Asigna a Seguridad</span>
+              <span>→</span>
+              <span class="px-2 py-1 bg-green-100 rounded">Caso Resuelto</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Reports from Colleagues -->
+    <section class="mb-12">
+      <h2 class="text-2xl mb-6 flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-primary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Reportes Recientes de Compañeros
+      </h2>
+
+      <div class="space-y-4">
+        <!-- Example Report 1 (from image) -->
+        <div class="border-2 hover:shadow-md transition-shadow rounded-lg">
+          <div class="pb-3 p-4">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-gray-500"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" x2="22" y1="2" y2="7"/><line x1="22" x2="17" y1="2" y2="7"/></svg>
+                <div>
+                  <h3 class="text-lg">Anónimo</h3>
+                  <p class="flex items-center gap-2 mt-1 text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Estacionamiento Este
+                  </p>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2 items-end">
+                <span class="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs">
+                  Media
+                </span>
+                <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">
+                  Nuevo
+                </span>
+              </div>
+            </div>
+
+            <div class="bg-primary/10 rounded-lg p-4 border-l-4 border-primary">
+              <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-primary"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                <div>
+                  <p class="text-sm text-primary/70 uppercase tracking-wide">Tipo de Incidente</p>
+                  <h3 class="text-2xl font-bold text-primary">Actividad Sospechosa</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <p class="text-gray-700 mb-3 line-clamp-2">
+              Persona merodeando en el estacionamiento de estudiantes
+            </p>
+            <div class="flex items-center justify-between text-sm text-gray-500">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>07/10/25, 13:26</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón para ver todos los reportes. -->
+        <div class="border-2 border-dashed border-primary rounded-lg">
+          <div class="p-6 text-center">
+            <button
+              class="text-primary border-primary hover:bg-primary/5 font-medium py-2 px-4 rounded-md bg-transparent inline-flex items-center"
+              aria-label="Ver todos los reportes de la comunidad"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Ver Todos los Reportes
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Info -->
+    <footer class="bg-gray-50 rounded-lg p-6 mt-12">
+      <div class="text-center">
+        <h3 class="text-xl mb-3">Tu Contribución Hace la Diferencia</h3>
+        <p class="text-lg mb-4">
+          Gracias por ser parte activa de la comunidad de seguridad universitaria.
+          Cada reporte contribuye a mantener nuestro campus más seguro.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 mb-6">
+          <span class="text-base px-4 py-2 border border-gray-300 rounded-full">
+            🔒 100% Anónimo
+          </span>
+          <span class="text-base px-4 py-2 border border-gray-300 rounded-full">
+            ⚡ Respuesta Rápida
+          </span>
+          <span class="text-base px-4 py-2 border border-gray-300 rounded-full">
+            🛡️ Seguro y Confiable
+          </span>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- SOS Button -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <button class="bg-red-600 hover:bg-red-700 text-white shadow-2xl border-4 border-white h-20 w-20 rounded-full p-0 animate-pulse flex items-center justify-center flex-col">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span class="font-black text-sm">SOS</span>
+    </button>
+    <div class="absolute inset-0 bg-red-600 rounded-full animate-ping opacity-30 pointer-events-none"></div>
+  </div>
+</div>
