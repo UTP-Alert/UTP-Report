@@ -19,26 +19,23 @@
 }
 
 .panel-header {
-  text-align: center;
-  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1.5rem;
 }
 
-.panel-header i {
-  font-size: 2.5rem;
-  color: var(--primary);
-  margin-bottom: 0.5rem;
+.panel-header .title-icon {
+  width: 28px;
+  height: 28px;
+  color: #f5b700; /* dorado/amarillo */
+  flex: 0 0 auto;
 }
 
-.panel-header h1 {
-  font-size: 2rem;
-  color: var(--foreground);
-  margin: 0.5rem 0;
-}
+.panel-header .title-block { display:flex; flex-direction:column; }
+.panel-header h1 { font-size: 1.75rem; color: var(--foreground); margin: 0; }
 
-.panel-header p {
-  color: var(--muted-foreground);
-  font-size: 1rem;
-}
+.panel-header p { color: var(--muted-foreground); font-size: .95rem; margin: 0; }
 
 /* Summary section */
 .summary-section {
@@ -58,39 +55,60 @@
   gap: 0.75rem;
 }
 
+.summary-section .section-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--primary);
+  flex: 0 0 auto;
+}
+
 .summary-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
 }
 
 .summary-cards .card {
-  background-color: var(--muted);
+  display: flex;
+  align-items: center;
+  flex-direction: row; /* asegurar icono a la izquierda y texto a la derecha */
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: .75rem;
   border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  text-align: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background: var(--card);
 }
 
-.summary-cards .card i {
-  font-size: 2rem;
-  color: var(--primary);
-  margin-bottom: 0.75rem;
-}
+.summary-cards .card .summary-icon { width: 24px; height: 24px; flex: 0 0 auto; }
 
-.summary-cards .card span {
-  display: block;
-  font-size: 2.2rem;
-  font-weight: bold;
-  color: var(--foreground);
-  margin-bottom: 0.5rem;
-}
+.summary-cards .card .metric { display:flex; flex-direction:column; gap:.25rem; }
+.summary-cards .card .metric-value { font-size: 1.375rem; font-weight: 500; color: var(--foreground); line-height:1; }
+.summary-cards .card .metric-label { color: var(--foreground); font-size: .9rem; opacity:.9; font-weight: 400; }
 
-.summary-cards .card p {
-  color: var(--muted-foreground);
-  font-size: 0.9rem;
+/* Colores por tarjeta */
+.summary-cards .card.sedes {
+  background: #eef5ff;
+  border-color: #cfe1ff;
 }
+.summary-cards .card.sedes .summary-icon { color: #2f6fee; }
+
+.summary-cards .card.paginas {
+  background: #edf9f3;
+  border-color: #cfeee0;
+}
+.summary-cards .card.paginas .summary-icon { color: #1aa16a; }
+
+.summary-cards .card.incidentes {
+  background: #f4efff;
+  border-color: #e2d9ff;
+}
+.summary-cards .card.incidentes .summary-icon { color: #7a5af8; }
+
+.summary-cards .card.estado {
+  background: #fff4ea;
+  border-color: #ffd8b5;
+}
+.summary-cards .card.estado .summary-icon { color: #ff8a3d; }
 
 .summary-cards .status-card i {
   color: #28a745; /* Placeholder for a success color */
@@ -98,38 +116,65 @@
 
 /* Navigation tabs */
 .navigation-tabs {
-  background-color: var(--card);
-  padding: 1rem 1.5rem;
-  border-radius: 0.5rem;
+  background-color: #f3f4f6; /* gris del bloque */
+  padding: .5rem .5rem;
+  border-radius: .75rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e5e7eb; /* contorno suave del bloque */
+  overflow: hidden; /* evita desbordes visuales */
 }
 
 .navigation-tabs ul {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  display: flex; /* distribución en línea */
+  justify-content: space-between; /* ocupa todo el ancho con espacios */
+  align-items: center;
+  gap: .75rem;
+  width: 100%;
 }
+
+.navigation-tabs li { min-width: 0; }
 
 .navigation-tabs a {
   text-decoration: none;
-  color: var(--muted-foreground);
+  color: var(--foreground);
   font-weight: 500;
-  padding: 0.75rem 1.25rem;
-  border-radius: 0.375rem;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  display: flex;
+  padding: .32rem .6rem; /* aún más delgado */
+  border-radius: 999px;
+  transition: background-color .2s ease, color .2s ease, box-shadow .2s ease;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: .5rem;
+  background: transparent; /* que se vea el gris del bloque */
+  border: none; /* sin borde en estado inactivo */
+  width: auto; /* tamaño por contenido */
+  justify-content: center;
+  white-space: nowrap; /* sin saltos de línea */
+  line-height: 1.1;
+  box-sizing: border-box;
+  min-height: 32px; /* altura consistente, evita que el texto se salga */
 }
 
-.navigation-tabs a:hover,
+.navigation-tabs a:hover { background: rgba(255,255,255,.5); }
 .navigation-tabs a.active {
-  background-color: var(--primary);
-  color: var(--primary-foreground);
+  background-color: #ffffff; /* pastilla activa blanca */
+  color: var(--foreground);
+  border: none; /* sin borde visible en activo */
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  font-weight: 600;
+}
+
+/* Icono en las pestañas */
+.navigation-tabs .tab-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px; /* evitar que flex estire el svg */
+  aspect-ratio: 1 / 1;
+  vertical-align: middle;
 }
 
 /* User Management Section */

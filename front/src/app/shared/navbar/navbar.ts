@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { PerfilService } from '../../services/perfil.service';
 import { ROLES } from '../../constants/roles';
+import { PageConfigService, PageKey } from '../../services/page-config.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +18,7 @@ export class NavbarComponent {
   private router = inject(Router);
   auth = inject(AuthService);
   perfilSrv = inject(PerfilService);
+  pageCfg = inject(PageConfigService);
 
   // Estado público requerido
   userRole = signal<string>('');
@@ -121,6 +123,12 @@ export class NavbarComponent {
     if (this.auth.hasRole(ROLES.SEGURIDAD)) return ROLES.SEGURIDAD;
     if (this.auth.hasRole(ROLES.USUARIO)) return ROLES.USUARIO;
     return '';
+  }
+
+  // Chequeo de página habilitada para el rol actual
+  canShow(page: PageKey): boolean {
+    const role = this.primaryRole();
+    return this.pageCfg.isEnabled(role as any, page);
   }
 
   isActive(key: 'home'|'zonas'|'reportes'|'usuarios'|'sensibles'|'guia'): boolean {

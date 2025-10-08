@@ -2,402 +2,116 @@
   
   <main class="dashboard-content">
     <div class="panel-header">
-      <i class="fas fa-crown"></i>
-      <h1>Panel de Superusuario</h1>
-      <p>Control total del sistema de seguridad universitaria</p>
+      <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6l4 6l5 -4l-2 10h-14l-2 -10l5 4z" /></svg>
+      <div class="title-block">
+        <h1>Panel de Superadministrador</h1>
+        <p>Control total del sistema de seguridad universitaria</p>
+      </div>
     </div>
 
     <section class="summary-section">
-      <h2><i class="fas fa-cog"></i> Resumen del Sistema</h2>
+      <h2>
+        <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" /><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /></svg>
+        Resumen del Sistema
+      </h2>
       <div class="summary-cards">
-        <div class="card">
-          <i class="fas fa-building"></i>
-          <span>1</span>
-          <p>Sedes Activas</p>
+        <div class="card sedes">
+          <svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" /><path d="M9 8l1 0" /><path d="M9 12l1 0" /><path d="M9 16l1 0" /><path d="M14 8l1 0" /><path d="M14 12l1 0" /><path d="M14 16l1 0" /><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16" /></svg>
+          <div class="metric">
+            <div class="metric-value">{{ sedes.length || 0 }}</div>
+            <div class="metric-label">Sedes Activas</div>
+          </div>
         </div>
-        <div class="card">
-          <i class="fas fa-desktop"></i>
-          <span>4</span>
-          <p>Páginas Activas</p>
+        <div class="card paginas">
+          <svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 5a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10z" /><path d="M7 20h10" /><path d="M9 16v4" /><path d="M15 16v4" /></svg>
+          <div class="metric">
+            <div class="metric-value">{{ pagesActiveCount }}</div>
+            <div class="metric-label">Páginas Activas</div>
+          </div>
         </div>
-        <div class="card">
-          <i class="fas fa-exclamation-triangle"></i>
-          <span>7</span>
-          <p>Tipos de Incidentes</p>
+        <div class="card incidentes">
+          <svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" /></svg>
+          <div class="metric">
+            <div class="metric-value">{{ tiposIncidente.length || 0 }}</div>
+            <div class="metric-label">Tipos de Incidentes</div>
+          </div>
         </div>
-        <div class="card status-card">
-          <i class="fas fa-check-circle"></i>
-          <span>Activo</span>
-          <p>Estado del Sistema</p>
+        <div class="card estado">
+          <svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16 9a3 3 0 1 1 -3 3l.005 -.176a3 3 0 0 1 2.995 -2.824" /><path d="M16 5a7 7 0 0 1 0 14h-8a7 7 0 0 1 0 -14zm0 2h-8a5 5 0 1 0 0 10h8a5 5 0 0 0 0 -10" /></svg>
+          <div class="metric">
+            <div class="metric-value">Activo</div>
+            <div class="metric-label">Estado del Sistema</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="navigation-tabs">
+  <section class="navigation-tabs">
       <ul>
-        <li><a href="#" class="active"><i class="fas fa-users-cog"></i> Gestión de Usuarios</a></li>
-        <li><a href="#"><i class="fas fa-file-alt"></i> Reportes Sensibles</a></li>
-        <li><a href="#"><i class="fas fa-file"></i> Páginas</a></li>
-        <li><a href="#"><i class="fas fa-building"></i> Sedes</a></li>
-        <li><a href="#"><i class="fas fa-exclamation-triangle"></i> Tipos de Incidentes</a></li>
-        <li><a href="#"><i class="fas fa-comment-dots"></i> Feedback</a></li>
+        <li>
+          <a href="/superadmin/dashboard/gestion-usuarios" [class.active]="activeTab==='gestion-usuarios'" (click)="setActiveTab('gestion-usuarios', $event)"
+          >
+            <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M16 19h6" /><path d="M19 16v6" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /></svg>
+            Gestión de Usuarios
+          </a>
+        </li>
+        <li>
+          <a href="/superadmin/dashboard/reportes-sensibles" [class.active]="activeTab==='reportes-sensibles'" (click)="setActiveTab('reportes-sensibles', $event)">
+            <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" /></svg>
+            Reportes Sensibles
+          </a>
+        </li>
+        <li>
+          <a href="/superadmin/dashboard/paginas" [class.active]="activeTab==='paginas'" (click)="setActiveTab('paginas', $event)">
+            <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 10a2 2 0 0 1 2 -2h9a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-9a2 2 0 0 1 -2 -2z" /><path d="M16 8v-3a2 2 0 0 0 -2 -2h-9a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h3" /></svg>
+            Páginas
+          </a>
+        </li>
+        <li>
+          <a href="/superadmin/dashboard/sedes" [class.active]="activeTab==='sedes'" (click)="setActiveTab('sedes', $event)">
+            <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" /><path d="M9 8l1 0" /><path d="M9 12l1 0" /><path d="M9 16l1 0" /><path d="M14 8l1 0" /><path d="M14 12l1 0" /><path d="M14 16l1 0" /><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16" /></svg>
+            Sedes
+          </a>
+        </li>
+        <li>
+          <a href="/superadmin/dashboard/tipos-incidentes" [class.active]="activeTab==='tipos-incidentes'" (click)="setActiveTab('tipos-incidentes', $event)">
+            <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" /><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /></svg>
+            Tipos de Incidentes
+          </a>
+        </li>
+        <li>
+          <a href="/superadmin/dashboard/feedback" [class.active]="activeTab==='feedback'" (click)="setActiveTab('feedback', $event)">
+            <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" /></svg>
+            Feedback
+          </a>
+        </li>
       </ul>
     </section> <!-- Closing tag for navigation-tabs section -->
 
-    <section class="user-management-section">
-      <div class="section-header">
-        <i class="fas fa-users-cog"></i>
-        <h2>Gestión de Usuarios</h2>
-      </div>
-      <p class="section-description">
-        - Panel exclusivo del SuperAdmin para administrar todos los usuarios del sistema UTP+Report.
-      </p>
+      <section id="paginas" class="user-management-section" *ngIf="activeTab==='paginas'">
+        <app-paginas></app-paginas>
+      </section>
 
-      <div class="user-stats">
-        <h2>Gestión de Usuarios del Sistema</h2>
-        <div class="stats-cards">
-          <div class="stat-card">
-            <i class="fas fa-user-graduate"></i>
-            <span>1</span>
-            <p>Estudiantes</p>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-chalkboard-teacher"></i>
-            <span>0</span>
-            <p>Docentes</p>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-user-shield"></i>
-            <span>1</span>
-            <p>Administradores</p>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-user-tie"></i>
-            <span>1</span>
-            <p>Personal Seguridad</p>
-          </div>
-          <div class="stat-card active-users">
-            <i class="fas fa-users"></i>
-            <span>4</span>
-            <p>Usuarios Activos</p>
-          </div>
-        </div>
-      </div>
+    <!-- Secciones de destino para pestañas -->
+      <section id="reportes-sensibles" class="user-management-section" style="margin-top:1rem;" *ngIf="activeTab==='reportes-sensibles'">
+        <app-reportes-sensibles></app-reportes-sensibles>
+      </section>
 
-      <div class="user-filters">
-        <input type="text" placeholder="Buscar usuarios...">
-        <select>
-          <option>Todos los roles</option>
-        </select>
-        <select>
-          <option>Todos los estados</option>
-        </select>
-        <button class="clear-filters-btn">Limpiar Filtros</button>
-        <button class="create-user-btn" (click)="isCreating = true"><i class="fas fa-user-plus"></i> Crear
-          Usuario</button>
-      </div>
+      <section id="sedes" class="user-management-section" style="margin-top:1.5rem;" *ngIf="activeTab==='sedes'">
+        <app-sedes></app-sedes>
+      </section>
 
-      <!-- FORMULARIO DE CREACIÓN/EDICIÓN DE USUARIOS -->
-      <div *ngIf="isCreating || editingUser" class="card border-primary bg-red-50 mb-6">
-        <div class="card-header">
-          <h2 class="card-title">
-            {{ editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario' }}
-          </h2>
-        </div>
-        <div class="card-content space-y-4">
+      <section id="tipos-incidentes" class="user-management-section" style="margin-top:1.5rem;" *ngIf="activeTab==='tipos-incidentes'">
+        <app-tipo-incidentes></app-tipo-incidentes>
+      </section>
 
-          <!-- CAMPOS PRINCIPALES EN GRID 3 COLUMNAS -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <section id="feedback" class="user-management-section" style="margin-top:1.5rem;" *ngIf="activeTab==='feedback'">
+        <app-feed-back></app-feed-back>
+      </section>
 
-            <!-- 1. NOMBRE COMPLETO -->
-            <div>
-              <label class="block text-sm font-medium mb-1">Nombre Completo</label>
-              <input type="text" placeholder="Ej: Juan Pérez" [(ngModel)]="formData.name"
-                [class.border-red-500]="formErrors.name" class="input-field" />
-              <p *ngIf="formErrors.name" class="text-xs text-red-500 mt-1">{{ formErrors.name }}</p>
-            </div>
+      <section id="gestion-usuarios" class="user-management-section" *ngIf="activeTab==='gestion-usuarios'">
+        <app-gestor-usuario></app-gestor-usuario>
+      </section>
 
-            <div>
-              <label class="block text-sm font-medium mb-1">Username</label>
-              <input type="text" placeholder="Ej: U2234567" [(ngModel)]="formData.username"
-                [class.border-red-500]="formErrors.username" class="input-field" />
-              <p *ngIf="formErrors.username" class="text-xs text-red-500 mt-1">{{ formErrors.username }}</p>
-            </div>
-
-
-
-
-            <!-- 2. EMAIL CON VALIDACIÓN AUTOMÁTICA POR ROL -->
-            <div>
-              <label class="block text-sm font-medium mb-1">Email</label>
-              <input type="email" [placeholder]="
-                  formData.role === 'user' ? (
-                    formData.userType === 'alumno' ? 'U1234567@utp.edu.pe' : 'C54321@utp.edu.pe'
-                  ) :
-                  formData.role === 'admin' ? 'D1234567@utp.edu.pe' :
-                  formData.role === 'seguridad' ? 'S001@utp.edu.pe' :
-                  'usuario@utp.edu.pe'
-                " [(ngModel)]="formData.correo" [class.border-red-500]="formErrors.correo" class="input-field" />
-              <p *ngIf="formErrors.correo" class="text-xs text-red-500 mt-1">{{ formErrors.correo }}</p>
-
-              <!-- HINTS DINÁMICOS SEGÚN ROL -->
-              <p *ngIf="formData.role === 'usuario' && formData.userType === 'alumno'"
-                class="text-xs text-gray-500 mt-1">
-                Para estudiantes: usar código UTP (Ej: U1234567@utp.edu.pe)
-              </p>
-              <p *ngIf="formData.role === 'usuario' && formData.userType === 'docente'"
-                class="text-xs text-gray-500 mt-1">
-                Para docentes: usar código UTP (Ej: C54321@utp.edu.pe)
-              </p>
-              <p *ngIf="formData.role === 'admin'" class="text-xs text-gray-500 mt-1">
-                Para administradores: usar código personal (Ej: D1234567@utp.edu.pe)
-              </p>
-              <p *ngIf="formData.role === 'seguridad'" class="text-xs text-gray-500 mt-1">
-                Para seguridad: usar código de empleado (Ej: S001@utp.edu.pe)
-              </p>
-            </div>
-
-            <!-- 3. CONTRASEÑA -->
-            <div class="relative">
-              <label class="block text-sm font-medium mb-1">Contraseña</label>
-              <input [type]="showPassword ? 'text' : 'password'" placeholder="Mínimo 6 caracteres"
-                [(ngModel)]="formData.password" [class.border-red-500]="formErrors.password" class="input-field pr-10" />
-              <button type="button" (click)="togglePasswordVisibility()"
-                class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 h-full password-toggle-btn">
-                <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
-              </button>
-              <p *ngIf="formErrors.password" class="text-xs text-red-500 mt-1">{{ formErrors.password }}</p>
-              <p class="text-xs text-gray-500 mt-1">
-                {{ editingUser ? 'Dejar en blanco para mantener contraseña actual' : 'Contraseña para acceder al
-                sistema' }}
-              </p>
-            </div>
-
-            <!-- 4. TELÉFONO -->
-            <div>
-              <label class="block text-sm font-medium mb-1">Teléfono</label>
-              <input type="text" placeholder="999000000" [(ngModel)]="formData.phone" maxlength="9"
-                [class.border-red-500]="formErrors.phone" class="input-field" />
-              <p *ngIf="formErrors.phone" class="text-xs text-red-500 mt-1">{{ formErrors.phone }}</p>
-            </div>
-
-            <!-- 5. ROL CON ICONOS -->
-            <div>
-              <label class="block text-sm font-medium mb-1">Rol</label>
-              <select [(ngModel)]="formData.role" (change)="onRoleChange($event)"
-                [class.border-red-500]="formErrors.role" class="select-field">
-                <option value="" disabled selected>Seleccionar Rol</option> <!-- Added default option -->
-                <option *ngFor="let roleKey of (roleConfig | keyvalue)" [value]="roleKey.key">
-                  <i [class]="roleKey.value.icon"></i> {{ roleKey.value.label }}
-                </option>
-              </select>
-              <p *ngIf="formErrors.role" class="text-xs text-red-500 mt-1">{{ formErrors.role }}</p>
-            </div>
-
-            <!-- 6. SEDE -->
-            <div>
-              <label class="block text-sm font-medium mb-1">Sede</label>
-              <select [(ngModel)]="formData.campus" [class.border-red-500]="formErrors.campus" class="select-field">
-                <option value="" disabled selected>Seleccionar Sede</option> <!-- Added default option -->
-                <!-- Mostrar mensaje cuando no haya sedes -->
-                <option *ngIf="sedes.length === 0" value="" disabled>
-                  No hay sedes disponibles
-                </option>
-
-                <!-- Mostrar las sedes disponibles -->
-                <option *ngFor="let sede of sedes" [value]="sede.id">
-                  <i class="fas fa-building"></i> {{ sede.nombre }}
-                </option>
-              </select>
-              <p *ngIf="formErrors.campus" class="text-xs text-red-500 mt-1">{{ formErrors.campus }}</p>
-            </div>
-          </div>
-
-          <!-- SECCIÓN ESPECIAL: TIPO DE USUARIO (Solo para rol 'user') -->
-          <div *ngIf="formData.role === 'usuario'" class="bg-blue-50 border-2 border-blue-200 p-4 rounded-lg">
-            <label class="block text-sm font-medium mb-2 text-blue-800 flex items-center gap-2">
-              <i class="fas fa-user h-4 w-4"></i>
-              👥 Tipo de Usuario (OBLIGATORIO)
-            </label>
-            <select [(ngModel)]="formData.userType" [class.border-red-500]="formErrors.userType"
-              class="select-field border-blue-300">
-              <option value="" disabled selected>Seleccionar Tipo de Usuario</option> <!-- Added default option -->
-              <option value="alumno">
-                <i class="fas fa-graduation-cap h-4 w-4 text-blue-600"></i>
-                <span>👨‍🎓 alumno</span>
-                <span class="badge ml-2 bg-blue-100 text-blue-700">U1234567</span>
-              </option>
-              <option value="docente">
-                <i class="fas fa-book-open h-4 w-4 text-purple-600"></i>
-                <span>👨‍🏫 Docente</span>
-                <span class="badge ml-2 bg-purple-100 text-purple-700">C54321</span>
-              </option>
-            </select>
-            <p *ngIf="formErrors.userType" class="text-xs text-red-500 mt-1">{{ formErrors.userType }}</p>
-            <p class="text-xs text-blue-600 mt-2">
-              ℹ️ Selecciona si es estudiante o docente para determinar el formato del código UTP
-            </p>
-          </div>
-
-          <!-- SECCIÓN ESPECIAL: ZONAS ASIGNADAS (Solo para rol 'seguridad') -->
-
-
-          <div *ngIf="formData.role === 'seguridad'"
-            class="border-t-2 border-primary pt-6 mt-4 bg-green-50 p-4 rounded-lg">
-
-
-
-            <!-- Título de la sección -->
-            <label class="block text-lg font-medium mb-4 flex items-center gap-2 text-green-800">
-              <i class="fas fa-map-marker-alt h-5 w-5 text-green-600"></i>
-              🗺️ Zonas Designadas para Patrullaje (OBLIGATORIO)
-            </label>
-
-
-
-            <div class="space-y-3">
-              <!-- ALERTA CUANDO NO HAY ZONAS -->
-              <div *ngIf="formData.assignedZones.length === 0"
-                class="bg-red-50 border-2 border-red-200 p-4 rounded-lg">
-                <div class="flex items-center gap-2 text-red-800 mb-2">
-                  <i class="fas fa-map-marker-alt h-5 w-5"></i>
-                  <span class="font-medium">🚨 SIN ZONAS ASIGNADAS</span>
-                </div>
-                <p class="text-sm text-red-700">
-                  Debes asignar al menos una zona antes de poder crear este usuario de seguridad.
-                </p>
-              </div>
-
-              <!-- ZONAS ACTUALMENTE ASIGNADAS -->
-              <div *ngIf="formData.assignedZones.length > 0"
-                class="bg-green-50 border-2 border-green-200 p-3 rounded-lg">
-                <p class="text-sm font-medium text-green-800 mb-2 flex items-center gap-2">
-                  <i class="fas fa-map-marker-alt h-4 w-4"></i>
-                  ✅ Zonas asignadas ({{ formData.assignedZones.length }}):
-                </p>
-                <div class="flex flex-wrap gap-2">
-                  <span *ngFor="let zone of formData.assignedZones"
-                    class="badge pr-1 bg-white border-green-300 font-bold text-green-800">
-                    {{ zone.nombre }}
-                    <button type="button" (click)="handleRemoveZone(zone)"
-                      class="ml-2 h-4 w-4 p-0 hover:bg-red-100 remove-zone-btn">
-                      <i class="fas fa-times h-3 w-3"></i>
-                    </button>
-                  </span>
-                </div>
-              </div>
-
-              <!-- SELECTOR PARA AGREGAR ZONAS -->
-              <div>
-                <p class="text-sm font-medium text-green-800 mb-2 flex items-center gap-2">
-                  <i class="fas fa-map-marker-alt h-4 w-4"></i>
-                  Agregar zona de la sede:
-                </p>
-                <select (change)="onAddZoneChange($event)" class="select-field"
-                  [class.border-red-300]="formData.assignedZones.length === 0 || formErrors.assignedZones"
-                  [class.bg-red-50]="formData.assignedZones.length === 0 || formErrors.assignedZones"
-                  [class.border-green-300]="formData.assignedZones.length > 0">
-                  <option value="" disabled selected>
-                    {{ filteredAvailableZones.length === 0
-                    ? "⚠️ No hay zonas disponibles para asignar"
-                    : (formData.assignedZones.length === 0
-                    ? "🚨 SELECCIONAR ZONA OBLIGATORIA"
-                    : "Seleccionar zona adicional")
-                    }}
-                  </option>
-
-                  <option *ngFor="let zone of filteredAvailableZones" [value]="zone.id">
-                    <i class="fas fa-map-marker-alt h-4 w-4 text-green-600"></i>
-                    {{ zone.nombre }}
-                  </option>
-                </select>
-                <p *ngIf="formErrors.assignedZones" class="text-xs text-red-500 mt-1">{{ formErrors.assignedZones }}</p>
-            </div>
-
-
-          </div>
-
-
-
-
-        </div>
-
-
-
-
-        <!-- BOTONES DE ACCIÓN -->
-        <div class="flex justify-end gap-3 pt-4 border-t">
-          <button type="button" class="btn btn-outline" (click)="resetForm()">
-            Cancelar
-          </button>
-          <button type="button" (click)="editingUser ? handleUpdateUser() : handleCreateUser()"
-            class="btn bg-primary hover:bg-primary/90">
-            {{ editingUser ? 'Actualizar Usuario' : 'Crear Usuario' }}
-          </button>
-        </div>
-      </div>
-</div>
-
-<div class="user-list">
-  <h3>Lista de Usuarios (3)</h3>
-  <div class="user-item">
-    <div class="user-info">
-      <i class="fas fa-user-circle user-icon admin"></i>
-      <div>
-        <p class="user-name">Admin García</p>
-        <p class="user-email">D1234567@utp.edu.pe</p>
-        <div class="user-tags">
-          <span class="tag admin-tag">Administrador</span>
-          <span class="tag active-tag">Activo</span>
-          <span class="tag location-tag"><i class="fas fa-map-marker-alt"></i> UTP Campus Principal</span>
-        </div>
-      </div>
-    </div>
-    <div class="user-actions">
-      <button><i class="fas fa-edit"></i> Editar</button>
-      <button><i class="fas fa-ban"></i> Desactivar</button>
-      <button><i class="fas fa-trash-alt"></i> Eliminar</button>
-    </div>
-  </div>
-  <div class="user-item">
-    <div class="user-info">
-      <i class="fas fa-user-circle user-icon security"></i>
-      <div>
-        <p class="user-name">Oficial Seguridad</p>
-        <p class="user-email">S001@utp.edu.pe</p>
-        <div class="user-tags">
-          <span class="tag security-tag">Seguridad</span>
-          <span class="tag active-tag">Activo</span>
-          <span class="tag location-tag"><i class="fas fa-map-marker-alt"></i> UTP Campus Principal</span>
-        </div>
-      </div>
-    </div>
-    <div class="user-actions">
-      <button><i class="fas fa-edit"></i> Editar</button>
-      <button><i class="fas fa-ban"></i> Desactivar</button>
-      <button><i class="fas fa-trash-alt"></i> Eliminar</button>
-    </div>
-  </div>
-  <div class="user-item">
-    <div class="user-info">
-      <i class="fas fa-user-circle user-icon user"></i>
-      <div>
-        <p class="user-name">Juan Pérez</p>
-        <p class="user-email">U1234567@utp.edu.pe</p>
-        <div class="user-tags">
-          <span class="tag user-tag">Usuario</span>
-          <span class="tag active-tag">Activo</span>
-          <span class="tag location-tag"><i class="fas fa-map-marker-alt"></i> UTP Campus Principal</span>
-        </div>
-      </div>
-    </div>
-    <div class="user-actions">
-      <button><i class="fas fa-edit"></i> Editar</button>
-      <button><i class="fas fa-ban"></i> Desactivar</button>
-      <button><i class="fas fa-trash-alt"></i> Eliminar</button>
-    </div>
-  </div>
-</div>
-</section>
 </main>
 </div>

@@ -181,11 +181,11 @@
 
 /* Evitar que el contenido quede oculto bajo el navbar fijo */
 body {
-  padding-top: 64px;
+  padding-top: 72px; /* altura extra para navbar con píldoras e iconos */
 }
 
 @media (max-width: 992px) {
   body {
-    padding-top: 56px;
+    padding-top: 64px; /* navbar compacto en móviles */
   }
 }

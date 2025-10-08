@@ -15,7 +15,7 @@
       <!-- Left/Common links -->
   <ul class="navbar-nav mx-auto mb-2 mb-lg-0 left-nav">
         <!-- Inicio siempre -->
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="canShow('home')">
           <a class="nav-link" [routerLink]="getHomePath()" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l-2 0l9 -9l9 9l-2 0" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
             <span>Inicio</span>
@@ -28,10 +28,10 @@
           <li class="nav-item"><a class="nav-link" [routerLink]="['/superadmin','usuarios']" routerLinkActive="active">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>
             <span>Gestión de Usuarios</span></a></li>
-          <li class="nav-item"><a class="nav-link" [routerLink]="['/superadmin','reportes-sensibles']" routerLinkActive="active">
+          <li class="nav-item" *ngIf="canShow('sensibles')"><a class="nav-link" [routerLink]="['/superadmin','reportes-sensibles']" routerLinkActive="active">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" /></svg>
             <span>Reportes Sensibles</span></a></li>
-          <li class="nav-item"><a class="nav-link" [routerLink]="getZonasPath()" routerLinkActive="active">
+          <li class="nav-item" *ngIf="canShow('zonas')"><a class="nav-link" [routerLink]="getZonasPath()" routerLinkActive="active">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" /></svg>
             <span>Estado de Zonas</span></a></li>
         </ng-container>
@@ -39,27 +39,27 @@
         <!-- ADMIN (rol admin no actuando como usuario): Inicio, Estado de Zonas, Reportes -->
         <ng-container *ngIf="isAdmin()">
           <!-- Inicio ya está arriba común -->
-          <li class="nav-item"><a class="nav-link" [routerLink]="getZonasPath()" routerLinkActive="active">
+          <li class="nav-item" *ngIf="canShow('zonas')"><a class="nav-link" [routerLink]="getZonasPath()" routerLinkActive="active">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" /></svg>
             <span>Estado de Zonas</span></a></li>
-          <li class="nav-item"><a class="nav-link" [routerLink]="['/admin','reportes']" routerLinkActive="active">
+          <li class="nav-item" *ngIf="canShow('reportes')"><a class="nav-link" [routerLink]="['/admin','reportes']" routerLinkActive="active">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 17h6" /><path d="M9 13h6" /></svg>
             <span>Reportes</span></a></li>
         </ng-container>
 
         <!-- USUARIO puro o Admin actuando como usuario -->
         <ng-container *ngIf="isUsuario() || isAdminAsUser()">
-          <li class="nav-item"><a class="nav-link" [routerLink]="getZonasPath()" routerLinkActive="active">
+          <li class="nav-item" *ngIf="canShow('zonas')"><a class="nav-link" [routerLink]="getZonasPath()" routerLinkActive="active">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" /></svg>
             <span>Estado de Zonas</span></a></li>
-          <li class="nav-item"><a class="nav-link" [routerLink]="['/usuario','guia']" routerLinkActive="active">
+          <li class="nav-item" *ngIf="canShow('guia')"><a class="nav-link" [routerLink]="['/usuario','guia']" routerLinkActive="active">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 16v.01" /><path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" /></svg>
             <span>Guía</span></a></li>
         </ng-container>
 
         <!-- SEGURIDAD -->
         <ng-container *ngIf="isSeguridad()">
-          <li class="nav-item"><a class="nav-link" [routerLink]="getZonasPath()" routerLinkActive="active">
+          <li class="nav-item" *ngIf="canShow('zonas')"><a class="nav-link" [routerLink]="getZonasPath()" routerLinkActive="active">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" /></svg>
             <span>Estado de Zonas</span></a></li>
         </ng-container>

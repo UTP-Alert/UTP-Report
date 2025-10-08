@@ -1,30 +1,54 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule, KeyValuePipe } from '@angular/common'; // Import CommonModule and KeyValuePipe
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Import CommonModule
 import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
 import { RegistroAdminDTO, RegistroDTO, RegistroSecurityDTO, UsuarioRolService } from '../../services/usuario-rol.service';
 import { Sede, SedeService } from '../../services/sede.service';
 import { Zona, ZonaService } from '../../services/zona.service';
+import { IncidenteService } from '../../services/incidente.service';
+import { PageConfigService } from '../../services/page-config.service';
 import { AuthService } from '../../services/auth.service';
+import { ROLES } from '../../constants/roles';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Paginas } from '../paginas/paginas';
+import { ReportesSensibles } from '../reportes-sensibles/reportes-sensibles';
+import { Sedes } from '../sedes/sedes';
+import { TipoIncidentes } from '../tipo-incidentes/tipo-incidentes';
+import { FeedBack } from '../feed-back/feed-back';
+import { GestorUsuario } from '../gestor-usuario/gestor-usuario';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, FormsModule, KeyValuePipe], // Add KeyValuePipe here
+  imports: [CommonModule, FormsModule, Paginas, ReportesSensibles, Sedes, TipoIncidentes, FeedBack, GestorUsuario],
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss'
 })
-export class Inicio implements OnInit {
+export class Inicio implements OnInit, OnDestroy {
   // -------------------------------
   // 🔹 1. Variables de datos
   // -------------------------------
   sedes: Sede[] = [];
   zonas: Zona[] = [];
+  tiposIncidente: any[] = [];
+  // Configuración de páginas por rol
+  rolesOrder: string[] = [ROLES.USUARIO, ROLES.ADMIN, ROLES.SEGURIDAD, ROLES.SUPERADMIN];
+  pages: Array<{ key: 'home'|'zonas'|'reportes'|'usuarios'|'sensibles'|'guia'; label: string }> = [
+    { key: 'home', label: 'Inicio' },
+    { key: 'zonas', label: 'Estado de Zonas' },
+    { key: 'reportes', label: 'Reportes' },
+    { key: 'usuarios', label: 'Gestión de Usuarios' },
+    { key: 'sensibles', label: 'Reportes Sensibles' },
+    { key: 'guia', label: 'Guía' },
+  ];
 
   isSessionActive: boolean = true;
 
   isCreating: boolean = false;
   editingUser: any = null;
   showPassword = false; // New property for password visibility
+  // pestaña activa en la barra
+  activeTab: 'gestion-usuarios' | 'reportes-sensibles' | 'paginas' | 'sedes' | 'tipos-incidentes' | 'feedback' = 'gestion-usuarios';
+  private readonly allowedTabs = ['gestion-usuarios','reportes-sensibles','paginas','sedes','tipos-incidentes','feedback'] as const;
 
   // -------------------------------
   // 🔹 2. Constructor e inicialización
@@ -33,12 +57,29 @@ export class Inicio implements OnInit {
     private usuarioRolService: UsuarioRolService,
     private sedeService: SedeService,
     private zonaService: ZonaService,
+    private incidenteService: IncidenteService,
+    private pageConfig: PageConfigService,
     private auth: AuthService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) { }
   ngOnInit(): void {
     
     this.cargarSedes();
     this.cargarZonas();
+    this.cargarTiposIncidente();
+
+    // Establecer pestaña activa desde el segmento de URL si existe
+    this.route.paramMap.subscribe(pm => {
+      const tab = pm.get('tab');
+      if (tab && (this.allowedTabs as readonly string[]).includes(tab)) {
+        this.activeTab = tab as typeof this.allowedTabs[number];
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    // sin listeners del hash
   }
 
 
@@ -52,6 +93,20 @@ export class Inicio implements OnInit {
     });
   }
 
+  // Páginas activas total para la tarjeta
+  get pagesActiveCount(): number {
+    return this.pageConfig.activeCount();
+  }
+
+  // Gestión de configuración de páginas por rol
+  isPageEnabled(role: string, page: 'home'|'zonas'|'reportes'|'usuarios'|'sensibles'|'guia'): boolean {
+    return this.pageConfig.isEnabled(role as any, page);
+  }
+  togglePage(role: string, page: 'home'|'zonas'|'reportes'|'usuarios'|'sensibles'|'guia', event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.pageConfig.setEnabled(role as any, page, input.checked);
+  }
+
   cargarZonas(): void {
     this.zonaService.obtenerZonas().subscribe({
       next: (data) => {
@@ -59,6 +114,16 @@ export class Inicio implements OnInit {
         console.log('Zonas cargadas:', this.zonas);
       },
       error: (err) => console.error('Error al cargar zonas', err)
+    });
+  }
+
+  cargarTiposIncidente(): void {
+    this.incidenteService.obtenerTipos().subscribe({
+      next: (data) => {
+        this.tiposIncidente = data || [];
+        console.log('Tipos de incidente cargados:', this.tiposIncidente);
+      },
+      error: (err) => console.error('Error al cargar tipos de incidente', err)
     });
   }
 
@@ -388,6 +453,21 @@ export class Inicio implements OnInit {
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
+
+  setActiveTab(tab: 'gestion-usuarios' | 'reportes-sensibles' | 'paginas' | 'sedes' | 'tipos-incidentes' | 'feedback', event?: Event) {
+    if (event) event.preventDefault();
+    if (!(this.allowedTabs as readonly string[]).includes(tab)) return;
+    this.activeTab = tab;
+    // Navegar al mismo componente con segmento /superadmin/dashboard/:tab (sin #)
+    this.router.navigate(['/superadmin','dashboard', tab], { replaceUrl: true });
+    // Scroll suave a la sección correspondiente
+    const el = document.getElementById(tab);
+    if (el) {
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+    }
+  }
+
+  // Ya no se usa hash; sincronizamos con el segmento de URL
 
 
 }

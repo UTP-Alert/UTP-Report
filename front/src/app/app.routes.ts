@@ -12,6 +12,7 @@ import { AuthService } from './services/auth.service';
 
 export const routes: Routes = [
 	{ path: 'login', component: InicioSesion, canActivate: [guestGuard] },
+	{ path: 'superadmin/dashboard/:tab', component: SuperAdminInicio, canActivate: [roleGuard], data: { roles: ['ROLE_SUPERADMIN'] } },
 	{ path: 'superadmin/dashboard', component: SuperAdminInicio, canActivate: [roleGuard], data: { roles: ['ROLE_SUPERADMIN'] } },
 	{ path: 'select-role', component: RoleSelectorComponent, canActivate: [roleGuard, () => {
 		const auth = inject(AuthService);
