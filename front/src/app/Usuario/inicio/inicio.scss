@@ -292,3 +292,9 @@ body {
 
 /* Utilidad para elementos ocultos */
 .hidden { display: none; } /* Oculta elementos */
+body {
+  padding-top: 100px; /* Ajusta a la altura real del navbar */
+}
+.main-content {
+  margin-top: 70px; /* ajusta el valor si el navbar es más alto */
+}
