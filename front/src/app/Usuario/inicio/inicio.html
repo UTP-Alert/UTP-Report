@@ -519,8 +519,8 @@
   </main>
 
   <!-- Modal Reportar Ahora -->
-  <div *ngIf="showReportModal" class="modal-backdrop">
-    <div class="modal-container" role="dialog" aria-modal="true" aria-label="Reportar Incidente">
+  <div *ngIf="showReportModal" class="modal-backdrop" (click)="closeReportModal()">
+    <div class="modal-container" role="dialog" aria-modal="true" aria-label="Reportar Incidente" (click)="$event.stopPropagation()">
       <button class="modal-close" (click)="closeReportModal()" aria-label="Cerrar modal">
         ✕
       </button>

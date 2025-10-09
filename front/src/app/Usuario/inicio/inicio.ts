@@ -12,12 +12,23 @@ import { ReportaAhora } from './reporta-ahora/reporta-ahora';
 export class InicioUsuario {
   showReportModal = false;
 
-  openReportModal() { this.showReportModal = true; }
-  closeReportModal() { this.showReportModal = false; }
+  openReportModal() {
+    this.showReportModal = true;
+    try { document.body.style.overflow = 'hidden'; } catch {}
+  }
+  closeReportModal() {
+    this.showReportModal = false;
+    try { document.body.style.overflow = ''; } catch {}
+  }
 
   // Cerrar con tecla ESC
   @HostListener('document:keydown.escape') onEsc() {
     if (this.showReportModal) this.closeReportModal();
+  }
+
+  ngOnDestroy() {
+    // En caso el componente se destruya con el modal abierto, restablecer scroll
+    try { document.body.style.overflow = ''; } catch {}
   }
 
 }

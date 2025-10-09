@@ -279,7 +279,6 @@ export class ReportaAhora implements OnInit {
   enviarReporte() {
     this.attemptedSubmit = true;
     if (!this.canSubmit()) return;
-    const token = this.auth.getToken();
     this.submitting = true;
     const base = 'http://localhost:8080';
     if (!this.usuarioId) {
@@ -328,7 +327,8 @@ export class ReportaAhora implements OnInit {
         // Cierra menús de carga si quedaran abiertos
         this.showUploadMenu = false;
         this.attemptedSubmit = false;
-        alert('Reporte enviado correctamente');
+        // Cerrar el modal automáticamente tras el envío exitoso
+        try { this.close.emit(); } catch {}
       },
       error: err => {
         console.warn('Error al enviar reporte', err);
