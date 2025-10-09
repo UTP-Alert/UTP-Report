@@ -23,6 +23,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -66,10 +68,12 @@ public class Usuario implements UserDetails {
 	// Conjunto de zonas asociadas al usuario
 	private Set<Zona> zonas = new HashSet<>();
 
-	//Número de intentos fallidos de inicio de sesión.
-	private int intentos;
 	@Column(nullable = false)// El campo no puede ser nulo
 	private boolean enabled = true;// Indica si el usuario está habilitado o no
+	
+	private LocalDate fechaUltimoReporte; // Fecha del último reporte enviado
+    private int intentosReporte; // Contador de reportes diarios
+
 	@ManyToMany(fetch = FetchType.EAGER)// Un usuario puede tener muchos roles y un rol puede ser asignado a muchos usuarios
 	@JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))//Tabla intermedia para la relación muchos a muchos entre usuarios y roles.
 	private Set<Rol> roles = new HashSet<>();//Roles asociados al usuario.

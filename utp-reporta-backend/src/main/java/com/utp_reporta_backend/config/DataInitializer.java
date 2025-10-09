@@ -66,7 +66,7 @@ public class DataInitializer implements CommandLineRunner{
             superAdmin.setCorreo("superadmin@utp.edu.pe");
             superAdmin.setRoles(Set.of(rolRepository.findByNombre(ERol.ROLE_SUPERADMIN).orElseThrow()));
             superAdmin.setEnabled(true); // Habilitamos el usuario
-            superAdmin.setIntentos(0); // Reiniciamos los intentos de login
+            superAdmin.setIntentosReporte(0); // Reiniciamos los intentos de login
 
             // Encriptar la contraseña usando BCryptPasswordEncoder
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
