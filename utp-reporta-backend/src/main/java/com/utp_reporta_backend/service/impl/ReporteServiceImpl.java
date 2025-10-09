@@ -15,10 +15,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.utp_reporta_backend.enums.ERol;
 
 @Service
 public class ReporteServiceImpl implements ReporteService {
@@ -88,6 +91,25 @@ public class ReporteServiceImpl implements ReporteService {
                 .orElseThrow(() -> new RuntimeException("Usuario not found"));
         reporte.setUsuario(usuario);
 
+        // Lógica para limitar reportes diarios para usuarios con rol "USUARIO"
+        boolean isUserRole = usuario.getRoles().stream()
+                                    .anyMatch(rol -> rol.getNombre().equals(ERol.ROLE_USUARIO));
+
+        if (isUserRole) {
+            LocalDate today = LocalDate.now();
+            if (usuario.getFechaUltimoReporte() == null || !usuario.getFechaUltimoReporte().equals(today)) {
+                usuario.setFechaUltimoReporte(today);
+                usuario.setIntentosReporte(1);
+            } else {
+                if (usuario.getIntentosReporte() >= 3) {
+                    throw new RuntimeException("Ha alcanzado el límite de 3 reportes por día.");
+                }
+                usuario.setIntentosReporte(usuario.getIntentosReporte() + 1);
+            }
+            usuarioRepository.save(usuario); // Guardar los cambios en el usuario
+        }
+
+        //fin de la lógica
         reporte.setDescripcion(descripcion);
         if (foto != null && !foto.isEmpty()) {
             try {
