@@ -7,6 +7,7 @@ export interface ReporteDTO {
   tipoIncidenteId: number;
   zonaId: number;
   descripcion: string;
+  foto?: number[] | string | null;
   fechaCreacion: string;
   isAnonimo: boolean;
   contacto?: string;
@@ -37,5 +38,13 @@ export class ReporteService {
     if (params.contacto) fd.append('contacto', params.contacto);
     if (params.foto) fd.append('foto', params.foto);
     return this.http.post<ReporteDTO>(this.baseUrl, fd);
+  }
+
+  getAll(): Observable<ReporteDTO[]> {
+    return this.http.get<ReporteDTO[]>(this.baseUrl);
+  }
+
+  getById(id: number): Observable<ReporteDTO> {
+    return this.http.get<ReporteDTO>(`${this.baseUrl}/${id}`);
   }
 }

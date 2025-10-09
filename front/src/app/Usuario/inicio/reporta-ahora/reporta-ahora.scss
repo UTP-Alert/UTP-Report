@@ -13,6 +13,11 @@
 .ra-badge strong { display:block; font-size:.95rem; }
 .ra-badge span { display:block; font-size:.75rem; color:#4B5563; line-height:1rem; }
 
+/* Banners */
+.ra-banner { border-radius:10px; padding:.5rem .75rem; margin:.6rem 0; font-size:.9rem; }
+.ra-banner.success { border:1px solid #bbf7d0; background:#f0fdf4; color:#065f46; }
+.ra-banner.warn { border:1px solid #fde68a; background:#fffbeb; color:#92400e; }
+
 /* Emergencia */
 .ra-emergency { --ico-offset-y: 2px; /* ajusta aquí: ej. -1px o 1px */ border:1px solid #fecaca; background:#fff1f2; color:#991b1b; border-radius:10px; padding:.5rem .75rem; margin-bottom:.75rem; text-align:left; }
 .ra-emergency .title { margin:0 0 .15rem; font-weight:700; font-size:.95rem; display:flex; align-items:baseline; gap:.4rem; }

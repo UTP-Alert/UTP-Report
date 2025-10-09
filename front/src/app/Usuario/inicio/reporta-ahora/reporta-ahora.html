@@ -12,13 +12,14 @@
 			<div class="ra-badge">
 				<div class="dot"></div>
 				<div>
-					<strong>0/3</strong>
+					<strong>{{ reportesUsadosHoy }}/{{ reportesLimite }}</strong>
 					<span>reportes<br/>hoy</span>
 				</div>
 			</div>
 			<button type="button" class="ra-close" (click)="closeModal()" aria-label="Cerrar" title="Cerrar">×</button>
 		</div>
 	</div>
+
 
 	<!-- Alert emergencia (sin ícono, solo texto) -->
 	<div class="ra-emergency">
@@ -157,9 +158,9 @@ Descripción del agresor (si aplica)
 			<!-- Acciones -->
 			<div class="ra-actions">
 				<button type="button" class="ra-btn neutral" (click)="$event.preventDefault(); $event.stopPropagation(); closeModal()">Cancelar</button>
-				<button type="button" class="ra-btn primary" [disabled]="submitting" (click)="enviarReporte()">
+				<button type="button" class="ra-btn primary" [disabled]="submitting || limiteAlcanzado" (click)="enviarReporte()">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-					Enviar Reporte
+					{{ limiteAlcanzado ? 'Límite alcanzado' : 'Enviar Reporte' }}
 				</button>
 			</div>
 
