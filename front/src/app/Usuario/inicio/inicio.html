@@ -3,14 +3,15 @@
     <!-- Welcome Header -->
     <!-- Sección de bienvenida al usuario. Puede mostrar mensajes dinámicos del backend. -->
     <div class="mb-4 sm:mb-8 user-dashboard-welcome">
-      <!-- Alerta de bienvenida. El borde primario puede indicar importancia o estado. -->
-      <div class="border-l-4 border-primary bg-blue-50 p-4 rounded-lg flex items-center gap-2">
-        <!-- Icono de usuario verificado, relevante para el contexto del dashboard. -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 sm:h-6 sm:w-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11v12h-2"/><path d="M22 11l-3 3-3-3"/></svg>
-        <!-- Descripción de bienvenida. El texto podría ser dinámico desde el backend. -->
-        <p class="text-base sm:text-lg mt-4">
-  Bienvenido a tu Dashboard de Usuario - Aquí puedes reportar incidentes y consultar el estado de seguridad del campus.
-</p>
+      <!-- Banner superior tipo alerta con borde rojo suave y fondo rojo claro -->
+      <div class="alert-banner">
+        <span class="alert-icon" aria-hidden="true">
+          <!-- Icono: user-check -->
+          <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-user-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /><path d="M15 19l2 2l4 -4" /></svg>
+        </span>
+        <p class="alert-text">
+          Bienvenido a tu Dashboard de Usuario - Aquí puedes reportar incidentes y consultar el estado de seguridad del campus.
+        </p>
       </div>
     </div>
 
@@ -19,55 +20,55 @@
     <section class="mb-4 sm:mb-8">
       <!-- Título de la sección "Mi Actividad". -->
       <h2 class="text-xl sm:text-2xl mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
-        <!-- Icono representativo de actividad del usuario. -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-primary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11v12h-2"/><path d="M22 11l-3 3-3-3"/></svg>
+        <!-- Icono: user-check para Mi Actividad -->
+        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="h-6 w-6 sm:h-8 sm:w-8 text-primary icon icon-tabler icons-tabler-outline icon-tabler-user-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /><path d="M15 19l2 2l4 -4" /></svg>
         Mi Actividad
       </h2>
       <!-- Contenedor de las tarjetas de estadísticas. Se adapta a diferentes tamaños de pantalla. -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <!-- Tarjeta de "Reportes Creados". El número sería dinámico. -->
-        <div class="bg-blue-50 border-blue-200 rounded-lg shadow-sm">
-          <div class="p-3 sm:p-4">
-            <div class="flex items-center gap-2 sm:gap-3">
-              <!-- Icono de archivo de texto. -->
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-blue-600"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <div>
+  <div class="kpi-card bg-blue-50 border-blue-300 rounded-2xl shadow-sm">
+          <div class="p-3">
+            <div class="flex items-center gap-2">
+              <!-- Icono: file-description para Reportes (sin borde en el ícono) -->
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="h-7 w-7 sm:h-8 sm:w-8 text-blue-600 icon icon-tabler icons-tabler-outline icon-tabler-file-description"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 17h6" /><path d="M9 13h6" /></svg>
+              <div class="leading-tight">
                 <!-- Número de reportes creados. -->
-                <p class="text-xl sm:text-2xl">1</p>
+                <p class="text-xl sm:text-2xl m-0">1</p>
                 <!-- Etiqueta descriptiva. -->
-                <p class="text-xs sm:text-sm text-gray-600">Reportes Creados</p>
+                <p class="text-xs sm:text-sm text-gray-600 m-0">Reportes Creados</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Tarjeta de "Alertas Confirmadas". El número sería dinámico. -->
-        <div class="bg-green-50 border-green-200 rounded-lg shadow-sm">
-          <div class="p-3 sm:p-4">
-            <div class="flex items-center gap-2 sm:gap-3">
-              <!-- Icono de campana para alertas. -->
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 sm:h-10 sm:w-10 text-green-600"><path d="M6 8.5a.5 .5 0 0 1 .5-.5h11a.5 .5 0 0 1 .5.5v1a.5 .5 0 0 1-.5.5h-11a.5 .5 0 0 1-.5-.5v-1z"/><path d="M10 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M14 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M16 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M18 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M20 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M22 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M2 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M4 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M6 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M8 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M10 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M12 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M14 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M16 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M18 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M20 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M22 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M2 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M4 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M6 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M8 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
-              <div>
+  <div class="kpi-card bg-green-50 border-green-300 rounded-2xl shadow-sm">
+          <div class="p-3">
+            <div class="flex items-center gap-2">
+              <!-- Icono: bell (sin borde en el ícono) -->
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="h-7 w-7 sm:h-8 sm:w-8 text-green-600 icon icon-tabler icons-tabler-outline icon-tabler-bell"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
+              <div class="leading-tight">
                 <!-- Número de alertas confirmadas. -->
-                <p class="text-xl sm:text-2xl">0</p>
+                <p class="text-xl sm:text-2xl m-0">0</p>
                 <!-- Etiqueta descriptiva. -->
-                <p class="text-xs sm:text-sm text-gray-600">Alertas Confirmadas</p>
+                <p class="text-xs sm:text-sm text-gray-600 m-0">Alertas Confirmadas</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Tarjeta de "Nivel de Confianza". El texto sería dinámico. -->
-        <div class="bg-purple-50 border-purple-200 rounded-lg shadow-sm sm:col-span-2 lg:col-span-1">
-          <div class="p-3 sm:p-4">
-            <div class="flex items-center gap-2 sm:gap-3">
-              <!-- Icono de escudo para nivel de confianza. -->
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-purple-600"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <div>
+  <div class="kpi-card bg-purple-50 border-purple-300 rounded-2xl shadow-sm sm:col-span-2 lg:col-span-1">
+          <div class="p-3">
+            <div class="flex items-center gap-2">
+              <!-- Icono: shield (sin borde en el ícono) -->
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="h-7 w-7 sm:h-8 sm:w-8 text-purple-600 icon icon-tabler icons-tabler-outline icon-tabler-shield"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" /></svg>
+              <div class="leading-tight">
                 <!-- Nivel de confianza del usuario. -->
-                <p class="text-lg sm:text-xl">Nuevo</p>
+                <p class="text-lg sm:text-xl m-0">Nuevo</p>
                 <!-- Etiqueta descriptiva. -->
-                <p class="text-xs sm:text-sm text-gray-600">Nivel de Confianza</p>
+                <p class="text-xs sm:text-sm text-gray-600 m-0">Nivel de Confianza</p>
               </div>
             </div>
           </div>
@@ -79,7 +80,7 @@
     <!-- Sección del botón principal para reportar incidentes. -->
     <div class="flex justify-center mb-6 sm:mb-12 report-main-button">
       <!-- Tarjeta que contiene los botones de reporte. -->
-      <div class="border-2 hover:shadow-lg transition-shadow max-w-md w-full rounded-lg">
+  <div class="border border-solid hover:shadow-lg transition-shadow max-w-md w-full rounded-2xl" style="border-color:#D1D5DB;">
         <div class="text-center pb-3 sm:pb-4 p-4">
           <!-- Título principal para reportar incidente. -->
           <h2 class="flex items-center justify-center gap-2 sm:gap-3 text-xl sm:text-2xl">
@@ -88,7 +89,7 @@
             REPORTAR INCIDENTE
           </h2>
           <!-- Descripción del botón de reporte. -->
-          <p class="text-base sm:text-lg text-gray-600 mt-2">
+          <p class="text-base sm:text-lg text-gray-700 mt-2">
             ¿Has sido víctima de un incidente? Reporta de forma inmediata y anónima
           </p>
         </div>
@@ -96,7 +97,9 @@
           <!-- Botón para reporte rápido. -->
           <button
             class="w-full h-12 sm:h-16 text-lg sm:text-xl bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md flex items-center justify-center"
+            style="border: none;"
             aria-label="Botón para reportar un incidente"
+            (click)="openReportModal()"
           >
             <!-- Icono de ojo. -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 mr-2 sm:mr-3"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -105,7 +108,7 @@
 
           <!-- Botón para reporte detallado. -->
           <button
-            class="w-full h-10 sm:h-12 text-base sm:text-lg border-2 border-primary text-primary hover:bg-primary/5 font-medium py-2 px-4 rounded-md bg-transparent flex items-center justify-center"
+            class="w-full h-10 sm:h-12 text-sm sm:text-base border border-primary text-primary hover:bg-primary/5 font-medium py-2 px-4 rounded-md bg-transparent flex items-center justify-center"
             aria-label="Botón para abrir formulario detallado de reporte"
           >
             <!-- Icono de archivo de texto. -->
@@ -129,7 +132,7 @@
       <!-- Contenedor de las tarjetas de zonas. -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <!-- Tarjeta de ejemplo para una zona. Los datos serían dinámicos. -->
-        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+  <div class="border-2 border-green-200 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl">
           <div class="pb-2 sm:pb-3 p-4">
             <div class="flex items-center justify-between">
               <!-- Nombre de la zona. -->
@@ -158,7 +161,7 @@
         </div>
 
         <!-- Repetición de tarjetas de zona para demostración estática. -->
-        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+  <div class="border-2 border-green-200 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl">
           <div class="pb-2 sm:pb-3 p-4">
             <div class="flex items-center justify-between">
               <h3 class="text-base sm:text-lg">Biblioteca Central</h3>
@@ -181,7 +184,7 @@
           </div>
         </div>
 
-        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+  <div class="border-2 border-green-200 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl">
           <div class="pb-2 sm:pb-3 p-4">
             <div class="flex items-center justify-between">
               <h3 class="text-base sm:text-lg">Cafetería Norte</h3>
@@ -204,7 +207,7 @@
           </div>
         </div>
 
-        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+  <div class="border-2 border-green-200 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl">
           <div class="pb-2 sm:pb-3 p-4">
             <div class="flex items-center justify-between">
               <h3 class="text-base sm:text-lg">Estacionamiento Este</h3>
@@ -227,7 +230,7 @@
           </div>
         </div>
 
-        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
+  <div class="border-2 border-green-200 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl">
           <div class="pb-2 sm:pb-3 p-4">
             <div class="flex items-center justify-between">
               <h3 class="text-base sm:text-lg">Laboratorios</h3>
@@ -315,13 +318,13 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-primary"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
         Seguimiento de Mis Reportes
       </h2>
-      <div class="border-2 hover:shadow-md transition-shadow rounded-lg">
+  <div class="border-2 border-blue-200 hover:shadow-md transition-shadow rounded-2xl">
         <div class="p-4">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-lg font-medium">Mis Reportes</h3>
             <span class="text-sm text-gray-500">1 reportes</span>
           </div>
-          <div class="border-2 rounded-lg p-4">
+          <div class="border-2 border-blue-200 rounded-2xl p-4">
             <div class="flex items-start justify-between mb-2">
               <div class="flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -431,7 +434,7 @@
 
       <div class="space-y-4">
         <!-- Example Report 1 (from image) -->
-        <div class="border-2 hover:shadow-md transition-shadow rounded-lg">
+  <div class="border-2 border-blue-200 hover:shadow-md transition-shadow rounded-2xl">
           <div class="pb-3 p-4">
             <div class="flex items-start justify-between mb-4">
               <div class="flex items-center gap-3">
@@ -478,7 +481,7 @@
         </div>
 
         <!-- Botón para ver todos los reportes. -->
-        <div class="border-2 border-dashed border-primary rounded-lg">
+  <div class="border-2 border-dashed border-primary rounded-2xl">
           <div class="p-6 text-center">
             <button
               class="text-primary border-primary hover:bg-primary/5 font-medium py-2 px-4 rounded-md bg-transparent inline-flex items-center"
@@ -514,6 +517,16 @@
       </div>
     </footer>
   </main>
+
+  <!-- Modal Reportar Ahora -->
+  <div *ngIf="showReportModal" class="modal-backdrop">
+    <div class="modal-container" role="dialog" aria-modal="true" aria-label="Reportar Incidente">
+      <button class="modal-close" (click)="closeReportModal()" aria-label="Cerrar modal">
+        ✕
+      </button>
+  <app-reporta-ahora (close)="closeReportModal()"></app-reporta-ahora>
+    </div>
+  </div>
 
   <!-- SOS Button -->
   <div class="fixed bottom-6 right-6 z-50">

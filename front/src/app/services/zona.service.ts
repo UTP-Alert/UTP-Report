@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 export interface Zona {
   id: number;
@@ -11,10 +12,15 @@ export interface Zona {
   providedIn: 'root'
 })
 export class ZonaService {
-    private baseUrl = 'http://localhost:8080/';
+    private baseUrl = 'http://localhost:8080';
  constructor(private http: HttpClient) {}
   obtenerZonas(): Observable<Zona[]> {
-    return this.http.get<Zona[]>(`${this.baseUrl}api/zonas`);
+    return this.http.get<Zona[]>(`${this.baseUrl}/api/zonas`).pipe(
+      catchError((err) => {
+        console.warn('obtenerZonas() falló', err);
+        return of([]);
+      })
+    );
   }
 
 }

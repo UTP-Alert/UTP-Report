@@ -1,264 +1,223 @@
-/*
-  Archivo: inicio.scss
-  Descripción: Estilos SCSS para el panel de usuario estático.
-  Este archivo define la paleta de colores, utilidades de espaciado, tipografía,
-  diseño responsivo y estilos específicos de componentes, emulando un framework
-  CSS como Tailwind CSS. 
-*/
+/* Base */
+body { margin: 0; font-family: sans-serif; color: #000; }
 
-/* Estilos base para el cuerpo de la página */
-body {
-  margin: 0; /* Elimina el margen predeterminado del navegador */
-  font-family: sans-serif; /* Fuente genérica, se puede especificar una fuente personalizada */
-  color: #000; /* Color de texto principal por defecto (negro) */
-}
+/* Variables (KPI) */
+:host { --kpi-border-width: 1px; }
 
-/* Colores Primarios Personalizados */
-/* Definición del color primario (rojo) y sus variantes para texto, fondo y bordes. */
-.text-primary {
-  color: #FF395C !important; /* Color de texto primario (rojo) */
-}
+/* KPI cards (grosor por variable) */
+.kpi-card { border-style: solid; border-width: var(--kpi-border-width, 2px) !important; }
+.kpi-card--thin { --kpi-border-width: 1px; }
+.kpi-card--normal { --kpi-border-width: 2px; }
+.kpi-card--thick { --kpi-border-width: 3px; }
 
-.bg-primary {
-  background-color: #FF395C !important; /* Color de fondo primario (rojo) */
-}
+/* Banner superior */
+.alert-banner { display: flex; align-items: center; gap: .5rem; padding: .75rem 1rem; border: 1px solid #fecaca; background: #EFF6FF; border-radius: 10px; }
+.alert-banner .alert-icon { width: 28px; height: 28px; display: grid; place-items: center; color: #e11d48; }
+.alert-banner .alert-icon svg { width: 18px; height: 18px; }
+.alert-banner .alert-text { margin: 0; color: #374151; font-size: .95rem; }
 
-.border-primary {
-  border-color: #FF395C !important; /* Color de borde primario (rojo) */
-}
+/* Colores primario */
+.text-primary { color: #FF395C !important; }
+.bg-primary { background-color: #FF395C !important; }
+.border-primary { border-color: #FF395C !important; }
+.hover\:bg-primary\/90:hover { background-color: rgba(255,57,92,.9); }
+.hover\:bg-primary\/5:hover { background-color: rgba(255,57,92,.05); }
+.bg-primary\/10 { background-color: rgba(255,57,92,.1); }
+.text-primary\/70 { color: rgba(255,57,92,.7); }
 
-/* Variantes de hover para el color primario */
-.hover\:bg-primary\/90:hover {
-  background-color: rgba(255, 57, 92, 0.9); /* 90% de opacidad del color primario en hover */
-}
+/* Azules */
+.bg-blue-50 { background-color: #EFF6FF; }
+.border-blue-200 { border-color: #BFDBFE; }
+.border-blue-300 { border-color: #93C5FD; }
+.border-blue-400 { border-color: #60A5FA; }
+.text-blue-600 { color: #2563EB; }
+.bg-blue-100 { background-color: #DBEAFE; }
+.bg-blue-500 { background-color: #3B82F6; }
+.text-blue-700 { color: #1D4ED8; }
+.text-blue-800 { color: #1E40AF; }
 
-.hover\:bg-primary\/5:hover {
-  background-color: rgba(255, 57, 92, 0.05); /* 5% de opacidad del color primario en hover */
-}
+/* Verdes */
+.bg-green-50 { background-color: #F0FDF4; }
+.border-green-200 { border-color: #BBF7D0; }
+.border-green-300 { border-color: #86EFAC; }
+.border-green-400 { border-color: #4ADE80; }
+.text-green-600 { color: #16A34A; }
+.bg-green-100 { background-color: #D1FAE5; }
+.bg-green-500 { background-color: #22C55E; }
+.bg-green-600 { background-color: #16A34A; }
 
-/* Variantes de opacidad para el color primario */
-.bg-primary\/10 {
-  background-color: rgba(255, 57, 92, 0.1); /* 10% de opacidad del color primario */
-}
+/* Púrpuras */
+.bg-purple-50 { background-color: #FAF5FF; }
+.border-purple-200 { border-color: #E9D5FF; }
+.border-purple-300 { border-color: #D8B4FE; }
+.border-purple-400 { border-color: #C084FC; }
+.text-purple-600 { color: #9333EA; }
+.bg-purple-100 { background-color: #F3E8FF; }
+.bg-purple-500 { background-color: #A855F7; }
 
-.text-primary\/70 {
-  color: rgba(255, 57, 92, 0.7); /* 70% de opacidad del color primario para texto */
-}
+/* Neutros y otros */
+.bg-white { background-color: #fff; }
+.bg-gray-50 { background-color: #F9FAFB; }
+.bg-gray-100 { background-color: #f3f4f6; }
+.bg-gray-200 { background-color: #e5e7eb; }
+.bg-gray-300 { border-color: #D1D5DB; }
+.text-gray-500 { color: #6b7280; }
+.text-gray-600 { color: #4B5563; }
+.text-gray-700 { color: #374151; }
+.text-gray-800 { color: #1f2937; }
+.bg-gray-600 { background-color: #4b5563; }
+.bg-gray-700 { background-color: #374151; }
+.bg-red-500 { background-color: #EF4444; }
+.bg-red-600 { background-color: #DC2626; }
+.hover\:bg-red-700:hover { background-color: #B91C1C; }
+.bg-yellow-100 { background-color: #fef9c3; }
+.bg-yellow-500 { background-color: #EAB308; }
+.bg-yellow-600 { background-color: #d97706; }
+.bg-orange-500 { background-color: #f97316; }
+.bg-indigo-500 { background-color: #6366f1; }
 
-/* Colores de Acento */
-/* Definiciones para la paleta de azules */
-.bg-blue-50 { background-color: #EFF6FF; } /* Azul muy claro */
-.border-blue-200 { border-color: #BFDBFE; } /* Azul claro para bordes */
-.text-blue-600 { color: #2563EB; } /* Azul para texto de iconos */
-.bg-blue-100 { background-color: #DBEAFE; } /* Azul claro para fondos */
-.bg-blue-500 { background-color: #3B82F6; } /* Azul para indicadores */
-.text-blue-700 { color: #1D4ED8; } /* Azul para texto */
-.text-blue-800 { color: #1E40AF; } /* Azul oscuro para títulos */
+/* Layout y spacing */
+.min-h-screen { min-height: 100vh; }
+.max-w-6xl { max-width: 72rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.px-2 { padding-left: .5rem; padding-right: .5rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+.pt-16 { padding-top: 4rem; }
+.pt-24 { padding-top: 6rem; }
+.pt-32 { padding-top: 8rem; }
+.pt-48 { padding-top: 12rem; }
+.pt-64 { padding-top: 16rem; }
+.pt-80 { padding-top: 20rem; }
+.mb-2 { margin-bottom: .5rem; }
+.mb-3 { margin-bottom: .75rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mb-12 { margin-bottom: 3rem; }
+.mt-1 { margin-top: .25rem; }
+.mt-2 { margin-top: .5rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-6 { margin-top: 1.5rem; }
+.mt-12 { margin-top: 3rem; }
+.pb-2 { padding-bottom: .5rem; }
+.pb-3 { padding-bottom: .75rem; }
+.pb-4 { padding-bottom: 1rem; }
+.p-0 { padding: 0; }
+.p-3 { padding: .75rem; }
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+.pt-0 { padding-top: 0; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.py-1 { padding-top: .25rem; padding-bottom: .25rem; }
+.py-2 { padding-top: .5rem; padding-bottom: .5rem; }
+.space-y-2 > *:not([hidden]) ~ *:not([hidden]) { margin-top: .5rem; }
+.space-y-3 > *:not([hidden]) ~ *:not([hidden]) { margin-top: .75rem; }
+.space-y-4 > *:not([hidden]) ~ *:not([hidden]) { margin-top: 1rem; }
+.gap-1 { gap: .25rem; }
+.gap-2 { gap: .5rem; }
+.gap-3 { gap: .75rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
 
-/* Definiciones para la paleta de verdes */
-.bg-green-50 { background-color: #F0FDF4; } /* Verde muy claro */
-.border-green-200 { border-color: #BBF7D0; } /* Verde claro para bordes */
-.text-green-600 { color: #16A34A; } /* Verde para texto de iconos */
-.bg-green-100 { background-color: #D1FAE5; } /* Verde claro para fondos */
-.bg-green-500 { background-color: #22C55E; } /* Verde para badges de estado seguro */
-.bg-green-600 { background-color: #16A34A; } /* Verde más oscuro para hover */
-
-/* Definiciones para la paleta de púrpuras */
-.bg-purple-50 { background-color: #FAF5FF; } /* Púrpura muy claro */
-.border-purple-200 { border-color: #E9D5FF; } /* Púrpura claro para bordes */
-.text-purple-600 { color: #9333EA; } /* Púrpura para texto de iconos */
-.bg-purple-100 { background-color: #F3E8FF; } /* Púrpura claro para fondos */
-.bg-purple-500 { background-color: #A855F7; } /* Púrpura para indicadores */
-
-/* Otros Colores (Grises y Rojos/Amarillos específicos) */
-.bg-white { background-color: #fff; } /* Fondo blanco */
-.bg-gray-50 { background-color: #F9FAFB; } /* Gris muy claro para fondos secundarios */
-.bg-gray-100 { background-color: #f3f4f6; } /* Gris claro para fondos */
-.bg-gray-200 { background-color: #e5e7eb; } /* Gris para barras de progreso */
-.bg-gray-300 { border-color: #D1D5DB; } /* Gris claro para bordes */
-.text-gray-500 { color: #6b7280; } /* Gris para texto secundario */
-.text-gray-600 { color: #4B5563; } /* Gris para texto de labels */
-.text-gray-700 { color: #374151; } /* Gris oscuro para texto */
-.text-gray-800 { color: #1f2937; } /* Gris muy oscuro para texto */
-.bg-gray-600 { background-color: #4b5563; } /* Gris oscuro para fondos */
-.bg-gray-700 { background-color: #374151; } /* Gris más oscuro para fondos */
-.bg-red-500 { background-color: #EF4444; } /* Rojo para indicadores de alta prioridad */
-.bg-red-600 { background-color: #DC2626; } /* Rojo oscuro para botón SOS */
-.hover\:bg-red-700:hover { background-color: #B91C1C; } /* Rojo más oscuro en hover para SOS */
-.bg-yellow-100 { background-color: #fef9c3; } /* Amarillo claro para fondos */
-.bg-yellow-500 { background-color: #EAB308; } /* Amarillo para badges de alerta */
-.bg-yellow-600 { background-color: #d97706; } /* Amarillo más oscuro para hover */
-.bg-orange-500 { background-color: #f97316; } /* Naranja para estados en progreso */
-.bg-indigo-500 { background-color: #6366f1; } /* Índigo para otros estados */
-
-
-/* Diseño y Espaciado (Layout & Spacing) */
-.min-h-screen { min-height: 100vh; } /* Altura mínima de la pantalla */
-.max-w-6xl { max-width: 72rem; } /* Ancho máximo del contenedor principal */
-.mx-auto { margin-left: auto; margin-right: auto; } /* Centra el elemento horizontalmente */
-.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; } /* Padding horizontal */
-.py-4 { padding-top: 1rem; padding-bottom: 1rem; } /* Padding vertical */
-.py-8 { padding-top: 2rem; padding-bottom: 2rem; } /* Padding vertical mayor */
-.pt-16 { padding-top: 4rem; } /* Padding superior para espacio del navbar */
-.pt-24 { padding-top: 6rem; } /* Padding superior para espacio del navbar, incrementado */
-.pt-32 { padding-top: 8rem; } /* Padding superior para espacio del navbar, aún más incrementado */
-.pt-48 { padding-top: 12rem; } /* Padding superior para espacio del navbar, muy incrementado */
-.pt-64 { padding-top: 16rem; } /* Padding superior para espacio del navbar, máximo incremento */
-.pt-80 { padding-top: 20rem; } /* Padding superior para espacio del navbar, aún más incrementado */
-.mb-2 { margin-bottom: 0.5rem; } /* Margen inferior */
-.mb-3 { margin-bottom: 0.75rem; } /* Margen inferior */
-.mb-4 { margin-bottom: 1rem; } /* Margen inferior */
-.mb-6 { margin-bottom: 1.5rem; } /* Margen inferior */
-.mb-8 { margin-bottom: 2rem; } /* Margen inferior */
-.mb-12 { margin-bottom: 3rem; } /* Margen inferior */
-.mt-1 { margin-top: 0.25rem; } /* Margen superior */
-.mt-2 { margin-top: 0.5rem; } /* Margen superior */
-.mt-4 { margin-top: 1rem; } /* Margen superior */
-.mt-6 { margin-top: 1.5rem; } /* Margen superior */
-.mt-12 { margin-top: 3rem; } /* Margen superior */
-.pb-2 { padding-bottom: 0.5rem; } /* Padding inferior */
-.pb-3 { padding-bottom: 0.75rem; } /* Padding inferior */
-.pb-4 { padding-bottom: 1rem; } /* Padding inferior */
-.p-0 { padding: 0; } /* Padding cero (para botón SOS) */
-.p-3 { padding: 0.75rem; } /* Padding general */
-.p-4 { padding: 1rem; } /* Padding general */
-.p-6 { padding: 1.5rem; } /* Padding general */
-.p-8 { padding: 2rem; } /* Padding general */
-.pt-0 { padding-top: 0; } /* Padding superior cero */
-.px-4 { padding-left: 1rem; padding-right: 1rem; } /* Padding horizontal */
-.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; } /* Padding vertical */
-.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; } /* Padding vertical */
-.space-y-2 > *:not([hidden]) ~ *:not([hidden]) { margin-top: 0.5rem; } /* Espacio vertical entre elementos */
-.space-y-3 > *:not([hidden]) ~ *:not([hidden]) { margin-top: 0.75rem; } /* Espacio vertical entre elementos */
-.space-y-4 > *:not([hidden]) ~ *:not([hidden]) { margin-top: 1rem; } /* Espacio vertical entre elementos */
-.gap-1 { gap: 0.25rem; } /* Espacio entre elementos flex/grid */
-.gap-2 { gap: 0.5rem; } /* Espacio entre elementos flex/grid */
-.gap-3 { gap: 0.75rem; } /* Espacio entre elementos flex/grid */
-.gap-4 { gap: 1rem; } /* Espacio entre elementos flex/grid */
-.gap-6 { gap: 1.5rem; } /* Espacio entre elementos flex/grid */
-
-/* Flexbox y Grid */
-.flex { display: flex; } /* Habilita flexbox */
-.inline-flex { display: inline-flex; } /* Habilita inline-flex */
-.items-center { align-items: center; } /* Centra elementos verticalmente en flex */
-.items-start { align-items: flex-start; } /* Alinea elementos al inicio verticalmente en flex */
-.justify-center { justify-content: center; } /* Centra elementos horizontalmente en flex */
-.justify-between { justify-content: space-between; } /* Distribuye elementos con espacio entre ellos */
-.flex-col { flex-direction: column; } /* Dirección de flexbox a columna */
-.flex-wrap { flex-wrap: wrap; } /* Permite que los elementos flex se envuelvan */
-.grid { display: grid; } /* Habilita grid */
-.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); } /* Una columna en grid */
+/* Flex & Grid */
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.flex-col { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
 
 /* Tipografía */
-.text-xs { font-size: 0.75rem; line-height: 1rem; } /* Tamaño de texto extra pequeño */
-.text-sm { font-size: 0.875rem; line-height: 1.25rem; } /* Tamaño de texto pequeño */
-.text-base { font-size: 1rem; line-height: 1.5rem; } /* Tamaño de texto base */
-.text-lg { font-size: 1.125rem; line-height: 1.75rem; } /* Tamaño de texto grande */
-.text-xl { font-size: 1.25rem; line-height: 1.75rem; } /* Tamaño de texto extra grande */
-.text-2xl { font-size: 1.5rem; line-height: 2rem; } /* Tamaño de texto 2x extra grande */
-.font-medium { font-weight: 500; } /* Peso de fuente medio */
-.font-bold { font-weight: 700; } /* Peso de fuente negrita */
-.font-black { font-weight: 900; } /* Peso de fuente extra negrita (para botón SOS) */
-.uppercase { text-transform: uppercase; } /* Transforma texto a mayúsculas */
-.tracking-wide { letter-spacing: 0.025em; } /* Espaciado entre letras */
-.text-center { text-align: center; } /* Alinea texto al centro */
-.line-clamp-2 { /* Limita el texto a 2 líneas */
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
+.text-xs { font-size: .75rem; line-height: 1rem; }
+.text-sm { font-size: .875rem; line-height: 1.25rem; }
+.text-base { font-size: 1rem; line-height: 1.5rem; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.font-medium { font-weight: 500; }
+.font-bold { font-weight: 700; }
+.font-black { font-weight: 900; }
+.uppercase { text-transform: uppercase; }
+.tracking-wide { letter-spacing: .025em; }
+.text-center { text-align: center; }
+.line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
 
-/* Bordes y Sombras */
-.border-2 { border-width: 2px; } /* Ancho de borde de 2px */
-.border-l-4 { border-left-width: 4px; } /* Ancho de borde izquierdo de 4px */
-.border-4 { border-width: 4px; } /* Ancho de borde de 4px (para botón SOS) */
-.border-white { border-color: #fff; } /* Color de borde blanco (para botón SOS) */
-.border-dashed { border-style: dashed; } /* Estilo de borde punteado */
-.rounded-md { border-radius: 0.375rem; } /* Radio de borde mediano */
-.rounded-lg { border-radius: 0.5rem; } /* Radio de borde grande */
-.rounded-full { border-radius: 9999px; } /* Borde completamente redondo */
-.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); } /* Sombra pequeña */
-.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); } /* Sombra grande */
-.shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); } /* Sombra muy grande (para botón SOS) */
-.hover\:shadow-lg:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); } /* Sombra grande en hover */
-.transition-shadow { transition-property: box-shadow; transition-duration: 150ms; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); } /* Transición suave para sombras */
-.transition-all { transition-property: all; transition-duration: 150ms; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); } /* Transición suave para todas las propiedades */
-.cursor-pointer { cursor: pointer; } /* Cursor de puntero */
-.focus\:ring-4:focus { outline: 2px solid transparent; outline-offset: 2px; box-shadow: 0 0 0 4px rgba(255, 57, 92, 0.5); } /* Anillo de enfoque para accesibilidad */
+/* Bordes & Sombras */
+.border-2 { border-width: 2px; }
+.border { border-width: 1px; }
+.border-l-4 { border-left-width: 4px; }
+.border-4 { border-width: 4px; }
+.border-white { border-color: #fff; }
+.border-dashed { border-style: dashed; }
+.border-solid { border-style: solid; }
+.rounded-md { border-radius: .375rem; }
+.rounded-lg { border-radius: .5rem; }
+.rounded-2xl { border-radius: 1rem; }
+.rounded-3xl { border-radius: 1.5rem; }
+.rounded-full { border-radius: 9999px; }
+.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,.05); }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05); }
+.shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0,0,0,.25); }
+.hover\:shadow-lg:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05); }
+.transition-shadow { transition-property: box-shadow; transition-duration: 150ms; transition-timing-function: cubic-bezier(.4,0,.2,1); }
+.transition-all { transition-property: all; transition-duration: 150ms; transition-timing-function: cubic-bezier(.4,0,.2,1); }
+.cursor-pointer { cursor: pointer; }
+.focus\:ring-4:focus { outline: 2px solid transparent; outline-offset: 2px; box-shadow: 0 0 0 4px rgba(255,57,92,.5); }
 
-/* Ancho y Alto (Width & Height) */
-.w-full { width: 100%; } /* Ancho completo */
-.h-2 { height: 0.5rem; } /* Alto */
-.h-2\.5 { height: 0.625rem; } /* Alto */
-.h-4 { height: 1rem; } /* Alto */
-.h-5 { height: 1.25rem; } /* Alto */
-.h-6 { height: 1.5rem; } /* Alto */
-.h-8 { height: 2rem; } /* Alto */
-.h-10 { height: 2.5rem; } /* Alto */
-.h-12 { height: 3rem; } /* Alto */
-.h-16 { height: 4rem; } /* Alto */
-.h-20 { height: 5rem; } /* Alto (para botón SOS) */
-.w-20 { width: 5rem; } /* Ancho (para botón SOS) */
-.max-w-md { max-width: 28rem; } /* Ancho máximo mediano */
+/* Ancho & Alto */
+.w-full { width: 100%; }
+.h-2 { height: .5rem; }
+.h-2\.5 { height: .625rem; }
+.h-4 { height: 1rem; }
+.h-5 { height: 1.25rem; }
+.h-6 { height: 1.5rem; }
+.h-8 { height: 2rem; }
+.h-10 { height: 2.5rem; }
+.h-12 { height: 3rem; }
+.h-16 { height: 4rem; }
+.h-20 { height: 5rem; }
+.w-20 { width: 5rem; }
+.max-w-md { max-width: 28rem; }
 
-/* Estilos específicos de componentes */
-/* Estilo para el encabezado de bienvenida, con un borde izquierdo primario */
-.user-dashboard-welcome .border-primary {
-  border-left-width: 4px;
-}
+/* Componentes */
+.user-dashboard-welcome .border-primary { border-left-width: 4px; }
 
-/* Estilos para la barra de progreso */
-.w-full.bg-gray-200.rounded-full.h-2\.5 {
-  width: 100%;
-  background-color: #e5e7eb;
-  border-radius: 9999px;
-  height: 0.625rem;
-}
-.bg-primary.h-2\.5.rounded-full {
-  background-color: #FF395C;
-  height: 0.625rem;
-  border-radius: 9999px;
-}
+/* Barra de progreso */
+.w-full.bg-gray-200.rounded-full.h-2\.5 { width: 100%; background-color: #e5e7eb; border-radius: 9999px; height: .625rem; }
+.bg-primary.h-2\.5.rounded-full { background-color: #FF395C; height: .625rem; border-radius: 9999px; }
 
-/* Estilos para el botón SOS flotante */
-.fixed { position: fixed; } /* Posicionamiento fijo */
-.bottom-4 { bottom: 1rem; } /* Distancia desde abajo */
-.right-4 { right: 1rem; } /* Distancia desde la derecha */
-.bottom-6 { bottom: 1.5rem; } /* Distancia desde abajo (para botón SOS) */
-.right-6 { right: 1.5rem; } /* Distancia desde la derecha (para botón SOS) */
-.z-50 { z-index: 50; } /* Índice Z alto para asegurar que esté encima de otros elementos */
-.absolute { position: absolute; } /* Posicionamiento absoluto (para efecto ping del SOS) */
-.inset-0 { top: 0; right: 0; bottom: 0; left: 0; } /* Ocupa todo el espacio del padre (para efecto ping del SOS) */
-.opacity-30 { opacity: 0.3; } /* Opacidad del 30% (para efecto ping del SOS) */
-.pointer-events-none { pointer-events: none; } /* Deshabilita eventos de puntero (para efecto ping del SOS) */
+/* Botón SOS */
+.fixed { position: fixed; }
+.bottom-4 { bottom: 1rem; }
+.right-4 { right: 1rem; }
+.bottom-6 { bottom: 1.5rem; }
+.right-6 { right: 1.5rem; }
+.z-50 { z-index: 50; }
+.absolute { position: absolute; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.opacity-30 { opacity: .3; }
+.pointer-events-none { pointer-events: none; }
 
 /* Animaciones */
-/* Animación de pulsación para el botón SOS */
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .5; }
-}
-.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+.animate-pulse { animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite; }
+@keyframes ping { 75%,100% { transform: scale(2); opacity: 0; } }
+.animate-ping { animation: ping 1s cubic-bezier(0,0,.2,1) infinite; }
 
-/* Animación de ping para el efecto de onda del botón SOS */
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-.animate-ping { animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
-
-
-/* Ajustes Responsivos (Media Queries) */
-@media (min-width: 640px) { /* Estilos para pantallas pequeñas (sm) y mayores */
+/* Breakpoints */
+@media (min-width: 640px) {
   .sm\:px-4 { padding-left: 1rem; padding-right: 1rem; }
   .sm\:py-8 { padding-top: 2rem; padding-bottom: 2rem; }
   .sm\:mb-8 { margin-bottom: 2rem; }
   .sm\:mb-12 { margin-bottom: 3rem; }
   .sm\:mb-4 { margin-bottom: 1rem; }
-  .sm\:gap-3 { gap: 0.75rem; }
+  .sm\:gap-3 { gap: .75rem; }
   .sm\:gap-4 { gap: 1rem; }
   .sm\:text-lg { font-size: 1.125rem; line-height: 1.75rem; }
   .sm\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
@@ -272,29 +231,63 @@ body {
   .sm\:w-6 { width: 1.5rem; }
   .sm\:w-8 { width: 2rem; }
   .sm\:w-10 { width: 2.5rem; }
-  .sm\:mr-2 { margin-right: 0.5rem; }
-  .sm\:mr-3 { margin-right: 0.75rem; }
-  .sm\:px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .sm\:mr-2 { margin-right: .5rem; }
+  .sm\:mr-3 { margin-right: .75rem; }
+  .sm\:px-3 { padding-left: .75rem; padding-right: .75rem; }
   .sm\:col-span-2 { grid-column: span 2 / span 2; }
   .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sm\:p-4 { padding: 1rem; }
   .sm\:p-6 { padding: 1.5rem; }
-  .sm\:pb-3 { padding-bottom: 0.75rem; }
-  .sm\:hidden { display: none; } /* Oculta elementos en pantallas sm y mayores */
-  .sm\:inline { display: inline; } /* Muestra elementos como inline en pantallas sm y mayores */
+  .sm\:pb-3 { padding-bottom: .75rem; }
+  .sm\:hidden { display: none; }
+  .sm\:inline { display: inline; }
 }
 
-@media (min-width: 1024px) { /* Estilos para pantallas grandes (lg) y mayores */
+@media (min-width: 1024px) {
   .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .lg\:col-span-1 { grid-column: span 1 / span 1; }
   .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* Utilidad para elementos ocultos */
-.hidden { display: none; } /* Oculta elementos */
-body {
-  padding-top: 100px; /* Ajusta a la altura real del navbar */
+/* Utilidades finales */
+.hidden { display: none; }
+body { padding-top: 100px; }
+.main-content { margin-top: 70px; }
+
+/* Modal base */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 1100; /* por encima del navbar */
+  cursor: default;
 }
-.main-content {
-  margin-top: 70px; /* ajusta el valor si el navbar es más alto */
+.modal-container {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
+  border: 1px solid #E5E7EB; /* gris-200 */
+  cursor: default;
 }
+.modal-close {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  background: transparent;
+  border: none;
+  color: #4B5563;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: .25rem .5rem;
+  border-radius: .375rem;
+  cursor: pointer;
+}
+.modal-close:hover { background: #F3F4F6; }
