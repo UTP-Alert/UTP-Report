@@ -23,6 +23,14 @@ public class ReporteController {
         return new ResponseEntity<>(reportes, HttpStatus.OK);
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<ReporteDTO>> getFilteredReportes(
+            @RequestParam(required = false) Long zonaId,
+            @RequestParam(required = false) Long sedeId) {
+        List<ReporteDTO> reportes = reporteService.getFilteredReportes(zonaId, sedeId);
+        return new ResponseEntity<>(reportes, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ReporteDTO> getReporteById(@PathVariable Long id) {
         ReporteDTO reporte = reporteService.getReporteById(id);
@@ -33,16 +41,8 @@ public class ReporteController {
     }
 
     @PostMapping
-    public ResponseEntity<ReporteDTO> createReporte(
-            @RequestParam Long tipoIncidenteId,
-            @RequestParam Long zonaId,
-            @RequestParam String descripcion,
-            @RequestPart(value = "foto", required = false) MultipartFile foto,
-            @RequestParam Boolean isAnonimo,
-            @RequestParam(value = "contacto", required = false) String contacto,
-            @RequestParam("usuarioId") Long usuarioId) {
-        ReporteDTO createdReporte = reporteService.createReporte(
-                tipoIncidenteId, zonaId, descripcion, foto, isAnonimo, contacto, usuarioId);
+    public ResponseEntity<ReporteDTO> createReporte(@RequestBody ReporteDTO reporteDTO) {
+        ReporteDTO createdReporte = reporteService.createReporte(reporteDTO);
         return new ResponseEntity<>(createdReporte, HttpStatus.CREATED);
     }
 

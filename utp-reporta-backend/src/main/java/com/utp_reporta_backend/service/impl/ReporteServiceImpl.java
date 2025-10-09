@@ -158,4 +158,34 @@ public class ReporteServiceImpl implements ReporteService {
     public void deleteReporte(Long id) {
         reporteRepository.deleteById(id);
     }
+
+    @Override
+    public List<ReporteDTO> getFilteredReportes(Long zonaId, Long sedeId) {
+        List<Reporte> reportes;
+        if (zonaId != null && sedeId != null) {
+            reportes = reporteRepository.findByZonaIdAndZonaSedeId(zonaId, sedeId);
+        } else if (zonaId != null) {
+            reportes = reporteRepository.findByZonaId(zonaId);
+        } else if (sedeId != null) {
+            reportes = reporteRepository.findByZonaSedeId(sedeId);
+        } else {
+            reportes = reporteRepository.findAll();
+        }
+
+        return reportes.stream()
+                .map(reporte -> {
+                    ReporteDTO dto = new ReporteDTO();
+                    dto.setId(reporte.getId());
+                    dto.setTipoIncidenteId(reporte.getTipoIncidente().getId());
+                    dto.setZonaId(reporte.getZona().getId());
+                    dto.setDescripcion(reporte.getDescripcion());
+                    dto.setFoto(reporte.getFoto());
+                    dto.setFechaCreacion(reporte.getFechaCreacion());
+                    dto.setIsAnonimo(reporte.getIsAnonimo());
+                    dto.setContacto(reporte.getContacto());
+                    dto.setUsuarioId(reporte.getUsuario().getId());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 }
