@@ -23,6 +23,14 @@ public class ReporteController {
         return new ResponseEntity<>(reportes, HttpStatus.OK);
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<ReporteDTO>> getFilteredReportes(
+            @RequestParam(required = false) Long zonaId,
+            @RequestParam(required = false) Long sedeId) {
+        List<ReporteDTO> reportes = reporteService.getFilteredReportes(zonaId, sedeId);
+        return new ResponseEntity<>(reportes, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ReporteDTO> getReporteById(@PathVariable Long id) {
         ReporteDTO reporte = reporteService.getReporteById(id);
@@ -32,7 +40,7 @@ public class ReporteController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping
+   @PostMapping
     public ResponseEntity<ReporteDTO> createReporte(
             @RequestParam Long tipoIncidenteId,
             @RequestParam Long zonaId,
