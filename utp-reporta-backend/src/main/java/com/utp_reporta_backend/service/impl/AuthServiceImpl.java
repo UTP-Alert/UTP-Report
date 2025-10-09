@@ -161,7 +161,7 @@ public class AuthServiceImpl implements AuthService {
 	    usuario.setSede(sede);
 	    usuario.setZonas(zonas);
 	    usuario.setEnabled(true);
-	    usuario.setIntentos(0);
+	    usuario.setIntentosReporte(0);
 	    usuario.getRoles().add(rolSeguridad);
 
 	    usuarioRepository.save(usuario);
