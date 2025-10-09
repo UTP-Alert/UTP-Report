@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf, NgForOf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IncidenteService } from '../../../services/incidente.service';
 import { ZonaService, Zona } from '../../../services/zona.service';
@@ -10,12 +10,14 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-reporta-ahora',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, NgIf, NgForOf, FormsModule],
   templateUrl: './reporta-ahora.html',
   styleUrls: ['./reporta-ahora.scss']
 })
 export class ReportaAhora implements OnInit {
   @Output() close = new EventEmitter<void>();
+  @Output() submitted = new EventEmitter<void>();
+  @Output() authRequired = new EventEmitter<void>();
   tipos: any[] = [];
   zonas: Zona[] = [];
   selectedTipo: any | null = null;
@@ -37,6 +39,11 @@ export class ReportaAhora implements OnInit {
   private snapshotBlob: Blob | null = null;
   showContactInfo = true;
   attemptedSubmit = false;
+  // Conteo de reportes diarios (backend controla el límite)
+  reportesUsadosHoy = 0;
+  reportesLimite = 3;
+  // Control de límite
+  get limiteAlcanzado(): boolean { return this.reportesUsadosHoy >= this.reportesLimite; }
 
   constructor(
     private incidenteService: IncidenteService,
@@ -47,35 +54,30 @@ export class ReportaAhora implements OnInit {
     private zone: NgZone
   ) {}
 
+  get estaAutenticado(): boolean {
+    const tok = this.auth.getToken();
+    return !!tok;
+  }
+
   ngOnInit(): void {
     this.incidenteService.obtenerTipos().subscribe(t => this.tipos = t || []);
     this.zonaService.obtenerZonas().subscribe(z => this.zonas = z || []);
     // cerrar menús al hacer click global
     document.addEventListener('click', this.closeAllMenus, true);
 
-    // Obtener usuarioId del backend (JWT no trae id)
+    // Resolver usuarioId e intentos usando el JWT + /api/usuarios (evitamos /me que no existe)
     const base = 'http://localhost:8080';
-    this.http.get<any>(`${base}/api/usuarios/me`).subscribe({
-      next: me => {
-        this.meInfo = me || null;
-        // Preferir id directo del endpoint /me
-        if (me?.id) {
-          this.usuarioId = Number(me.id);
-        } else {
-          const username = me?.username;
-          if (!username) return;
-          // Fallback: buscar por username (si el endpoint lista usuarios está permitido)
-          this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
-            next: lista => {
-              const found = (lista || []).find(u => u.username === username);
-              if (found?.id) this.usuarioId = Number(found.id);
-            },
-            error: _ => {}
-          });
-        }
-      },
-      error: _ => {}
-    });
+    const username = this.extractUsernameFromToken();
+    if (username) {
+      this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
+        next: lista => {
+          const found = (lista || []).find(u => u.username === username);
+          if (found?.id) this.usuarioId = Number(found.id);
+          if (typeof found?.intentos === 'number') this.reportesUsadosHoy = found.intentos;
+        },
+        error: _ => {}
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -277,29 +279,59 @@ export class ReportaAhora implements OnInit {
   }
 
   enviarReporte() {
+    // Validación de límite diario (UX): si alcanzó 3, mostrar aviso y no enviar
+    if (this.limiteAlcanzado) return;
+    // Requiere autenticación
+    if (!this.estaAutenticado) {
+      this.authRequired.emit();
+      this.close.emit();
+      return;
+    }
     this.attemptedSubmit = true;
     if (!this.canSubmit()) return;
     this.submitting = true;
     const base = 'http://localhost:8080';
     if (!this.usuarioId) {
-      this.http.get<any>(`${base}/api/usuarios/me`).subscribe({
-        next: me => {
-          if (me?.id) this.usuarioId = Number(me.id);
-          if (!this.usuarioId) {
+      const username = this.extractUsernameFromToken();
+      if (!username) {
+        this.submitting = false;
+        this.authRequired.emit();
+        this.close.emit();
+        return;
+      }
+      this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
+        next: lista => {
+          const found = (lista || []).find(u => u.username === username);
+          if (found?.id) {
+            this.usuarioId = Number(found.id);
+            this._submitNow();
+          } else {
             this.submitting = false;
-            alert('No se pudo identificar al usuario. Inicia sesión nuevamente.');
-            return;
+            this.authRequired.emit();
+            this.close.emit();
           }
-          this._submitNow();
         },
         error: _ => {
           this.submitting = false;
-          alert('No se pudo identificar al usuario. Inicia sesión nuevamente.');
+          this.authRequired.emit();
+          this.close.emit();
         }
       });
     } else {
       this._submitNow();
     }
+  }
+
+  // Extrae username/sub del JWT si existe
+  private extractUsernameFromToken(): string | null {
+    try {
+      const tok = localStorage.getItem('auth_token');
+      if (!tok) return null;
+      const payload = tok.split('.')[1];
+      const json = atob(payload.replace(/-/g,'+').replace(/_/g,'/'));
+      const decoded = JSON.parse(json);
+      return decoded?.sub || decoded?.username || null;
+    } catch { return null; }
   }
 
   private _submitNow() {
@@ -327,13 +359,23 @@ export class ReportaAhora implements OnInit {
         // Cierra menús de carga si quedaran abiertos
         this.showUploadMenu = false;
         this.attemptedSubmit = false;
-        // Cerrar el modal automáticamente tras el envío exitoso
+        // Incrementar contador local de reportes usados (máximo al límite)
+        this.reportesUsadosHoy = Math.min(this.reportesUsadosHoy + 1, this.reportesLimite);
+        // Notificar envío exitoso al padre y cerrar el modal
+        try { this.submitted.emit(); } catch {}
         try { this.close.emit(); } catch {}
       },
       error: err => {
         console.warn('Error al enviar reporte', err);
         this.submitting = false;
-        alert('No se pudo enviar el reporte');
+        // Si backend devolvió límite alcanzado, mostrar mensaje claro
+        const msg = (err?.error && typeof err.error === 'string') ? err.error : '';
+        if (msg && msg.toLowerCase().includes('límite') || msg.toLowerCase().includes('limite')) {
+          // Mantener feedback claro cuando el backend avisa límite
+          this.reportesUsadosHoy = this.reportesLimite;
+        } else {
+          alert('No se pudo enviar el reporte');
+        }
       }
     });
   }

@@ -96,24 +96,30 @@
         <div class="space-y-3 sm:space-y-4 p-4 pt-0">
           <!-- Botón para reporte rápido. -->
           <button
-            class="w-full h-12 sm:h-16 text-lg sm:text-xl bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md flex items-center justify-center"
+            class="w-full h-12 sm:h-16 text-lg sm:text-xl font-medium py-2 px-4 rounded-md flex items-center justify-center"
             style="border: none;"
             aria-label="Botón para reportar un incidente"
             (click)="openReportModal()"
+            [disabled]="limiteAlcanzado"
+            [class.bg-primary]="!limiteAlcanzado"
+            [class.text-white]="!limiteAlcanzado"
+            [class.hover\:bg-primary\/90]="!limiteAlcanzado"
+            [class.bg-gray-200]="limiteAlcanzado"
+            [class.text-gray-600]="limiteAlcanzado"
           >
             <!-- Icono de ojo. -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 mr-2 sm:mr-3"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-            REPORTAR AHORA
+            {{ limiteAlcanzado ? 'Límite alcanzado hoy' : 'REPORTAR AHORA' }}
           </button>
-
-          <!-- Botón para reporte detallado. -->
           <button
+            *ngIf="hasReportesHoy"
             class="w-full h-10 sm:h-12 text-sm sm:text-base border border-primary text-primary hover:bg-primary/5 font-medium py-2 px-4 rounded-md bg-transparent flex items-center justify-center"
-            aria-label="Botón para abrir formulario detallado de reporte"
+            aria-label="Abrir detalle de mis reportes de hoy"
+            (click)="openDetalleModal()"
           >
             <!-- Icono de archivo de texto. -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 sm:h-6 sm:w-6 mr-1 sm:mr-2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Reporte Detallado
+            Detalle de reporte
           </button>
         </div>
       </div>
@@ -524,9 +530,43 @@
       <button class="modal-close" (click)="closeReportModal()" aria-label="Cerrar modal">
         ✕
       </button>
-  <app-reporta-ahora (close)="closeReportModal()"></app-reporta-ahora>
+  <app-reporta-ahora (close)="closeReportModal()" (submitted)="onReporteEnviado()" (authRequired)="onAuthRequired()"></app-reporta-ahora>
     </div>
   </div>
+
+  <!-- Mini-modal límite alcanzado -->
+  <div class="mini-modal-backdrop" *ngIf="showDialogLimit">
+    <div class="mini-modal">
+      <h3 class="mm-title">Límite Alcanzado</h3>
+      <p class="mm-text">Has alcanzado tu límite diario de reportes ({{reportesLimite}}/{{reportesLimite}}). Podrás volver a reportar mañana.</p>
+      <div class="mm-actions">
+        <button type="button" class="mm-btn" (click)="showDialogLimit=false">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini-modal de éxito -->
+  <div class="mini-modal-backdrop" *ngIf="showDialogSuccess">
+    <div class="mini-modal">
+      <h3 class="mm-title">Reporte Enviado</h3>
+      <p class="mm-text">¡Tu reporte fue enviado! Un agente de seguridad se dirigirá a tu ubicación.</p>
+      <div class="mm-actions">
+        <button type="button" class="mm-btn" (click)="showDialogSuccess=false">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini-modal autenticación requerida -->
+  <div class="toast-wrap" *ngIf="showToastAuth">
+    <div class="toast warn">
+      Debes iniciar sesión para enviar reportes. Por favor, inicia sesión e inténtalo nuevamente.
+    </div>
+  </div>
+
+  <!-- Modal Detalle de Reporte -->
+  <app-detalle-reporte *ngIf="showDetalleModal && usuarioId !== null"
+    [usuarioId]="usuarioId"
+    (close)="closeDetalleModal()"></app-detalle-reporte>
 
   <!-- SOS Button -->
   <div class="fixed bottom-6 right-6 z-50">

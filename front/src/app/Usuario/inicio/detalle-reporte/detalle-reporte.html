@@ -1,0 +1,33 @@
+<div class="dr-backdrop" (click)="cerrar()">
+	<div class="dr-modal" (click)="$event.stopPropagation()">
+		<div class="dr-header">
+			<h3>Detalle de Reporte</h3>
+			<button type="button" class="x" (click)="cerrar()">×</button>
+		</div>
+		<div class="dr-body">
+			<ng-container *ngIf="(reportesHoy?.length || 0) > 0; else noReports">
+				<div class="dr-select">
+					<label>Selecciona reporte del día</label>
+					<select [(ngModel)]="seleccionado">
+						<option *ngFor="let r of reportesHoy" [ngValue]="r">
+							{{ r.descripcion | slice:0:40 }}{{ r.descripcion.length>40?'…':'' }} - {{ r.fechaCreacion | date:'shortTime' }}
+						</option>
+					</select>
+				</div>
+				<div class="dr-content" *ngIf="seleccionado">
+					<p class="dr-desc">{{ seleccionado.descripcion }}</p>
+					<div class="dr-img" *ngIf="fotoSrc(seleccionado) as src">
+						<img [src]="src" alt="Evidencia del reporte" />
+					</div>
+					<p class="dr-note" *ngIf="!fotoSrc(seleccionado)">Este reporte no contiene fotografía adjunta.</p>
+				</div>
+			</ng-container>
+			<ng-template #noReports>
+				<p class="dr-empty">No tienes reportes hoy.</p>
+			</ng-template>
+		</div>
+		<div class="dr-actions">
+			<button type="button" class="btn" (click)="cerrar()">Cerrar</button>
+		</div>
+	</div>
+</div>
