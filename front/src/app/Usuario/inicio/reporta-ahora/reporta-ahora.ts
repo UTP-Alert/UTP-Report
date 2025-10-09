@@ -6,6 +6,7 @@ import { ZonaService, Zona } from '../../../services/zona.service';
 import { ReporteService } from '../../../services/reporte.service';
 import { AuthService } from '../../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { ReportesHoyService, ReportesHoy } from '../../../services/reportes-hoy.service';
 
 @Component({
   selector: 'app-reporta-ahora',
@@ -37,6 +38,7 @@ export class ReportaAhora implements OnInit {
   private snapshotBlob: Blob | null = null;
   showContactInfo = true;
   attemptedSubmit = false;
+  reportesHoy: ReportesHoy | null = null;
 
   constructor(
     private incidenteService: IncidenteService,
@@ -44,6 +46,7 @@ export class ReportaAhora implements OnInit {
     private reporteService: ReporteService,
     private auth: AuthService,
     private http: HttpClient,
+    private reportesHoyService: ReportesHoyService,
     private zone: NgZone
   ) {}
 
@@ -75,6 +78,12 @@ export class ReportaAhora implements OnInit {
         }
       },
       error: _ => {}
+    });
+
+    // Obtener conteo de reportes de hoy
+    this.reportesHoyService.obtener().subscribe({
+      next: (d) => this.reportesHoy = d,
+      error: _ => this.reportesHoy = { usados: 0, limite: 3 }
     });
   }
 
@@ -273,12 +282,20 @@ export class ReportaAhora implements OnInit {
 
   canSubmit(): boolean {
     // No requerimos usuarioId para habilitar el botón; lo recuperamos al enviar
-    return !!(this.selectedTipo && this.selectedZona && this.descripcion.trim().length >= 10) && !this.submitting;
+    const baseOk = !!(this.selectedTipo && this.selectedZona && this.descripcion.trim().length >= 10) && !this.submitting;
+    if (!baseOk) return false;
+    if (this.reportesHoy && this.reportesHoy.usados >= this.reportesHoy.limite) return false;
+    return true;
   }
 
   enviarReporte() {
     this.attemptedSubmit = true;
-    if (!this.canSubmit()) return;
+    if (!this.canSubmit()) {
+      if (this.reportesHoy && this.reportesHoy.usados >= this.reportesHoy.limite) {
+        alert('Ya alcanzaste tu límite diario de reportes (3). Vuelve a intentarlo mañana.');
+      }
+      return;
+    }
     this.submitting = true;
     const base = 'http://localhost:8080';
     if (!this.usuarioId) {
@@ -327,6 +344,10 @@ export class ReportaAhora implements OnInit {
         // Cierra menús de carga si quedaran abiertos
         this.showUploadMenu = false;
         this.attemptedSubmit = false;
+        // Actualizar contador (sumar uno) y cerrar el modal
+        if (this.reportesHoy) {
+          this.reportesHoy = { ...this.reportesHoy, usados: Math.min(this.reportesHoy.usados + 1, this.reportesHoy.limite) };
+        }
         // Cerrar el modal automáticamente tras el envío exitoso
         try { this.close.emit(); } catch {}
       },
