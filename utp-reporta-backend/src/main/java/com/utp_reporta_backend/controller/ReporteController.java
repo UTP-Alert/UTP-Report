@@ -40,9 +40,17 @@ public class ReporteController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping
-    public ResponseEntity<ReporteDTO> createReporte(@RequestBody ReporteDTO reporteDTO) {
-        ReporteDTO createdReporte = reporteService.createReporte(reporteDTO);
+   @PostMapping
+    public ResponseEntity<ReporteDTO> createReporte(
+            @RequestParam Long tipoIncidenteId,
+            @RequestParam Long zonaId,
+            @RequestParam String descripcion,
+            @RequestPart(value = "foto", required = false) MultipartFile foto,
+            @RequestParam Boolean isAnonimo,
+            @RequestParam(value = "contacto", required = false) String contacto,
+            @RequestParam("usuarioId") Long usuarioId) {
+        ReporteDTO createdReporte = reporteService.createReporte(
+                tipoIncidenteId, zonaId, descripcion, foto, isAnonimo, contacto, usuarioId);
         return new ResponseEntity<>(createdReporte, HttpStatus.CREATED);
     }
 
