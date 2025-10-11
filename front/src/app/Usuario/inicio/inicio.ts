@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { ReportaAhora } from './reporta-ahora/reporta-ahora';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TimeService } from '../../services/time.service';
 import { DetalleReporte } from './detalle-reporte/detalle-reporte';
 import { ReporteService, ReporteDTO } from '../../services/reporte.service';
 
@@ -31,25 +32,54 @@ export class InicioUsuario implements OnInit {
   reportesUsadosHoy = 0;
   reportesLimite = 3;
   get limiteAlcanzado(): boolean { return this.reportesUsadosHoy >= this.reportesLimite; }
-  constructor(private http: HttpClient, private reporteService: ReporteService) {}
+  constructor(private http: HttpClient, private reporteService: ReporteService, private timeService: TimeService) {}
 
   ngOnInit(): void {
     // Cargar el conteo diario al iniciar para bloquear el botón si corresponde
     const base = 'http://localhost:8080';
     const username = this.extractUsernameFromToken();
-    if (username) {
-      this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
-        next: lista => {
-          const found = (lista || []).find(u => u.username === username);
-          if (typeof found?.intentos === 'number') this.reportesUsadosHoy = found.intentos;
-          if (typeof found?.id === 'number') {
-            this.usuarioId = found.id;
-            this.checkReportesHoy(found.id);
-          }
-        },
-        error: _ => { /* silencioso */ }
-      });
-    }
+    if (!username) return;
+    // Traer hora real del server y UsuarioDTO, luego decidir intentos locales
+    this.timeService.getServerDateISO().subscribe({
+      next: (serverISO) => {
+        this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
+          next: lista => {
+            const found = (lista || []).find(u => u.username === username);
+            if (typeof found?.id === 'number') this.usuarioId = found.id;
+            // Si backend manda fechaUltimoReporte, comparar con fecha real del servidor
+            const fechaUlt = (found?.fechaUltimoReporte as string | undefined) || null; // esperado "YYYY-MM-DD"
+            const intentos = typeof found?.intentos === 'number' ? found.intentos : 0;
+            if (fechaUlt && typeof fechaUlt === 'string') {
+              if (fechaUlt !== serverISO) {
+                // Nuevo día según servidor: resetear intentos solo en el front
+                this.reportesUsadosHoy = 0;
+              } else {
+                this.reportesUsadosHoy = intentos;
+              }
+            } else {
+              // Si no hay fecha registrada, no bloqueamos de más
+              this.reportesUsadosHoy = intentos;
+            }
+            if (typeof found?.id === 'number') this.checkReportesHoy(found.id);
+          },
+          error: _ => { /* silencioso */ }
+        });
+      },
+      error: _ => {
+        // Si no podemos obtener hora real, usar lo que venga del backend como fallback
+        this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
+          next: lista => {
+            const found = (lista || []).find(u => u.username === username);
+            if (typeof found?.intentos === 'number') this.reportesUsadosHoy = found.intentos;
+            if (typeof found?.id === 'number') {
+              this.usuarioId = found.id;
+              this.checkReportesHoy(found.id);
+            }
+          },
+          error: _ => {}
+        });
+      }
+    });
   }
 
   private extractUsernameFromToken(): string | null {

@@ -1,5 +1,6 @@
 package com.utp_reporta_backend.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.utp_reporta_backend.enums.TipoUsuario;
@@ -21,6 +22,7 @@ public class UsuarioDTO {
     private String sedeNombre;
     private List<String> zonasNombres;
     private int intentos;
+    private LocalDate fechaUltimoReporte;
     private boolean enabled;
     private List<String> roles;
 }
