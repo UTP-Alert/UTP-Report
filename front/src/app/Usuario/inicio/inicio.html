@@ -324,32 +324,41 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-primary"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
         Seguimiento de Mis Reportes
       </h2>
-  <div class="border-2 border-blue-200 hover:shadow-md transition-shadow rounded-2xl">
+      <div class="border-2 border-blue-200 hover:shadow-md transition-shadow rounded-2xl">
         <div class="p-4">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-lg font-medium">Mis Reportes</h3>
-            <span class="text-sm text-gray-500">1 reportes</span>
+            <span class="text-sm text-gray-500">{{ misReportes.length || 0 }} reportes</span>
           </div>
-          <div class="border-2 border-blue-200 rounded-2xl p-4">
-            <div class="flex items-start justify-between mb-2">
-              <div class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                <div>
-                  <p class="font-medium">ROBO <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs ml-2">Pendiente</span></p>
-                  <p class="text-sm text-gray-600 flex items-center gap-1 mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                    Biblioteca Central
-                  </p>
+
+          <!-- Lista de reportes guardados localmente -->
+          <ng-container *ngIf="misReportes && misReportes.length; else sinReportes">
+            <div *ngFor="let r of misReportes; let i = index" class="border-2 border-blue-200 rounded-2xl p-4 mb-3 last:mb-0">
+              <div class="flex items-start justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <div>
+                    <p class="font-medium">{{ r.tipoNombre | uppercase }} <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs ml-2">{{ r.estado }}</span></p>
+                    <p class="text-sm text-gray-600 flex items-center gap-1 mt-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                      {{ r.zonaNombre }}
+                    </p>
+                  </div>
                 </div>
+                <div class="text-sm text-gray-500">{{ formatFecha(r.fechaCreacion) }}</div>
               </div>
-              <div class="text-sm text-gray-500">07/10/2025, 12:26</div>
+              <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                <div class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">Estado desconocido</p>
+              <p class="text-xs text-gray-500 mt-4">Recibirás notificaciones cuando el estado de tus reportes cambie</p>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
-              <div class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
+          </ng-container>
+          <ng-template #sinReportes>
+            <div class="border-2 border-dashed border-blue-200 rounded-2xl p-6 text-center text-gray-500">
+              Aún no tienes reportes. Cuando envíes uno, aparecerá aquí.
             </div>
-            <p class="text-xs text-gray-500 mt-2">Estado desconocido</p>
-            <p class="text-xs text-gray-500 mt-4">Recibirás notificaciones cuando el estado de tus reportes cambie</p>
-          </div>
+          </ng-template>
         </div>
       </div>
     </section>
@@ -530,7 +539,7 @@
       <button class="modal-close" (click)="closeReportModal()" aria-label="Cerrar modal">
         ✕
       </button>
-  <app-reporta-ahora (close)="closeReportModal()" (submitted)="onReporteEnviado()" (authRequired)="onAuthRequired()"></app-reporta-ahora>
+  <app-reporta-ahora (close)="closeReportModal()" (saved)="usuarioId !== null && cargarMisReportesLocal(usuarioId)" (submitted)="onReporteEnviado()" (authRequired)="onAuthRequired()"></app-reporta-ahora>
     </div>
   </div>
 
