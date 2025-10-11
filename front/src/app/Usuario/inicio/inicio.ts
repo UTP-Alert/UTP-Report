@@ -32,6 +32,8 @@ export class InicioUsuario implements OnInit {
   reportesUsadosHoy = 0;
   reportesLimite = 3;
   get limiteAlcanzado(): boolean { return this.reportesUsadosHoy >= this.reportesLimite; }
+  // Seguimiento de mis reportes (temporal/local hasta que admin gestione estados)
+  misReportes: Array<{ id?: number; tipoNombre: string; zonaNombre: string; fechaCreacion: string; estado: string; usuarioId: number; }> = [];
   constructor(private http: HttpClient, private reporteService: ReporteService, private timeService: TimeService) {}
 
   ngOnInit(): void {
@@ -60,7 +62,10 @@ export class InicioUsuario implements OnInit {
               // Si no hay fecha registrada, no bloqueamos de más
               this.reportesUsadosHoy = intentos;
             }
-            if (typeof found?.id === 'number') this.checkReportesHoy(found.id);
+            if (typeof found?.id === 'number') {
+              this.checkReportesHoy(found.id);
+              this.cargarMisReportesLocal(found.id);
+            }
           },
           error: _ => { /* silencioso */ }
         });
@@ -74,6 +79,7 @@ export class InicioUsuario implements OnInit {
             if (typeof found?.id === 'number') {
               this.usuarioId = found.id;
               this.checkReportesHoy(found.id);
+              this.cargarMisReportesLocal(found.id);
             }
           },
           error: _ => {}
@@ -125,6 +131,10 @@ export class InicioUsuario implements OnInit {
     // Desde el primer envío del día, habilitar botón de detalle
     this.hasReportesHoy = true;
     this.showSuccessDialog();
+    // Refrescar la lista desde localStorage para mostrar el reporte al instante
+    if (this.usuarioId !== null) {
+      this.cargarMisReportesLocal(this.usuarioId);
+    }
   }
 
   // Utilidades para mini-modales
@@ -185,5 +195,27 @@ export class InicioUsuario implements OnInit {
       },
       error: _ => { this.hasReportesHoy = false; }
     });
+  }
+
+  cargarMisReportesLocal(uid: number) {
+    try {
+      const key = `ur_mis_reportes_${uid}`;
+      const raw = localStorage.getItem(key);
+      const arr = raw ? JSON.parse(raw) : [];
+      this.misReportes = Array.isArray(arr) ? arr : [];
+    } catch { this.misReportes = []; }
+  }
+
+  // Formato corto de fecha/hora para el template
+  formatFecha(fechaISO: string): string {
+    try {
+      const d = new Date(fechaISO);
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mi = String(d.getMinutes()).padStart(2, '0');
+      return `${dd}/${mm}/${yyyy}, ${hh}:${mi}`;
+    } catch { return fechaISO; }
   }
 }
