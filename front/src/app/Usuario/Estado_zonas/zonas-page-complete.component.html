@@ -1,0 +1,188 @@
+<div class="page-container">
+  <div class="content-wrapper">
+
+    <!-- HEADER (Encabezado Principal) -->
+    <div class="main-header">
+      <!-- MapPin Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><path d="M12 12.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M12 22.5s-8-7-8-12a8 8 0 1 1 16 0c0 5-8 12-8 12Z"/></svg>
+      <div>
+        <h1 class="header-title">GESTIÓN DE ZONAS UNIVERSITARIAS</h1>
+        <p class="header-subtitle">
+          Monitoreo y administración de zonas de la sede
+        </p>
+      </div>
+    </div>
+
+    <!-- ALERTA DE SOLO LECTURA (Para Estudiantes) -->
+    <div class="read-only-alert">
+      <!-- Eye Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="alert-icon"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+      <p class="alert-description">
+        <strong>Modo Solo Lectura:</strong> Estás viendo las zonas en modo de consulta.
+        Solo los administradores pueden editar la información de las zonas.
+      </p>
+    </div>
+
+    <!-- SELECTOR DE SEDE -->
+    <div class="sede-selector-card">
+      <div class="sede-selector-content">
+        <!-- Building Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sede-selector-icon"><path d="M18 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 20v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div class="flex-1">
+          <label class="sede-label">Seleccionar Sede:</label>
+          <select class="sede-select">
+            <option value="campus-principal">UTP Campus Principal</option>
+            <option value="campus-norte">UTP Campus Norte</option>
+            <option value="campus-sur">UTP Campus Sur</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTADÍSTICAS RÁPIDAS (4 Cards) -->
+    <div class="quick-stats-grid">
+      <!-- Card 1 - Zonas Seguras -->
+      <div class="stat-card stat-safe">
+        <div class="stat-icon-wrapper">
+          <!-- Shield Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+          <div>
+            <p class="stat-value">0</p> <!-- Placeholder for count -->
+            <p class="stat-label">Zonas Seguras</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 - En Precaución -->
+      <div class="stat-card stat-caution">
+        <div class="stat-icon-wrapper">
+          <!-- AlertTriangle Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>
+            <p class="stat-value">0</p> <!-- Placeholder for count -->
+            <p class="stat-label">En Precaución</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 - Zonas Peligrosas -->
+      <div class="stat-card stat-dangerous">
+        <div class="stat-icon-wrapper">
+          <!-- AlertTriangle Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>
+            <p class="stat-value">0</p> <!-- Placeholder for count -->
+            <p class="stat-label">Zonas Peligrosas</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 - Estudiantes Activos -->
+      <div class="stat-card stat-students">
+        <div class="stat-icon-wrapper">
+          <!-- Users Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <div>
+            <p class="stat-value">0</p> <!-- Placeholder for totalStudents -->
+            <p class="stat-label">Estudiantes Activos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLES (Botones de Acción) -->
+    <div class="controls-section">
+      <button class="action-button">
+        <!-- Navigation Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="map-icon"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        Ver Mapa Interactivo
+      </button>
+      <button class="action-button">
+        <!-- Export Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="export-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar Reporte
+      </button>
+      <span class="update-badge">
+        🔄 Actualizado cada 2 minutos
+      </span>
+    </div>
+
+    <!-- TARJETAS DE ZONAS (Grid de Zonas) -->
+    <div class="zone-cards-grid">
+      <!-- Example Zone Card (repeat for each zone) -->
+      <div class="zone-card">
+        <div class="zone-card-header">
+          <h3 class="zone-title">
+            Nombre de la Zona
+            <span class="zone-status-badge zone-status-safe">
+              ZONA SEGURA
+            </span>
+          </h3>
+          <div class="zone-details">
+            <div class="detail-item">
+              <!-- AlertTriangle Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="detail-icon"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>0 incidentes</span>
+            </div>
+            <div class="detail-item">
+              <!-- Users Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="detail-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>0 estudiantes</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="trend-info trend-up">
+          <!-- TrendingUp Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="trend-icon"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span class="trend-status">subiendo</span>
+          <p class="trend-timestamp">Hace 15 min</p>
+        </div>
+
+        <!-- Nivel de Seguridad -->
+        <div class="security-level-section">
+          <div class="security-level-labels">
+            <span class="text-sm">Nivel de Seguridad</span>
+            <span class="text-sm">85%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" style="width: 85%"></div>
+          </div>
+        </div>
+
+        <!-- Imagen de la Zona -->
+        <div class="zone-image-wrapper">
+          <img src="https://via.placeholder.com/300x150/cccccc/000000?text=Vista+de+Zona" alt="Vista de la Zona" class="zone-image">
+          <div class="image-overlay"></div>
+          <div class="image-location">
+            <p class="flex items-center gap-1">
+              <!-- MapPin Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon"><path d="M12 12.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M12 22.5s-8-7-8-12a8 8 0 1 1 16 0c0 5-8 12-8 12Z"/></svg>
+              Ubicación de la Zona
+            </p>
+          </div>
+        </div>
+
+        <!-- Descripción de Seguridad -->
+        <div class="security-description-section">
+          <p class="security-description-label">
+            <!-- Shield Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="detail-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+            Información de Seguridad:
+          </p>
+          <p class="security-description-text">
+            Descripción de seguridad de la zona.
+          </p>
+        </div>
+
+        <!-- BOTÓN DE ACCIÓN (Reportar) -->
+        <div class="report-button-wrapper">
+          <button class="report-button">
+            📢 Reportar Incidente
+          </button>
+        </div>
+      </div>
+      <!-- End Example Zone Card -->
+    </div>
+  </div>
+</div>

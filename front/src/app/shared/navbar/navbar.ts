@@ -159,7 +159,7 @@ export class NavbarComponent {
       case 'sensibles':
         return url.startsWith('/superadmin/reportes-sensibles');
       case 'guia':
-        return url.startsWith('/usuario/guia');
+        return url.startsWith('/usuario/guia-page');
     }
   }
 
@@ -177,7 +177,7 @@ export class NavbarComponent {
     if (this.isAdmin()) return ['/admin','zonas'];
     if (this.isSeguridad()) return ['/seguridad','zonas'];
     // Usuario puro o admin como usuario
-    return ['/usuario','zonas'];
+    return ['/usuario','estado-zonas'];
   }
 
   goZonas(){
@@ -197,10 +197,12 @@ export class NavbarComponent {
     if (this.isSuperAdmin()) this.router.navigate(['/superadmin','reportes-sensibles']);
   }
 
-  openGuide(){
-    // Guía solo aparece para usuario puro o admin actuando como usuario
-    if (this.isUsuario() || this.isAdminAsUser()) this.router.navigate(['/usuario','guia']);
+openGuide(){
+  if (this.isUsuario() || this.isAdminAsUser()) {
+    this.router.navigate(['/usuario', 'guia-page']);
   }
+}
+
 
   openNotifications(){ /* TODO: panel de notificaciones */ }
   reportar(){ /* TODO: modal de reporte */ }

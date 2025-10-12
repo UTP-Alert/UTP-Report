@@ -1,0 +1,74 @@
+<div class="guia-page-container">
+  <div class="header">
+    <div class="icon-title">
+      <i class="fas fa-book"></i>
+      <h1>GUÍA Y TUTORIALES</h1>
+    </div>
+    <p>Aprende a usar el sistema paso a paso con nuestros tutoriales interactivos.</p>
+  </div>
+
+  <div class="cards-section">
+    <div class="card tour-card">
+      <div class="card-header">
+        <i class="fas fa-desktop"></i>
+        <h2>Tour del Sistema</h2>
+      </div>
+      <p>Conoce las funciones principales paso a paso</p>
+      <button class="btn-primary">
+        <i class="fas fa-play-circle"></i> Iniciar Tour Completo
+      </button>
+    </div>
+
+    <div class="card report-card">
+      <div class="card-header">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h2>Cómo Reportar</h2>
+      </div>
+      <p>Aprende a crear reportes de incidentes</p>
+      <button class="btn-secondary">
+        <i class="fas fa-question-circle"></i> Tutorial de Reportes
+      </button>
+    </div>
+  </div>
+
+  <div class="emergency-contact-section">
+    <div class="emergency-card">
+      <div class="card-header">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h2>Contacto de Emergencia</h2>
+      </div>
+      <p>Si estás en peligro inmediato o presencias un crimen en progreso:</p>
+      <button class="btn-emergency-call">
+        <i class="fas fa-phone-alt"></i> LLAMAR 911
+      </button>
+      <div class="campus-security">
+        <i class="fas fa-shield-alt"></i> SEGURIDAD CAMPUS: (555) 123-4567
+      </div>
+    </div>
+  </div>
+
+  <!-- 📋 SECCIÓN DE PREGUNTAS FRECUENTES -->
+  <div class="faq-section">
+    <div class="faq-header">
+      <i class="fas fa-question-circle"></i>
+      <h2>Preguntas Frecuentes</h2>
+    </div>
+    <p>Respuestas a las consultas más comunes sobre el sistema</p>
+
+    <div class="accordion">
+      <div class="accordion-item" *ngFor="let faq of faqs; let i = index">
+        <button class="accordion-header" (click)="toggleAccordion(i)" [class.active]="activeAccordionIndex === i">
+          {{ faq.question }}
+          <i class="fas fa-chevron-down" [class.rotate]="activeAccordionIndex === i"></i>
+        </button>
+        <div
+          #accordionContent
+          class="accordion-content"
+          [style.maxHeight]="activeAccordionIndex === i ? faq.height : '0px'"
+        >
+          <p>{{ faq.answer }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
