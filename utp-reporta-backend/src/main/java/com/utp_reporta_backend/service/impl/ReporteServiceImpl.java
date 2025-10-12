@@ -10,13 +10,13 @@ import com.utp_reporta_backend.repository.TipoIncidenteRepository;
 import com.utp_reporta_backend.repository.UsuarioRepository;
 import com.utp_reporta_backend.repository.ZonaRepository;
 import com.utp_reporta_backend.service.ReporteService;
+import com.utp_reporta_backend.service.TimeService; // Import TimeService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +37,9 @@ public class ReporteServiceImpl implements ReporteService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private TimeService timeService; // Inject TimeService
 
     @Override
     public List<ReporteDTO> getAllReportes() {
@@ -96,7 +99,7 @@ public class ReporteServiceImpl implements ReporteService {
                                     .anyMatch(rol -> rol.getNombre().equals(ERol.ROLE_USUARIO));
 
         if (isUserRole) {
-            LocalDate today = LocalDate.now();
+            LocalDate today = timeService.getCurrentLocalDatePeru(); // Use TimeService
             if (usuario.getFechaUltimoReporte() == null || !usuario.getFechaUltimoReporte().equals(today)) {
                 usuario.setFechaUltimoReporte(today);
                 usuario.setIntentosReporte(1);
@@ -120,7 +123,7 @@ public class ReporteServiceImpl implements ReporteService {
         }
         reporte.setIsAnonimo(isAnonimo);
         reporte.setContacto(contacto);
-        reporte.setFechaCreacion(LocalDateTime.now());
+        reporte.setFechaCreacion(timeService.getCurrentLocalDateTimePeru()); // Use TimeService
 
         Reporte savedReporte = reporteRepository.save(reporte);
 
