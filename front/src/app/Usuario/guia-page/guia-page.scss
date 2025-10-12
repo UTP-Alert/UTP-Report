@@ -1,0 +1,282 @@
+.guia-page-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+
+    .icon-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+
+      i {
+        font-size: 30px;
+        color: #e74c3c; /* Red color for icon */
+        margin-right: 10px;
+      }
+
+      h1 {
+        font-size: 28px;
+        color: #333;
+        margin: 0;
+      }
+    }
+
+    p {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.5;
+    }
+  }
+
+  .cards-section {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+
+    .card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      border: 1px solid #eee;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+
+        i {
+          font-size: 24px;
+          margin-right: 10px;
+        }
+
+        h2 {
+          font-size: 20px;
+          margin: 0;
+        }
+      }
+
+      p {
+        font-size: 14px;
+        color: #777;
+        margin-bottom: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        i {
+          margin-right: 8px;
+        }
+      }
+
+      &.tour-card {
+        .card-header i {
+          color: #3498db; /* Blue color for tour icon */
+        }
+        h2 {
+          color: #3498db;
+        }
+        .btn-primary {
+          background-color: #3498db;
+
+          &:hover {
+            background-color: #2980b9;
+          }
+        }
+      }
+
+      &.report-card {
+        .card-header i {
+          color: #e74c3c; /* Red color for report icon */
+        }
+        h2 {
+          color: #e74c3c;
+        }
+        .btn-secondary {
+          background-color: #e74c3c;
+
+          &:hover {
+            background-color: #c0392b;
+          }
+        }
+      }
+    }
+  }
+
+  .emergency-contact-section {
+    margin-bottom: 40px;
+
+    .emergency-card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border: 1px solid #e74c3c; /* Red border for emergency */
+      text-align: center;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+
+        i {
+          font-size: 24px;
+          color: #e74c3c;
+          margin-right: 10px;
+        }
+
+        h2 {
+          font-size: 20px;
+          color: #e74c3c;
+          margin: 0;
+        }
+      }
+
+      p {
+        font-size: 14px;
+        color: #777;
+        margin-bottom: 20px;
+      }
+
+      .btn-emergency-call {
+        background-color: #e74c3c;
+        color: #fff;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-bottom: 15px;
+        width: 100%;
+        max-width: 300px;
+
+        &:hover {
+          background-color: #c0392b;
+        }
+
+        i {
+          margin-right: 10px;
+        }
+      }
+
+      .campus-security {
+        font-size: 14px;
+        color: #555;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+          margin-right: 8px;
+          color: #3498db;
+        }
+      }
+    }
+  }
+
+  .faq-section {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border: 1px solid #eee;
+
+    .faq-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+
+      i {
+        font-size: 24px;
+        color: #2ecc71; /* Green color for FAQ icon */
+        margin-right: 10px;
+      }
+
+      h2 {
+        font-size: 20px;
+        color: #333;
+        margin: 0;
+      }
+    }
+
+    p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .accordion {
+      .accordion-item {
+        border-bottom: 1px solid #eee;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .accordion-header {
+          background-color: #f9f9f9;
+          color: #333;
+          cursor: pointer;
+          padding: 15px;
+          width: 100%;
+          text-align: left;
+          border: none;
+          outline: none;
+          font-size: 16px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: #f1f1f1;
+          }
+
+          i {
+            transition: transform 0.3s ease;
+          }
+
+          &.rotate {
+            transform: rotate(180deg);
+          }
+        }
+
+        .accordion-content {
+          padding: 0 15px;
+          background-color: #fff;
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease-in-out;
+
+          p {
+            padding: 15px 0;
+            margin: 0;
+            color: #555;
+            font-size: 14px;
+          }
+        }
+  }
+}
+  }
+}
