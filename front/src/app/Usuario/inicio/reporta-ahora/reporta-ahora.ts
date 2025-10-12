@@ -6,6 +6,7 @@ import { ZonaService, Zona } from '../../../services/zona.service';
 import { ReporteService } from '../../../services/reporte.service';
 import { AuthService } from '../../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { TimeService } from '../../../services/time.service';
 
 @Component({
   selector: 'app-reporta-ahora',
@@ -50,7 +51,8 @@ export class ReportaAhora implements OnInit {
     private zonaService: ZonaService,
     private reporteService: ReporteService,
     private auth: AuthService,
-    private http: HttpClient,
+  private http: HttpClient,
+  private timeService: TimeService,
     private zone: NgZone
   ) {}
 
@@ -68,16 +70,36 @@ export class ReportaAhora implements OnInit {
     // Resolver usuarioId e intentos usando el JWT + /api/usuarios (evitamos /me que no existe)
     const base = 'http://localhost:8080';
     const username = this.extractUsernameFromToken();
-    if (username) {
-      this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
-        next: lista => {
-          const found = (lista || []).find(u => u.username === username);
-          if (found?.id) this.usuarioId = Number(found.id);
-          if (typeof found?.intentos === 'number') this.reportesUsadosHoy = found.intentos;
-        },
-        error: _ => {}
-      });
-    }
+    if (!username) return;
+    this.timeService.getServerDateISO().subscribe({
+      next: (serverISO) => {
+        this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
+          next: lista => {
+            const found = (lista || []).find(u => u.username === username);
+            if (found?.id) this.usuarioId = Number(found.id);
+            const fechaUlt = (found?.fechaUltimoReporte as string | undefined) || null;
+            const intentos = typeof found?.intentos === 'number' ? found.intentos : 0;
+            if (fechaUlt && fechaUlt !== serverISO) {
+              this.reportesUsadosHoy = 0; // reset local por cambio de día según servidor
+            } else {
+              this.reportesUsadosHoy = intentos;
+            }
+          },
+          error: _ => {}
+        });
+      },
+      error: _ => {
+        // Fallback sin hora del servidor
+        this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
+          next: lista => {
+            const found = (lista || []).find(u => u.username === username);
+            if (found?.id) this.usuarioId = Number(found.id);
+            if (typeof found?.intentos === 'number') this.reportesUsadosHoy = found.intentos;
+          },
+          error: _ => {}
+        });
+      }
+    });
   }
 
   ngOnDestroy(): void {

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.utp_reporta_backend.dto.PerfilUsuarioDTO;
 import com.utp_reporta_backend.dto.UsuarioDTO;
 import com.utp_reporta_backend.model.Usuario;
 import com.utp_reporta_backend.repository.UsuarioRepository;
@@ -27,7 +26,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
 
     @GetMapping("/me")
-    public ResponseEntity<PerfilUsuarioDTO> miPerfil(){
+    public ResponseEntity<UsuarioDTO> miPerfil(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getName() == null) {
             return ResponseEntity.status(401).build();
@@ -38,7 +37,19 @@ public class UsuarioController {
         }
         Usuario u = usuarioOpt.get();
         var roles = u.getRoles().stream().map(r -> r.getNombre().name()).collect(Collectors.toList());
-        PerfilUsuarioDTO dto = new PerfilUsuarioDTO(u.getUsername(), u.getNombreCompleto(), u.getTipoUsuario(), roles);
+        UsuarioDTO dto = new UsuarioDTO();
+        dto.setId(u.getId());
+        dto.setNombreCompleto(u.getNombreCompleto());
+        dto.setUsername(u.getUsername());
+        dto.setCorreo(u.getCorreo());
+        dto.setTelefono(u.getTelefono());
+        dto.setTipoUsuario(u.getTipoUsuario());
+        dto.setSedeNombre(u.getSede() != null ? u.getSede().getNombre() : null);
+        dto.setZonasNombres(u.getZonas().stream().map(z -> z.getNombre()).collect(Collectors.toList()));
+        dto.setIntentos(u.getIntentosReporte());
+        dto.setFechaUltimoReporte(u.getFechaUltimoReporte());
+        dto.setEnabled(u.isEnabled());
+        dto.setRoles(roles);
         return ResponseEntity.ok(dto);
     }
 

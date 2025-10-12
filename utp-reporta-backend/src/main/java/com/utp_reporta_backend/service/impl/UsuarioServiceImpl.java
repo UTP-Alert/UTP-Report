@@ -34,6 +34,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                     .map(zona -> zona.getNombre())
                     .collect(Collectors.toList()));
             usuarioDTO.setIntentos(usuario.getIntentosReporte());
+            usuarioDTO.setFechaUltimoReporte(usuario.getFechaUltimoReporte());
             usuarioDTO.setEnabled(usuario.isEnabled());
             usuarioDTO.setRoles(usuario.getRoles().stream()
                     .map(rol -> rol.getNombre().name())
@@ -61,6 +62,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                             .map(zona -> zona.getNombre())
                             .collect(Collectors.toList()));
                     usuarioDTO.setIntentos(usuario.getIntentosReporte());
+                    usuarioDTO.setFechaUltimoReporte(usuario.getFechaUltimoReporte());
                     usuarioDTO.setEnabled(usuario.isEnabled());
                     usuarioDTO.setRoles(usuario.getRoles().stream()
                             .map(rol -> rol.getNombre().name())
@@ -89,6 +91,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                             .map(zona -> zona.getNombre())
                             .collect(Collectors.toList()));
                     usuarioDTO.setIntentos(usuario.getIntentosReporte());
+                    usuarioDTO.setFechaUltimoReporte(usuario.getFechaUltimoReporte());
                     usuarioDTO.setEnabled(usuario.isEnabled());
                     usuarioDTO.setRoles(usuario.getRoles().stream()
                             .map(rol -> rol.getNombre().name())
@@ -117,6 +120,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                             .map(zona -> zona.getNombre())
                             .collect(Collectors.toList()));
                     usuarioDTO.setIntentos(usuario.getIntentosReporte());
+                    usuarioDTO.setFechaUltimoReporte(usuario.getFechaUltimoReporte());
                     usuarioDTO.setEnabled(usuario.isEnabled());
                     usuarioDTO.setRoles(usuario.getRoles().stream()
                             .map(rol -> rol.getNombre().name())
@@ -144,6 +148,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                             .map(zona -> zona.getNombre())
                             .collect(Collectors.toList()));
                     usuarioDTO.setIntentos(usuario.getIntentosReporte());
+                    usuarioDTO.setFechaUltimoReporte(usuario.getFechaUltimoReporte());
                     usuarioDTO.setEnabled(usuario.isEnabled());
                     usuarioDTO.setRoles(usuario.getRoles().stream()
                             .map(rol -> rol.getNombre().name())
