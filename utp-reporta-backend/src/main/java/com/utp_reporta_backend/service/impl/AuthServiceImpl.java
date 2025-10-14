@@ -28,6 +28,10 @@ import com.utp_reporta_backend.repository.ZonaRepository;
 import com.utp_reporta_backend.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.AuthenticationException;
+import java.time.Duration;
+import java.util.Optional;
+import com.utp_reporta_backend.service.TimeService; // Re-inject TimeService
 
 @Service
 @RequiredArgsConstructor
@@ -39,15 +43,47 @@ public class AuthServiceImpl implements AuthService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final ZonaRepository zonaRepository;
 	private final SedeRepository sedeRepository;
+	private final TimeService timeService; // Re-inject TimeService
 
 	@Override
 	public String login(LoginDTO loginDTO) {
+		Optional<Usuario> usuarioOptional = usuarioRepository.findByUsernameOrCorreo(loginDTO.getUsernameOrCorreo(), loginDTO.getUsernameOrCorreo());
+		
+		if (usuarioOptional.isEmpty()) {
+			throw new AuthenticationException("Credenciales inválidas.") {}; // User not found
+		}
 
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginDTO.getUsernameOrCorreo(), loginDTO.getPassword()));
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		Usuario usuario = usuarioOptional.get();
 
-		return jwtTokenProvider.generateToken((UserDetails) authentication.getPrincipal());
+		// Realizar la verificación de bloqueo explícitamente usando TimeService
+		if (usuario.getLockoutTime() != null && timeService.getCurrentLocalDateTimePeru().isBefore(usuario.getLockoutTime())) {
+			long minutesRemaining = Duration.between(timeService.getCurrentLocalDateTimePeru(), usuario.getLockoutTime()).toMinutes();
+			throw new AuthenticationException("La cuenta está bloqueada. Inténtelo de nuevo después de " + minutesRemaining + " minutos.") {};
+		}
+
+		Authentication authentication;
+		try {
+			authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginDTO.getUsernameOrCorreo(), loginDTO.getPassword()));
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+
+			// Successful login: reset failed attempts and lockout time
+			usuario.setFailedLoginAttempts(0);
+			usuario.setLockoutTime(null);
+			usuarioRepository.save(usuario);
+
+			return jwtTokenProvider.generateToken((UserDetails) authentication.getPrincipal());
+		} catch (AuthenticationException e) {
+			// Failed login: increment failed attempts and potentially lock account
+			if (usuario.getFailedLoginAttempts() < 3) { // Only increment if less than 3
+				usuario.setFailedLoginAttempts(usuario.getFailedLoginAttempts() + 1);
+			}
+			if (usuario.getFailedLoginAttempts() >= 3) {
+				usuario.setLockoutTime(timeService.getCurrentLocalDateTimePeru().plusMinutes(15));
+			}
+			usuarioRepository.save(usuario);
+			throw new AuthenticationException("Credenciales inválidas.") {}; // Re-throw with generic message
+		}
 	}
 
 	@Override
