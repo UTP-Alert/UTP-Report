@@ -24,6 +24,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -73,6 +74,8 @@ public class Usuario implements UserDetails {
 	
 	private LocalDate fechaUltimoReporte; // Fecha del último reporte enviado
     private int intentosReporte; // Contador de reportes diarios
+    private int failedLoginAttempts = 0; 
+    private LocalDateTime lockoutTime; 
 
 	@ManyToMany(fetch = FetchType.EAGER)// Un usuario puede tener muchos roles y un rol puede ser asignado a muchos usuarios
 	@JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))//Tabla intermedia para la relación muchos a muchos entre usuarios y roles.
@@ -95,7 +98,7 @@ public class Usuario implements UserDetails {
 	//Cuenta no bloqueada
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return true; // La lógica de bloqueo se maneja en AuthServiceImpl usando TimeService.
     }
 	//Credenciales no expiradas
     @Override
@@ -107,5 +110,4 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }

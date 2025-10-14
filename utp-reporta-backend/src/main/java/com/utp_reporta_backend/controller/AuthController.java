@@ -14,6 +14,10 @@ import com.utp_reporta_backend.dto.RegistroUsuarioDTO;
 import com.utp_reporta_backend.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 //Controlador para manejar la autenticación y registro de usuarios.
 @RestController
 @RequestMapping("/api/auth")
@@ -21,22 +25,34 @@ import lombok.RequiredArgsConstructor;
 //Controlador para manejar la autenticación y registro de usuarios.
 public class AuthController {
     private final AuthService authService;
+    // Removed UsuarioRepository and TimeService injections
+
     // Endpoint para el login de usuarios
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponseDTO> login(@RequestBody LoginDTO loginDTO) {
-        String token = authService.login(loginDTO);
+    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+        try {
+            String token = authService.login(loginDTO);
 
-        JwtAuthResponseDTO jwtAuthResponse = new JwtAuthResponseDTO();
-        jwtAuthResponse.setToken(token);
-        // Extraer roles del SecurityContext (ya autenticado en AuthServiceImpl)
-        var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getAuthorities() != null) {
-            java.util.List<String> roles = auth.getAuthorities().stream()
-                    .map(a -> a.getAuthority())
-                    .toList();
-            jwtAuthResponse.setRoles(roles);
+            JwtAuthResponseDTO jwtAuthResponse = new JwtAuthResponseDTO();
+            jwtAuthResponse.setToken(token);
+            // Extraer roles del SecurityContext (ya autenticado en AuthServiceImpl)
+            var auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getAuthorities() != null) {
+                java.util.List<String> roles = auth.getAuthorities().stream()
+                        .map(a -> a.getAuthority())
+                        .toList();
+                jwtAuthResponse.setRoles(roles);
+            }
+            return ResponseEntity.ok(jwtAuthResponse);
+
+        } catch (AuthenticationException e) {
+            // AuthServiceImpl now handles lockout logic and throws AuthenticationException with specific messages
+            // We can check the message to return different HTTP statuses if needed, but for now, UNAUTHORIZED is fine.
+            if (e.getMessage().contains("bloqueada")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
-        return ResponseEntity.ok(jwtAuthResponse);
     }
 
     //Registar usuario con con roles alumno y docente
