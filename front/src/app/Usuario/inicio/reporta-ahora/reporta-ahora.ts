@@ -282,6 +282,24 @@ export class ReportaAhora implements OnInit {
     if (f2) f2.value = '';
   }
 
+  // Sanitiza y limita la descripción para reducir riesgo de inyección
+  onDescripcionInput(ev: Event) {
+    const input = ev.target as HTMLTextAreaElement;
+    let val = input.value || '';
+    // Reemplazar caracteres potencialmente peligrosos. Nota: el backend debe seguir validando/escapando.
+    // Bloqueamos: < > ' " ; -- # =
+    val = val.replace(/[<>"'`;#=]/g, ' ');
+    // Evitar secuencias tipo --
+    val = val.replace(/--+/g, '-');
+    // Limitar a 100 caracteres (ya hay maxlength, esto es defensivo)
+    if (val.length > 100) val = val.slice(0, 100);
+    // Sincronizar con el modelo solo si cambió
+    if (this.descripcion !== val) {
+      this.descripcion = val;
+      input.value = val;
+    }
+  }
+
   // Toggle anónimo en todo el card
   onAnonCardClick(ev: MouseEvent) {
     // Evitar doble toggle si el click viene del propio checkbox
@@ -313,7 +331,8 @@ export class ReportaAhora implements OnInit {
 
   canSubmit(): boolean {
     // No requerimos usuarioId para habilitar el botón; lo recuperamos al enviar
-    return !!(this.selectedTipo && this.selectedZona && this.descripcion.trim().length >= 10) && !this.submitting;
+    const len = this.descripcion ? this.descripcion.trim().length : 0;
+    return !!(this.selectedTipo && this.selectedZona && len >= 10 && len <= 100) && !this.submitting;
   }
 
   enviarReporte() {

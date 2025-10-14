@@ -73,7 +73,7 @@
 
 		<label>Descripción del Incidente *</label>
 		<div class="ra-textarea">
-			<textarea rows="5" name="descripcion" [(ngModel)]="descripcion" placeholder="Describe lo que pasó con el mayor detalle posible:
+			<textarea rows="5" name="descripcion" [(ngModel)]="descripcion" (input)="onDescripcionInput($event)" maxlength="100" placeholder="Describe lo que pasó con el mayor detalle posible:
 ¿Qué ocurrió exactamente?
 ¿Cuándo sucedió? (hora aproximada)
 ¿Había otras personas presentes?
@@ -81,7 +81,7 @@ Descripción del agresor (si aplica)
 ¿Qué objetos fueron sustraídos? (si aplica)"></textarea>
 		</div>
 		<p class="hint">Entre más detalles proporciones, más útil será para la comunidad.</p>
-		<p class="hint count">{{ (descripcion || '').trim().length }}/10 mínimo</p>
+		<p class="hint count">{{ (descripcion || '').trim().length }}/100 máx • mínimo 10</p>
 		<p class="hint error" *ngIf="attemptedSubmit && (descripcion || '').trim().length < 10">La descripción debe tener al menos 10 caracteres.</p>
 
 		<label>Evidencia Fotográfica (Opcional)</label>
