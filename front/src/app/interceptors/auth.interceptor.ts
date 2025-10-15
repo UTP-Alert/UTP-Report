@@ -4,8 +4,10 @@ import { inject } from '@angular/core';
 // Interceptor que agrega el token JWT si existe en localStorage
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn) => {
   const token = localStorage.getItem('auth_token');
+  const isAuthEndpoint = req.url.includes('/api/auth/');
   const isUsuariosMe = req.url.includes('/api/usuarios/me');
-  const isPublic = req.url.includes('/api/zonas')
+  const isPublic = isAuthEndpoint
+    || req.url.includes('/api/zonas')
     || req.url.includes('/api/tipoincidentes')
     || req.url.includes('/api/sedes')
     || req.url.includes('/api/reportes'); // ojo: '/api/usuarios/me' no es público
@@ -21,7 +23,8 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
     } catch { return true; }
   };
 
-  if (token && !isExpired(token) && (!isPublic || isUsuariosMe)) {
+  // No adjuntar token en endpoints de autenticación
+  if (!isAuthEndpoint && token && !isExpired(token) && (!isPublic || isUsuariosMe)) {
     req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
   } else if (token && isExpired(token)) {
     // limpiar token vencido para no causar 401
