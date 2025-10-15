@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -13,7 +13,7 @@ import { TimeService } from '../../services/time.service';
   templateUrl: './inicio-sesion.html',
   styleUrl: './inicio-sesion.scss'
 })
-export class InicioSesion {
+export class InicioSesion implements OnInit, OnDestroy {
   form: FormGroup;
   submitted = false;
   loading = false;
@@ -23,6 +23,8 @@ export class InicioSesion {
   isLocked = false;
   lockUntilTs: number | null = null;
   lockTimer: any = null;
+  // Objetivo de reloj monotónico para el conteo, cuando no hay hora de servidor
+  lockPerfTarget: number | null = null;
   lockDisplay = signal<string>('');
   lockedUsername: string | null = null; // username al que aplica el bloqueo actual en UI
   lastAttemptUsername: string | null = null;
@@ -59,6 +61,14 @@ export class InicioSesion {
     // Inicializar con el valor actual (si lo hay)
     const initialUname = (this.form.get('username')?.value || '').trim().toLowerCase();
     this.updateLockStateForUsername(initialUname);
+  }
+  
+  ngOnDestroy() {
+    // Asegurar limpieza del intervalo al destruir el componente
+    if (this.lockTimer) {
+      try { clearInterval(this.lockTimer); } catch {}
+      this.lockTimer = null;
+    }
   }
   
 
@@ -184,14 +194,19 @@ InicioSesion.prototype.handleLockFromBackend = function(message: string, usernam
   const mins = isFinite(minutes) ? minutes : 15;
   // Obtener hora real del servidor para calcular el "until"
   this.syncServerTime().then(() => {
-    const until = this.getServerNow() + mins * 60 * 1000;
+    // Alinear al siguiente segundo para que el contador arranque en mm:00
+    const now = this.getServerNow();
+    const nextSecondBoundary = Math.ceil(now / 1000) * 1000;
+    const until = nextSecondBoundary + mins * 60 * 1000;
     const key = `ur_lock_until_server:${username}`;
     try { localStorage.setItem(key, String(until)); } catch {}
     this.startLockCountdown(until, username);
     this.backendError.set(null);
   }).catch(() => {
     // Fallback: si no se pudo obtener del servidor, usar reloj local (backend igual protege)
-    const until = Date.now() + mins * 60 * 1000;
+    const nowLocal = Date.now();
+    const nextSecondBoundary = Math.ceil(nowLocal / 1000) * 1000;
+    const until = nextSecondBoundary + mins * 60 * 1000;
     const key = `ur_lock_until_server:${username}`;
     try { localStorage.setItem(key, String(until)); } catch {}
     this.startLockCountdown(until, username);
@@ -203,13 +218,34 @@ InicioSesion.prototype.startLockCountdown = function(untilTs: number, username: 
   this.isLocked = true;
   this.lockUntilTs = untilTs;
   this.lockedUsername = username;
+  // Inicializar objetivo monotónico como respaldo contra cambios del reloj del sistema
+  try {
+    const pnow = (typeof performance !== 'undefined' && performance.now) ? performance.now() : null;
+    if (pnow !== null) {
+      const nowSrv = this.getServerNow();
+      const duration = Math.max(0, untilTs - nowSrv);
+      this.lockPerfTarget = pnow + duration;
+    } else {
+      this.lockPerfTarget = null;
+    }
+  } catch { this.lockPerfTarget = null; }
   const key = `ur_lock_until_server:${username}`;
   try { localStorage.setItem(key, String(untilTs)); } catch {}
   const tick = () => {
     if (!this.lockUntilTs) return;
-    const nowSrv = this.getServerNow();
-    const remainingMs = this.lockUntilTs - nowSrv;
-    const remainingSec = Math.ceil(remainingMs / 1000);
+    // Preferir hora de servidor (monotónica). Como respaldo, usar objetivo basado en performance.now.
+    let remainingMs: number;
+    if (__hasServerBase) {
+      const nowSrv = this.getServerNow();
+      remainingMs = this.lockUntilTs - nowSrv;
+    } else if (this.lockPerfTarget !== null && typeof performance !== 'undefined' && performance.now) {
+      remainingMs = this.lockPerfTarget - performance.now();
+    } else {
+      // último recurso
+      remainingMs = this.lockUntilTs - Date.now();
+    }
+    // floor para evitar que arranque en 14:59; alinear al siguiente segundo ya se hace al crear 'until'
+    const remainingSec = Math.floor(remainingMs / 1000);
     if (remainingSec <= 0) {
       this.clearLockCountdown();
       this.backendError.set(null);
@@ -226,6 +262,7 @@ InicioSesion.prototype.startLockCountdown = function(untilTs: number, username: 
 InicioSesion.prototype.clearLockCountdown = function(username?: string) {
   this.isLocked = false;
   this.lockUntilTs = null;
+  this.lockPerfTarget = null;
   this.lockDisplay.set('');
   const uname = (username || this.lockedUsername || '').trim().toLowerCase();
   if (uname) { try { localStorage.removeItem(`ur_lock_until_server:${uname}`); } catch {} }
@@ -234,14 +271,24 @@ InicioSesion.prototype.clearLockCountdown = function(username?: string) {
   this.lockedUsername = null;
 };
 
-// Sync con hora del servidor y cálculo de offset
-let __serverOffsetMs = 0; // serverNow - Date.now()
+// Sync con hora del servidor utilizando reloj monotónico (performance.now)
+// para ser robustos ante cambios del reloj del sistema del cliente.
+let __serverBaseMs = 0;       // Marca de tiempo del servidor en el último sync
+let __serverBasePerf = 0;     // performance.now() en el momento del último sync
+let __hasServerBase = false;  // Indica si ya tenemos una referencia válida
+let __lastSyncPerf = 0;       // Para resincronizar cada cierto tiempo
+const __MAX_LOCK_MS = 16 * 60 * 1000; // 16 minutos como cota de seguridad
+
 InicioSesion.prototype.syncServerTime = function(): Promise<void> {
   return new Promise((resolve, reject) => {
     this.timeService.getServerDateTime().subscribe({
       next: (date) => {
         const serverMs = date.getTime();
-        __serverOffsetMs = serverMs - Date.now();
+        const pnow = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+        __serverBaseMs = serverMs;
+        __serverBasePerf = pnow;
+        __lastSyncPerf = pnow;
+        __hasServerBase = true;
         resolve();
       },
       error: _ => reject()
@@ -250,18 +297,30 @@ InicioSesion.prototype.syncServerTime = function(): Promise<void> {
 };
 
 InicioSesion.prototype.getServerNow = function(): number {
-  // Re-sync ligero cada ~20 segundos para evitar manipulación del reloj local
-  const lastSync = Number(localStorage.getItem('ur_lock_last_sync') || '0');
-  const now = Date.now();
-  if (!lastSync || now - lastSync > 20000) {
-    localStorage.setItem('ur_lock_last_sync', String(now));
+  // Si no hay base aún, usar Date.now() como aproximación inicial
+  const pnow = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+  if (!__hasServerBase) return Date.now();
+
+  // Estimar ahora del servidor con reloj monotónico
+  const estimate = __serverBaseMs + (pnow - __serverBasePerf);
+
+  // Re-sync ligero cada ~20s según reloj monotónico (no afectado por cambios de fecha)
+  if (!__lastSyncPerf || (pnow - __lastSyncPerf) > 20000) {
+    __lastSyncPerf = pnow;
     // Best-effort (no bloqueante)
     this.timeService.getServerDateTime().subscribe({
-      next: (date) => { __serverOffsetMs = date.getTime() - Date.now(); },
+      next: (date) => {
+        const sMs = date.getTime();
+        const pn = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+        __serverBaseMs = sMs;
+        __serverBasePerf = pn;
+        __lastSyncPerf = pn;
+        __hasServerBase = true;
+      },
       error: _ => {}
     });
   }
-  return Date.now() + __serverOffsetMs;
+  return estimate;
 };
 
 InicioSesion.prototype.updateLockStateForUsername = function(username: string) {
@@ -281,14 +340,16 @@ InicioSesion.prototype.updateLockStateForUsername = function(username: string) {
   if (Number.isNaN(until)) return;
   this.syncServerTime().then(() => {
     const nowSrv = this.getServerNow();
-    if (until > nowSrv) {
-      this.startLockCountdown(until, uname);
-    } else {
-      try { localStorage.removeItem(key); } catch {}
-    }
+    const remaining = until - nowSrv;
+    if (remaining <= 0) { try { localStorage.removeItem(key); } catch {} ; return; }
+    // Sanitizar valores fuera de rango (probablemente creados cuando el reloj local se cambió)
+    if (remaining > __MAX_LOCK_MS) { try { localStorage.removeItem(key); } catch {} ; return; }
+    this.startLockCountdown(until, uname);
   }).catch(() => {
     // Si falla el sync, intentar con reloj local (fallback)
-    if (until > Date.now()) this.startLockCountdown(until, uname);
-    else { try { localStorage.removeItem(key); } catch {} }
+    const remainingLocal = until - Date.now();
+    if (remainingLocal <= 0) { try { localStorage.removeItem(key); } catch {} ; return; }
+    if (remainingLocal > __MAX_LOCK_MS) { try { localStorage.removeItem(key); } catch {} ; return; }
+    this.startLockCountdown(until, uname);
   });
 };
