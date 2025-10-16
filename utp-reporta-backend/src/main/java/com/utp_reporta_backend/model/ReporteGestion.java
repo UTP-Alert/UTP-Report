@@ -29,5 +29,5 @@ public class ReporteGestion {
     private PrioridadReporte prioridad;
 
     @Column(nullable = false)
-    private LocalDateTime fechaActualizacion = LocalDateTime.now(); // Timestamp for when this gestion entry was created
+    private LocalDateTime fechaActualizacion; // Timestamp for when this gestion entry was created
 }

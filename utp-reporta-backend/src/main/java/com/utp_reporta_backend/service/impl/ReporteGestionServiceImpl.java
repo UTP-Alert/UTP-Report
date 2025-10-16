@@ -8,6 +8,7 @@ import com.utp_reporta_backend.model.ReporteGestion;
 import com.utp_reporta_backend.repository.ReporteGestionRepository;
 import com.utp_reporta_backend.repository.ReporteRepository;
 import com.utp_reporta_backend.service.IReporteGestionService;
+import com.utp_reporta_backend.service.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,9 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
     @Autowired
     private ReporteRepository reporteRepository;
 
+    @Autowired
+    private TimeService timeService;
+
     @Override
     public ReporteGestionDTO updateReporteGestion(Long reporteId, EstadoReporte estado, PrioridadReporte prioridad) {
         Optional<Reporte> reporteOptional = reporteRepository.findById(reporteId);
@@ -35,7 +39,7 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
         reporteGestion.setReporte(reporte);
         reporteGestion.setEstado(estado);
         reporteGestion.setPrioridad(prioridad);
-        reporteGestion.setFechaActualizacion(LocalDateTime.now());
+        reporteGestion.setFechaActualizacion(timeService.getCurrentLocalDateTimePeru());
 
         ReporteGestion savedReporteGestion = reporteGestionRepository.save(reporteGestion);
 
