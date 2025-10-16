@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { PerfilService, PerfilUsuario } from '../../services/perfil.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { finalize } from 'rxjs/operators';
+import { timeout } from 'rxjs/operators';
 import { TimeService } from '../../services/time.service';
 
 @Component({
@@ -19,6 +18,7 @@ export class InicioSesion implements OnInit, OnDestroy {
   form: FormGroup;
   submitted = false;
   loading = false;
+  loadingTimeout: any = null; // Para feedback visual si la API tarda
   showPassword = false;
   perfil : PerfilUsuario | null = null;
   // Bloqueo por intentos fallidos
@@ -27,10 +27,6 @@ export class InicioSesion implements OnInit, OnDestroy {
   lockTimer: any = null;
   // Objetivo de reloj monotónico para el conteo, cuando no hay hora de servidor
   lockPerfTarget: number | null = null;
-  // Hacer que el primer render del contador sea 14:59
-  __firstTickAdjust = false;
-  // Evitar sincronizaciones concurrentes con el servidor
-  __syncPromise: Promise<void> | null = null;
   lockDisplay = signal<string>('');
   lockedUsername: string | null = null; // username al que aplica el bloqueo actual en UI
   lastAttemptUsername: string | null = null;
@@ -55,20 +51,13 @@ export class InicioSesion implements OnInit, OnDestroy {
   
   ngOnInit() {
     // Reaccionar al cambio de username para aplicar el bloqueo por-usuario
-    this.form.get('username')?.valueChanges.pipe(
-      map((val: string) => val ?? ''),
-      map((val: string) => {
-        if (val && val.length > 19) {
-          const sliced = val.slice(0, 19);
-          this.form.get('username')?.setValue(sliced, { emitEvent: false });
-          return sliced;
-        }
-        return val;
-      }),
-      map(v => v.trim().toLowerCase()),
-      distinctUntilChanged(),
-      debounceTime(250)
-    ).subscribe((uname: string) => {
+    this.form.get('username')?.valueChanges.subscribe((val: string) => {
+      const uname = (val || '').trim().toLowerCase();
+      // Truncado defensivo a 19 caracteres
+      if (val && String(val).length > 19) {
+        const sliced = String(val).slice(0, 19);
+        this.form.get('username')?.setValue(sliced, { emitEvent: false });
+      }
       this.updateLockStateForUsername(uname);
     });
     // Inicializar con el valor actual (si lo hay)
@@ -90,8 +79,6 @@ export class InicioSesion implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    // Evitar doble envío si ya está procesando
-    if (this.loading) return;
     this.submitted = true;
     this.backendError.set(null);
     // Truncados defensivos antes de enviar
@@ -110,97 +97,69 @@ export class InicioSesion implements OnInit, OnDestroy {
     if (this.form.invalid) return;
 
     this.loading = true;
+    // Si la API tarda más de 3s, mostrar mensaje de espera
+    if (this.loadingTimeout) { clearTimeout(this.loadingTimeout); }
+    this.loadingTimeout = setTimeout(() => {
+      if (this.loading) {
+        this.backendError.set('El servidor está tardando en responder...');
+      }
+    }, 3000);
+
     const { username, password, rememberMe } = this.form.value;
     this.auth.login(username, password).pipe(
-      finalize(() => { this.loading = false; })
+      timeout(10000) // 10 segundos máximo de espera
     ).subscribe({
       next: res => {
-  // limpiar bloqueo persistido si existiera para este usuario
-  const uname = (this.form.get('username')?.value || '').trim().toLowerCase();
-  this.clearLockCountdown(uname);
-        // limpiar conteo de fallos local
-        try { localStorage.removeItem(`ur_fail_count:${uname}`); } catch {}
-        
+        this.loading = false;
+        if (this.loadingTimeout) { clearTimeout(this.loadingTimeout); this.loadingTimeout = null; }
+        this.backendError.set(null);
+        // limpiar bloqueo persistido si existiera para este usuario
+        const uname = (this.form.get('username')?.value || '').trim().toLowerCase();
+        this.clearLockCountdown(uname);
         const roles = res.roles || [];
         if (roles.includes('ROLE_SUPERADMIN')) {
-                  this.toastr.success('Login exitoso', 'Éxito'); // Success toast
-
-          this.toastr.success('Bienvenido al Dashboard de Super Administrador', 'Éxito'); // Dashboard entry toast
-
-
-
-         
+          this.toastr.success('Login exitoso', 'Éxito');
+          this.toastr.success('Bienvenido al Dashboard de Super Administrador', 'Éxito');
           this.router.navigate(['/superadmin/dashboard'], { replaceUrl: true });
         } else if (roles.includes('ROLE_ADMIN')) {
-          // Administrador: primero elige rol
-          
           this.router.navigate(['/select-role'], { replaceUrl: true });
         } else if (roles.includes('ROLE_SEGURIDAD')) {
-          this.toastr.success('Login exitoso', 'Éxito'); // Success toast
-
-          this.toastr.success('Bienvenido al Dashboard de Seguridad', 'Éxito'); // Dashboard entry toast
+          this.toastr.success('Login exitoso', 'Éxito');
+          this.toastr.success('Bienvenido al Dashboard de Seguridad', 'Éxito');
           this.router.navigate(['/seguridad'], { replaceUrl: true });
         } else if (roles.includes('ROLE_USUARIO')) {
-          this.toastr.success('Login exitoso', 'Éxito'); // Success toast
-
-          this.toastr.success('Bienvenido al área de Usuario', 'Éxito'); // Dashboard entry toast
+          this.toastr.success('Login exitoso', 'Éxito');
+          this.toastr.success('Bienvenido al área de Usuario', 'Éxito');
           this.router.navigate(['/usuario'], { replaceUrl: true });
         } else {
-          // fallback
           this.router.navigate(['/login'], { replaceUrl: true });
         }
-        // Intentar cargar perfil (si el backend permite inmediatamente)
         this.perfilSrv.cargarPerfil();
         if (rememberMe) {
           // Espacio para refresh token
         }
       },
       error: err => {
+        this.loading = false;
+        if (this.loadingTimeout) { clearTimeout(this.loadingTimeout); this.loadingTimeout = null; }
         const status = err?.status;
         const body = err?.error;
+        if (err.name === 'TimeoutError') {
+          this.backendError.set('El servidor no responde. Intenta de nuevo más tarde.');
+          this.toastr.error('El servidor no responde', 'Error');
+          return;
+        }
         // Manejar bloqueo (403 con mensaje de "bloqueada")
         if (status === 403 && typeof body === 'string' && body.toLowerCase().includes('bloqueada')) {
           const uname = this.lastAttemptUsername || (this.form.get('username')?.value || '').trim().toLowerCase();
-          // Reiniciar conteo de fallos local al estar bloqueado
-          try { localStorage.removeItem(`ur_fail_count:${uname}`); } catch {}
           this.handleLockFromBackend(body, uname);
         } else {
           // Errores 401 u otros
           const msg = typeof body === 'string' && body ? body : 'Credenciales inválidas o error del servidor';
           this.backendError.set(msg);
           this.toastr.error('Credenciales inválidas', 'Error');
-          // Incrementar conteo local de intentos fallidos por usuario
-          const uname = this.lastAttemptUsername || (this.form.get('username')?.value || '').trim().toLowerCase();
-          if (uname) {
-            let cnt = 0;
-            try { cnt = Number(localStorage.getItem(`ur_fail_count:${uname}`) || '0'); } catch { cnt = 0; }
-            cnt = isFinite(cnt) ? cnt + 1 : 1;
-            try { localStorage.setItem(`ur_fail_count:${uname}`, String(cnt)); } catch {}
-            // Si llega a 3, activar el lock inmediato (backend ya marcó lockoutTime)
-            if (cnt >= 3) {
-              const token = localStorage.getItem('auth_token');
-              const handleWith = (nowMs: number) => {
-                const nextSecondBoundary = Math.ceil(nowMs / 1000) * 1000;
-                const until = nextSecondBoundary + 15 * 60 * 1000;
-                try { localStorage.setItem(`ur_lock_until_server:${uname}`, String(until)); } catch {}
-                this.startLockCountdown(until, uname);
-                this.backendError.set(null);
-              };
-              if (token) {
-                this.syncServerTime().then(() => handleWith(this.getServerNow()))
-                  .catch(() => handleWith(Date.now()));
-              } else {
-                // No token: evitar llamar al endpoint protegido y usar reloj local
-                handleWith(Date.now());
-              }
-            }
-          }
         }
-        // Evitar mostrarlos en consola cuando son errores esperados (401/403)
-        const st = err?.status;
-        if (st !== 401 && st !== 403) {
-          console.error('Error de login', err);
-        }
+        console.error('Error de login', err);
       }
     });
   }
@@ -267,9 +226,6 @@ InicioSesion.prototype.startLockCountdown = function(untilTs: number, username: 
   this.isLocked = true;
   this.lockUntilTs = untilTs;
   this.lockedUsername = username;
-  // Deshabilitar el control de contraseña desde el FormControl
-  try { this.form.get('password')?.disable(); } catch {}
-  this.__firstTickAdjust = true;
   // Inicializar objetivo monotónico como respaldo contra cambios del reloj del sistema
   try {
     const pnow = (typeof performance !== 'undefined' && performance.now) ? performance.now() : null;
@@ -296,12 +252,8 @@ InicioSesion.prototype.startLockCountdown = function(untilTs: number, username: 
       // último recurso
       remainingMs = this.lockUntilTs - Date.now();
     }
-    // floor para evitar que arranque en 14:59; alinear al siguiente segundo ya se hace al crear 'until'
-    let remainingSec = Math.floor(remainingMs / 1000);
-    if (this.__firstTickAdjust) {
-      remainingSec = Math.max(0, remainingSec - 1);
-      this.__firstTickAdjust = false;
-    }
+    // Usar ceil para que arranque en 15:00, no en 14:59
+    const remainingSec = Math.ceil(remainingMs / 1000);
     if (remainingSec <= 0) {
       this.clearLockCountdown();
       this.backendError.set(null);
@@ -320,14 +272,6 @@ InicioSesion.prototype.clearLockCountdown = function(username?: string) {
   this.lockUntilTs = null;
   this.lockPerfTarget = null;
   this.lockDisplay.set('');
-  // Habilitar el control de contraseña
-  try {
-    this.form.get('password')?.enable();
-    // Dar foco al input de contraseña para que el usuario pueda escribir inmediatamente
-    setTimeout(() => {
-      try { (document.getElementById('password') as HTMLInputElement | null)?.focus(); } catch {}
-    }, 0);
-  } catch {}
   const uname = (username || this.lockedUsername || '').trim().toLowerCase();
   if (uname) { try { localStorage.removeItem(`ur_lock_until_server:${uname}`); } catch {} }
   if (this.lockTimer) { try { clearInterval(this.lockTimer); } catch {} }
@@ -344,11 +288,7 @@ let __lastSyncPerf = 0;       // Para resincronizar cada cierto tiempo
 const __MAX_LOCK_MS = 16 * 60 * 1000; // 16 minutos como cota de seguridad
 
 InicioSesion.prototype.syncServerTime = function(): Promise<void> {
-  // Evitar llamadas al endpoint protegido si no hay token; usar fallback local
-  const token = localStorage.getItem('auth_token');
-  if (!token) return Promise.reject('unauthenticated');
-  if (this.__syncPromise) return this.__syncPromise as Promise<void>;
-  this.__syncPromise = new Promise<void>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     this.timeService.getServerDateTime().subscribe({
       next: (date) => {
         const serverMs = date.getTime();
@@ -361,8 +301,7 @@ InicioSesion.prototype.syncServerTime = function(): Promise<void> {
       },
       error: _ => reject()
     });
-  }).finally(() => { this.__syncPromise = null; });
-  return this.__syncPromise as Promise<void>;
+  });
 };
 
 InicioSesion.prototype.getServerNow = function(): number {
@@ -377,10 +316,17 @@ InicioSesion.prototype.getServerNow = function(): number {
   if (!__lastSyncPerf || (pnow - __lastSyncPerf) > 20000) {
     __lastSyncPerf = pnow;
     // Best-effort (no bloqueante)
-    const token = localStorage.getItem('auth_token');
-    if (token && !this.__syncPromise) {
-      this.syncServerTime().catch(() => {});
-    }
+    this.timeService.getServerDateTime().subscribe({
+      next: (date) => {
+        const sMs = date.getTime();
+        const pn = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+        __serverBaseMs = sMs;
+        __serverBasePerf = pn;
+        __lastSyncPerf = pn;
+        __hasServerBase = true;
+      },
+      error: _ => {}
+    });
   }
   return estimate;
 };
@@ -394,8 +340,6 @@ InicioSesion.prototype.updateLockStateForUsername = function(username: string) {
   this.lockDisplay.set('');
   this.lockedUsername = null;
   this.lockUntilTs = null;
-  // Asegurar que el control de contraseña esté habilitado al cambiar de usuario
-  try { this.form.get('password')?.enable(); } catch {}
   if (!uname) return;
   const key = `ur_lock_until_server:${uname}`;
   const stored = localStorage.getItem(key);
