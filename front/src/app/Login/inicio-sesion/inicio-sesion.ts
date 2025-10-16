@@ -267,6 +267,8 @@ InicioSesion.prototype.startLockCountdown = function(untilTs: number, username: 
   this.isLocked = true;
   this.lockUntilTs = untilTs;
   this.lockedUsername = username;
+  // Deshabilitar el control de contraseña desde el FormControl
+  try { this.form.get('password')?.disable(); } catch {}
   this.__firstTickAdjust = true;
   // Inicializar objetivo monotónico como respaldo contra cambios del reloj del sistema
   try {
@@ -318,6 +320,14 @@ InicioSesion.prototype.clearLockCountdown = function(username?: string) {
   this.lockUntilTs = null;
   this.lockPerfTarget = null;
   this.lockDisplay.set('');
+  // Habilitar el control de contraseña
+  try {
+    this.form.get('password')?.enable();
+    // Dar foco al input de contraseña para que el usuario pueda escribir inmediatamente
+    setTimeout(() => {
+      try { (document.getElementById('password') as HTMLInputElement | null)?.focus(); } catch {}
+    }, 0);
+  } catch {}
   const uname = (username || this.lockedUsername || '').trim().toLowerCase();
   if (uname) { try { localStorage.removeItem(`ur_lock_until_server:${uname}`); } catch {} }
   if (this.lockTimer) { try { clearInterval(this.lockTimer); } catch {} }
@@ -384,6 +394,8 @@ InicioSesion.prototype.updateLockStateForUsername = function(username: string) {
   this.lockDisplay.set('');
   this.lockedUsername = null;
   this.lockUntilTs = null;
+  // Asegurar que el control de contraseña esté habilitado al cambiar de usuario
+  try { this.form.get('password')?.enable(); } catch {}
   if (!uname) return;
   const key = `ur_lock_until_server:${uname}`;
   const stored = localStorage.getItem(key);
