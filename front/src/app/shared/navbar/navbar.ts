@@ -6,19 +6,22 @@ import { AuthService } from '../../services/auth.service';
 import { PerfilService } from '../../services/perfil.service';
 import { ROLES } from '../../constants/roles';
 import { PageConfigService, PageKey } from '../../services/page-config.service';
+import { TourService } from '../tour/tour.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, NgIf, NgClass, RouterModule],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.scss'
+  styleUrls: ['./navbar.scss']
 })
 export class NavbarComponent {
   private router = inject(Router);
   auth = inject(AuthService);
   perfilSrv = inject(PerfilService);
   pageCfg = inject(PageConfigService);
+  // Tour service inyectado como campo
+  tour = inject(TourService);
 
   // Estado público requerido
   userRole = signal<string>('');
@@ -87,6 +90,7 @@ export class NavbarComponent {
   showNavbar = computed(() => this.isAuthenticated() && !this.isLoginRoute());
 
   constructor(){
+    this.tour = inject(TourService);
     this.auth.loadFromStorage();
     this.perfilSrv.cargarPerfil();
     // Sincronizar la URL actual para reactividad
@@ -114,6 +118,21 @@ export class NavbarComponent {
       if (visible) body.classList.add('with-fixed-navbar');
       else body.classList.remove('with-fixed-navbar');
     });
+  }
+
+  openTour(){
+    // Inicializar pasos básicos (pueden ampliarse o cargarse dinámicamente)
+    const steps = [
+      { title: '¡Bienvenido a UTP+Report!', content: 'Te guiaremos paso a paso para que conozcas todas las funciones de seguridad disponibles.' },
+      { title: 'Estado de zonas', content: 'Aquí puedes ver el estado actual de las zonas y reportar incidentes.' },
+      { title: 'Reportes', content: 'Los administradores pueden ver y gestionar reportes desde esta sección.' },
+      { title: 'Gestión de usuarios', content: 'Los SuperAdmin pueden crear, editar y eliminar usuarios.' },
+      { title: 'Notificaciones', content: 'Las notificaciones aparecerán aquí cuando existan alertas relevantes.' },
+      { title: 'Perfil', content: 'Tu nombre y rol aparecen en la parte superior derecha.' },
+      { title: 'Fin', content: 'Puedes reabrir este tour en cualquier momento desde el botón Tour.' }
+    ];
+    this.tour.init(steps);
+    this.tour.open(0);
   }
 
   getHomePath(): string[] {
