@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -38,6 +39,9 @@ public class Reporte {
     private Boolean isAnonimo;
 
     private String contacto;
+
+    @OneToMany(mappedBy = "reporte", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ReporteGestion> historialGestion;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
