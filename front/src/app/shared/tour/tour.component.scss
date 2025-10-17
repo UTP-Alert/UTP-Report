@@ -20,8 +20,11 @@
   position: relative;
   /* overflow: visible para que la flecha (rombo) pueda sobresalir sin cortes */
   overflow: visible;
-  border: 3px solid var(--primary); /* Borde más visible */
+  border: 2px solid var(--primary); /* Borde más delgado */
   transition: box-shadow 0.2s ease, transform 0.12s ease;
+  /* Evitar que el fondo blanco sobresalga mostrando "puntas" sobre el borde */
+  background-clip: padding-box;
+  -webkit-background-clip: padding-box;
 }
 
 .tour-arrow {
@@ -34,6 +37,10 @@
   display: none;
   /* Propiedades de borde y transformación se aplicarán dinámicamente en TS */
   box-shadow: 0 6px 10px rgba(0,0,0,0.12);
+  /* Espacio para que el borde del card no corte el rombo. El color del outline
+     se deja transparente para no alterar la apariencia, pero crea separación
+     visual que evita artefactos en el borde. */
+  outline: 2px solid transparent;
 }
 
 .tour-card-header {
@@ -43,6 +50,9 @@
   padding: 14px 18px;
   border-bottom: 1px solid var(--border);
   background-color: var(--background);
+  /* Mantener las esquinas superiores redondeadas y evitar que el fondo sobresalga */
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
 }
 
 .tour-progress {
@@ -79,6 +89,9 @@
 
 .tour-card-body {
   padding: 18px 20px 22px 20px;
+  /* Cuidar que el cuerpo no tenga esquinas que sobresalgan fuera del borde del card */
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 .tour-card-body h3 {
@@ -137,6 +150,9 @@
   padding: 14px 18px;
   border-top: 1px solid var(--border);
   background-color: var(--background);
+  /* Mantener esquinas inferiores redondeadas para que el borde sea continuo */
+  border-bottom-left-radius: 11px;
+  border-bottom-right-radius: 11px;
 }
 
 .skip-button {
