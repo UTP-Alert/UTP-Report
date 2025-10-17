@@ -1,0 +1,32 @@
+<div *ngIf="step" class="tour-overlay">
+  <div class="tour-card">
+    <div class="tour-arrow"></div> <!-- El rombito -->
+    <div class="tour-card-header">
+      <div class="tour-progress">
+        <i class="bi bi-shield-fill shield-icon"></i>
+        <span class="step-count">{{ currentStepIndex + 1 }}/{{ totalSteps }}</span>
+      </div>
+      <button class="close-button" (click)="onClose()">X</button>
+    </div>
+    <div class="tour-card-body">
+      <h3>
+        <i *ngIf="step.icon" class="bi {{ step.icon }} me-2"></i>
+        {{ step.title }}
+      </h3>
+      <p>{{ step.content }}</p>
+      <div class="progress-bar-container">
+        <div class="progress-bar" [style.width.%]="(currentStepIndex + 1) / totalSteps * 100"></div>
+      </div>
+      <div class="tip-box">
+        <i class="bi bi-lightbulb-fill"></i>
+        <span>{{ step.tip || 'Puedes cerrar este tutorial en cualquier momento y continuar explorando.' }}</span>
+      </div>
+    </div>
+    <div class="tour-card-footer">
+      <button *ngIf="!isFirstStep" class="prev-button" (click)="onPrev()"><i class="bi bi-arrow-left"></i> Anterior</button>
+      <button class="skip-button" (click)="onClose()">Saltar</button>
+      <button *ngIf="!isLastStep" class="next-button" (click)="onNext()">Siguiente <i class="bi bi-arrow-right"></i></button>
+      <button *ngIf="isLastStep" class="next-button" (click)="onClose()"><i class="bi bi-check-circle-fill"></i> ¡Listo!</button>
+    </div>
+  </div>
+</div>
