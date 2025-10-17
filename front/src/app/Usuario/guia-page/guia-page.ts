@@ -1,10 +1,16 @@
-import { Component, AfterViewInit, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, ViewChildren, QueryList, ElementRef, Renderer2, inject } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Necesario para directivas como *ngIf, *ngFor
+import { TourService } from '../../shared/tour/tour.service'; // Import TourService
+
+// Declare bootstrap global object to avoid TypeScript errors
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-guia-page',
   standalone: true, // Asegúrate de que sea standalone
-  imports: [CommonModule], // Importa CommonModule
+  imports: [
+    CommonModule,
+  ],
   templateUrl: './guia-page.html',
   styleUrl: './guia-page.scss'
 })
@@ -23,10 +29,43 @@ export class GuiaPage implements AfterViewInit {
   ];
 
   activeAccordionIndex: number | null = null;
+  Math = Math; // Make Math object available in the template
+
+  // Tutorial Modal Logic
+  currentStep: number = 0;
+  tutorialSteps: string[] = [
+    'Bienvenida',
+    'Tipo de Incidente',
+    'Ubicación',
+    'Descripción',
+    'Evidencia',
+    'Privacidad',
+    'Finalización'
+  ];
+  progress: number = 0;
+
+  private bsModal: any; // Bootstrap modal instance
+  private tourService = inject(TourService); // Inject TourService
+
+  constructor(private renderer: Renderer2) {}
 
   ngAfterViewInit(): void {
     // Calculate initial heights after view is initialized
     this.updateAccordionHeights();
+
+    // Initialize Bootstrap modal after view is initialized
+    const modalElement = document.getElementById('reportTutorialModal');
+    if (modalElement) {
+      this.bsModal = new bootstrap.Modal(modalElement, {
+        backdrop: 'static', // Prevent closing by clicking outside
+        keyboard: false // Prevent closing by pressing escape key
+      });
+
+      // Listen for modal hide event
+      modalElement.addEventListener('hidden.bs.modal', () => {
+        // No need to set isOpen, as it's removed
+      });
+    }
   }
 
   toggleAccordion(index: number): void {
@@ -44,5 +83,74 @@ export class GuiaPage implements AfterViewInit {
         this.faqs[index].height = `${contentRef.nativeElement.scrollHeight}px`;
       }
     });
+  }
+
+  openTutorial(): void {
+    this.currentStep = 0;
+    this.updateProgress();
+    if (this.bsModal) {
+      this.bsModal.show();
+    }
+  }
+
+  onClose(): void {
+    if (this.bsModal) {
+      this.bsModal.hide();
+    }
+  }
+
+  handleNext(): void {
+    if (this.currentStep < this.tutorialSteps.length - 1) {
+      this.currentStep++;
+      this.updateProgress();
+    }
+  }
+
+  handlePrevious(): void {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+      this.updateProgress();
+    }
+  }
+
+  handleComplete(): void {
+    localStorage.setItem('firstReportTutorialCompleted', 'true');
+    this.onClose();
+  }
+
+  skipTutorial(): void {
+    localStorage.setItem('firstReportTutorialCompleted', 'true');
+    this.onClose();
+  }
+
+  updateProgress(): void {
+    this.progress = ((this.currentStep + 1) / this.tutorialSteps.length) * 100;
+  }
+
+  getStepIconClass(): string {
+    switch (this.currentStep) {
+      case 0: return 'fas fa-shield-alt';
+      case 1: return 'fas fa-exclamation-triangle';
+      case 2: return 'fas fa-map-marker-alt';
+      case 3: return 'fas fa-file-alt';
+      case 4: return 'fas fa-camera';
+      case 5: return 'fas fa-shield-alt'; // Privacy step also uses shield
+      case 6: return 'fas fa-check-circle';
+      default: return '';
+    }
+  }
+
+  startSystemTour(): void {
+    const steps = [
+      { title: '¡Bienvenido a UTP+Report!', content: 'Te guiaremos paso a paso para que conozcas todas las funciones de seguridad disponibles.', icon: 'bi-shield-fill', tip: 'Puedes cerrar este tutorial en cualquier momento y continuar explorando.' },
+      { title: 'Reportar Incidentes', content: 'Botón principal para reportar cualquier incidente de seguridad. Totalmente anónimo y seguro.', icon: 'bi-megaphone-fill', tip: 'Haz clic aquí cuando necesites reportar algo urgente.', targetSelector: '.report-main-button button[aria-label="Botón para reportar un incidente"]' },
+      { title: 'Estado de Zonas', content: 'Monitoreo en tiempo real. Verde = Seguro | Amarillo = Precaución | Rojo = Peligroso.', icon: 'bi-geo-alt-fill', tip: 'Revisa esto antes de dirigirte a una zona del campus.', targetSelector: '.zones-status-section' },
+      { title: 'Acciones Rápidas', content: 'Herramientas útiles: tus reportes, consejos de seguridad y contacto directo.', icon: 'bi-send-fill', tip: 'Estas acciones están siempre disponibles para ti.', targetSelector: '.quick-actions-section' },
+      { title: 'Notificaciones', content: 'Alertas importantes: zonas peligrosas, actualizaciones de reportes y resoluciones.', icon: 'bi-bell-fill', tip: 'Mantente informado de todo lo importante.', targetSelector: '.nav-link.icon-only[title="Notificaciones"]' },
+      { title: 'Mis Reportes', content: 'Sigue el progreso de tus reportes desde "En Investigación" hasta "Resuelto".', icon: 'bi-file-earmark-text-fill', tip: 'Recibirás notificaciones automáticas de cada progreso.', targetSelector: '.quick-actions-section button[aria-label="Ver mis reportes anteriores"]' },
+      { title: '¡Listo!', content: 'Ya conoces el sistema. Cada reporte ayuda a mantener segura toda la comunidad UTP.', icon: 'bi-check-circle-fill', tip: '¡No dudes en usar el sistema cuando lo necesites!', targetSelector: 'button[title="Tour del sistema"]' }
+    ];
+    this.tourService.init(steps);
+    this.tourService.open(0);
   }
 }

@@ -14,7 +14,7 @@
         <h2>Tour del Sistema</h2>
       </div>
       <p>Conoce las funciones principales paso a paso</p>
-      <button class="btn-primary">
+      <button class="btn-primary" (click)="startSystemTour()">
         <i class="fas fa-play-circle"></i> Iniciar Tour Completo
       </button>
     </div>
@@ -25,11 +25,258 @@
         <h2>Cómo Reportar</h2>
       </div>
       <p>Aprende a crear reportes de incidentes</p>
-      <button class="btn-secondary">
+      <button class="btn-secondary" (click)="openTutorial()">
         <i class="fas fa-question-circle"></i> Tutorial de Reportes
+      </button>
+  </div>
+</div>
+
+<!-- MODAL PRINCIPAL (Bootstrap) -->
+<div class="modal fade" id="reportTutorialModal" tabindex="-1" aria-labelledby="reportTutorialModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"> <!-- Removed modal-lg -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h5 class="modal-title fs-5 d-flex align-items-center" id="reportTutorialModalLabel">
+            <i [class]="getStepIconClass()" class="me-2 fa-2x tutorial-icon-black"></i> <!-- Dynamic icon, moved to left, larger -->
+            <ng-container *ngIf="currentStep === 0">¡Bienvenido al Sistema de Reportes!</ng-container>
+            <ng-container *ngIf="currentStep === 1">Paso 1: Selecciona el Tipo de Incidente</ng-container>
+            <ng-container *ngIf="currentStep === 2">Paso 2: Indica la Ubicación</ng-container>
+            <ng-container *ngIf="currentStep === 3">Paso 3: Describe lo Ocurrido</ng-container>
+            <ng-container *ngIf="currentStep === 4">Paso 4: Agrega Evidencia (Opcional)</ng-container>
+            <ng-container *ngIf="currentStep === 5">Paso 5: Privacidad y Anonimato</ng-container>
+            <ng-container *ngIf="currentStep === 6">¡Listo para Reportar!</ng-container>
+          </h5>
+          <p class="text-muted mb-0 ms-5 text-start"> <!-- Added ms-5 for indentation -->
+            Paso {{ Math.round(currentStep + 1) }} de {{ tutorialSteps.length }}
+          </p>
+        </div>
+        <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+      </div>
+      <div class="modal-body">
+        <!-- BARRA DE PROGRESO -->
+        <div class="mb-4">
+          <div class="d-flex justify-content-between small text-muted mb-1">
+            <span>Progreso</span>
+            <span>{{ Math.round(progress) }}%</span>
+          </div>
+          <div class="progress" style="height: 8px;">
+            <div class="progress-bar" role="progressbar" [style.width]="progress + '%'" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+
+        <!-- CONTENIDO DE LOS PASOS -->
+        <!-- PASO 0: BIENVENIDA -->
+        <div *ngIf="currentStep === 0" class="text-center py-4">
+          <div class="bg-primary-subtle p-4 rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+            <i class="fas fa-shield-alt fa-2x text-primary"></i>
+          </div>
+          <h3 class="fs-4 fw-semibold mb-2">Tu seguridad es nuestra prioridad</h3>
+          <p class="text-secondary mb-4">
+            Te guiaremos paso a paso para crear tu primer reporte de incidente.
+            Este sistema nos ayuda a mantener el campus seguro para todos.
+          </p>
+          <div class="alert alert-info p-3 rounded-lg">
+            <p class="small text-info-emphasis mb-0">
+              <strong>Recuerda:</strong> Si es una emergencia en curso, llama al <strong>911</strong> primero.
+            </p>
+          </div>
+        </div>
+
+        <!-- PASO 1: TIPO DE INCIDENTE -->
+        <div *ngIf="currentStep === 1" class="py-4">
+          <div class="bg-light p-4 rounded-3 mb-4">
+            <i class="fas fa-exclamation-triangle fa-2x text-primary mb-3"></i>
+            <h4 class="fw-semibold mb-3">Tipos de incidentes más comunes:</h4>
+            <div class="small">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge rounded-pill bg-danger" style="width: 8px; height: 8px;"></span>
+                <span>🔴 Robo o intento de robo</span>
+              </div>
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge rounded-pill bg-warning" style="width: 8px; height: 8px;"></span>
+                <span>🟠 Actividad sospechosa</span>
+              </div>
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge rounded-pill bg-danger" style="width: 8px; height: 8px;"></span>
+                <span>🔴 Acoso o intimidación</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill bg-warning" style="width: 8px; height: 8px;"></span>
+                <span>🟡 Vandalismo</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-secondary">
+            Selecciona la categoría que mejor describa lo que ocurrió. Esto nos ayuda a priorizar y asignar el reporte correctamente.
+          </p>
+        </div>
+
+        <!-- PASO 2: UBICACIÓN -->
+        <div *ngIf="currentStep === 2" class="py-4">
+          <div class="bg-light p-4 rounded-3 mb-4">
+            <i class="fas fa-map-marker-alt fa-2x text-primary mb-3"></i>
+            <h4 class="fw-semibold mb-3">Ubicación del incidente:</h4>
+            <div class="alert alert-info p-3 rounded-3 border border-info-subtle">
+              <p class="small text-info-emphasis mb-0">
+                Las zonas del campus aparecerán en pantalla para que selecciones la más apropiada.
+              </p>
+            </div>
+          </div>
+          <p class="text-secondary">
+            Ser específico con la ubicación ayuda a nuestro personal de seguridad a responder más rápido y efectivamente.
+          </p>
+        </div>
+
+        <!-- PASO 3: DESCRIPCIÓN -->
+        <div *ngIf="currentStep === 3" class="py-4">
+          <div class="bg-light p-4 rounded-3 mb-4">
+            <i class="fas fa-file-alt fa-2x text-primary mb-3"></i>
+            <h4 class="fw-semibold mb-3">Incluye estos detalles importantes:</h4>
+            <div class="small">
+              <div class="d-flex align-items-start gap-2 mb-2">
+                <i class="fas fa-check-circle text-success mt-1"></i>
+                <span>¿Qué ocurrió exactamente?</span>
+              </div>
+              <div class="d-flex align-items-start gap-2 mb-2">
+                <i class="fas fa-check-circle text-success mt-1"></i>
+                <span>¿Cuándo sucedió? (hora aproximada)</span>
+              </div>
+              <div class="d-flex align-items-start gap-2 mb-2">
+                <i class="fas fa-check-circle text-success mt-1"></i>
+                <span>¿Había otras personas presentes?</span>
+              </div>
+              <div class="d-flex align-items-start gap-2">
+                <i class="fas fa-check-circle text-success mt-1"></i>
+                <span>Descripción del agresor (si aplica)</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-secondary">
+            Entre más detalles proporciones, más útil será para la comunidad y para resolver el incidente.
+          </p>
+        </div>
+
+        <!-- PASO 4: EVIDENCIA -->
+        <div *ngIf="currentStep === 4" class="py-4">
+          <div class="bg-light p-4 rounded-3 mb-4">
+            <i class="fas fa-camera fa-2x text-primary mb-3"></i>
+            <h4 class="fw-semibold mb-3">Consejos para fotos de evidencia:</h4>
+            <div class="alert alert-info p-3 rounded-3 border border-info-subtle">
+              <p class="small text-info-emphasis mb-0">
+                <strong>Formato:</strong> JPG o PNG, hasta 50MB
+              </p>
+            </div>
+          </div>
+          <p class="text-secondary">
+            Las fotos son muy útiles pero completamente opcionales. Solo comparte lo que te sientas cómodo/a compartiendo.
+          </p>
+        </div>
+
+        <!-- PASO 5: PRIVACIDAD -->
+        <div *ngIf="currentStep === 5" class="py-4">
+          <div class="alert alert-info p-4 rounded-3 mb-4">
+            <i class="fas fa-shield-alt fa-2x text-info mb-3"></i>
+            <h4 class="fw-semibold mb-3">Tienes dos opciones:</h4>
+            <div class="d-grid gap-3">
+              <div class="card p-3 border-start border-5 border-info">
+                <h5 class="fw-medium text-info-emphasis mb-1">Reporte Anónimo</h5>
+                <p class="small text-info-emphasis mb-0">
+                  Tu identidad estará completamente protegida. No guardamos ningún dato que pueda identificarte.
+                </p>
+              </div>
+              <div class="card p-3 border-start border-5 border-success">
+                <h5 class="fw-medium text-success-emphasis mb-1">Reporte Identificado</h5>
+                <p class="small text-success-emphasis mb-0">
+                  Podemos contactarte para seguimiento si necesitamos más información. Tu reporte será agregado a lista del tablero.
+                </p>
+              </div>
+            </div>
+          </div>
+          <p class="text-secondary">
+            Ambas opciones son válidas y ayudan a mejorar la seguridad del campus.
+          </p>
+        </div>
+
+        <!-- PASO 6: FINALIZACIÓN -->
+        <div *ngIf="currentStep === 6" class="text-center py-4">
+          <div class="bg-success-subtle p-4 rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+            <i class="fas fa-check-circle fa-2x text-success"></i>
+          </div>
+          <h3 class="fs-4 fw-semibold text-success mb-2">Ya sabes cómo funciona</h3>
+          <p class="text-secondary mb-4">
+            Ahora puedes crear reportes de forma rápida y efectiva. Recuerda que cada reporte contribuye a hacer nuestro campus más seguro.
+          </p>
+          <div class="alert alert-warning p-4 rounded-3 mb-4">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="fas fa-star text-warning"></i>
+              <h4 class="fw-semibold text-warning-emphasis mb-0">¿Qué pasa después?</h4>
+            </div>
+            <div class="small text-warning-emphasis text-start">
+              <p class="mb-1">1. Tu reporte será revisado por el administrador</p>
+              <p class="mb-1">2. Se asignará prioridad según la gravedad</p>
+              <p class="mb-1">3. Personal de seguridad atenderá el caso</p>
+              <p class="mb-0">4. Recibirás notificaciones del progreso</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-center justify-content-center gap-2 small text-muted">
+            <i class="fas fa-users"></i>
+            <span>Juntos hacemos el campus más seguro</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+          <div
+            *ngFor="let step of tutorialSteps; let i = index"
+            class="step-indicator-bs"
+            [class.active]="i === currentStep"
+            [class.completed]="i < currentStep"
+          ></div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="handlePrevious()"
+            [disabled]="currentStep === 0"
+          >
+            <i class="fas fa-chevron-left me-2"></i>
+            Anterior
+          </button>
+
+          <button
+            type="button"
+            *ngIf="currentStep < tutorialSteps.length - 1"
+            class="btn btn-primary"
+            (click)="handleNext()"
+          >
+            Siguiente
+            <i class="fas fa-chevron-right ms-2"></i>
+          </button>
+
+          <button
+            type="button"
+            *ngIf="currentStep === tutorialSteps.length - 1"
+            class="btn btn-success"
+            (click)="handleComplete()"
+          >
+            <i class="fas fa-check-circle me-2"></i>
+            ¡Entendido!
+          </button>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn btn-link text-muted mt-2"
+        (click)="skipTutorial()"
+      >
+        Saltar tutorial
       </button>
     </div>
   </div>
+</div>
 
   <div class="emergency-contact-section">
     <div class="emergency-card">
