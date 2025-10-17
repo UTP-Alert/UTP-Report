@@ -98,7 +98,7 @@
 				</div>
 
 				<div>
-					<label class="block text-sm font-medium mb-1">Username</label>
+					<label class="block text-sm font-medium mb-1">Usuario</label>
 					<input type="text" placeholder="Ej: U2234567" [(ngModel)]="formData.username"
 						[class.border-red-500]="formErrors.username" class="input-field" />
 					<p *ngIf="formErrors.username" class="text-xs text-red-500 mt-1">{{ formErrors.username }}</p>
@@ -116,7 +116,8 @@
 							formData.role === 'admin' ? 'D1234567@utp.edu.pe' :
 							formData.role === 'seguridad' ? 'S001@utp.edu.pe' :
 							'usuario@utp.edu.pe'
-						" [(ngModel)]="formData.correo" [class.border-red-500]="formErrors.correo" class="input-field" />
+						" [(ngModel)]="formData.correo" [class.border-red-500]="formErrors.correo" class="input-field"
+						pattern=".*@utp\.edu\.pe$" title="El correo debe ser del dominio @utp.edu.pe" />
 					<p *ngIf="formErrors.correo" class="text-xs text-red-500 mt-1">{{ formErrors.correo }}</p>
 
 					<!-- HINTS DINÁMICOS SEGÚN ROL -->
@@ -154,7 +155,7 @@
 
 				<!-- 4. TELÉFONO -->
 				<div>
-					<label class="block text-sm font-medium mb-1">Teléfono</label>
+					<label class="block text-sm font-medium mb-1">Celular</label>
 					<input type="text" placeholder="999000000" [(ngModel)]="formData.phone" maxlength="9"
 						[class.border-red-500]="formErrors.phone" class="input-field" />
 					<p *ngIf="formErrors.phone" class="text-xs text-red-500 mt-1">{{ formErrors.phone }}</p>

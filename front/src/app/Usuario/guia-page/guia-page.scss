@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .guia-page-container {
   padding: 20px;
   max-width: 900px;
@@ -276,7 +278,256 @@
             font-size: 14px;
           }
         }
+      }
+    }
   }
 }
+
+/* Colores específicos del tutorial */
+$primary-color: #FF395C;
+$green-500: #22C55E;
+$green-600: #16A34A;
+$green-700: #15803D;
+$green-800: #166534;
+$green-50: #F0FDF4;
+$blue-50: #EFF6FF;
+$blue-200: #BFDBFE;
+$blue-500: #3B82F6;
+$blue-600: #2563EB;
+$blue-700: #1D4ED8;
+$blue-800: #1E40AF;
+$yellow-50: #FEFCE8;
+$yellow-500: #EAB308;
+$yellow-600: #CA8A04;
+$yellow-700: #A16207;
+$yellow-800: #854D0E;
+$orange-500: #F97316;
+$red-500: #EF4444;
+$gray-50: #F9FAFB;
+$gray-300: #D1D5DB;
+$gray-500: #6B7280;
+$gray-600: #4B5563;
+$gray-700: #374151;
+$white-color: var(--background);
+$black-color: var(--foreground);
+
+/* MODAL PRINCIPAL (Bootstrap Overrides) */
+.modal {
+  --bs-modal-width: 600px; /* sm:max-w-[600px] */
+  --bs-modal-bg: #{$white-color};
+  --bs-modal-border-radius: 8px;
+  --bs-modal-box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.modal-dialog-scrollable .modal-content {
+  max-height: 90vh; /* max-h-[90vh] */
+  overflow-y: auto;
+}
+
+.modal-header {
+  border-bottom: none;
+  padding-bottom: 0;
+  position: relative; /* For close button positioning */
+}
+
+.modal-title {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+  color: #{$black-color};
+}
+
+.modal-header .btn-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.modal-body {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.modal-footer {
+  border-top: none;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1rem;
+}
+
+/* Custom styles for tutorial content */
+.bg-primary-subtle {
+  background-color: rgba($primary-color, 0.1) !important; /* bg-primary/10 */
+}
+
+.text-primary {
+  color: $primary-color !important;
+}
+
+.text-secondary {
+  color: #{$gray-600} !important; /* text-gray-600 */
+}
+
+.alert-info {
+  background-color: #{$blue-50} !important; /* bg-blue-50 */
+  border-color: #{$blue-200} !important; /* border border-blue-200 */
+}
+
+.text-info-emphasis {
+  color: #{$blue-800} !important; /* text-blue-800 */
+}
+
+.bg-light {
+  background-color: #{$gray-50} !important; /* bg-gray-50 */
+}
+
+.bg-danger {
+  background-color: #{$red-500} !important;
+}
+
+.bg-warning {
+  background-color: #{$orange-500} !important; /* For orange bullet */
+}
+
+.bg-yellow-500 {
+  background-color: #{$yellow-500} !important; /* For yellow bullet */
+}
+
+.text-success {
+  color: #{$green-600} !important; /* text-green-600 */
+}
+
+.text-success-emphasis {
+  color: #{$green-800} !important; /* text-green-800 */
+}
+
+.bg-success-subtle {
+  background-color: #{$green-50} !important; /* bg-green-50 */
+}
+
+.alert-warning {
+  background-color: #{$yellow-50} !important; /* bg-yellow-50 */
+}
+
+.text-warning {
+  color: #{$yellow-600} !important; /* text-yellow-600 */
+}
+
+.text-warning-emphasis {
+  color: #{$yellow-800} !important; /* text-yellow-800 */
+}
+
+.text-muted {
+  color: #{$gray-500} !important; /* text-gray-500 */
+}
+
+/* FontAwesome Icon Sizing and Coloring */
+.fa-2x {
+  font-size: 2em; /* Standard FontAwesome size */
+}
+
+.tutorial-icon-black {
+  color: #{$black-color} !important;
+}
+
+.fa-shield-alt.text-primary {
+  color: $primary-color;
+}
+
+.fa-exclamation-triangle.text-primary {
+  color: $primary-color;
+}
+
+.fa-map-marker-alt.text-primary {
+  color: $primary-color;
+}
+
+.fa-file-alt.text-primary {
+  color: $primary-color;
+}
+
+.fa-check-circle.text-success {
+  color: $green-600;
+}
+
+.fa-camera.text-primary {
+  color: $primary-color;
+}
+
+.fa-shield-alt.text-info {
+  color: $blue-600;
+}
+
+.fa-star.text-warning {
+  color: $yellow-600;
+}
+
+.fa-users.text-muted {
+  color: $gray-500;
+}
+
+/* Progress Bar */
+.progress {
+  background-color: #FCE8EB; /* Light pink background for progress bar */
+}
+
+.progress-bar {
+  background-color: $primary-color; /* Red fill for progress bar */
+}
+
+/* Step Indicators (Dots) */
+.step-indicator-bs {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #{$gray-300}; /* bg-gray-300 */
+  transition: all 0.3s ease;
+  margin: 0 2px; /* Small spacing between dots */
+
+  &.active {
+    background-color: $primary-color; /* bg-primary */
+    width: 24px; /* w-6 */
+    border-radius: 4px; /* Rounded rectangle for active */
+  }
+
+  &.completed {
+    background-color: #{$green-500}; /* bg-green-500 */
+  }
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: $primary-color !important;
+  border-color: $primary-color !important;
+  &:hover {
+    background-color: #E0304F !important; /* Manually darkened color */
+    border-color: #E0304F !important; /* Manually darkened color */
+  }
+}
+
+.btn-outline-secondary {
+  border-color: #{$gray-300} !important;
+  color: #{$black-color} !important;
+  &:hover {
+    background-color: #{$gray-50} !important;
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-success {
+  background-color: #{$green-600} !important;
+  border-color: #{$green-600} !important;
+  &:hover {
+    background-color: #{$green-700} !important;
+    border-color: #{$green-700} !important;
+  }
+}
+
+.btn-link {
+  color: #{$gray-500} !important;
+  &:hover {
+    color: #{$gray-700} !important;
   }
 }
