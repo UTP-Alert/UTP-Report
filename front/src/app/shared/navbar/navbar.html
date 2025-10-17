@@ -127,3 +127,14 @@
   </div>
   
 </nav>
+
+<app-tour *ngIf="tour.currentStepIndex !== -1"
+          [step]="tour.steps[tour.currentStepIndex]"
+          [isFirstStep]="tour.currentStepIndex === 0"
+          [isLastStep]="tour.currentStepIndex === tour.steps.length - 1"
+          [currentStepIndex]="tour.currentStepIndex"
+          [totalSteps]="tour.steps.length"
+          (nextStep)="tour.next()"
+          (prevStep)="tour.prev()"
+          (closeTour)="tour.completeTour()">
+</app-tour>
