@@ -1,5 +1,7 @@
 package com.utp_reporta_backend.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +12,6 @@ public interface SedeRepository extends JpaRepository<Sede, Long>{//Verificar si
 
 	boolean existsByNombre(String nombre);
 	
+	Optional<Sede> findByNombre(String nombre);
 
 }
