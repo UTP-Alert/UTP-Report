@@ -4,7 +4,6 @@
   padding: 20px;
   max-width: 900px;
   margin: 0 auto;
-  font-family: Arial, sans-serif;
 
   .header {
     text-align: center;
@@ -328,23 +327,133 @@ $black-color: var(--foreground);
   border-bottom: none;
   padding-bottom: 0;
   position: relative; /* For close button positioning */
-}
 
-.modal-title {
-  font-size: 1.25rem; /* text-xl */
-  font-weight: 600; /* font-semibold */
-  color: #{$black-color};
-}
+  .modal-title {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 500; /* font-medium */
+    color: #{$black-color};
+    line-height: 1.5;
 
-.modal-header .btn-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+    .tutorial-icon-container {
+      background-color: rgba($primary-color, 0.1); /* bg-primary/10 */
+      padding: 8px; /* p-2 */
+      border-radius: 10px; /* rounded-lg */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tutorial-step-icon {
+      font-size: 24px; /* h-6 w-6 */
+      color: $primary-color;
+    }
+
+    .tutorial-badge {
+      border: 1px solid #{$gray-300}; /* outline variant */
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem; /* small text */
+      color: #{$gray-600};
+      margin-left: 16px; /* ml-4 */
+    }
+  }
+
+  .tutorial-step-description {
+    font-size: 0.875rem; /* text-sm */
+    color: #{$gray-500} !important; /* text-gray-500 */
+    font-weight: 400; /* Normal */
+  }
+
+  .btn-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
 }
 
 .modal-body {
   padding-top: 0;
   padding-bottom: 0;
+
+  .tutorial-progress-text {
+    font-size: 0.875rem; /* text-sm */
+    color: #{$gray-600}; /* text-gray-600 */
+  }
+
+  .tutorial-h3-title {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600; /* font-semibold */
+    line-height: 1.5;
+  }
+
+  .tutorial-description {
+    font-size: 1rem; /* base */
+    color: #{$gray-600}; /* text-gray-600 */
+  }
+
+  .tutorial-alert-text {
+    font-size: 0.875rem; /* text-sm */
+    color: #{$blue-800}; /* text-blue-800 */
+  }
+
+  .tutorial-main-icon {
+    font-size: 40px; /* h-10 w-10 */
+  }
+
+  .tutorial-main-icon-container {
+    width: 80px; /* w-20 */
+    height: 80px; /* h-20 */
+    border-radius: 50%; /* rounded-full */
+  }
+
+  .tutorial-step-content-icon {
+    font-size: 32px; /* h-8 w-8 */
+  }
+
+  .tutorial-h4-subtitle {
+    font-size: 1rem; /* base */
+    font-weight: 600; /* font-semibold */
+  }
+
+  .severity-indicator {
+    width: 8px; /* w-2 */
+    height: 8px; /* h-2 */
+    border-radius: 50%; /* rounded-full */
+    display: inline-block;
+  }
+
+  .tutorial-checkmark-icon {
+    font-size: 16px; /* h-4 w-4 */
+  }
+
+  .tutorial-option-title {
+    font-weight: 500; /* font-medium */
+  }
+
+  .tutorial-option-description {
+    font-size: 0.875rem; /* text-sm */
+  }
+
+  .tutorial-star-icon {
+    font-size: 20px; /* h-5 w-5 */
+  }
+
+  .tutorial-h4-title {
+    font-weight: 600; /* font-semibold */
+  }
+
+  .tutorial-list-text {
+    font-size: 0.875rem; /* text-sm */
+  }
+
+  .tutorial-footer-text {
+    font-size: 0.875rem; /* text-sm */
+    color: #{$gray-500}; /* text-gray-500 */
+  }
+
+  .tutorial-users-icon {
+    font-size: 16px; /* h-4 w-4 */
+  }
 }
 
 .modal-footer {
@@ -352,6 +461,23 @@ $black-color: var(--foreground);
   flex-direction: column;
   align-items: center;
   padding-top: 1rem;
+
+  .tutorial-prev-button,
+  .tutorial-next-button,
+  .tutorial-complete-button {
+    .tutorial-chevron-icon,
+    .tutorial-checkmark-icon {
+      font-size: 16px; /* h-4 w-4 */
+    }
+  }
+
+  .tutorial-skip-button {
+    font-size: 0.875rem; /* text-sm */
+    color: #{$gray-500} !important;
+    &:hover {
+      color: #{$gray-700} !important;
+    }
+  }
 }
 
 /* Custom styles for tutorial content */
@@ -363,8 +489,40 @@ $black-color: var(--foreground);
   color: $primary-color !important;
 }
 
-.text-secondary {
-  color: #{$gray-600} !important; /* text-gray-600 */
+.text-blue-600 {
+  color: $blue-600 !important;
+}
+
+.text-blue-800 {
+  color: $blue-800 !important;
+}
+
+.text-blue-700 {
+  color: $blue-700 !important;
+}
+
+.text-green-500 {
+  color: $green-500 !important;
+}
+
+.text-green-600 {
+  color: $green-600 !important;
+}
+
+.text-green-800 {
+  color: $green-800 !important;
+}
+
+.text-yellow-600 {
+  color: $yellow-600 !important;
+}
+
+.text-yellow-800 {
+  color: $yellow-800 !important;
+}
+
+.bg-gray-50 {
+  background-color: #{$gray-50} !important;
 }
 
 .alert-info {
@@ -372,52 +530,98 @@ $black-color: var(--foreground);
   border-color: #{$blue-200} !important; /* border border-blue-200 */
 }
 
-.text-info-emphasis {
-  color: #{$blue-800} !important; /* text-blue-800 */
-}
-
-.bg-light {
-  background-color: #{$gray-50} !important; /* bg-gray-50 */
-}
-
-.bg-danger {
-  background-color: #{$red-500} !important;
-}
-
-.bg-warning {
-  background-color: #{$orange-500} !important; /* For orange bullet */
-}
-
-.bg-yellow-500 {
-  background-color: #{$yellow-500} !important; /* For yellow bullet */
-}
-
-.text-success {
-  color: #{$green-600} !important; /* text-green-600 */
-}
-
-.text-success-emphasis {
-  color: #{$green-800} !important; /* text-green-800 */
-}
-
-.bg-success-subtle {
-  background-color: #{$green-50} !important; /* bg-green-50 */
-}
-
 .alert-warning {
   background-color: #{$yellow-50} !important; /* bg-yellow-50 */
 }
 
-.text-warning {
-  color: #{$yellow-600} !important; /* text-yellow-600 */
+.bg-green-50 {
+  background-color: #{$green-50} !important;
 }
 
-.text-warning-emphasis {
-  color: #{$yellow-800} !important; /* text-yellow-800 */
+.border-blue-200 {
+  border-color: #{$blue-200} !important;
 }
 
-.text-muted {
-  color: #{$gray-500} !important; /* text-gray-500 */
+.border-blue-500 {
+  border-color: #{$blue-500} !important;
+}
+
+.border-green-500 {
+  border-color: #{$green-500} !important;
+}
+
+/* FontAwesome Icon Sizing and Coloring */
+/* Removed fa-2x and other specific icon styles as they are now handled by custom classes */
+
+/* Progress Bar */
+.progress {
+  background-color: #{$gray-300}; /* bg-gray-300 */
+}
+
+.tutorial-progress-bar {
+  height: 8px; /* Make it thinner */
+}
+
+.progress-bar {
+  background-color: $primary-color; /* Red fill for progress bar */
+}
+
+/* Step Indicators (Dots) */
+.step-indicator-bs {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #{$gray-300}; /* bg-gray-300 */
+  transition: all 0.3s ease;
+  margin: 0 2px; /* Small spacing between dots */
+
+  &.active {
+    background-color: $primary-color; /* bg-primary */
+    width: 24px; /* w-6 */
+    border-radius: 4px; /* Rounded rectangle for active */
+  }
+
+  &.completed {
+    background-color: #{$green-500}; /* bg-green-500 */
+  }
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: $primary-color !important;
+  border-color: $primary-color !important;
+  &:hover {
+    background-color: #E0304F !important; /* Manually darkened color */
+    border-color: #E0304F !important; /* Manually darkened color */
+  }
+}
+
+.btn-outline-secondary {
+  border-color: #{$gray-300} !important;
+  color: #{$black-color} !important;
+  &:hover {
+    background-color: #{$gray-50} !important;
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-success {
+  background-color: #{$green-600} !important;
+  border-color: #{$green-600} !important;
+  &:hover {
+    background-color: #{$green-700} !important;
+    border-color: #{$green-700} !important;
+  }
+}
+
+.btn-link {
+  color: #{$gray-500} !important;
+  &:hover {
+    color: #{$gray-700} !important;
+  }
 }
 
 /* FontAwesome Icon Sizing and Coloring */
@@ -467,7 +671,7 @@ $black-color: var(--foreground);
 
 /* Progress Bar */
 .progress {
-  background-color: #FCE8EB; /* Light pink background for progress bar */
+  background-color: #{$gray-300}; /* bg-gray-300 */
 }
 
 .progress-bar {
