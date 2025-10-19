@@ -55,7 +55,14 @@ public class AuthServiceImpl implements AuthService {
 
 		Usuario usuario = usuarioOptional.get();
 
-		// Realizar la verificación de bloqueo explícitamente usando TimeService
+		// NEW LOGIC: If lockout time has passed, reset failed attempts
+		if (usuario.getLockoutTime() != null && timeService.getCurrentLocalDateTimePeru().isAfter(usuario.getLockoutTime())) {
+			usuario.setFailedLoginAttempts(0);
+			usuario.setLockoutTime(null);
+			usuarioRepository.save(usuario);
+		}
+
+		// Existing lockout check
 		if (usuario.getLockoutTime() != null && timeService.getCurrentLocalDateTimePeru().isBefore(usuario.getLockoutTime())) {
 			long minutesRemaining = Duration.between(timeService.getCurrentLocalDateTimePeru(), usuario.getLockoutTime()).toMinutes();
 			throw new AuthenticationException("La cuenta está bloqueada. Inténtelo de nuevo después de " + minutesRemaining + " minutos.") {};
