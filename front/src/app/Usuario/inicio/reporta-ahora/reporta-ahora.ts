@@ -5,6 +5,8 @@ import { IncidenteService } from '../../../services/incidente.service';
 import { ZonaService, Zona } from '../../../services/zona.service';
 import { ReporteService } from '../../../services/reporte.service';
 import { AuthService } from '../../../services/auth.service';
+import { PerfilService } from '../../../services/perfil.service';
+import { SedeService, Sede } from '../../../services/sede.service';
 import { HttpClient } from '@angular/common/http';
 import { TimeService } from '../../../services/time.service';
 
@@ -53,6 +55,8 @@ export class ReportaAhora implements OnInit {
     private zonaService: ZonaService,
     private reporteService: ReporteService,
     private auth: AuthService,
+    private perfilService: PerfilService,
+    private sedeService: SedeService,
   private http: HttpClient,
   private timeService: TimeService,
     private zone: NgZone
@@ -65,7 +69,38 @@ export class ReportaAhora implements OnInit {
 
   ngOnInit(): void {
     this.incidenteService.obtenerTipos().subscribe(t => this.tipos = t || []);
-    this.zonaService.obtenerZonas().subscribe(z => this.zonas = z || []);
+    // Intentar cargar zonas filtradas por la sede del usuario. Si falla, cargar todas.
+    // Primero pedimos el perfil (que llama /api/usuarios/me) para obtener sedeNombre.
+    try {
+      this.perfilService.cargarPerfil();
+      // Esperar un tick para leer la señal (perfil) si ya fue cargada o lo estará pronto.
+      setTimeout(() => {
+        const perfil = (this.perfilService as any).perfil?.();
+        const sedeNombre = perfil?.sedeNombre;
+        if (!sedeNombre) {
+          // fallback: cargar todas las zonas
+          this.zonaService.obtenerZonas().subscribe(z => this.zonas = z || []);
+          return;
+        }
+        // Buscar id de sede por nombre usando SedeService
+        this.sedeService.obtenerSedes().subscribe({
+          next: (sedes) => {
+            const found = (sedes || []).find((s: Sede) => s.nombre === sedeNombre || String(s.id) === String(perfil?.sedeId));
+            if (found && found.id) {
+              this.zonaService.obtenerZonasPorSede(Number(found.id)).subscribe(z => this.zonas = z || []);
+            } else {
+              // fallback a todas las zonas
+              this.zonaService.obtenerZonas().subscribe(z => this.zonas = z || []);
+            }
+          },
+          error: _ => {
+            this.zonaService.obtenerZonas().subscribe(z => this.zonas = z || []);
+          }
+        });
+      }, 0);
+    } catch (e) {
+      this.zonaService.obtenerZonas().subscribe(z => this.zonas = z || []);
+    }
     // cerrar menús al hacer click global
     document.addEventListener('click', this.closeAllMenus, true);
 
