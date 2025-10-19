@@ -1,287 +1,5 @@
 @use "sass:color";
 
-.guia-page-container {
-  padding: 20px;
-  max-width: 900px;
-  margin: 0 auto;
-
-  .header {
-    text-align: center;
-    margin-bottom: 40px;
-
-    .icon-title {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 10px;
-
-      i {
-        font-size: 30px;
-        color: #e74c3c; /* Red color for icon */
-        margin-right: 10px;
-      }
-
-      h1 {
-        font-size: 28px;
-        color: #333;
-        margin: 0;
-      }
-    }
-
-    p {
-      font-size: 16px;
-      color: #666;
-      line-height: 1.5;
-    }
-  }
-
-  .cards-section {
-    display: flex;
-    justify-content: space-around;
-    gap: 20px;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
-
-    .card {
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      border: 1px solid #eee;
-
-      .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 15px;
-
-        i {
-          font-size: 24px;
-          margin-right: 10px;
-        }
-
-        h2 {
-          font-size: 20px;
-          margin: 0;
-        }
-      }
-
-      p {
-        font-size: 14px;
-        color: #777;
-        margin-bottom: 20px;
-      }
-
-      button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        color: #fff;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-
-        i {
-          margin-right: 8px;
-        }
-      }
-
-      &.tour-card {
-        .card-header i {
-          color: #3498db; /* Blue color for tour icon */
-        }
-        h2 {
-          color: #3498db;
-        }
-        .btn-primary {
-          background-color: #3498db;
-
-          &:hover {
-            background-color: #2980b9;
-          }
-        }
-      }
-
-      &.report-card {
-        .card-header i {
-          color: #e74c3c; /* Red color for report icon */
-        }
-        h2 {
-          color: #e74c3c;
-        }
-        .btn-secondary {
-          background-color: #e74c3c;
-
-          &:hover {
-            background-color: #c0392b;
-          }
-        }
-      }
-    }
-  }
-
-  .emergency-contact-section {
-    margin-bottom: 40px;
-
-    .emergency-card {
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      border: 1px solid #e74c3c; /* Red border for emergency */
-      text-align: center;
-
-      .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 15px;
-
-        i {
-          font-size: 24px;
-          color: #e74c3c;
-          margin-right: 10px;
-        }
-
-        h2 {
-          font-size: 20px;
-          color: #e74c3c;
-          margin: 0;
-        }
-      }
-
-      p {
-        font-size: 14px;
-        color: #777;
-        margin-bottom: 20px;
-      }
-
-      .btn-emergency-call {
-        background-color: #e74c3c;
-        color: #fff;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 5px;
-        font-size: 18px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin-bottom: 15px;
-        width: 100%;
-        max-width: 300px;
-
-        &:hover {
-          background-color: #c0392b;
-        }
-
-        i {
-          margin-right: 10px;
-        }
-      }
-
-      .campus-security {
-        font-size: 14px;
-        color: #555;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        i {
-          margin-right: 8px;
-          color: #3498db;
-        }
-      }
-    }
-  }
-
-  .faq-section {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    border: 1px solid #eee;
-
-    .faq-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 15px;
-
-      i {
-        font-size: 24px;
-        color: #2ecc71; /* Green color for FAQ icon */
-        margin-right: 10px;
-      }
-
-      h2 {
-        font-size: 20px;
-        color: #333;
-        margin: 0;
-      }
-    }
-
-    p {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 20px;
-    }
-
-    .accordion {
-      .accordion-item {
-        border-bottom: 1px solid #eee;
-
-        &:last-child {
-          border-bottom: none;
-        }
-
-        .accordion-header {
-          background-color: #f9f9f9;
-          color: #333;
-          cursor: pointer;
-          padding: 15px;
-          width: 100%;
-          text-align: left;
-          border: none;
-          outline: none;
-          font-size: 16px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          transition: background-color 0.3s ease;
-
-          &:hover {
-            background-color: #f1f1f1;
-          }
-
-          i {
-            transition: transform 0.3s ease;
-          }
-
-          &.rotate {
-            transform: rotate(180deg);
-          }
-        }
-
-        .accordion-content {
-          padding: 0 15px;
-          background-color: #fff;
-          max-height: 0;
-          overflow: hidden;
-          transition: max-height 0.3s ease-in-out;
-
-          p {
-            padding: 15px 0;
-            margin: 0;
-            color: #555;
-            font-size: 14px;
-          }
-        }
-      }
-    }
-  }
-}
-
 /* Colores específicos del tutorial */
 $primary-color: #FF395C;
 $green-500: #22C55E;
@@ -309,6 +27,321 @@ $gray-600: #4B5563;
 $gray-700: #374151;
 $white-color: var(--background);
 $black-color: var(--foreground);
+
+.guia-page-container {
+  background-color: $gray-50; // bg-gray-50
+  padding-top: 32px; // py-8
+  padding-bottom: 32px; // py-8
+  padding-left: 16px; // px-4
+  padding-right: 16px; // px-4
+  min-height: 100vh; // min-h-screen
+
+  .content-wrapper {
+    max-width: 1152px; // max-w-6xl
+    margin-left: auto; // mx-auto
+    margin-right: auto; // mx-auto
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 32px; // mb-8
+
+    .icon-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px; // mb-4
+
+      .book-open-icon {
+        height: 40px; // h-10
+        width: 40px; // w-10
+        font-size: 40px; /* Explicitly set font-size for Font Awesome icon */
+        color: $primary-color; // text-primary
+        margin-right: 16px; // mr-4
+      }
+
+      h1 {
+        font-size: 30px; // text-3xl
+        font-weight: 500; // font-medium
+        color: #000000; // Negro
+        line-height: 1.5;
+        margin: 0;
+      }
+    }
+
+    p {
+      font-size: 18px; // text-lg
+      color: $gray-600; // text-gray-600
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+
+  .tutorial-grid {
+    display: grid;
+    grid-template-columns: 1fr; // grid-cols-1
+    gap: 24px; // gap-6
+    margin-bottom: 32px; // mb-8
+
+    @media (min-width: 768px) { // md:
+      grid-template-columns: repeat(2, 1fr); // md:grid-cols-2
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+      transition: box-shadow 0.3s ease; // transition-shadow
+      cursor: pointer; // cursor-pointer
+
+      &:hover {
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); // hover:shadow-lg
+      }
+
+      .card-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px; // gap-3
+        font-size: 20px; // text-xl
+        font-weight: 500; // font-medium
+        color: #000000; // Negro predeterminado
+        margin-bottom: 12px; // mb-3
+      }
+
+      .card-description {
+        font-size: 16px; // text-base
+        color: #777; // Gris predeterminado
+        margin-bottom: 24px; // mb-6
+      }
+
+      .btn {
+        height: 48px; // h-12
+        width: 100%; // w-full
+        font-size: 16px; // size="lg"
+        font-weight: 500; // font-medium
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+
+        .btn-icon {
+          height: 20px; // h-5
+          width: 20px; // w-5
+          font-size: 20px; /* Explicitly set font-size for Font Awesome icon */
+          margin-right: 8px; // mr-2
+          color: #fff;
+        }
+      }
+
+      &.tour-card {
+        border: 2px solid $blue-200; // border-2 border-blue-200
+
+        .video-icon {
+          height: 32px; // h-8
+          width: 32px; // w-8
+          font-size: 32px; /* Explicitly set font-size for Font Awesome icon */
+          color: $blue-600; // text-blue-600
+        }
+
+        .btn-tour {
+          background-color: $blue-600; // bg-blue-600
+
+          &:hover {
+            background-color: $blue-700; // hover:bg-blue-700
+          }
+        }
+      }
+
+      &.report-card {
+        border: 2px solid #FECACA; // border-2 border-red-200
+
+        .alert-triangle-icon {
+          height: 32px; // h-8
+          width: 32px; // w-8
+          font-size: 32px; /* Explicitly set font-size for Font Awesome icon */
+          color: $primary-color; // text-primary
+        }
+
+        .btn-report {
+          background-color: $primary-color; // bg-primary
+
+          &:hover {
+            background-color: color.adjust($primary-color, $alpha: -0.1); // hover:bg-primary/90
+          }
+        }
+      }
+    }
+  }
+
+  .content-section {
+    max-width: 896px; // max-w-4xl
+    margin-left: auto; // mx-auto
+    margin-right: auto; // mx-auto
+    display: flex;
+    flex-direction: column;
+    gap: 24px; // space-y-6
+  }
+
+  .emergency-contact-card {
+    border: 2px solid #FECACA; // border-2 border-red-200
+    background-color: #FEF2F2; // bg-red-50
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 24px; // mb-6
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px; // gap-3
+      color: #B91C1C; // text-red-700
+      font-size: 20px; // text-xl
+      font-weight: 500; // font-medium
+      margin-bottom: 12px; // mb-3
+
+      .alert-triangle-icon {
+        height: 24px; // h-6
+        width: 24px; // w-6
+        font-size: 24px; /* Explicitly set font-size for Font Awesome icon */
+      }
+    }
+
+    .card-description {
+      font-size: 16px; // base
+      color: #B91C1C; // text-red-700
+      margin-bottom: 16px; // mb-4
+    }
+
+    .btn-emergency {
+      height: 48px; // h-12
+      width: 100%; // w-full
+      font-size: 16px; // size="lg"
+      font-weight: 500; // font-medium
+      color: #fff; // text-white
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+      margin-bottom: 12px; // mb-3
+
+      .btn-icon {
+        height: 20px; // h-5
+        width: 20px; // w-5
+        font-size: 20px; /* Explicitly set font-size for Font Awesome icon */
+        margin-right: 8px; // mr-2
+        color: #fff;
+      }
+
+      &.call-911 {
+        background-color: #DC2626; // bg-red-600
+
+        &:hover {
+          background-color: #B91C1C; // hover:bg-red-700
+        }
+      }
+
+      &.campus-security {
+        background-color: transparent; // outline variant
+        border: 1px solid #FCA5A5; // border-red-300
+        color: #B91C1C; // text-red-700
+
+        &:hover {
+          background-color: #FEE2E2; // hover:bg-red-100
+        }
+
+        .btn-icon {
+          color: #B91C1C;
+        }
+      }
+    }
+  }
+
+  .faq-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border: 1px solid #eee;
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 12px; // gap-3
+      font-size: 20px; // base (inherits from CardTitle)
+      font-weight: 500; // font-medium
+      color: #000000; // Negro predeterminado
+      margin-bottom: 12px; // mb-3
+
+      .file-text-icon {
+        height: 24px; // h-6
+        width: 24px; // w-6
+        font-size: 24px; /* Explicitly set font-size for Font Awesome icon */
+        color: $primary-color; // text-primary
+      }
+    }
+
+    .card-description {
+      font-size: 16px; // base (predeterminado)
+      color: #777; // Gris predeterminado
+      margin-bottom: 24px; // mb-6
+    }
+
+    .accordion-item {
+      border-bottom: 1px solid #eee;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .accordion-trigger {
+        background-color: #f9f9f9;
+        color: #000000; // Negro
+        cursor: pointer;
+        padding: 15px;
+        width: 100%;
+        text-align: left; // text-left
+        border: none;
+        outline: none;
+        font-size: 16px; // base
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #f1f1f1;
+        }
+      }
+
+      .accordion-content {
+        padding: 0 15px; /* Adjust padding to allow for smooth transition from 0 height */
+        background-color: #fff;
+        max-height: 0; /* Start with 0 height for closed state */
+        overflow: hidden; /* Hide overflowing content */
+        transition: max-height 0.3s ease-in-out; /* Smooth transition for height changes */
+        font-size: 16px; // base
+        color: $gray-600; // text-gray-600
+
+        p {
+          padding: 15px 0; /* Add padding to the paragraph inside to maintain spacing */
+          margin: 0;
+        }
+      }
+    }
+  }
+}
 
 /* MODAL PRINCIPAL (Bootstrap Overrides) */
 .modal {
@@ -560,118 +593,6 @@ $black-color: var(--foreground);
 
 .tutorial-progress-bar {
   height: 8px; /* Make it thinner */
-}
-
-.progress-bar {
-  background-color: $primary-color; /* Red fill for progress bar */
-}
-
-/* Step Indicators (Dots) */
-.step-indicator-bs {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #{$gray-300}; /* bg-gray-300 */
-  transition: all 0.3s ease;
-  margin: 0 2px; /* Small spacing between dots */
-
-  &.active {
-    background-color: $primary-color; /* bg-primary */
-    width: 24px; /* w-6 */
-    border-radius: 4px; /* Rounded rectangle for active */
-  }
-
-  &.completed {
-    background-color: #{$green-500}; /* bg-green-500 */
-  }
-}
-
-/* Buttons */
-.btn-primary {
-  background-color: $primary-color !important;
-  border-color: $primary-color !important;
-  &:hover {
-    background-color: #E0304F !important; /* Manually darkened color */
-    border-color: #E0304F !important; /* Manually darkened color */
-  }
-}
-
-.btn-outline-secondary {
-  border-color: #{$gray-300} !important;
-  color: #{$black-color} !important;
-  &:hover {
-    background-color: #{$gray-50} !important;
-  }
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-.btn-success {
-  background-color: #{$green-600} !important;
-  border-color: #{$green-600} !important;
-  &:hover {
-    background-color: #{$green-700} !important;
-    border-color: #{$green-700} !important;
-  }
-}
-
-.btn-link {
-  color: #{$gray-500} !important;
-  &:hover {
-    color: #{$gray-700} !important;
-  }
-}
-
-/* FontAwesome Icon Sizing and Coloring */
-.fa-2x {
-  font-size: 2em; /* Standard FontAwesome size */
-}
-
-.tutorial-icon-black {
-  color: #{$black-color} !important;
-}
-
-.fa-shield-alt.text-primary {
-  color: $primary-color;
-}
-
-.fa-exclamation-triangle.text-primary {
-  color: $primary-color;
-}
-
-.fa-map-marker-alt.text-primary {
-  color: $primary-color;
-}
-
-.fa-file-alt.text-primary {
-  color: $primary-color;
-}
-
-.fa-check-circle.text-success {
-  color: $green-600;
-}
-
-.fa-camera.text-primary {
-  color: $primary-color;
-}
-
-.fa-shield-alt.text-info {
-  color: $blue-600;
-}
-
-.fa-star.text-warning {
-  color: $yellow-600;
-}
-
-.fa-users.text-muted {
-  color: $gray-500;
-}
-
-/* Progress Bar */
-.progress {
-  background-color: #{$gray-300}; /* bg-gray-300 */
 }
 
 .progress-bar {

@@ -1,33 +1,76 @@
 <div class="guia-page-container">
-  <div class="header">
-    <div class="icon-title">
-      <i class="fas fa-book"></i>
-      <h1>GUÍA Y TUTORIALES</h1>
-    </div>
-    <p>Aprende a usar el sistema paso a paso con nuestros tutoriales interactivos.</p>
-  </div>
-
-  <div class="cards-section">
-    <div class="card tour-card">
-      <div class="card-header">
-        <i class="fas fa-desktop"></i>
-        <h2>Tour del Sistema</h2>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="icon-title">
+        <i class="fas fa-book-open book-open-icon"></i>
+        <h1 class="text-3xl font-medium text-black">GUÍA Y TUTORIALES</h1>
       </div>
-      <p>Conoce las funciones principales paso a paso</p>
-      <button class="btn-primary" (click)="startSystemTour()">
-        <i class="fas fa-play-circle"></i> Iniciar Tour Completo
-      </button>
+      <p class="text-lg text-gray-600">Aprende a usar el sistema paso a paso con nuestros tutoriales interactivos.</p>
     </div>
 
-    <div class="card report-card">
-      <div class="card-header">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h2>Cómo Reportar</h2>
+    <div class="tutorial-grid">
+      <div class="card tour-card">
+        <div class="card-title">
+          <i class="fas fa-video video-icon"></i>
+          <h2>Tour del Sistema</h2>
+        </div>
+        <p class="card-description">Conoce las funciones principales paso a paso</p>
+        <button class="btn btn-tour" (click)="startSystemTour()">
+          <i class="fas fa-play btn-icon"></i> Iniciar Tour Completo
+        </button>
       </div>
-      <p>Aprende a crear reportes de incidentes</p>
-      <button class="btn-secondary" (click)="openTutorial()">
-        <i class="fas fa-question-circle"></i> Tutorial de Reportes
-      </button>
+
+      <div class="card report-card">
+        <div class="card-title">
+          <i class="fas fa-exclamation-triangle alert-triangle-icon"></i>
+          <h2>Cómo Reportar</h2>
+        </div>
+        <p class="card-description">Aprende a crear reportes de incidentes</p>
+        <button class="btn btn-report" (click)="openTutorial()">
+          <i class="fas fa-lightbulb btn-icon"></i> Tutorial de Reportes
+        </button>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="emergency-contact-card">
+        <div class="card-title">
+          <i class="fas fa-exclamation-triangle alert-triangle-icon"></i>
+          <h2>Contacto de Emergencia</h2>
+        </div>
+        <p class="card-description">Si estás en peligro inmediato o presencias un crimen en progreso:</p>
+        <button class="btn btn-emergency call-911">
+          <i class="fas fa-phone-alt btn-icon"></i> LLAMAR 911
+        </button>
+        <button class="btn btn-emergency campus-security">
+          <i class="fas fa-shield-alt btn-icon"></i> SEGURIDAD CAMPUS: (555) 123-4567
+        </button>
+      </div>
+
+      <div class="faq-card">
+        <div class="card-title">
+          <i class="fas fa-file-alt file-text-icon"></i>
+          <h2>Preguntas Frecuentes</h2>
+        </div>
+        <p class="card-description">Respuestas a las consultas más comunes sobre el sistema</p>
+
+        <div class="accordion">
+          <div class="accordion-item" *ngFor="let faq of faqs; let i = index">
+            <button class="accordion-trigger" (click)="toggleAccordion(i)" [class.active]="activeAccordionIndex === i">
+              {{ faq.question }}
+              <i class="fas fa-chevron-down" [class.rotate]="activeAccordionIndex === i"></i>
+            </button>
+            <div
+              #accordionContent
+              class="accordion-content"
+              [style.maxHeight]="activeAccordionIndex === i ? faq.height : '0px'"
+            >
+              <p>{{ faq.answer }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -277,48 +320,6 @@
         >
           Saltar tutorial
         </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-  <div class="emergency-contact-section">
-    <div class="emergency-card">
-      <div class="card-header">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h2>Contacto de Emergencia</h2>
-      </div>
-      <p>Si estás en peligro inmediato o presencias un crimen en progreso:</p>
-      <button class="btn-emergency-call">
-        <i class="fas fa-phone-alt"></i> LLAMAR 911
-      </button>
-      <div class="campus-security">
-        <i class="fas fa-shield-alt"></i> SEGURIDAD CAMPUS: (555) 123-4567
-      </div>
-    </div>
-  </div>
-
-  <!-- 📋 SECCIÓN DE PREGUNTAS FRECUENTES -->
-  <div class="faq-section">
-    <div class="faq-header">
-      <i class="fas fa-question-circle"></i>
-      <h2>Preguntas Frecuentes</h2>
-    </div>
-    <p>Respuestas a las consultas más comunes sobre el sistema</p>
-
-    <div class="accordion">
-      <div class="accordion-item" *ngFor="let faq of faqs; let i = index">
-        <button class="accordion-header" (click)="toggleAccordion(i)" [class.active]="activeAccordionIndex === i">
-          {{ faq.question }}
-          <i class="fas fa-chevron-down" [class.rotate]="activeAccordionIndex === i"></i>
-        </button>
-        <div
-          #accordionContent
-          class="accordion-content"
-          [style.maxHeight]="activeAccordionIndex === i ? faq.height : '0px'"
-        >
-          <p>{{ faq.answer }}</p>
-        </div>
       </div>
     </div>
   </div>
