@@ -1,0 +1,306 @@
+<!-- Contenedor principal de la página, ocupa toda la altura de la vista y tiene un fondo gris claro. -->
+<div class="page-container">
+  <!-- Contenedor de contenido con ancho máximo y centrado automático. -->
+  <div class="content-wrapper">
+
+    <!-- ENCABEZADO PRINCIPAL: Título y subtítulo de la página. -->
+    <div class="main-header">
+      <!-- Icono de MapPin para el encabezado. -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><path d="M12 12.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M12 22.5s-8-7-8-12a8 8 0 1 1 16 0c0 5-8 12-8 12Z"/></svg>
+      <div>
+        <h1 class="header-title">GESTIÓN DE ZONAS UNIVERSITARIAS</h1>
+        <p class="header-subtitle">
+          Monitoreo y administración de zonas de la sede
+        </p>
+      </div>
+    </div>
+
+    <!-- ALERTA DE MODO EDICIÓN (Para Administradores): Muestra un mensaje informativo. -->
+    <div class="edit-mode-alert">
+      <!-- Icono de ShieldCheck para la alerta. -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="alert-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+      <p class="alert-description">
+        <strong>Sistema de Edición Activo:</strong> Los cambios que realices en las zonas (descripciones, imágenes) se reflejarán automáticamente para todos los usuarios del sistema. Usa el botón "Editar" para modificar cualquier zona existente.
+      </p>
+    </div>
+
+    <!-- SELECTOR DE SEDE Y BOTÓN AGREGAR ZONA: Permite seleccionar una sede y añadir una nueva zona. -->
+    <div class="sede-selector-card">
+      <div class="sede-selector-content">
+        <!-- Icono de Building para el selector de sede. -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sede-selector-icon"><path d="M18 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 20v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div class="flex-1">
+          <label class="sede-label">Seleccionar Sede:</label>
+          <select class="sede-select">
+            <option value="campus-principal">UTP Campus Principal</option>
+            <option value="campus-norte">UTP Campus Norte</option>
+            <option value="campus-sur">UTP Campus Sur</option>
+          </select>
+        </div>
+        <!-- Botón para alternar la visibilidad del formulario de creación de zona. -->
+        <button class="add-zone-button" (click)="toggleCreateZoneForm()">
+          <!-- Icono de Plus para el botón. -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="add-zone-icon"><path d="M12 5v14M5 12h14"/></svg>
+          Agregar Zona
+        </button>
+      </div>
+    </div>
+
+    <!-- FORMULARIO CREAR ZONA (Visible para Admin): Se muestra condicionalmente. -->
+    <div class="create-zone-form-section" *ngIf="showCreateZoneForm">
+      <h2 class="form-title">Crear Nueva Zona</h2>
+      <div class="form-grid">
+        <div class="form-fields">
+          <!-- Grupo de formulario para el nombre de la zona. -->
+          <div class="form-group">
+            <label for="zoneName">Nombre de la Zona</label>
+            <input type="text" id="zoneName" class="form-input" placeholder="Ej: Biblioteca Central" [(ngModel)]="newZone.name">
+          </div>
+          <!-- Grupo de formulario para la descripción de seguridad. -->
+          <div class="form-group">
+            <label for="zoneDescription">Descripción de Seguridad</label>
+            <textarea id="zoneDescription" class="form-textarea" placeholder="Ej: Zona con alta vigilancia y buena iluminación." [(ngModel)]="newZone.description"></textarea>
+          </div>
+          <!-- Grupo de formulario para la URL de la imagen. -->
+          <div class="form-group">
+            <label for="zoneImage">URL de Imagen</label>
+            <input type="text" id="zoneImage" class="form-input" placeholder="Ej: https://example.com/image.jpg" [(ngModel)]="newZone.imageUrl">
+          </div>
+          <!-- Botón para guardar la nueva zona. -->
+          <button class="save-zone-button" (click)="addZone()">
+            <!-- Icono de Save para el botón. -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Guardar Zona
+          </button>
+        </div>
+        <!-- Vista previa del formulario de creación de zona. -->
+        <div class="form-preview">
+          <h3 class="preview-title">Vista Previa</h3>
+          <div class="zone-card preview-card">
+            <div class="zone-card-header">
+              <h3 class="zone-title">
+                {{ newZone.name || '[Nombre de Zona]' }} <!-- Muestra el nombre de la nueva zona o un placeholder. -->
+                <span class="zone-status-badge zone-status-info">
+                  PREVIEW
+                </span>
+              </h3>
+            </div>
+            <div class="security-level-section">
+              <div class="security-level-labels">
+                <span class="text-sm">Nivel de Seguridad</span>
+                <span class="text-sm">{{ newZone.securityLevel }}%</span> <!-- Muestra el nivel de seguridad de la nueva zona. -->
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" [style.width.%]="newZone.securityLevel"></div> <!-- Barra de progreso del nivel de seguridad. -->
+              </div>
+            </div>
+            <div class="zone-image-wrapper">
+              <img [src]="newZone.imageUrl || 'https://via.placeholder.com/300x150/cccccc/000000?text=Vista+Previa'" alt="Vista de la Zona" class="zone-image">
+              <div class="image-overlay"></div>
+              <div class="image-location">
+                <p class="flex items-center gap-1">
+                  <!-- Icono de MapPin para la ubicación. -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon"><path d="M12 12.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M12 22.5s-8-7-8-12a8 8 0 1 1 16 0c0 5-8 12-8 12Z"/></svg>
+                  [Ubicación]
+                </p>
+              </div>
+            </div>
+            <div class="security-description-section">
+              <p class="security-description-label">
+                <!-- Icono de Shield para la información de seguridad. -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="detail-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+                Información de Seguridad:
+              </p>
+              <p class="security-description-text">
+                {{ newZone.description || '[Descripción de seguridad]' }} <!-- Muestra la descripción de la nueva zona o un placeholder. -->
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTADÍSTICAS RÁPIDAS (4 Cards): Muestra un resumen de las zonas. -->
+    <div class="quick-stats-grid">
+      <!-- Tarjeta 1 - Zonas Seguras: Muestra el conteo de zonas seguras. -->
+      <div class="stat-card stat-safe">
+        <div class="stat-icon-wrapper">
+          <!-- Icono de Shield para zonas seguras. -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+          <div>
+            <p class="stat-value">{{ getSafeZonesCount() }}</p> <!-- Muestra el número de zonas seguras. -->
+            <p class="stat-label">Zonas Seguras</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2 - En Precaución: Muestra el conteo de zonas en precaución. -->
+      <div class="stat-card stat-caution">
+        <div class="stat-icon-wrapper">
+          <!-- Icono de AlertTriangle para zonas en precaución. -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>
+            <p class="stat-value">{{ getCautionZonesCount() }}</p> <!-- Muestra el número de zonas en precaución. -->
+            <p class="stat-label">En Precaución</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 3 - Zonas Peligrosas: Muestra el conteo de zonas peligrosas. -->
+      <div class="stat-card stat-dangerous">
+        <div class="stat-icon-wrapper">
+          <!-- Icono de AlertTriangle para zonas peligrosas. -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>
+            <p class="stat-value">{{ getDangerousZonesCount() }}</p> <!-- Muestra el número de zonas peligrosas. -->
+            <p class="stat-label">Zonas Peligrosas</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 4 - Estudiantes Activos: Muestra el conteo total de estudiantes. -->
+      <div class="stat-card stat-students">
+        <div class="stat-icon-wrapper">
+          <!-- Icono de Users para estudiantes activos. -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="stat-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <div>
+            <p class="stat-value">{{ getTotalStudentsCount() }}</p> <!-- Muestra el número total de estudiantes. -->
+            <p class="stat-label">Estudiantes Activos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLES (Botones de Acción): Botones para ver mapa y exportar reporte. -->
+    <div class="controls-section">
+      <button class="action-button">
+        <!-- Icono de Navigation para el mapa interactivo. -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="map-icon"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        Ver Mapa Interactivo
+      </button>
+      <button class="action-button">
+        <!-- Icono de Export para exportar reporte. -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="export-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar Reporte
+      </button>
+      <span class="update-badge">
+        🔄 Actualizado cada 2 minutos
+      </span>
+    </div>
+
+    <!-- TARJETAS DE ZONAS (Grid de Zonas): Muestra una lista de tarjetas de zona. -->
+    <div class="zone-cards-grid">
+      <!-- Tarjeta de Zona (se repite para cada zona en el array 'zones'). -->
+      <div class="zone-card" *ngFor="let zone of zones" [ngClass]="{'editing': zone.isEditing}">
+        <div class="zone-card-header">
+          <h3 class="zone-title">
+            <!-- Input editable para el nombre de la zona si está en modo edición. -->
+            <input type="text" [(ngModel)]="zone.name" class="editable-input zone-title-input" *ngIf="zone.isEditing" />
+            <!-- Muestra el nombre de la zona si no está en modo edición. -->
+            <span *ngIf="!zone.isEditing">{{ zone.name }}</span>
+            <!-- Insignia de estado de la zona. -->
+            <span class="zone-status-badge" [ngClass]="getZoneStatusClass(zone.status)">
+              {{ zone.status | uppercase }}
+            </span>
+          </h3>
+          <div class="zone-details">
+            <div class="detail-item">
+              <!-- Icono de AlertTriangle para incidentes. -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="detail-icon"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>{{ zone.incidents }} incidentes</span>
+            </div>
+            <div class="detail-item">
+              <!-- Icono de Users para estudiantes. -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="detail-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>{{ zone.students }} estudiantes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información de Tendencia: Muestra la tendencia de seguridad de la zona. -->
+        <div class="trend-info" [ngClass]="{'trend-up': zone.trend === 'up', 'trend-down': zone.trend === 'down', 'trend-stable': zone.trend === 'stable'}">
+          <!-- Icono de TrendingUp si la tendencia es 'up'. -->
+          <svg *ngIf="zone.trend === 'up'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="trend-icon"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <!-- Icono de TrendingDown si la tendencia es 'down'. -->
+          <svg *ngIf="zone.trend === 'down'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="trend-icon"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+          <!-- Icono de Minus si la tendencia es 'stable'. -->
+          <svg *ngIf="zone.trend === 'stable'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="trend-icon"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="trend-status">{{ zone.trend }}</span>
+          <p class="trend-timestamp">{{ zone.timestamp }}</p>
+        </div>
+
+        <!-- Nivel de Seguridad: Muestra la barra de progreso del nivel de seguridad. -->
+        <div class="security-level-section">
+          <div class="security-level-labels">
+            <span class="text-sm">Nivel de Seguridad</span>
+            <!-- Input editable para el nivel de seguridad si está en modo edición. -->
+            <input type="text" [(ngModel)]="zone.securityLevel" class="editable-input security-level-input" *ngIf="zone.isEditing">
+            <!-- Muestra el nivel de seguridad si no está en modo edición. -->
+            <span *ngIf="!zone.isEditing">{{ zone.securityLevel }}%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" [style.width.%]="zone.securityLevel" [ngClass]="getProgressBarColor(zone.securityLevel)"></div>
+          </div>
+        </div>
+
+        <!-- Imagen de la Zona: Muestra la imagen de la zona y su ubicación. -->
+        <div class="zone-image-wrapper">
+          <img [src]="zone.imageUrl" alt="Vista de la Zona" class="zone-image">
+          <div class="image-overlay"></div>
+          <div class="image-location">
+            <p class="flex items-center gap-1">
+              <!-- Icono de MapPin para la ubicación. -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon"><path d="M12 12.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M12 22.5s-8-7-8-12a8 8 0 1 1 16 0c0 5-8 12-8 12Z"/></svg>
+              <!-- Input editable para el nombre de la zona (como ubicación) si está en modo edición. -->
+              <input type="text" [(ngModel)]="zone.name" class="editable-input location-input" *ngIf="zone.isEditing">
+              <!-- Muestra el nombre de la zona (como ubicación) si no está en modo edición. -->
+              <span *ngIf="!zone.isEditing">{{ zone.name }}</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Descripción de Seguridad: Muestra la descripción de seguridad de la zona. -->
+        <div class="security-description-section">
+          <p class="security-description-label">
+            <!-- Icono de Shield para la información de seguridad. -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="detail-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+            Información de Seguridad:
+          </p>
+          <!-- Textarea editable para la descripción de seguridad si está en modo edición. -->
+          <textarea [(ngModel)]="zone.description" class="editable-textarea security-description-text" *ngIf="zone.isEditing"></textarea>
+          <!-- Muestra la descripción de seguridad si no está en modo edición. -->
+          <p class="security-description-text" *ngIf="!zone.isEditing">{{ zone.description }}</p>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN (Admin): Botones para editar, guardar, cancelar y eliminar zonas. -->
+        <div class="admin-action-buttons">
+          <!-- Botón Editar: Visible si la zona NO está en modo edición. -->
+          <button class="admin-button edit-button" (click)="editZone(zone)" *ngIf="!zone.isEditing">
+            <!-- Icono de Edit para el botón. -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Editar
+          </button>
+          <!-- Botón Guardar: Visible si la zona SÍ está en modo edición. -->
+          <button class="admin-button save-button" (click)="saveZone(zone)" *ngIf="zone.isEditing">
+            <!-- Icono de Save para el botón. -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Guardar
+          </button>
+          <!-- Botón Cancelar: Visible si la zona SÍ está en modo edición. -->
+          <button class="admin-button cancel-button" (click)="cancelEdit(zone)" *ngIf="zone.isEditing">
+            <!-- Icono de X para el botón. -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            Cancelar
+          </button>
+          <!-- Botón Eliminar: Siempre visible. -->
+          <button class="admin-button delete-button" (click)="deleteZone(zone)">
+            <!-- Icono de Trash2 para el botón. -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            Eliminar
+          </button>
+        </div>
+      </div>
+      <!-- Fin de la Tarjeta de Zona -->
+    </div>
+  </div>
+</div>

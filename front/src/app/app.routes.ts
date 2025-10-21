@@ -7,9 +7,11 @@ import { guestGuard } from './guards/guest.guard';
 import { RoleSelectorComponent } from './Admin/select-rol/select-rol';
 import { InicioUsuario } from './Usuario/inicio/inicio';
 import { InicioAdmin } from './Admin/inicio/inicio';
+import { ReportesComponent } from './Admin/reportes/reportes'; // Import the new component
 import { InicioSeguridad } from './Seguridad/inicio/inicio';
 import { AuthService } from './services/auth.service';
 import { ZonasPageCompleteComponent } from './Usuario/Estado_zonas/zonas-page-complete.component';
+import { AdminZonasPageCompleteComponent } from './Admin/Estado_zonas/zonas-page-complete.component'; // Import the new admin component
 import { GuiaPage } from './Usuario/guia-page/guia-page'; // Importa el nuevo componente
 
 export const routes: Routes = [
@@ -30,6 +32,8 @@ export const routes: Routes = [
 	}] },
 	{ path: 'usuario', component: InicioUsuario, canActivate: [roleGuard], data: { roles: ['ROLE_USUARIO','ROLE_ADMIN'] } },
 	{ path: 'admin', component: InicioAdmin, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
+	{ path: 'admin/reportes', component: ReportesComponent, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
+	{ path: 'admin/estado-zonas', component: AdminZonasPageCompleteComponent, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
 	{ path: 'seguridad', component: InicioSeguridad, canActivate: [roleGuard], data: { roles: ['ROLE_SEGURIDAD'] } },
 	{ path: 'usuario/estado-zonas', component: ZonasPageCompleteComponent, canActivate: [roleGuard], data: { roles: ['ROLE_USUARIO', 'ROLE_ADMIN'] } },
 { 

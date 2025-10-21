@@ -1,0 +1,682 @@
+<!-- Contenedor principal de la página, con altura mínima de la pantalla y fondo gris claro. -->
+<div class="min-h-screen bg-gray-50">
+  <!-- Contenido principal de la página, con ancho máximo y centrado automático, y relleno. -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+
+    <!-- SECCIÓN DEL ENCABEZADO DEL ADMINISTRADOR -->
+    <div class="mb-6 sm:mb-8">
+      <!-- Alerta informativa para el panel de administración. -->
+      <div class="alert border-primary bg-blue-50">
+        <!-- Icono de escudo (Shield icon) como marcador de posición. -->
+        <i class="shield-icon h-5 w-5 sm:h-6 sm:w-6"></i>
+        <!-- Descripción de la alerta. -->
+        <div class="alert-description text-sm sm:text-base lg:text-lg">
+          Panel de Administración - Gestiona alertas, reportes y supervisa la seguridad del campus en tiempo real.
+        </div>
+      </div>
+    </div>
+
+    <!-- TÍTULO PRINCIPAL DEL DASHBOARD -->
+    <h1 class="text-xl sm:text-2xl lg:text-3xl mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+      <!-- Icono de gráfico de barras (BarChart3 icon) como marcador de posición. -->
+      <i class="barchart3-icon h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-primary"></i>
+      Dashboard de Administración
+    </h1>
+
+    <!-- ESTADÍSTICAS DEL DASHBOARD (5 Tarjetas) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
+      <!-- TARJETA 1: Alertas Críticas -->
+      <div class="card bg-red-50 border-red-200">
+        <div class="card-content p-3 sm:p-4">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="bg-red-500 p-1.5 sm:p-2 rounded-lg">
+              <!-- Icono de triángulo de alerta (AlertTriangle icon) como marcador de posición. -->
+              <i class="alert-triangle-icon h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white"></i>
+            </div>
+            <div>
+              <p class="text-lg sm:text-xl lg:text-2xl">1</p> <!-- Marcador de posición para el número de alertas críticas. -->
+              <p class="text-xs sm:text-sm text-gray-600">Alertas Críticas</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARJETA 2: En Proceso -->
+      <div class="card bg-yellow-50 border-yellow-200">
+        <div class="card-content p-3 sm:p-4">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="bg-yellow-500 p-1.5 sm:p-2 rounded-lg">
+              <!-- Icono de reloj (Clock icon) como marcador de posición. -->
+              <i class="clock-icon h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white"></i>
+            </div>
+            <div>
+              <p class="text-lg sm:text-xl lg:text-2xl">1</p> <!-- Marcador de posición para el número de reportes en proceso. -->
+              <p class="text-xs sm:text-sm text-gray-600">En Proceso</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARJETA 3: Pendiente Aprobación -->
+      <div class="card bg-purple-50 border-purple-200">
+        <div class="card-content p-3 sm:p-4">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="bg-purple-500 p-1.5 sm:p-2 rounded-lg">
+              <!-- Icono de círculo de alerta (AlertCircle icon) como marcador de posición. -->
+              <i class="alert-circle-icon h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white"></i>
+            </div>
+            <div>
+              <p class="text-lg sm:text-xl lg:text-2xl">1</p> <!-- Marcador de posición para el número de reportes pendientes de aprobación. -->
+              <p class="text-xs sm:text-sm text-gray-600">Pend. Aprobación</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARJETA 4: Total Reportes -->
+      <div class="card bg-blue-50 border-blue-200">
+        <div class="card-content p-3 sm:p-4">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="bg-blue-500 p-1.5 sm:p-2 rounded-lg">
+              <!-- Icono de archivo de texto (FileText icon) como marcador de posición. -->
+              <i class="file-text-icon h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white"></i>
+            </div>
+            <div>
+              <p class="text-lg sm:text-xl lg:text-2xl">4</p> <!-- Marcador de posición para el número total de reportes. -->
+              <p class="text-xs sm:text-sm text-gray-600">Total Reportes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARJETA 5: Casos Resueltos -->
+      <div class="card bg-green-50 border-green-200">
+        <div class="card-content p-3 sm:p-4">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="bg-green-500 p-1.5 sm:p-2 rounded-lg">
+              <!-- Icono de tendencia al alza (TrendingUp icon) como marcador de posición. -->
+              <i class="trending-up-icon h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white"></i>
+            </div>
+            <div>
+              <p class="text-lg sm:text-xl lg:text-2xl">0</p> <!-- Marcador de posición para el número de casos resueltos. -->
+              <p class="text-xs sm:text-sm text-gray-600">Casos Resueltos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑAS DE NAVEGACIÓN -->
+    <div class="tabs-list grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 mb-4 sm:mb-6 h-auto">
+    <!-- PESTAÑA 1: Reportes Recientes -->
+    <button class="tabs-trigger flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3" (click)="setActiveTab('recent')" [class.active]="activeTab === 'recent'">
+      <!-- Icono de archivo de texto (FileText icon) como marcador de posición. -->
+      <i class="file-text-icon h-3 w-3 sm:h-4 sm:w-4"></i>
+      <span class="hidden sm:inline">Reportes</span> Recientes ✨
+    </button>
+    <!-- PESTAÑA 2: En Proceso -->
+    <button class="tabs-trigger flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3" (click)="setActiveTab('in-process')" [class.active]="activeTab === 'in-process'">
+      <!-- Icono de reloj (Clock icon) como marcador de posición. -->
+      <i class="clock-icon h-3 w-3 sm:h-4 sm:w-4"></i>
+      <span class="hidden sm:inline">En</span> Proceso 🔄
+    </button>
+    <!-- PESTAÑA 3: Pendiente Aprobación -->
+    <button class="tabs-trigger flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3 col-span-2 sm:col-span-1" (click)="setActiveTab('pending-approval')" [class.active]="activeTab === 'pending-approval'">
+      <!-- Icono de círculo de alerta (AlertCircle icon) como marcador de posición. -->
+      <i class="alert-circle-icon h-3 w-3 sm:h-4 sm:w-4"></i>
+      <span class="hidden lg:inline">Pend.</span> Aprobación 🔍 (1) <!-- Marcador de posición para el número de reportes pendientes de aprobación. -->
+    </button>
+    <!-- PESTAÑA 4: Resueltos -->
+    <button class="tabs-trigger flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3" (click)="setActiveTab('resolved')" [class.active]="activeTab === 'resolved'">
+      <!-- Icono de círculo de verificación (CheckCircle icon) como marcador de posición. -->
+      <i class="check-circle-icon h-3 w-3 sm:h-4 sm:w-4"></i>
+      Resueltos ✅
+    </button>
+    <!-- PESTAÑA 5: Cancelados -->
+    <button class="tabs-trigger flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3" (click)="setActiveTab('cancelled')" [class.active]="activeTab === 'cancelled'">
+      <!-- Icono de X (X icon) como marcador de posición. -->
+      <i class="x-icon h-3 w-3 sm:h-4 sm:w-4"></i>
+      Cancelados ❌
+    </button>
+    </div>
+
+    <!-- SECCIÓN DE TARJETAS DE REPORTES -->
+    <div *ngIf="activeTab === 'recent'">
+      <!-- TAB 1: REPORTES RECIENTES -->
+      <h2 class="text-lg sm:text-xl lg:text-2xl mb-4 flex items-center gap-2">
+        <!-- Icono de archivo de texto (FileText icon) como marcador de posición. -->
+        <i class="file-text-icon h-5 w-5 text-primary"></i>
+        Reportes Recientes (1)
+      </h2>
+
+      <div class="flex items-end gap-2 mb-4">
+        <!-- Botón para filtrar reportes. -->
+        <button class="button button-outline button-sm w-full sm:w-auto">
+          <!-- Icono de filtro (Filter icon) como marcador de posición. -->
+          <i class="filter-icon h-4 w-4 mr-2"></i>
+          Filtrar
+        </button>
+        <!-- Botón para actualizar reportes. -->
+        <button class="button button-outline button-sm w-full sm:w-auto">
+          <!-- Icono de recargar (RefreshCw icon) como marcador de posición. -->
+          <i class="refresh-cw-icon h-4 w-4 mr-2"></i>
+          Actualizar
+        </button>
+        <!-- Botón para añadir nuevos reportes. -->
+        <button class="button button-primary button-sm w-full sm:w-auto">
+          <!-- Icono de más (Plus icon) como marcador de posición. -->
+          <i class="plus-icon h-4 w-4 mr-2"></i>
+          NUEVOS
+        </button>
+      </div>
+
+      <!-- REPORTE RECIENTE (Ejemplo de Tarjeta) -->
+      <div class="card border-l-4 border-l-yellow-500 bg-yellow-50 hover:shadow-lg transition-all mb-4">
+        <div class="card-content p-4">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="text-base sm:text-lg font-semibold">Actividad Sospechosa</h3>
+            <div class="flex gap-2">
+              <span class="badge bg-yellow-500 hover:bg-yellow-600">MEDIA</span>
+              <span class="badge bg-blue-500 hover:bg-blue-600">NUEVO</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+            <!-- Icono de MapPin como marcador de posición. -->
+            <i class="map-pin-icon h-4 w-4"></i>
+            <span>Estacionamiento Este</span>
+            <span>•</span>
+            <span>Hace 1h</span> <!-- Marcador de posición para la marca de tiempo del reporte. -->
+            <span>•</span>
+            <span>ID: #port_2</span> <!-- Marcador de posición para el ID del reporte. -->
+          </div>
+          <p class="text-gray-700 mb-4">Persona merodeando en el estacionamiento de estudiantes</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label class="text-sm text-gray-600">Prioridad</label>
+              <select class="w-full mt-1 p-2 border rounded text-sm">
+                <option value="baja">Baja</option>
+                <option value="media" selected>Media</option>
+                <option value="alta">Alta</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm text-gray-600">Estado</label>
+              <select class="w-full mt-1 p-2 border rounded text-sm">
+                <option value="nuevo" selected>Nuevo</option>
+                <option value="investigando">Investigando</option>
+                <option value="assigned_to_security">Asignado a Seguridad</option>
+                <option value="in_progress">En Progreso</option>
+                <option value="resuelto">Resuelto</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm text-gray-600">Recibido</label>
+              <input type="text" class="w-full mt-1 p-2 border rounded text-sm bg-gray-100" value="Hace 1h" readonly>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 text-sm text-gray-600 mb-4">
+            <div class="flex items-center gap-1">
+              <!-- Icono de cámara (Camera icon) como marcador de posición. -->
+              <i class="camera-icon h-4 w-4"></i>
+              <span>Evidencia: imagen.jpg</span> <!-- Marcador de posición para el nombre de la foto del reporte. -->
+            </div>
+            <div class="flex items-center gap-1">
+              <!-- Icono de escudo (Shield icon) como marcador de posición. -->
+              <i class="shield-icon h-4 w-4"></i>
+              <span>Reporte Anónimo</span> <!-- Marcador de posición para indicar si el reporte es anónimo. -->
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <!-- Botón para cancelar el reporte. -->
+            <button class="button button-sm button-outline text-red-600 hover:text-red-700 hover:bg-red-50">
+              <!-- Icono de X (X icon) como marcador de posición. -->
+              <i class="x-icon h-4 w-4 mr-1"></i>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESTADO VACÍO (Sin reportes): Se muestra cuando no hay reportes nuevos. -->
+      <div class="card border-2 border-dashed border-gray-300">
+        <div class="card-content p-12 text-center">
+          <!-- Icono de archivo de texto (FileText icon) grande como marcador de posición. -->
+          <i class="file-text-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
+          <h3 class="text-xl mb-2 text-gray-600">No hay reportes nuevos</h3>
+          <p class="text-gray-500 mb-6">
+            Excelente! No hay reportes nuevos pendientes de revisión en este momento.
+          </p>
+          <span class="badge badge-outline px-4 py-2">
+            ✅ Estado: Todo al día
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'in-process'">
+      <!-- TAB 2: EN PROCESO 🔄 -->
+      <h2 class="text-xl sm:text-2xl lg:text-3xl mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+        <i class="clock-icon h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-primary"></i>
+        Reportes en Proceso (1)
+      </h2>
+
+      <div class="flex items-end gap-2 mb-4">
+        <button class="button button-outline button-sm w-full sm:w-auto">
+          <i class="filter-icon h-4 w-4 mr-2"></i>
+          Filtrar
+        </button>
+        <button class="button button-outline button-sm w-full sm:w-auto">
+          <i class="refresh-cw-icon h-4 w-4 mr-2"></i>
+          Actualizar Estado
+        </button>
+        <span class="badge badge-outline px-3 py-1">
+          <i class="clock-icon h-4 w-4 mr-1"></i>
+          EN PROGRESO
+        </span>
+      </div>
+
+      <!-- TARJETA DE REPORTE EN PROCESO (Diseño de la imagen) -->
+      <div class="reporte-card">
+        <div class="reporte-header">
+          <div class="icono"></div>
+          <div class="info">
+            <h3>Actividad Sospechosa</h3>
+            <p class="detalle">Zona Deportiva • Iniciado: Hace 2h • ID: #port_4</p>
+          </div>
+          <div class="etiquetas">
+            <span class="badge prioridad">MEDIA</span>
+            <span class="badge estado">EN PROCESO</span>
+          </div>
+        </div>
+
+        <p class="descripcion">Persona desconocida merodeando cerca de los vestuarios después del horario</p>
+
+        <!-- Panel de seguimiento de progreso -->
+        <div class="estado-proceso">
+          <h4>Estado del Proceso</h4>
+          <div class="info-grid">
+            <div>
+              <p>Asignado a</p>
+              <strong>Carlos López</strong>
+            </div>
+            <div>
+              <p>Tiempo en proceso</p>
+              <strong>Hace 2h</strong>
+            </div>
+            <div>
+              <p>Última actualización</p>
+              <strong>Hace 2h</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel de controles admin -->
+        <div class="acciones">
+          <div class="selectores">
+            <div>
+              <label>Cambiar Prioridad</label>
+              <select>
+                <option value="baja">Baja</option>
+                <option value="media" selected>Media</option>
+                <option value="alta">Alta</option>
+              </select>
+            </div>
+            <div>
+              <label>Cambiar Estado</label>
+              <select>
+                <option value="investigando">Investigando</option>
+                <option value="assigned_to_security">Asignado a Seguridad</option>
+                <option value="in_progress">En Progreso</option>
+                <option value="pending_approval" selected>Pend. Aprobación</option>
+                <option value="resuelto">Resuelto</option>
+                <option value="cancelado">Cancelado</option>
+              </select>
+            </div>
+          </div>
+          <div class="estado-final">
+            <label>
+              <input type="checkbox" class="form-checkbox">
+              Con contacto
+            </label>
+            <label>
+              <input type="checkbox" class="form-checkbox" checked>
+              En progreso activo
+            </label>
+          </div>
+          <div class="botones">
+            <button class="btn verde">
+              <i class="bell-icon h-4 w-4"></i>
+              Contactar Seguridad
+            </button>
+            <button class="btn rojo">
+              <i class="x-icon h-4 w-4"></i>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESTADO VACÍO (En Proceso) - Se muestra cuando no hay reportes en proceso. -->
+      <div class="card border-2 border-dashed border-gray-300 mt-4">
+        <div class="card-content p-12 text-center">
+          <i class="clock-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
+          <h3 class="text-xl mb-2 text-gray-600">No hay reportes en proceso</h3>
+          <p class="text-gray-500 mb-6">
+            Todos los reportes están siendo gestionados o han sido resueltos.
+          </p>
+          <span class="badge badge-outline px-4 py-2">
+            ⏸️ Estado: Sin casos activos
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'pending-approval'">
+      <!-- TAB 3: PENDIENTE APROBACIÓN 🔍 -->
+      <h2 class="text-2xl mb-4 flex items-center gap-3">
+        <i class="alert-circle-icon h-8 w-8 text-purple-600"></i>
+        Reportes Pendientes de Aprobación (X)
+      </h2>
+
+    <!-- ESTADO VACÍO (Pendiente Aprobación) -->
+    <div class="card border-2 border-dashed border-gray-300">
+      <div class="card-content p-12 text-center">
+        <i class="alert-circle-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
+        <h3 class="text-xl mb-2 text-gray-600">No hay reportes pendientes de aprobación</h3>
+        <p class="text-gray-500 mb-6">
+          Todos los reportes han sido revisados y aprobados o rechazados.
+        </p>
+        <span class="badge badge-outline px-4 py-2">
+          ✅ Estado: Todo al día
+        </span>
+      </div>
+    </div>
+
+    <!-- TARJETAS PENDIENTES DE APROBACIÓN (Ejemplo) -->
+    <div class="card border-l-4 border-l-purple-500 bg-purple-50 hover:shadow-lg transition-all mb-4">
+      <div class="card-content p-4">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-base sm:text-lg font-semibold">Reporte de Incidente Mayor</h3>
+          <div class="flex gap-2">
+            <span class="badge bg-red-500 hover:bg-red-600">ALTA</span>
+            <span class="badge bg-purple-500 hover:bg-purple-600">PENDIENTE APROBACIÓN</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+          <i class="map-pin-icon h-4 w-4"></i>
+          <span>Campus Principal, Edificio C</span>
+          <span>•</span>
+          <span>Completado: Hace 2h</span>
+          <span>•</span>
+          <span>ID: #inc_3</span>
+        </div>
+        <p class="text-gray-700 mb-4">Incidente de seguridad resuelto, pendiente de aprobación final.</p>
+
+        <!-- Sección especial - Parte de Seguridad -->
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+          <h4 class="font-medium text-blue-800 flex items-center gap-2 mb-3">
+            <i class="shield-icon h-4 w-4"></i>
+            Parte de Seguridad - Descripción de Resolución
+          </h4>
+          <div class="bg-white p-3 rounded border text-blue-700 mb-2">
+            El oficial de seguridad X ha resuelto el incidente. Se tomaron las siguientes acciones: ...
+          </div>
+          <p class="text-blue-600 text-sm mt-2">Oficial a cargo: Juan Pérez</p>
+        </div>
+
+        <!-- Información del oficial asignado -->
+        <div class="bg-gray-50 p-3 rounded-lg text-sm mb-4">
+          <p class="text-gray-600">Asignado a: <span class="font-medium">Equipo de Seguridad</span></p>
+          <p class="text-gray-600">Fecha de asignación: <span class="font-medium">2025-10-20</span></p>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button class="button button-primary button-sm bg-purple-600 hover:bg-purple-700">
+            <i class="eye-icon h-4 w-4 mr-2"></i>
+            Revisar y Decidir
+          </button>
+          <button class="button button-primary button-sm bg-green-600 hover:bg-green-700">
+            <i class="thumbs-up-icon h-4 w-4 mr-2"></i>
+            Aprobar Inmediatamente
+          </button>
+            <button class="button button-sm button-outline text-red-600 hover:text-red-700 hover:bg-red-50">
+            <i class="thumbs-down-icon h-4 w-4 mr-2"></i>
+            Rechazar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+    <div *ngIf="activeTab === 'resolved'">
+      <!-- TAB 4: RESUELTOS ✅ -->
+      <h2 class="text-2xl mb-4 flex items-center gap-3">
+        <i class="check-circle-icon h-8 w-8 text-green-600"></i>
+        Reportes Resueltos (X)
+      </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-gray-50 p-4 rounded-lg">
+      <div>
+        <label class="text-sm text-gray-600">Prioridad</label>
+        <select class="w-full mt-1 p-2 border rounded text-sm">
+          <option value="baja">Baja</option>
+          <option value="media" selected>Media</option>
+          <option value="alta">Alta</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">Estado</label>
+        <select class="w-full mt-1 p-2 border rounded text-sm">
+          <option value="resuelto" selected>Resuelto</option>
+        </select>
+      </div>
+      <div class="flex items-end gap-2">
+        <button class="button button-outline button-sm w-full sm:w-auto">
+          <i class="filter-icon h-4 w-4 mr-2"></i>
+          Filtrar
+        </button>
+        <button class="button button-primary button-sm w-full sm:w-auto">
+          <i class="download-icon h-4 w-4 mr-2"></i>
+          Exportar
+        </button>
+        <span class="badge px-3 py-1 bg-green-100 text-green-800">
+          <i class="check-circle-icon h-4 w-4 mr-1"></i>
+          RESUELTOS
+        </span>
+      </div>
+    </div>
+
+    <!-- ESTADO VACÍO (Resueltos) -->
+    <div class="card border-2 border-dashed border-gray-300">
+      <div class="card-content p-12 text-center">
+        <i class="check-circle-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
+        <h3 class="text-xl mb-2 text-gray-600">No hay reportes resueltos</h3>
+        <p class="text-gray-500 mb-6">
+          Todos los reportes resueltos se mostrarán aquí.
+        </p>
+        <span class="badge badge-outline px-4 py-2">
+          📋 Estado: Esperando resoluciones
+        </span>
+      </div>
+    </div>
+
+    <!-- TARJETAS DE REPORTES RESUELTOS (Ejemplo) -->
+    <div class="card border-l-4 border-l-green-500 bg-green-50 hover:shadow-lg transition-all mb-4">
+      <div class="card-content p-4">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-base sm:text-lg font-semibold">Incidente de Robo Menor</h3>
+          <div class="flex gap-2">
+            <span class="badge bg-gray-400 hover:bg-gray-500">BAJA</span>
+            <span class="badge bg-green-500 hover:bg-green-600">RESUELTO</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+          <i class="map-pin-icon h-4 w-4"></i>
+          <span>Biblioteca Central</span>
+          <span>•</span>
+          <span>Resuelto: Hace 1 día</span>
+          <span>•</span>
+          <span>ID: #rob_4</span>
+        </div>
+        <p class="text-gray-700 mb-4">Se recuperó el objeto robado y se identificó al responsable.</p>
+
+        <!-- Sección - Detalles de Resolución -->
+        <div class="bg-green-100 p-4 rounded-lg border border-green-200 mb-4">
+          <h4 class="font-medium text-green-800 flex items-center gap-2 mb-3">
+            <i class="check-circle-icon h-4 w-4"></i>
+            Detalles de la Resolución
+          </h4>
+          <p class="text-green-700">El incidente fue resuelto satisfactoriamente. Se aplicaron las medidas correctivas.</p>
+        </div>
+
+        <!-- Sección - Acciones Realizadas -->
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+          <h4 class="font-medium text-blue-800 flex items-center gap-2 mb-3">
+            <i class="shield-icon h-4 w-4"></i>
+            Acciones Realizadas
+          </h4>
+          <p class="text-blue-700">Se contactó a la seguridad, se revisaron las cámaras y se recuperó el objeto.</p>
+        </div>
+
+        <div class="flex items-center gap-2 text-sm text-gray-600 mb-4">
+          <i class="check-circle-icon h-4 w-4"></i>
+          <span>Caso cerrado exitosamente</span>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button class="button button-sm button-outline">
+            <i class="eye-icon h-4 w-4 mr-1"></i>
+            Ver Detalle
+          </button>
+          <button class="button button-sm button-outline">
+            <i class="check-circle-icon h-4 w-4 mr-1"></i>
+            Cerrar Definitivamente
+          </button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+    <div *ngIf="activeTab === 'cancelled'">
+      <!-- TAB 5: CANCELADOS ❌ -->
+      <h2 class="text-2xl mb-4 flex items-center gap-3">
+        <i class="x-icon h-8 w-8 text-red-600"></i>
+        Reportes Cancelados (X)
+      </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-gray-50 p-4 rounded-lg">
+      <div>
+        <label class="text-sm text-gray-600">Prioridad</label>
+        <select class="w-full mt-1 p-2 border rounded text-sm">
+          <option value="baja">Baja</option>
+          <option value="media" selected>Media</option>
+          <option value="alta">Alta</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">Estado</label>
+        <select class="w-full mt-1 p-2 border rounded text-sm">
+          <option value="cancelado" selected>Cancelado</option>
+        </select>
+      </div>
+      <div class="flex items-end gap-2">
+        <button class="button button-outline button-sm w-full sm:w-auto">
+          <i class="filter-icon h-4 w-4 mr-2"></i>
+          Filtrar
+        </button>
+        <button class="button button-outline button-sm w-full sm:w-auto">
+          <i class="refresh-cw-icon h-4 w-4 mr-2"></i>
+          Actualizar
+        </button>
+        <span class="badge badge-outline px-3 py-1">
+          <i class="x-icon h-4 w-4 mr-1"></i>
+          CANCELADOS
+        </span>
+      </div>
+    </div>
+
+    <!-- ESTADO VACÍO (Cancelados) -->
+    <div class="card border-2 border-dashed border-gray-300">
+      <div class="card-content p-12 text-center">
+        <i class="x-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
+        <h3 class="text-xl mb-2 text-gray-600">No hay reportes cancelados</h3>
+        <p class="text-gray-500 mb-6">
+          Los reportes cancelados se mostrarán aquí.
+        </p>
+        <span class="badge badge-outline px-4 py-2">
+          ℹ️ Estado: Sin cancelaciones
+        </span>
+      </div>
+    </div>
+
+    <!-- TARJETAS DE REPORTES CANCELADOS (Ejemplo) -->
+    <div class="card border-l-4 border-l-red-500 bg-red-50 opacity-75 hover:shadow-lg transition-all mb-4">
+      <div class="card-content p-4">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-base sm:text-lg font-semibold text-gray-600">Actividad Sospechosa</h3>
+          <div class="flex gap-2">
+            <span class="badge bg-gray-400 hover:bg-gray-500">MEDIA</span>
+            <span class="badge bg-red-500 hover:bg-red-600">CANCELADO</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+          <i class="map-pin-icon h-4 w-4 opacity-50"></i>
+          <span>Estacionamiento Este</span>
+          <span>•</span>
+          <span>Cancelado: Hace 2 días</span>
+          <span>•</span>
+          <span>ID: #port_2</span>
+        </div>
+        <p class="text-gray-600 mb-4 line-through">Persona merodeando en el estacionamiento de estudiantes</p>
+
+        <!-- Panel de información de cancelación -->
+        <div class="bg-gray-100 p-4 rounded-lg border mb-4">
+          <h4 class="font-medium text-gray-600 flex items-center gap-2 mb-3">
+            <i class="x-icon h-4 w-4"></i>
+            Información de Cancelación
+          </h4>
+          <div class="grid grid-cols-3 gap-4 text-sm">
+            <div>
+              <p class="text-sm text-gray-600">Fecha de cancelación:</p>
+              <p class="text-sm font-medium">2025-10-18</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Reporte original:</p>
+              <p class="text-sm font-medium">2025-10-17</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Estado anterior:</p>
+              <p class="text-sm font-medium">En proceso</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-500 mt-4">
+            <i class="camera-icon h-4 w-4"></i>
+            <span class="line-through">Evidencia: imagen.jpg</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-500 mt-2">
+            <i class="user-icon h-4 w-4"></i>
+            <span>Contacto: admin@utp.edu.pe</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-600 mt-4">
+            <i class="x-icon h-4 w-4"></i>
+            <span>Cancelado por administrador</span>
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <button class="button button-sm button-outline" disabled>
+            <i class="eye-icon h-4 w-4 mr-1"></i>
+            Ver Archivado
+          </button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </main>
+</div>
