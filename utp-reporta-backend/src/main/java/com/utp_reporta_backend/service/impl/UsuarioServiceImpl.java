@@ -184,4 +184,39 @@ public class UsuarioServiceImpl implements UsuarioService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<UsuarioDTO> getFilteredSeguridadUsers(Long zonaId, Long sedeId) {
+        List<Usuario> usuarios;
+        if (zonaId != null && sedeId != null) {
+            usuarios = usuarioRepository.findByRoles_NombreAndZonas_IdAndSede_Id(ERol.ROLE_SEGURIDAD, zonaId, sedeId);
+        } else if (zonaId != null) {
+            usuarios = usuarioRepository.findByRoles_NombreAndZonas_Id(ERol.ROLE_SEGURIDAD, zonaId);
+        } else if (sedeId != null) {
+            usuarios = usuarioRepository.findByRoles_NombreAndSede_Id(ERol.ROLE_SEGURIDAD, sedeId);
+        } else {
+            usuarios = usuarioRepository.findByRoles_Nombre(ERol.ROLE_SEGURIDAD);
+        }
+
+        return usuarios.stream().map(usuario -> {
+            UsuarioDTO usuarioDTO = new UsuarioDTO();
+            usuarioDTO.setId(usuario.getId());
+            usuarioDTO.setNombreCompleto(usuario.getNombreCompleto());
+            usuarioDTO.setUsername(usuario.getUsername());
+            usuarioDTO.setCorreo(usuario.getCorreo());
+            usuarioDTO.setTelefono(usuario.getTelefono());
+            usuarioDTO.setTipoUsuario(usuario.getTipoUsuario());
+            usuarioDTO.setSedeNombre(usuario.getSede() != null ? usuario.getSede().getNombre() : null);
+            usuarioDTO.setZonasNombres(usuario.getZonas().stream()
+                    .map(zona -> zona.getNombre())
+                    .collect(Collectors.toList()));
+            usuarioDTO.setIntentos(usuario.getIntentosReporte());
+            usuarioDTO.setFechaUltimoReporte(usuario.getFechaUltimoReporte());
+            usuarioDTO.setEnabled(usuario.isEnabled());
+            usuarioDTO.setRoles(usuario.getRoles().stream()
+                    .map(rol -> rol.getNombre().name())
+                    .collect(Collectors.toList()));
+            return usuarioDTO;
+        }).collect(Collectors.toList());
+    }
 }
