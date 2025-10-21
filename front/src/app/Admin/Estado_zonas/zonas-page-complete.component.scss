@@ -1,0 +1,695 @@
+@use "sass:color"; // Importa el módulo de color de Sass para funciones de color avanzadas.
+
+/* Estilos personalizados para la página de Estado de Zonas (Versión de Administrador) */
+
+/* Colores Específicos del Administrador */
+$white: #FFFFFF; // Define la variable $white para el color blanco.
+$admin-active-green: #16A34A; // Verde activo (green-600)
+$admin-active-green-light: #F0FDF4; // Verde claro activo (green-50)
+$admin-active-green-border: #BBF7D0; // Borde verde activo (green-200)
+
+$admin-form-green-light: #D1FAE5; // Verde claro para campos de formulario completados (green-100)
+$admin-preview-red: #FF395C; // Rojo primario para títulos/bordes de previsualización
+
+/* Colores Base (adaptados de la versión de usuario para el contexto de administrador) */
+$primary-color: #FF395C; // Color rojo principal
+$primary-light-color: #bfdbfe; // Color azul claro primario
+$primary-dark-color: #2563eb; // Color azul oscuro primario
+$primary-bg-light: rgba($primary-color, 0.05); // Fondo claro con opacidad del color primario
+
+$green-safe: #22c55e; // Verde para estado seguro (green-500)
+$green-safe-light: #F0FDF4; // Verde claro para estado seguro (green-50)
+$green-safe-border: #BBF7D0; // Borde verde para estado seguro (green-200)
+$green-safe-text: #16A34A; // Texto verde para estado seguro (green-600)
+$green-safe-dark-text: #15803d; // Texto verde oscuro para estado seguro (green-800)
+
+$yellow-caution: #eab308; // Amarillo para estado de precaución (yellow-500)
+$yellow-caution-light: #FEFCE8; // Amarillo claro para estado de precaución (yellow-50)
+$yellow-caution-border: #FEF08A; // Borde amarillo para estado de precaución (yellow-200)
+$yellow-caution-text: #CA8A04; // Texto amarillo para estado de precaución (yellow-600)
+$yellow-caution-dark-text: #854d09; // Texto amarillo oscuro para estado de precaución (yellow-800)
+
+$red-dangerous: #ef4444; // Rojo para estado peligroso (red-500)
+$red-dangerous-light: #FEF2F2; // Rojo claro para estado peligroso (red-50)
+$red-dangerous-border: #FECACA; // Borde rojo para estado peligroso (red-200)
+$red-dangerous-text: #DC2626; // Texto rojo para estado peligroso (red-600)
+
+$blue-info: #3b82f6; // Azul para información (blue-500)
+$blue-info-light: #EFF6FF; // Azul claro para información (blue-50)
+$blue-info-border: #BFDBFE; // Borde azul para información (blue-200)
+$blue-info-text: #2563EB; // Texto azul para información (blue-600)
+$blue-info-dark-text: #1e40af; // Texto azul oscuro para información (blue-800)
+
+$gray-bg: #F9FAFB; // Fondo gris (gray-50)
+$gray-text: #4B5563; // Texto gris (gray-600)
+$gray-border: #D1D5DB; // Borde gris (gray-300)
+$gray-light-bg: #F3F4F6; // Fondo gris claro (gray-100)
+$gray-dark-bg: #4B5563; // Fondo gris oscuro (gray-700)
+$gray-light-text: #6B7280; // Texto gris claro (gray-500)
+
+/* Mixins para estilos comunes: Reutilizan bloques de CSS. */
+@mixin flex-center-y {
+  display: flex;
+  align-items: center;
+}
+
+@mixin flex-between-y {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin button-base {
+  font-weight: bold;
+  padding: 0.5rem 1rem; // Relleno vertical y horizontal
+  border-radius: 0.375rem; // Bordes redondeados
+  @include flex-center-y; // Centra verticalmente el contenido
+  gap: 0.5rem; // Espacio entre elementos
+}
+
+@mixin input-select-base {
+  margin-top: 0.25rem; // Margen superior
+  display: block;
+  width: 100%; // Ancho completo
+  border-color: $gray-border; // Color del borde
+  border-radius: 0.375rem; // Bordes redondeados
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); // Sombra ligera
+  padding: 0.5rem; // Relleno
+  font-size: 0.875rem; // Tamaño de fuente
+  &:focus {
+    outline: none; // Elimina el contorno al enfocar
+    ring-color: $primary-color; // Color del anillo de enfoque
+    border-color: $primary-color; // Color del borde al enfocar
+  }
+}
+
+/* Estilos para el contenedor principal de la página. */
+.page-container {
+  min-height: 100vh; // Altura mínima del 100% de la vista
+  background-color: $gray-bg; // Color de fondo
+  padding: 2rem 1rem; /* Relleno vertical y horizontal */
+}
+
+/* Estilos para el contenedor del contenido principal. */
+.content-wrapper {
+  max-width: 80rem; /* Ancho máximo */
+  margin-left: auto; // Centrado horizontal
+  margin-right: auto; // Centrado horizontal
+}
+
+/* Estilos para el encabezado principal de la página. */
+.main-header {
+  @include flex-center-y; // Centrado vertical
+  gap: 1rem; /* Espacio entre elementos */
+  margin-bottom: 1rem; /* Margen inferior */
+
+  .header-icon {
+    height: 2.5rem; /* Altura del icono */
+    width: 2.5rem; /* Ancho del icono */
+    color: $primary-color; /* Color del icono */
+  }
+
+  .header-title {
+    font-size: 1.875rem; /* Tamaño del título */
+  }
+
+  .header-subtitle {
+    font-size: 1.125rem; /* Tamaño del subtítulo */
+    color: $gray-text; /* Color del subtítulo */
+  }
+}
+
+/* Estilos para la alerta específica del modo de edición de administrador. */
+.edit-mode-alert {
+  margin-bottom: 1.5rem; /* Margen inferior */
+  border: 1px solid $admin-active-green-border; /* Borde */
+  background-color: $admin-active-green-light; /* Color de fondo */
+  padding: 1rem; /* Relleno */
+  border-radius: 0.5rem; /* Bordes redondeados */
+  @include flex-center-y; // Centrado vertical
+  gap: 0.75rem; /* Espacio entre elementos */
+
+  .alert-icon {
+    height: 1rem; /* Altura del icono */
+    width: 1rem; /* Ancho del icono */
+    color: $admin-active-green; /* Color del icono */
+  }
+
+  .alert-description {
+    font-size: 0.875rem; /* Tamaño de fuente */
+    strong {
+      font-weight: bold; // Texto en negrita
+    }
+  }
+}
+
+/* Estilos para la tarjeta del selector de sede y el botón de añadir zona. */
+.sede-selector-card {
+  margin-bottom: 1.5rem; /* Margen inferior */
+  border: 1px solid $primary-color; /* Borde */
+  background-color: $blue-info-light; /* Color de fondo */
+  padding: 1rem; /* Relleno */
+  border-radius: 0.5rem; /* Bordes redondeados */
+  @include flex-between-y; /* Alineación y distribución de espacio */
+
+  .sede-selector-content {
+    @include flex-center-y; // Centrado vertical
+    gap: 1rem; /* Espacio entre elementos */
+    flex-grow: 1; /* Permite que el contenido crezca */
+
+    .sede-selector-icon {
+      height: 1.5rem; /* Altura del icono */
+      width: 1.5rem; /* Ancho del icono */
+      color: $primary-color; /* Color del icono */
+    }
+
+    .sede-label {
+      display: block; // Ocupa todo el ancho disponible
+      font-size: 0.875rem; /* Tamaño de fuente */
+      font-weight: 500; /* Peso de fuente medio */
+      margin-bottom: 0.25rem; /* Margen inferior */
+    }
+
+    .sede-select {
+      width: 16rem; /* Ancho fijo */
+      padding: 0.5rem; /* Relleno */
+      border: 1px solid $gray-border; /* Borde */
+      border-radius: 0.375rem; /* Bordes redondeados */
+      background-color: white; /* Fondo blanco */
+      color: $gray-dark-bg; /* Color de texto */
+    }
+  }
+
+  .add-zone-button {
+    @include button-base; // Estilos base del botón
+    background-color: $primary-color; // Color de fondo
+    color: $white; // Color de texto
+          &:hover {
+            background-color: color.adjust($blue-info-text, $lightness: -10%); // Oscurece el color al pasar el ratón
+          }
+    .add-zone-icon {
+      height: 1rem; // Altura del icono
+      width: 1rem; // Ancho del icono
+    }
+  }
+}
+
+/* Sección del formulario de creación de zona específica del administrador. */
+.create-zone-form-section {
+  background-color: $gray-bg; // Color de fondo
+  border: 1px solid $gray-border; // Borde
+  border-radius: 0.5rem; // Bordes redondeados
+  padding: 1.5rem; // Relleno
+  margin-bottom: 1.5rem; // Margen inferior
+
+  .form-title {
+    font-size: 1.5rem; // Tamaño del título
+    font-weight: bold; // Texto en negrita
+    color: $gray-dark-bg; // Color de texto
+    margin-bottom: 1rem; // Margen inferior
+  }
+
+  .form-grid {
+    display: grid; // Diseño de cuadrícula
+    grid-template-columns: 1fr; // Una columna por defecto
+    gap: 1.5rem; // Espacio entre elementos de la cuadrícula
+
+    @media (min-width: 768px) { /* Para pantallas medianas y más grandes */
+      grid-template-columns: 1fr 1fr; // Dos columnas
+    }
+
+    .form-fields {
+      display: flex; // Diseño flexible
+      flex-direction: column; // Elementos en columna
+      gap: 1rem; // Espacio entre elementos
+    }
+
+    .form-group {
+      label {
+        display: block; // Ocupa todo el ancho disponible
+        font-size: 0.875rem; // Tamaño de fuente
+        font-weight: 500; // Peso de fuente medio
+        color: $gray-text; // Color de texto
+        margin-bottom: 0.25rem; // Margen inferior
+      }
+      .form-input, .form-textarea {
+        @include input-select-base; // Estilos base para inputs y textareas
+        background-color: $white; // Fondo blanco
+        border: 1px solid $gray-border; // Borde
+        &:focus {
+          border-color: $admin-active-green; // Color del borde al enfocar
+          box-shadow: 0 0 0 2px rgba($admin-active-green, 0.2); // Sombra al enfocar
+        }
+      }
+      .form-textarea {
+        min-height: 6rem; // Altura mínima
+        resize: vertical; // Permite redimensionar verticalmente
+      }
+      .image-quick-links {
+        margin-top: 0.5rem; // Margen superior
+        p {
+          font-size: 0.75rem; // Tamaño de fuente
+          color: $gray-light-text; // Color de texto
+          margin-bottom: 0.25rem; // Margen inferior
+        }
+        .quick-link {
+          display: inline-block; // Muestra como bloque en línea
+          font-size: 0.75rem; // Tamaño de fuente
+          color: $blue-info-text; // Color de texto
+          text-decoration: underline; // Subrayado
+          margin-right: 0.5rem; // Margen derecho
+          &:hover {
+            background-color: color.adjust($green-safe-text, $lightness: -10%); // Oscurece el color al pasar el ratón
+          }
+        }
+      }
+    }
+
+    .save-zone-button {
+      @include button-base; // Estilos base del botón
+      background-color: $primary-color; // Color de fondo
+      color: $white; // Color de texto
+      &:hover {
+        background-color: color.adjust($primary-color, $lightness: -10%); // Oscurece el color al pasar el ratón
+      }
+      .button-icon {
+        height: 1rem; // Altura del icono
+        width: 1rem; // Ancho del icono
+      }
+    }
+
+    .form-preview {
+      border: 2px dashed $admin-preview-red; // Borde punteado
+      border-radius: 0.5rem; // Bordes redondeados
+      padding: 1rem; // Relleno
+      background-color: $red-dangerous-light; /* Color de fondo */
+
+      .preview-title {
+        font-size: 1.25rem; // Tamaño del título
+        font-weight: bold; // Texto en negrita
+        color: $admin-preview-red; // Color de texto
+        margin-bottom: 1rem; // Margen inferior
+      }
+
+      .preview-card {
+        border: none; /* Elimina el borde por defecto */
+        box-shadow: none; /* Elimina la sombra por defecto */
+        background-color: transparent; /* Fondo transparente */
+        .zone-title {
+          color: $admin-preview-red; /* Título rojo para la previsualización */
+        }
+        .zone-status-badge.zone-status-info {
+          background-color: $blue-info; // Color de fondo para la insignia de información
+        }
+      }
+    }
+  }
+}
+
+/* Estilos para la cuadrícula de estadísticas rápidas. */
+.quick-stats-grid {
+  display: grid; // Diseño de cuadrícula
+  grid-template-columns: repeat(1, minmax(0, 1fr)); /* Una columna por defecto */
+  gap: 1rem; /* Espacio entre elementos */
+  margin-bottom: 1.5rem; /* Margen inferior */
+
+  @media (min-width: 768px) { /* Para pantallas medianas y más grandes */
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* Cuatro columnas */
+  }
+
+  .stat-card {
+    padding: 1rem; /* Relleno */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    border: 1px solid; /* Borde */
+
+    .stat-icon-wrapper {
+      @include flex-center-y; // Centrado vertical
+      gap: 0.75rem; /* Espacio entre elementos */
+    }
+
+    .stat-icon {
+      height: 2rem; /* Altura del icono */
+      width: 2rem; /* Ancho del icono */
+    }
+
+    .stat-value {
+      font-size: 1.5rem; /* Tamaño del valor */
+    }
+
+    .stat-label {
+      font-size: 0.875rem; /* Tamaño de la etiqueta */
+      color: $gray-text; /* Color de texto */
+    }
+
+    &.stat-safe {
+      background-color: $green-safe-light; /* Fondo verde claro */
+      border-color: $green-safe-border; /* Borde verde */
+      .stat-icon { color: $green-safe-text; } /* Icono verde */
+    }
+    &.stat-caution {
+      background-color: $yellow-caution-light; /* Fondo amarillo claro */
+      border-color: $yellow-caution-border; /* Borde amarillo */
+      .stat-icon { color: $yellow-caution-text; } /* Icono amarillo */
+    }
+    &.stat-dangerous {
+      background-color: $red-dangerous-light; /* Fondo rojo claro */
+      border-color: $red-dangerous-border; /* Borde rojo */
+      .stat-icon { color: $red-dangerous-text; } /* Icono rojo */
+    }
+    &.stat-students {
+      background-color: $blue-info-light; /* Fondo azul claro */
+      border-color: $blue-info-border; /* Borde azul */
+      .stat-icon { color: $blue-info-text; } /* Icono azul */
+    }
+  }
+}
+
+/* Estilos para la sección de controles (botones de acción). */
+.controls-section {
+  display: flex; // Diseño flexible
+  flex-wrap: wrap; // Permite que los elementos se envuelvan
+  gap: 1rem; /* Espacio entre elementos */
+  align-items: center; // Alineación vertical
+  margin-bottom: 1.5rem; /* Margen inferior */
+
+  .action-button {
+    @include flex-center-y; // Centrado vertical
+    gap: 0.5rem; /* Espacio entre elementos */
+    padding: 0.5rem 1rem; /* Relleno */
+    border: 1px solid $gray-border; /* Borde */
+    border-radius: 0.375rem; /* Bordes redondeados */
+    background-color: white; /* Fondo blanco */
+    color: $gray-dark-bg; /* Color de texto */
+    &:hover {
+      background-color: $gray-bg; /* Color de fondo al pasar el ratón */
+    }
+
+    .map-icon, .export-icon {
+      height: 1rem; /* Altura del icono */
+      width: 1rem; /* Ancho del icono */
+    }
+  }
+
+  .update-badge {
+    font-size: 1rem; /* Tamaño de fuente */
+    padding: 0.25rem 0.75rem; /* Relleno */
+    border: 1px solid $gray-border; /* Borde */
+    border-radius: 0.375rem; /* Bordes redondeados */
+    color: $gray-dark-bg; /* Color de texto */
+  }
+}
+
+/* Estilos para la cuadrícula de tarjetas de zona. */
+.zone-cards-grid {
+  display: grid; // Diseño de cuadrícula
+  grid-template-columns: repeat(1, minmax(0, 1fr)); /* Una columna por defecto */
+  gap: 1.5rem; /* Espacio entre elementos */
+
+  @media (min-width: 1024px) { /* Para pantallas grandes y más grandes */
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Dos columnas */
+  }
+
+  .zone-card {
+    border: 2px solid $gray-border; /* Borde */
+    &:hover {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Sombra al pasar el ratón */
+    }
+    transition: all 0.15s ease-in-out; /* Transición suave */
+    cursor: pointer; // Cursor de puntero
+    &:focus {
+      outline: none; // Elimina el contorno al enfocar
+      box-shadow: 0 0 0 4px rgba($primary-color, 0.5); /* Sombra al enfocar */
+    }
+    padding: 1rem; /* Relleno */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    background-color: white; /* Fondo blanco */
+
+    .zone-card-header {
+      padding-bottom: 1rem; /* Relleno inferior */
+
+      .zone-title {
+        font-size: 1.25rem; /* Tamaño del título */
+        @include flex-center-y; // Centrado vertical
+        gap: 0.75rem; /* Espacio entre elementos */
+        margin-bottom: 0.5rem; /* Margen inferior */
+      }
+
+      .zone-status-badge {
+        background-color: $green-safe; /* Fondo verde */
+        &:hover {
+          background-color: rgba($green-safe, 0.9); /* Oscurece el fondo al pasar el ratón */
+        }
+        color: white; /* Color de texto */
+        padding: 0.25rem 0.75rem; /* Relleno */
+        border-radius: 0.375rem; /* Bordes redondeados */
+        font-size: 0.75rem; /* Tamaño de fuente */
+        font-weight: 600; /* Peso de fuente seminegrita */
+
+        &.zone-status-caution {
+          background-color: $yellow-caution; // Fondo amarillo
+          &:hover { background-color: rgba($yellow-caution, 0.9); } // Oscurece al pasar el ratón
+        }
+        &.zone-status-dangerous {
+          background-color: $red-dangerous; // Fondo rojo
+          &:hover { background-color: rgba($red-dangerous, 0.9); } // Oscurece al pasar el ratón
+        }
+        &.zone-status-info { /* Para la insignia de previsualización */
+          background-color: $blue-info; // Fondo azul
+          &:hover { background-color: rgba($blue-info, 0.9); } // Oscurece al pasar el ratón
+        }
+      }
+
+      .zone-details {
+        @include flex-center-y; // Centrado vertical
+        gap: 1rem; /* Espacio entre elementos */
+        color: $gray-text; /* Color de texto */
+        font-size: 0.875rem; /* Tamaño de fuente */
+
+        .detail-item {
+          @include flex-center-y; // Centrado vertical
+          gap: 0.25rem; /* Espacio entre elementos */
+        }
+
+        .detail-icon {
+          height: 1rem; /* Altura del icono */
+          width: 1rem; /* Ancho del icono */
+        }
+      }
+    }
+
+    .trend-info {
+      text-align: right; /* Alineación de texto a la derecha */
+      margin-top: -2.5rem; /* Margen superior negativo */
+      @include flex-center-y; // Centrado vertical
+      gap: 0.25rem; /* Espacio entre elementos */
+      color: $red-dangerous; /* Color de texto */
+      justify-content: flex-end; /* Alineación al final */
+
+      .trend-icon {
+        height: 1rem; /* Altura del icono */
+        width: 1rem; /* Ancho del icono */
+      }
+
+      .trend-status {
+        font-size: 0.875rem; /* Tamaño de fuente */
+        text-transform: capitalize; /* Capitaliza la primera letra */
+      }
+
+      .trend-timestamp {
+        font-size: 0.75rem; /* Tamaño de fuente */
+        color: $gray-light-text; /* Color de texto */
+        margin-top: 0.25rem; /* Margen superior */
+      }
+
+      &.trend-down {
+        color: $green-safe; /* Color de texto verde */
+      }
+      &.trend-stable {
+        color: $blue-info; /* Color de texto azul */
+      }
+    }
+
+    .security-level-section {
+      margin-bottom: 1rem; /* Margen inferior */
+
+      .security-level-labels {
+        @include flex-between-y; // Alineación y distribución de espacio
+        margin-bottom: 0.5rem; /* Margen inferior */
+
+        span {
+          font-size: 0.875rem; /* Tamaño de fuente */
+        }
+      }
+
+      .progress-bar-container {
+        width: 100%; /* Ancho completo */
+        background-color: $gray-border; /* Color de fondo */
+        border-radius: 9999px; /* Bordes completamente redondeados */
+        height: 0.5rem; /* Altura */
+      }
+
+      .progress-bar-fill {
+        background-color: $primary-color; /* Color de fondo */
+        height: 100%; /* Altura completa */
+        border-radius: 9999px; /* Bordes completamente redondeados */
+      }
+    }
+
+    .zone-image-wrapper {
+      position: relative; // Posicionamiento relativo
+      height: 8rem; /* Altura */
+      width: 100%; /* Ancho completo */
+      border-radius: 0.5rem; /* Bordes redondeados */
+      overflow: hidden; // Oculta el contenido que se desborda
+      background-color: $gray-light-bg; /* Color de fondo */
+      margin-bottom: 1rem; /* Margen inferior */
+
+      .zone-image {
+        width: 100%; /* Ancho completo */
+        height: 100%; /* Altura completa */
+        object-fit: cover; // Ajusta la imagen para cubrir el contenedor
+      }
+
+      .image-overlay {
+        position: absolute; // Posicionamiento absoluto
+        inset: 0; // Ocupa todo el espacio del padre
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent); /* Degradado de fondo */
+      }
+
+      .image-location {
+        position: absolute; // Posicionamiento absoluto
+        bottom: 0.5rem; /* Distancia desde abajo */
+        left: 0.75rem; /* Distancia desde la izquierda */
+        color: white; /* Color de texto */
+        font-size: 0.875rem; /* Tamaño de fuente */
+
+        p {
+          @include flex-center-y; // Centrado vertical
+          gap: 0.25rem; /* Espacio entre elementos */
+        }
+
+        .location-icon {
+          height: 0.75rem; /* Altura del icono */
+          width: 0.75rem; /* Ancho del icono */
+        }
+      }
+    }
+
+    .security-description-section {
+      margin-bottom: 1rem; /* Margen inferior */
+
+      .security-description-label {
+        font-size: 0.875rem; /* Tamaño de fuente */
+        color: $gray-text; /* Color de texto */
+        margin-bottom: 0.5rem; /* Margen inferior */
+        @include flex-center-y; // Centrado vertical
+        gap: 0.5rem; /* Espacio entre elementos */
+
+        .detail-icon {
+          height: 1rem; /* Altura del icono */
+          width: 1rem; /* Ancho del icono */
+        }
+      }
+
+      .security-description-text {
+        font-size: 0.875rem; /* Tamaño de fuente */
+        background-color: $gray-bg; /* Color de fondo */
+        padding: 0.75rem; /* Relleno */
+        border-radius: 0.25rem; /* Bordes redondeados */
+        border: 1px solid $gray-border; /* Borde */
+      }
+    }
+
+    /* Botones de acción específicos del administrador. */
+    .admin-action-buttons {
+      display: flex; // Diseño flexible
+      flex-wrap: wrap; // Permite que los elementos se envuelvan
+      gap: 0.5rem; /* Espacio entre elementos */
+      padding-top: 1rem; /* Relleno superior */
+      border-top: 1px solid $gray-border; /* Borde superior */
+
+      .admin-button {
+        @include button-base; // Estilos base del botón
+        flex: 1; /* Ocupa el espacio disponible */
+        font-size: 0.75rem; /* Tamaño de fuente */
+        padding: 0.375rem 0.75rem; /* Relleno */
+
+        &.edit-button {
+          background-color: $blue-info-text; /* Fondo azul */
+          color: $white; // Texto blanco
+        &:hover { background-color: color.adjust($blue-info-text, $lightness: -10%); } // Oscurece al pasar el ratón
+        }
+        &.save-button {
+          background-color: $green-safe-text; /* Fondo verde */
+          color: $white; // Texto blanco
+        &:hover { background-color: color.adjust($green-safe-text, $lightness: -10%); } // Oscurece al pasar el ratón
+        }
+        &.cancel-button {
+          background-color: $gray-text; /* Fondo gris */
+          color: $white; // Texto blanco
+        &:hover { background-color: color.adjust($gray-text, $lightness: -10%); } // Oscurece al pasar el ratón
+        }
+        &.delete-button {
+          background-color: $red-dangerous-text; /* Fondo rojo */
+          color: $white; // Texto blanco
+        &:hover { background-color: color.adjust($red-dangerous-text, $lightness: -10%); } // Oscurece al pasar el ratón
+        }
+        .button-icon {
+          height: 0.875rem; /* Altura del icono */
+          width: 0.875rem; /* Ancho del icono */
+        }
+      }
+    }
+
+    /* Estilos para inputs editables. */
+    .editable-input, .editable-textarea {
+      border: 1px solid $gray-border; // Borde
+      border-radius: 0.25rem; // Bordes redondeados
+      padding: 0.25rem 0.5rem; // Relleno
+      font-size: 0.875rem; // Tamaño de fuente
+      width: 100%; // Ancho completo
+      background-color: $white; // Fondo blanco
+      &:focus {
+        outline: none; // Elimina el contorno al enfocar
+        border-color: $blue-info-text; // Color del borde al enfocar
+        box-shadow: 0 0 0 2px rgba($blue-info-text, 0.2); // Sombra al enfocar
+      }
+    }
+    .editable-textarea {
+      resize: vertical; // Permite redimensionar verticalmente
+      min-height: 4rem; // Altura mínima
+    }
+    .zone-title-input {
+      font-size: 1.25rem; // Tamaño de fuente
+      font-weight: bold; // Texto en negrita
+      border: none; /* Elimina el borde para edición en línea */
+      background-color: transparent; /* Fondo transparente */
+      padding: 0; // Sin relleno
+      &:focus {
+        border-bottom: 1px solid $blue-info-text; /* Subrayado al enfocar */
+        box-shadow: none; // Sin sombra
+      }
+    }
+    .security-level-input {
+      width: 4rem; // Ancho fijo
+      text-align: right; // Alineación de texto a la derecha
+      border: none; // Sin borde
+      background-color: transparent; // Fondo transparente
+      padding: 0; // Sin relleno
+      &:focus {
+        border-bottom: 1px solid $blue-info-text; // Subrayado al enfocar
+        box-shadow: none; // Sin sombra
+      }
+    }
+    .location-input {
+      border: none; // Sin borde
+      background-color: transparent; // Fondo transparente
+      padding: 0; // Sin relleno
+      color: $white; // Color de texto
+      &:focus {
+        border-bottom: 1px solid $blue-info-text; // Subrayado al enfocar
+        box-shadow: none; // Sin sombra
+      }
+    }
+  }
+}
