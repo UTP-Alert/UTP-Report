@@ -15,6 +15,7 @@ import com.utp_reporta_backend.dto.UsuarioDTO;
 import com.utp_reporta_backend.model.Usuario;
 import com.utp_reporta_backend.repository.UsuarioRepository;
 import com.utp_reporta_backend.service.UsuarioService;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,14 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioController {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioService usuarioService;
+
+    @GetMapping("/seguridad/filter")
+    public ResponseEntity<List<UsuarioDTO>> getFilteredSeguridadUsers(
+            @RequestParam(required = false) Long zonaId,
+            @RequestParam(required = false) Long sedeId) {
+        List<UsuarioDTO> usuarios = usuarioService.getFilteredSeguridadUsers(zonaId, sedeId);
+        return ResponseEntity.ok(usuarios);
+    }
 
     @GetMapping("/me")
     public ResponseEntity<UsuarioDTO> miPerfil(){

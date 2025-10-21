@@ -8,6 +8,7 @@ public interface UsuarioService {
     List<UsuarioDTO> getUsuariosByRolUsuario();
     List<UsuarioDTO> getUsuariosByRolAdmin();
     List<UsuarioDTO> getUsuariosByRolSeguridad();
+    List<UsuarioDTO> getFilteredSeguridadUsers(Long zonaId, Long sedeId);
     List<UsuarioDTO> getUsuariosByTipoDocente();
     List<UsuarioDTO> getUsuariosByTipoAlumno();
 }

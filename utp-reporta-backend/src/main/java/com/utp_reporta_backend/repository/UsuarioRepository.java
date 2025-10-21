@@ -3,10 +3,13 @@ package com.utp_reporta_backend.repository;
 
 import java.util.Optional;
 
+import com.utp_reporta_backend.enums.ERol;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.utp_reporta_backend.model.Usuario;
+
+import java.util.List;
 
 
 //Repositorio para manejar las operaciones CRUD de los usuarios.
@@ -22,4 +25,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     Boolean existsByCorreo(String correo); 
     //Verificar si un usuario existe por su nombre de usuario.
     Optional<Usuario> findByUsernameOrCorreo(String username, String correo); 
+
+    List<Usuario> findByRoles_NombreAndZonas_IdAndSede_Id(ERol role, Long zonaId, Long sedeId);
+    List<Usuario> findByRoles_NombreAndZonas_Id(ERol role, Long zonaId);
+    List<Usuario> findByRoles_NombreAndSede_Id(ERol role, Long sedeId);
+    List<Usuario> findByRoles_Nombre(ERol role);
 }
