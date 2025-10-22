@@ -2,6 +2,7 @@ package com.utp_reporta_backend.service.impl;
 
 import com.utp_reporta_backend.dto.ReporteDTO;
 import com.utp_reporta_backend.model.Reporte;
+import com.utp_reporta_backend.model.ReporteGestion;
 import com.utp_reporta_backend.model.TipoIncidente;
 import com.utp_reporta_backend.model.Usuario;
 import com.utp_reporta_backend.model.Zona;
@@ -55,6 +56,16 @@ public class ReporteServiceImpl implements ReporteService {
                     dto.setIsAnonimo(reporte.getIsAnonimo());
                     dto.setContacto(reporte.getContacto());
                     dto.setUsuarioId(reporte.getUsuario().getId());
+                    if(reporte.getSeguridadAsignado() != null) dto.setSeguridadAsignadoId(reporte.getSeguridadAsignado().getId());
+                    // Determinar la última gestión si existe
+                    if(reporte.getHistorialGestion() != null && !reporte.getHistorialGestion().isEmpty()){
+                        ReporteGestion ultima = reporte.getHistorialGestion().stream().max((a,b) -> a.getFechaActualizacion().compareTo(b.getFechaActualizacion())).orElse(null);
+                        if(ultima != null){
+                            dto.setUltimoEstado(ultima.getEstado() != null ? ultima.getEstado().name() : null);
+                            dto.setUltimaPrioridad(ultima.getPrioridad() != null ? ultima.getPrioridad().name() : null);
+                            dto.setFechaUltimaGestion(ultima.getFechaActualizacion());
+                        }
+                    }
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -74,6 +85,15 @@ public class ReporteServiceImpl implements ReporteService {
             dto.setIsAnonimo(r.getIsAnonimo());
             dto.setContacto(r.getContacto());
             dto.setUsuarioId(r.getUsuario().getId());
+            if(r.getSeguridadAsignado() != null) dto.setSeguridadAsignadoId(r.getSeguridadAsignado().getId());
+            if(r.getHistorialGestion() != null && !r.getHistorialGestion().isEmpty()){
+                ReporteGestion ultima = r.getHistorialGestion().stream().max((a,b) -> a.getFechaActualizacion().compareTo(b.getFechaActualizacion())).orElse(null);
+                if(ultima != null){
+                    dto.setUltimoEstado(ultima.getEstado() != null ? ultima.getEstado().name() : null);
+                    dto.setUltimaPrioridad(ultima.getPrioridad() != null ? ultima.getPrioridad().name() : null);
+                    dto.setFechaUltimaGestion(ultima.getFechaActualizacion());
+                }
+            }
             return dto;
         }).orElse(null);
     }
@@ -209,6 +229,15 @@ public class ReporteServiceImpl implements ReporteService {
                     dto.setIsAnonimo(reporte.getIsAnonimo());
                     dto.setContacto(reporte.getContacto());
                     dto.setUsuarioId(reporte.getUsuario().getId());
+                    if(reporte.getSeguridadAsignado() != null) dto.setSeguridadAsignadoId(reporte.getSeguridadAsignado().getId());
+                    if(reporte.getHistorialGestion() != null && !reporte.getHistorialGestion().isEmpty()){
+                        ReporteGestion ultima = reporte.getHistorialGestion().stream().max((a,b) -> a.getFechaActualizacion().compareTo(b.getFechaActualizacion())).orElse(null);
+                        if(ultima != null){
+                            dto.setUltimoEstado(ultima.getEstado() != null ? ultima.getEstado().name() : null);
+                            dto.setUltimaPrioridad(ultima.getPrioridad() != null ? ultima.getPrioridad().name() : null);
+                            dto.setFechaUltimaGestion(ultima.getFechaActualizacion());
+                        }
+                    }
                     return dto;
                 })
                 .collect(Collectors.toList());

@@ -49,13 +49,23 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
             reporteRepository.save(reporte);
         }
 
-        ReporteGestion reporteGestion = new ReporteGestion();
-        reporteGestion.setReporte(reporte);
-        reporteGestion.setEstado(estado);
-        reporteGestion.setPrioridad(prioridad);
-        reporteGestion.setFechaActualizacion(timeService.getCurrentLocalDateTimePeru());
+        // Si existe una entrada PENDIENTE para este reporte, actualízala en lugar de crear una nueva
+        ReporteGestion reporteGestionToSave;
+        Optional<ReporteGestion> pendingOpt = reporteGestionRepository.findFirstByReporteAndEstado(reporte, EstadoReporte.PENDIENTE);
+        if(pendingOpt.isPresent()){
+            reporteGestionToSave = pendingOpt.get();
+            reporteGestionToSave.setEstado(estado);
+            reporteGestionToSave.setPrioridad(prioridad);
+            reporteGestionToSave.setFechaActualizacion(timeService.getCurrentLocalDateTimePeru());
+        } else {
+            reporteGestionToSave = new ReporteGestion();
+            reporteGestionToSave.setReporte(reporte);
+            reporteGestionToSave.setEstado(estado);
+            reporteGestionToSave.setPrioridad(prioridad);
+            reporteGestionToSave.setFechaActualizacion(timeService.getCurrentLocalDateTimePeru());
+        }
 
-        ReporteGestion savedReporteGestion = reporteGestionRepository.save(reporteGestion);
+        ReporteGestion savedReporteGestion = reporteGestionRepository.save(reporteGestionToSave);
 
         ReporteGestionDTO dto = new ReporteGestionDTO();
         dto.setId(savedReporteGestion.getId());
