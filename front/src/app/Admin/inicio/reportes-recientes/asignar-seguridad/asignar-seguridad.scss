@@ -1,0 +1,109 @@
+.modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0,0,0,0.45);
+	display:flex;
+	align-items:flex-start;
+	justify-content:center;
+	padding: 2.5rem 1rem;
+	z-index: 100000; /* muy arriba para cubrir nav u otros elementos */
+}
+.modal-panel {
+	width: 420px;
+	background: white;
+	border-radius: 1rem; /* esquinas más redondeadas */
+	overflow: hidden;
+	box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+	z-index: 100001;
+	position: relative;
+}
+.modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 1.25rem;
+}
+.modal-header-left {
+	display: flex;
+	align-items: flex-start; /* icono al inicio, título y subtítulo alineados en columna */
+	gap: 0.5rem; /* espacio reducido entre icono y bloque de título */
+}
+.modal-header-left svg {
+	width: 32px;
+	height: 32px;
+	flex: 0 0 auto;
+	margin-top: 2px; /* ligera corrección para alinear con el título */
+}
+.modal-title-block {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start; /* aseguramos que el subtítulo quede alineado a la izquierda del título */
+}
+.modal-title-row {
+	display: flex;
+	align-items: center;
+}
+.modal-sub-row {
+	margin-top: 2px; /* separación muy pequeña para que el texto quede "al raas" debajo */
+	width: 100%;
+}
+.modal-header h3 {
+	margin: 0;
+	font-size: 1.05rem;
+	line-height: 1.1;
+}
+.modal-sub {
+	margin: 0;
+	font-size: 0.85rem;
+	line-height: 1.15;
+	margin-top: 0; /* sin margen extra, pegado justo debajo del título */
+	color: #6b7280; /* gris suave (tailwind gray-500) */
+}
+.close-x {
+	background: transparent;
+	border: 0;
+	font-size: 1.1rem;
+	cursor: pointer;
+	color: inherit;
+}
+
+.modal-header {
+	background: #ffffff; /* siempre blanco */
+	border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.modal-body { padding:0.75rem 1.25rem 1.5rem; }
+.report-card-small { background:#fff5f6; border-radius:0.5rem; padding:0.9rem; border:1px solid rgba(0,0,0,0.04); }
+
+.report-card-small { position: relative; }
+.report-card-small .priority-badge {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	font-size: 0.72rem;
+	padding: 0.28rem 0.6rem;
+	border-radius: 999px;
+	font-weight: 700;
+	color: white;
+	text-transform: uppercase;
+}
+
+.report-card-small.priority-baja { background: #eff6ff; border-left: 6px solid #3b82f6; }
+.report-card-small.priority-baja .priority-badge { background: #3b82f6; }
+.report-card-small.priority-media { background: #fffbeb; border-left: 6px solid #f59e0b; }
+.report-card-small.priority-media .priority-badge { background: #f59e0b; }
+.report-card-small.priority-alta { background: #fff1f2; border-left: 6px solid #ef4444; }
+.report-card-small.priority-alta .priority-badge { background: #ef4444; }
+.report-title { font-weight:600; margin-bottom:0.25rem; }
+.recommendation { margin-top:0.75rem; background:#ecfdf5; border-radius:0.4rem; padding:0.8rem; border:1px solid rgba(16,185,129,0.12); }
+.available { margin-top:0.9rem; }
+.person-card { border-radius:0.6rem; border:2px solid rgba(34,197,94,0.12); padding:0.85rem; background:#f0fdf4; }
+.person-header { display:flex; align-items:center; justify-content:space-between; }
+.person-badge { background:#10b981; color:white; padding:0.25rem 0.45rem; border-radius:0.4rem; font-size:0.8rem; }
+.zone { display:inline-block; background:white; padding:0.18rem 0.4rem; border-radius:0.4rem; margin-right:0.35rem; font-size:0.82rem; }
+.zone.active { background:#bfebff; }
+.btn-assign-official { margin-top:0.8rem; background:#ef4444; color:white; border:0; padding:0.55rem 0.8rem; border-radius:0.45rem; }
+
+@media (max-width:480px){
+	.modal-panel { width: 100%; }
+}

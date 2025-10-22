@@ -23,4 +23,9 @@ export class PerfilService {
       error: _ => this.perfil.set(null)
     });
   }
+
+  obtenerPerfil() {
+    if(!this.auth.getToken()) return null;
+    return this.http.get<PerfilUsuario>(this.baseUrl);
+  }
 }

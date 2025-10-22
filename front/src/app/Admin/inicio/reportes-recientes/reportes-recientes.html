@@ -1,0 +1,146 @@
+<div class="heading-row mb-4">
+		<h2 class="heading">
+			<!-- Icono solicitado: file-description (stroke rojo, tamaño levemente mayor) -->
+			<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF395C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-description"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 17h6" /><path d="M9 13h6" /></svg>
+			Reportes Recientes ({{ reports.length || 0 }})
+		</h2>
+
+		<div class="controls controls-right">
+			<button class="btn btn-outline" (click)="toggleFilterMenu()">
+				<!-- icono filter -->
+				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-filter"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z" /></svg>
+				Filtrar
+			</button>
+			<button class="btn btn-outline" (click)="refreshReports()">Actualizar</button>
+					<button class="btn btn-new" style="position:relative;">
+				<!-- icono browser-plus -->
+				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-browser-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 8h16" /><path d="M12 20h-6a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v6" /><path d="M8 4v4" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
+						NUEVOS
+						<span *ngIf="newReportsCount > 0" class="new-badge" style="position:absolute; top:-6px; right:-6px; background:#ef4444; color:white; border-radius:999px; padding:3px 6px; font-size:12px;">{{ newReportsCount }}</span>
+			</button>
+		</div>
+
+		<!-- Menu de filtrado por zonas -->
+		<div class="filter-menu" *ngIf="showFilterMenu" style="position:relative;">
+			<div class="filter-popover card p-3" style="position:absolute; right:0; z-index:30; width:260px;">
+				<label class="label">Zonas de la sede</label>
+				<ul class="zone-list" style="list-style:none; padding:0; margin:0; max-height:240px; overflow:auto;">
+					<li style="padding:6px 0;"><a (click)="applyZonaFilter(null)" class="link">Todas</a></li>
+					<li *ngFor="let z of zonesList" style="padding:6px 0;"><a (click)="applyZonaFilter(z.id)" class="link">{{ z.nombre }}</a></li>
+				</ul>
+			</div>
+		</div>
+</div>
+
+
+<div class="report-card-wrapper">
+	<ng-container *ngIf="reports?.length; else emptyTpl">
+		<article *ngFor="let rep of reports" [ngClass]="cardClassFor(priorityById[rep.id]) + ' report-card'">
+			<div class="badges">
+				<span [ngClass]="priorityBadgeClassFor(rep.id)">{{ (priorityById[rep.id] || '') | uppercase }}</span>
+				<span class="badge bg-blue-500">NUEVO</span>
+			</div>
+
+			<div class="report-inner">
+				<div class="avatar">
+					<svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+						<circle class="avatar-circle" cx="12" cy="12" r="10" [attr.fill]="avatarFillColorFor(rep.id)" />
+					</svg>
+				</div>
+
+				<div class="report-body">
+					<div class="header-row">
+						<h3 class="title" (click)="markAsSeen(rep.id)">{{ tiposMap[rep.tipoIncidenteId] || rep.descripcion || 'Reporte #' + rep.id }}</h3>
+					</div>
+
+					<div class="meta-row">
+						<svg class="meta-icon" width="14" height="14" viewBox="0 0 24 24"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1 1 18 0z" fill="#6b7280"/></svg>
+						<span>{{ rep.zonaId ? (zonasMap[rep.zonaId] || ('Zona ' + rep.zonaId)) : 'Sin zona' }}</span>
+						<span class="dot">•</span>
+						<svg class="meta-icon" width="14" height="14" viewBox="0 0 24 24"><path d="M12 8v5l3 3" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+						<span>{{ rep.fechaCreacion ? (rep.fechaCreacion | date:'short') : 'Hace poco' }}</span>
+						<span class="dot">•</span>
+						<span class="id">ID: {{ rep.id }}</span>
+					</div>
+
+					<p class="description">{{ rep.descripcion }}</p>
+
+					<div class="filters-actions-row">
+						<div class="filters-panel">
+							<div class="form-row">
+								<div class="form-col">
+									<label class="label">Prioridad</label>
+									<select class="select" [value]="priorityById[rep.id]" (change)="onPriorityChange(rep.id, $any($event.target).value)">
+										<option value="" disabled selected>Seleccionar</option>
+										<option value="baja">Baja</option>
+										<option value="media">Media</option>
+										<option value="alta">Alta</option>
+									</select>
+								</div>
+
+								<div class="form-col">
+									<label class="label">Asignar Seguridad</label>
+									<ng-container *ngIf="statusById[rep.id] === 'nuevo'; else assignedTpl">
+										<button class="btn btn-assign" (click)="openAssignModal(rep.id)" [disabled]="!priorityById[rep.id]" [title]="!priorityById[rep.id] ? 'Selecciona una prioridad antes de asignar' : 'Asignar reporte'">Asignar aquí</button>
+									</ng-container>
+									<ng-template #assignedTpl>
+										<select class="select" [value]="statusById[rep.id]">
+											<option value="assigned_to_security">Asignado a Seguridad</option>
+											<option value="investigando">Investigando</option>
+											<option value="in_progress">En Progreso</option>
+											<option value="resuelto">Resuelto</option>
+											<option value="cancelado">Cancelado</option>
+										</select>
+									</ng-template>
+								</div>
+
+								<div class="form-col small">
+									<label class="label">Recibido</label>
+									<input class="input" type="text" [value]="rep.fechaCreacion ? (rep.fechaCreacion | date:'short') : 'Hace poco'" readonly>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+			<div class="meta-icons">
+				<div class="meta-item"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M21 15v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg> Evidencia: {{ rep.foto ? 'imagen.jpg' : 'No' }}</div>
+			</div>
+
+			<!-- Vista previa de la evidencia (si existe y no es anónimo) -->
+			<div *ngIf="rep.foto && !rep.isAnonimo" class="evidence-image" style="margin-top:0.6rem">
+				<img [src]="toDataUrl(rep.foto)" alt="Evidencia" style="max-width:240px; border-radius:8px; border:1px solid rgba(0,0,0,0.04)" />
+			</div>
+
+			<div class="report-footer">
+				<div class="footer-left">
+					<svg class="shield-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l7 3v5c0 5-3.5 9-7 10-3.5-1-7-5-7-10V6l7-3z" fill="#FFFFFF" opacity="0.02" stroke="#6b7280" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					<span class="anon-text">{{ rep.isAnonimo ? 'Reporte Anónimo' : ('Usuario: ' + (usuariosMap[rep.usuarioId] || rep.usuarioId)) }}</span>
+				</div>
+				<div class="footer-right">
+					<button class="btn btn-cancel"> <svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg> Cancelar</button>
+				</div>
+			</div>
+
+		</article>
+
+		<!-- Modal de asignación -->
+		<app-asignar-seguridad [visible]="showAssignModal" [priority]="selectedReporteId ? priorityById[selectedReporteId] : ''" [reporteId]="selectedReporteId" (close)="closeAssignModal()"></app-asignar-seguridad>
+
+	</ng-container>
+
+	<ng-template #emptyTpl>
+		<div class="card empty">
+			<div class="card-content p-12 text-center">
+				<svg class="icon-file-large" width="64" height="64" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" fill="#e5e7eb"/></svg>
+				<h3 class="text-xl mb-2 text-gray-600">No hay reportes nuevos</h3>
+				<p class="text-gray-500 mb-6">Excelente! No hay reportes nuevos pendientes de revisión en este momento.</p>
+				<span class="badge badge-outline px-4 py-2">✅ Estado: Todo al día</span>
+			</div>
+		</div>
+	</ng-template>
+
+</div>
