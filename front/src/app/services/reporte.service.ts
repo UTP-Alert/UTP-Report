@@ -14,6 +14,14 @@ export interface ReporteDTO {
   usuarioId: number;
 }
 
+export interface ReporteGestionDTO {
+  id: number;
+  reporteId: number;
+  estado: string;
+  prioridad: string;
+  fechaActualizacion: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ReporteService {
   private baseUrl = 'http://localhost:8080/api/reportes';
@@ -44,7 +52,22 @@ export class ReporteService {
     return this.http.get<ReporteDTO[]>(this.baseUrl);
   }
 
+  getFiltered(zonaId?: number | null, sedeId?: number | null): Observable<ReporteDTO[]> {
+    let url = `${this.baseUrl}/filter`;
+    const params: string[] = [];
+    if (zonaId != null) params.push(`zonaId=${encodeURIComponent(String(zonaId))}`);
+    if (sedeId != null) params.push(`sedeId=${encodeURIComponent(String(sedeId))}`);
+    if (params.length) url += `?${params.join('&')}`;
+    return this.http.get<ReporteDTO[]>(url);
+  }
+
   getById(id: number): Observable<ReporteDTO> {
     return this.http.get<ReporteDTO>(`${this.baseUrl}/${id}`);
+  }
+
+  updateGestion(reporteId: number, estado: string, prioridad: string): Observable<ReporteGestionDTO> {
+    const url = `${this.baseUrl}/gestion/${reporteId}`;
+    // send as query params (backend expects @RequestParam EstadoReporte estado, PrioridadReporte prioridad)
+    return this.http.post<ReporteGestionDTO>(url + `?estado=${encodeURIComponent(estado)}&prioridad=${encodeURIComponent(prioridad)}`, {});
   }
 }

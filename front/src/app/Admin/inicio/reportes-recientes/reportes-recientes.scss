@@ -1,0 +1,200 @@
+/* Estilos para la tarjeta de reportes recientes */
+.card-content {
+	padding: 1rem; /* ya usado en plantilla */
+}
+
+/* Heading row: título a la izquierda, controles a la derecha */
+.heading-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.heading { display:flex; align-items:center; gap:0.75rem; font-size:1.5rem; margin:0; }
+.icon-file { width:22px; height:22px; }
+.controls-right { display:flex; gap:0.6rem; align-items:center; }
+.controls-right .btn { padding:0.45rem 0.7rem; }
+.btn-outline { background:white; border:1px solid #e5e7eb; }
+.btn-primary { background:#1d4ed8; color:white; }
+
+/* Borde y fondo por prioridad (se aplican mediante clases dinámicas en el componente) */
+.border-l-4 { border-left-width: 4px; border-left-style: solid; transition: border-color 220ms ease, background-color 220ms ease; }
+.border-l-blue-500 { border-left-color: #3b82f6; }
+.bg-blue-50 { background-color: #eff6ff; }
+.border-l-yellow-500 { border-left-color: #f59e0b; }
+.bg-yellow-50 { background-color: #fffbeb; }
+.border-l-red-500 { border-left-color: #ef4444; }
+.bg-red-50 { background-color: #fff1f2; }
+
+/* Estética general de la tarjeta */
+.card {
+	border-radius: 0.5rem;
+	box-shadow: 0 0 transparent;
+}
+
+.hover\:shadow-lg:hover {
+	box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+}
+
+.badge {
+	display: inline-block;
+	padding: 0.25rem 0.5rem;
+	border-radius: 9999px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: white;
+}
+.bg-blue-500 { background-color: #3b82f6; }
+.hover\:bg-blue-600:hover { background-color: #2563eb; }
+.bg-yellow-500 { background-color: #f59e0b; }
+.hover\:bg-yellow-600:hover { background-color: #d97706; }
+.bg-red-500 { background-color: #ef4444; }
+.hover\:bg-red-600:hover { background-color: #dc2626; }
+
+/* Badge outline utilizado en estado "todo al día" */
+.badge-outline {
+	display:inline-block;
+	border:1px solid rgba(0,0,0,0.08);
+	background:white;
+	color:#374151;
+}
+
+/* Botones y form controls */
+.button { display:inline-flex; align-items:center; gap:0.5rem; }
+.button-outline { border:1px solid #e5e7eb; padding:0.4rem 0.6rem; border-radius:0.35rem; }
+.button-primary { background:#1d4ed8; color:white; padding:0.4rem 0.6rem; border-radius:0.35rem; }
+
+/* Selects y inputs */
+select, input[type="text"] { padding:0.5rem; border-radius:0.35rem; border:1px solid #e5e7eb; }
+
+/* Ajustes de espaciado y tipografía para que coincida con diseño */
+.card-content h3 { margin:0; }
+.card-content p { margin-top:0.75rem; color:#374151; }
+
+/* Nuevos estilos específicos para el layout solicitado */
+.heading { display:flex; align-items:center; gap:0.75rem; font-size:1.5rem; }
+.icon-file { color:#FF395C; width:26px; height:26px; }
+.controls { display:flex; gap:0.75rem; }
+.btn { display:inline-flex; align-items:center; gap:0.5rem; padding:0.45rem 0.6rem; border-radius:0.5rem; border:1px solid transparent; background:white; color:#111827; }
+.btn-outline { border-color:#e5e7eb; background:white; border-radius:0.5rem; }
+.btn-primary { background:#1d4ed8; color:white; border-radius:0.5rem; }
+
+/* Botón NUEVOS estilo blanco con borde azul y texto azul */
+.btn-new { background:white; color:#111827; border:1px solid #e5e7eb; border-radius:0.5rem; display:inline-flex; align-items:center; gap:0.5rem; padding:0.45rem 0.7rem; }
+.btn-new .icon { color: inherit; }
+
+.report-card-wrapper { display:block; }
+.report-card { position:relative; border-radius:0.75rem; padding:0.75rem; margin-bottom:1rem; }
+.report-card.report-card { box-shadow: 0 8px 20px rgba(14,30,37,0.06); }
+.report-card .report-inner { display:flex; gap:1rem; align-items:flex-start; }
+.avatar { flex:0 0 auto; margin-right:0.5rem; }
+.avatar svg { border-radius:9999px; box-shadow:0 2px 8px rgba(16,24,40,0.06); }
+/* transición suave para el color del círculo del avatar */
+.avatar-circle { transition: fill 220ms ease; }
+.report-body { flex:1 1 auto; }
+.title { font-size:1.125rem; margin:0 0 0.35rem 0; }
+.meta-row { display:flex; align-items:center; gap:0.5rem; color:#6b7280; font-size:0.9rem; margin-bottom:0.6rem; }
+.meta-icon { opacity:0.9; }
+.dot { opacity:0.6; margin:0 0.25rem; }
+.description { color:#374151; margin-bottom:0.8rem; }
+
+.badges { position:absolute; right:1rem; top:0.75rem; display:flex; gap:0.5rem; }
+.badges .badge { font-size:0.7rem; padding:0.3rem 0.5rem; }
+
+.form-row { display:flex; gap:1rem; margin-bottom:0.8rem; }
+.form-col { flex:1 1 0; }
+.form-col.small { flex:0 0 180px; }
+.label { display:block; font-size:0.85rem; color:#6b7280; margin-bottom:0.25rem; }
+.select, .input { width:100%; padding:0.6rem; border-radius:0.375rem; border:1px solid #e5e7eb; background:white; }
+
+/* Contenedor blanco para los filtros: fondo blanco, padding, borde redondeado y sombra tenue */
+.filters-panel {
+	background: #ffffff;
+	padding: 0.75rem;
+	border-radius: 0.5rem;
+	box-shadow: 0 6px 18px rgba(14,30,37,0.04);
+	border: 1px solid rgba(0,0,0,0.04);
+	margin-bottom: 0.8rem;
+}
+
+/* Fila que contiene el panel blanco y las acciones a la derecha (fuera del panel) */
+.filters-actions-row {
+	display: flex;
+	gap: 1rem;
+	align-items: flex-start; /* las acciones quedan alineadas con la parte superior del panel */
+}
+
+/* El panel debe ocupar el espacio disponible y dejar sitio para las acciones */
+.filters-actions-row .filters-panel {
+	flex: 1 1 auto;
+}
+
+/* En pantallas pequeñas, apilar verticalmente los campos del filtro */
+@media (max-width: 640px) {
+	.filters-panel .form-row { flex-direction: column; gap:0.6rem; }
+	.filters-panel .form-col.small { flex: 0 0 auto; width: 100%; }
+}
+
+.meta-icons { display:flex; gap:1.25rem; color:#6b7280; font-size:0.95rem; margin-bottom:0.75rem; }
+.meta-item { display:flex; align-items:center; gap:0.5rem; }
+
+.actions { display:flex; justify-content:flex-end; }
+.btn-cancel { display:inline-flex; align-items:center; gap:0.5rem; padding:0.5rem 0.8rem; border-radius:0.375rem; background:white; color:#ef4444; border:1px solid rgba(239,68,68,0.12); }
+.btn-cancel svg { background:white; }
+
+/* Contenedor para acciones fuera de la tarjeta. Alineado a la derecha y pegado a la esquina del card pero fuera del fondo blanco */
+.card-actions-inside {
+	display:flex;
+	justify-content:flex-end;
+	align-items:flex-start; /* que el botón quede a la altura superior del panel */
+	margin-left: 0.5rem; /* separación entre panel blanco y el botón */
+	margin-top: 0.25rem;
+	margin-bottom: 0.75rem;
+}
+
+/* En pantallas pequeñas colocarlo debajo y alineado a la izquierda */
+@media (max-width: 640px) {
+	.card-actions-inside { justify-content: flex-start; margin-top: 0.5rem; }
+}
+
+/* Botón para asignar a seguridad */
+.btn-assign { background:#ef4444; color:white; border-radius:0.375rem; padding:0.55rem 0.75rem; border:1px solid rgba(239,68,68,0.12); }
+.btn-assign:hover { background:#dc2626; }
+
+/* Estado deshabilitado para botones */
+.btn[disabled], .btn:disabled, .btn[disabled]:hover, .btn:disabled:hover {
+	opacity: 0.55;
+	cursor: not-allowed;
+	box-shadow: none;
+	transform: none;
+}
+
+/* Específicos para btn-assign-official en el modal */
+.btn-assign-official[disabled], .btn-assign-official:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+	background: #f3f4f6; /* gris suave para indicar inactividad */
+	color: rgba(0,0,0,0.45);
+	border: 1px solid rgba(0,0,0,0.04);
+}
+
+.card.empty { border-radius:0.625rem; border:2px dashed #e5e7eb; padding:1rem; }
+
+/* Pie del card: left (anon) y right (acciones) */
+.report-footer {
+	display:flex;
+	justify-content:space-between;
+	align-items:center;
+	margin-top: 0.75rem;
+	padding-top: 0.5rem;
+	border-top: 1px solid rgba(0,0,0,0.03);
+}
+.report-footer .footer-left { display:flex; align-items:center; gap:0.6rem; color:#6b7280; }
+.report-footer .anon-text { font-size:0.95rem; color:#6b7280; }
+.report-footer .footer-right { display:flex; align-items:center; }
+
+@media (max-width:640px) {
+	.report-footer { flex-direction: column; align-items:stretch; gap:0.6rem; }
+	.report-footer .footer-right { justify-content:flex-end; }
+}
+
+/* pequeño ajuste para badges de prioridad en colores ya declarados */
+.badge.bg-blue-500 { background:#3b82f6; }
+.badge.bg-yellow-500 { background:#f59e0b; }
+.badge.bg-red-500 { background:#ef4444; }
+

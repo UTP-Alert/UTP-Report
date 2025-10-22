@@ -1,0 +1,106 @@
+<h2 class="text-xl sm:text-2xl lg:text-3xl mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+	<i class="clock-icon h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-primary"></i>
+	Reportes en Proceso (1)
+</h2>
+
+<div class="flex items-end gap-2 mb-4">
+	<button class="button button-outline button-sm w-full sm:w-auto">
+		<i class="filter-icon h-4 w-4 mr-2"></i>
+		Filtrar
+	</button>
+	<button class="button button-outline button-sm w-full sm:w-auto">
+		<i class="refresh-cw-icon h-4 w-4 mr-2"></i>
+		Actualizar Estado
+	</button>
+	<span class="badge badge-outline px-3 py-1">
+		<i class="clock-icon h-4 w-4 mr-1"></i>
+		EN PROGRESO
+	</span>
+</div>
+
+<div class="reporte-card">
+	<div class="reporte-header">
+		<div class="icono"></div>
+		<div class="info">
+			<h3>Actividad Sospechosa</h3>
+			<p class="detalle">Zona Deportiva • Iniciado: Hace 2h • ID: #port_4</p>
+		</div>
+		<div class="etiquetas">
+			<span class="badge prioridad">MEDIA</span>
+			<span class="badge estado">EN PROCESO</span>
+		</div>
+	</div>
+
+	<p class="descripcion">Persona desconocida merodeando cerca de los vestuarios después del horario</p>
+
+	<div class="estado-proceso">
+		<h4>Estado del Proceso</h4>
+		<div class="info-grid">
+			<div>
+				<p>Asignado a</p>
+				<strong>Carlos López</strong>
+			</div>
+			<div>
+				<p>Tiempo en proceso</p>
+				<strong>Hace 2h</strong>
+			</div>
+			<div>
+				<p>Última actualización</p>
+				<strong>Hace 2h</strong>
+			</div>
+		</div>
+	</div>
+
+	<div class="acciones">
+		<div class="selectores">
+			<div>
+				<label>Cambiar Prioridad</label>
+				<select>
+					<option value="baja">Baja</option>
+					<option value="media" selected>Media</option>
+					<option value="alta">Alta</option>
+				</select>
+			</div>
+			<div>
+				<label>Cambiar Estado</label>
+				<select>
+					<option value="investigando">Investigando</option>
+					<option value="assigned_to_security">Asignado a Seguridad</option>
+					<option value="in_progress">En Progreso</option>
+					<option value="pending_approval" selected>Pend. Aprobación</option>
+					<option value="resuelto">Resuelto</option>
+					<option value="cancelado">Cancelado</option>
+				</select>
+			</div>
+		</div>
+		<div class="estado-final">
+			<label>
+				<input type="checkbox" class="form-checkbox">
+				Con contacto
+			</label>
+			<label>
+				<input type="checkbox" class="form-checkbox" checked>
+				En progreso activo
+			</label>
+		</div>
+		<div class="botones">
+			<button class="btn verde">
+				<i class="bell-icon h-4 w-4"></i>
+				Contactar Seguridad
+			</button>
+			<button class="btn rojo">
+				<i class="x-icon h-4 w-4"></i>
+				Cancelar
+			</button>
+		</div>
+	</div>
+</div>
+
+<div class="card border-2 border-dashed border-gray-300 mt-4">
+	<div class="card-content p-12 text-center">
+		<i class="clock-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
+		<h3 class="text-xl mb-2 text-gray-600">No hay reportes en proceso</h3>
+		<p class="text-gray-500 mb-6">Todos los reportes están siendo gestionados o han sido resueltos.</p>
+		<span class="badge badge-outline px-4 py-2">⏸️ Estado: Sin casos activos</span>
+	</div>
+</div>

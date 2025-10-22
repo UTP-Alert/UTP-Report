@@ -1,0 +1,96 @@
+<h2 class="text-2xl mb-4 flex items-center gap-3">
+	<i class="x-icon h-8 w-8 text-red-600"></i>
+	Reportes Cancelados (X)
+</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-gray-50 p-4 rounded-lg">
+	<div>
+		<label class="text-sm text-gray-600">Prioridad</label>
+		<select class="w-full mt-1 p-2 border rounded text-sm">
+			<option value="baja">Baja</option>
+			<option value="media" selected>Media</option>
+			<option value="alta">Alta</option>
+		</select>
+	</div>
+	<div>
+		<label class="text-sm text-gray-600">Estado</label>
+		<select class="w-full mt-1 p-2 border rounded text-sm">
+			<option value="cancelado" selected>Cancelado</option>
+		</select>
+	</div>
+	<div class="flex items-end gap-2">
+		<button class="button button-outline button-sm w-full sm:w-auto">
+			<i class="filter-icon h-4 w-4 mr-2"></i>
+			Filtrar
+		</button>
+		<button class="button button-outline button-sm w-full sm:w-auto">
+			<i class="refresh-cw-icon h-4 w-4 mr-2"></i>
+			Actualizar
+		</button>
+		<span class="badge badge-outline px-3 py-1"><i class="x-icon h-4 w-4 mr-1"></i>CANCELADOS</span>
+	</div>
+</div>
+
+<div class="card border-2 border-dashed border-gray-300">
+	<div class="card-content p-12 text-center">
+		<i class="x-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
+		<h3 class="text-xl mb-2 text-gray-600">No hay reportes cancelados</h3>
+		<p class="text-gray-500 mb-6">Los reportes cancelados se mostrarán aquí.</p>
+		<span class="badge badge-outline px-4 py-2">ℹ️ Estado: Sin cancelaciones</span>
+	</div>
+</div>
+
+<div class="card border-l-4 border-l-red-500 bg-red-50 opacity-75 hover:shadow-lg transition-all mb-4">
+	<div class="card-content p-4">
+		<div class="flex justify-between items-start mb-2">
+			<h3 class="text-base sm:text-lg font-semibold text-gray-600">Actividad Sospechosa</h3>
+			<div class="flex gap-2">
+				<span class="badge bg-gray-400 hover:bg-gray-500">MEDIA</span>
+				<span class="badge bg-red-500 hover:bg-red-600">CANCELADO</span>
+			</div>
+		</div>
+		<div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+			<i class="map-pin-icon h-4 w-4 opacity-50"></i>
+			<span>Estacionamiento Este</span>
+			<span>•</span>
+			<span>Cancelado: Hace 2 días</span>
+			<span>•</span>
+			<span>ID: #port_2</span>
+		</div>
+		<p class="text-gray-600 mb-4 line-through">Persona merodeando en el estacionamiento de estudiantes</p>
+
+		<div class="bg-gray-100 p-4 rounded-lg border mb-4">
+			<h4 class="font-medium text-gray-600 flex items-center gap-2 mb-3"><i class="x-icon h-4 w-4"></i>Información de Cancelación</h4>
+			<div class="grid grid-cols-3 gap-4 text-sm">
+				<div>
+					<p class="text-sm text-gray-600">Fecha de cancelación:</p>
+					<p class="text-sm font-medium">2025-10-18</p>
+				</div>
+				<div>
+					<p class="text-sm text-gray-600">Reporte original:</p>
+					<p class="text-sm font-medium">2025-10-17</p>
+				</div>
+				<div>
+					<p class="text-sm text-gray-600">Estado anterior:</p>
+					<p class="text-sm font-medium">En proceso</p>
+				</div>
+			</div>
+			<div class="flex items-center gap-2 text-sm text-gray-500 mt-4">
+				<i class="camera-icon h-4 w-4"></i>
+				<span class="line-through">Evidencia: imagen.jpg</span>
+			</div>
+			<div class="flex items-center gap-2 text-sm text-gray-500 mt-2">
+				<i class="user-icon h-4 w-4"></i>
+				<span>Contacto: admin@utp.edu.pe</span>
+			</div>
+			<div class="flex items-center gap-2 text-sm text-gray-600 mt-4">
+				<i class="x-icon h-4 w-4"></i>
+				<span>Cancelado por administrador</span>
+			</div>
+		</div>
+
+		<div class="flex justify-end">
+			<button class="button button-sm button-outline" disabled><i class="eye-icon h-4 w-4 mr-1"></i>Ver Archivado</button>
+		</div>
+	</div>
+</div>

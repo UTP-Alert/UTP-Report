@@ -1,0 +1,53 @@
+<div *ngIf="visible" class="modal-overlay" (click)="closeModal()">
+	<div class="modal-panel" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+			<div class="modal-header">
+					<div class="modal-header-left">
+						<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-shield"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" /></svg>
+						<div class="modal-title-block">
+							<div class="modal-title-row">
+								<h3>Asignar Personal de Seguridad</h3>
+							</div>
+							<div class="modal-sub-row">
+								<p class="modal-sub">Selecciona el oficial de seguridad para atender el reporte en Estacionamiento Este</p>
+							</div>
+						</div>
+					</div>
+				<button class="close-x" (click)="closeModal()">✕</button>
+			</div>
+
+							<div class="modal-body">
+								<div class="report-preview">
+									<div class="report-card-small" [ngClass]="priority ? ('priority-' + priority) : ''">
+										<!-- Badge de prioridad en esquina superior derecha -->
+										<div class="priority-badge" *ngIf="priority">{{ priorityLabel() }}</div>
+										<div class="report-title">{{ tipoNombre || reporte?.descripcion || ('Reporte #' + reporte?.id) }}</div>
+										<div class="report-meta">{{ zonaNombre || (reporte?.zonaId ? ('Zona ' + reporte?.zonaId) : 'Sin zona') }} · {{ reporte?.fechaCreacion ? (reporte?.fechaCreacion | date:'short') : 'Hace poco' }}</div>
+										<p class="report-desc">{{ reporte?.descripcion }}</p>
+				</div>
+			</div>
+
+			<div class="recommendation" *ngIf="recomendado">
+				<strong>Recomendación:</strong>
+				<p>{{ recomendado.nombreCompleto }} ({{ recomendado.username }}) es el oficial recomendado para esta zona.</p>
+			</div>
+
+			<div class="available">
+				<h4>Personal Disponible ({{ candidatos.length }})</h4>
+				<div *ngIf="candidatos.length === 0">No hay personal de seguridad disponible para esta sede/zona.</div>
+				<div *ngFor="let c of candidatos" class="person-card">
+					<div class="person-header">
+						<div class="person-name">{{ c.nombreCompleto }}</div>
+						<div class="person-badge" [ngClass]="{ 'available': c.enabled, 'busy': !c.enabled }">{{ c.enabled ? 'DISPONIBLE' : 'OCUPADO' }}</div>
+					</div>
+					<div class="person-id">{{ c.username || c.id }}</div>
+					<div class="person-zones">Zonas asignadas: <span *ngFor="let zn of (c.zonasNombres || [])" class="zone" [class.active]="zn === (reporte?.zonaId ? '' : '')">{{ zn }}</span></div>
+					<div class="person-meta">Última actualización: {{ c.fechaUltimoReporte || 'N/A' }}</div>
+					<button class="btn btn-assign-official" (click)="assignToUser(c.id)" [disabled]="!priority || saving || !c.enabled" [title]="!priority ? 'Selecciona una prioridad antes de asignar' : (c.enabled ? 'Asignar oficial' : 'Oficial no disponible')">
+						<span *ngIf="!saving">Asignar a {{ c.nombreCompleto }}</span>
+						<span *ngIf="saving">Asignando...</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
