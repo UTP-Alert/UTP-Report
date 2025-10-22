@@ -8,6 +8,7 @@ import { TipoIncidenteService, TipoIncidenteDTO } from '../../../services/tipo-i
 import { UsuarioService, UsuarioDTO } from '../../../services/usuario.service';
 import { SedeService } from '../../../services/sede.service';
 import { PerfilService } from '../../../services/perfil.service';
+import { ReportStateService } from '../../../services/report-state.service';
 
 @Component({
   selector: 'app-reportes-recientes',
@@ -57,7 +58,8 @@ export class ReportesRecientes {
               private tipoService: TipoIncidenteService,
               private usuarioService: UsuarioService,
               private sedeService: SedeService,
-              private perfilService: PerfilService){}
+              private perfilService: PerfilService,
+              private reportState: ReportStateService){}
 
   ngOnInit(): void {
     // Cargar datos auxiliares primero, luego reportes (los reportes intentarán filtrarse por sede del perfil)
@@ -73,10 +75,18 @@ export class ReportesRecientes {
         const bTime = b.fechaCreacion ? new Date(b.fechaCreacion).getTime() : (b.id || 0);
         return bTime - aTime;
       });
-      this.reports = sorted;
+      // Excluir reportes que ya están en EN_PROCESO según lo provisto por el backend
+      this.reports = sorted.filter(rep => {
+        const backendEstado = (rep as any).ultimoEstado ? ((rep as any).ultimoEstado || '').toUpperCase() : '';
+        return backendEstado !== 'EN_PROCESO';
+      });
       for(const rep of this.reports){
-        this.priorityById[rep.id] = this.priorityById[rep.id] || '';
-        this.statusById[rep.id] = this.statusById[rep.id] || 'nuevo';
+        // Inicializar prioridad/estado desde el backend si están disponibles
+        const backendPriority = (rep as any).ultimaPrioridad ? ((rep as any).ultimaPrioridad || '').toLowerCase() : '';
+        const backendEstado = (rep as any).ultimoEstado ? ((rep as any).ultimoEstado || '').toLowerCase() : '';
+        this.priorityById[rep.id] = this.priorityById[rep.id] || (backendPriority as any) || '';
+        // Si el backend indica EN_PROCESO, usar ese estado; si no, fallback a 'nuevo'
+        this.statusById[rep.id] = this.statusById[rep.id] || (backendEstado ? backendEstado : 'nuevo');
       }
       // calcular contador de reportes nuevos
       this.newReportsCount = this.reports.filter(x => this.statusById[x.id] === 'nuevo').length;
@@ -242,6 +252,31 @@ export class ReportesRecientes {
         this.assignedSecurityById[reporteId] = seguridad;
         this.statusById[reporteId] = 'assigned_to_security';
         this.assignConfirmedById[reporteId] = true;
+        // Comunicar al estado compartido: prioridad, objeto del reporte y que está en proceso
+        const reporteObj = this.reports.find(r => r.id === reporteId);
+        if(reporteObj){
+          this.reportState.setReporte(reporteObj);
+          this.reportState.setPriority(reporteId, this.priorityById[reporteId] || '');
+          this.reportState.setAssignedSecurity(reporteId, seguridad);
+          this.reportState.markInProcessWithReporte(reporteObj);
+        } else {
+          // fallback: marcar inProcess por id
+          this.reportState.setPriority(reporteId, this.priorityById[reporteId] || '');
+          this.reportState.setAssignedSecurity(reporteId, seguridad);
+          this.reportState.markInProcess(reporteId);
+        }
+        // Quitar el reporte de la lista local de recientes para que desaparezca de la vista
+        const idx = this.reports.findIndex(r => r.id === reporteId);
+        if(idx !== -1){
+          this.reports.splice(idx, 1);
+        }
+        // limpiar mapas locales relacionados
+        delete this.priorityById[reporteId];
+        delete this.statusById[reporteId];
+        // actualizar contador de nuevos
+        this.newReportsCount = Math.max(0, this.reports.filter(x => this.statusById[x.id] === 'nuevo').length);
+        // opcional: navegar automáticamente a la pestaña En Proceso
+        // this.router.navigateByUrl('/admin/en-proceso');
       }, error: err => {
         console.error('Error persistiendo asignación', err);
       }});
