@@ -19,4 +19,5 @@ public class ReporteDTO {
     private Boolean isAnonimo;
     private String contacto;
     private Long usuarioId;
+    private Long seguridadAsignadoId;
 }

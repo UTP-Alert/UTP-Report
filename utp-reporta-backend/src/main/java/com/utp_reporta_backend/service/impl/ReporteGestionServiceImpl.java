@@ -5,8 +5,10 @@ import com.utp_reporta_backend.enums.EstadoReporte;
 import com.utp_reporta_backend.enums.PrioridadReporte;
 import com.utp_reporta_backend.model.Reporte;
 import com.utp_reporta_backend.model.ReporteGestion;
+import com.utp_reporta_backend.model.Usuario;
 import com.utp_reporta_backend.repository.ReporteGestionRepository;
 import com.utp_reporta_backend.repository.ReporteRepository;
+import com.utp_reporta_backend.repository.UsuarioRepository;
 import com.utp_reporta_backend.service.IReporteGestionService;
 import com.utp_reporta_backend.service.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +27,27 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
     private ReporteRepository reporteRepository;
 
     @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
     private TimeService timeService;
 
     @Override
-    public ReporteGestionDTO updateReporteGestion(Long reporteId, EstadoReporte estado, PrioridadReporte prioridad) {
+    public ReporteGestionDTO updateReporteGestion(Long reporteId, EstadoReporte estado, PrioridadReporte prioridad, Long seguridadId) {
         Optional<Reporte> reporteOptional = reporteRepository.findById(reporteId);
         if (reporteOptional.isEmpty()) {
             throw new RuntimeException("Reporte no encontrado con ID: " + reporteId);
         }
         Reporte reporte = reporteOptional.get();
+
+        if (seguridadId != null) {
+            Optional<Usuario> seguridadOptional = usuarioRepository.findById(seguridadId);
+            if (seguridadOptional.isEmpty()) {
+                throw new RuntimeException("Usuario de seguridad no encontrado con ID: " + seguridadId);
+            }
+            reporte.setSeguridadAsignado(seguridadOptional.get());
+            reporteRepository.save(reporte);
+        }
 
         ReporteGestion reporteGestion = new ReporteGestion();
         reporteGestion.setReporte(reporte);
@@ -49,6 +63,9 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
         dto.setEstado(savedReporteGestion.getEstado());
         dto.setPrioridad(savedReporteGestion.getPrioridad());
         dto.setFechaActualizacion(savedReporteGestion.getFechaActualizacion());
+        if (reporte.getSeguridadAsignado() != null) {
+            dto.setSeguridadId(reporte.getSeguridadAsignado().getId());
+        }
         return dto;
     }
 }

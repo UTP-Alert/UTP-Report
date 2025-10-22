@@ -17,4 +17,5 @@ public class ReporteGestionDTO {
     private EstadoReporte estado;
     private PrioridadReporte prioridad;
     private LocalDateTime fechaActualizacion;
+    private Long seguridadId;
 }

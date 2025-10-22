@@ -46,4 +46,8 @@ public class Reporte {
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+
+    @ManyToOne
+    @JoinColumn(name = "seguridad_asignado_id")
+    private Usuario seguridadAsignado;
 }

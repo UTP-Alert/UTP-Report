@@ -20,9 +20,10 @@ public class ReporteGestionController {
     public ResponseEntity<ReporteGestionDTO> createReporteGestion(
             @PathVariable Long reporteId,
             @RequestParam EstadoReporte estado,
-            @RequestParam PrioridadReporte prioridad) {
+            @RequestParam PrioridadReporte prioridad,
+            @RequestParam(required = false) Long seguridadId) {
         try {
-            ReporteGestionDTO updatedGestion = reporteGestionService.updateReporteGestion(reporteId, estado, prioridad);
+            ReporteGestionDTO updatedGestion = reporteGestionService.updateReporteGestion(reporteId, estado, prioridad, seguridadId);
             return new ResponseEntity<>(updatedGestion, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
