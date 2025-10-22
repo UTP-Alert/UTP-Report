@@ -12,6 +12,11 @@ export interface ReporteDTO {
   isAnonimo: boolean;
   contacto?: string;
   usuarioId: number;
+  // campos adicionales proporcionados por el backend para estado actual
+  ultimoEstado?: string | null;
+  ultimaPrioridad?: string | null;
+  seguridadAsignadoId?: number | null;
+  fechaUltimaGestion?: string | null;
 }
 
 export interface ReporteGestionDTO {
