@@ -34,7 +34,15 @@
 			<div class="available">
 				<h4>Personal Disponible ({{ candidatos.length }})</h4>
 				<div *ngIf="candidatos.length === 0">No hay personal de seguridad disponible para esta sede/zona.</div>
-				<div *ngFor="let c of candidatos" class="person-card">
+				<!-- Si ya se ha seleccionado un candidato, mostrar confirmación solo en modo editar -->
+				<div *ngIf="selectedCandidate && initialSelectedUserId != null" class="selected-confirm">
+					<p>Asignaste a <strong>{{ selectedCandidate.codigo || ('S' + (selectedCandidate.id || '')) }} - {{ selectedCandidate.nombreCompleto }}</strong></p>
+					<div class="selected-actions">
+						<button class="btn btn-secondary" (click)="editSelection()">Asignar a otro / Editar</button>
+					</div>
+				</div>
+				<div *ngIf="!selectedCandidate">
+					<div *ngFor="let c of candidatos" class="person-card">
 					<div class="person-header">
 						<div class="person-name">{{ c.nombreCompleto }}</div>
 						<div class="person-badge" [ngClass]="{ 'available': c.enabled, 'busy': !c.enabled }">{{ c.enabled ? 'DISPONIBLE' : 'OCUPADO' }}</div>
@@ -43,11 +51,17 @@
 					<div class="person-zones">Zonas asignadas: <span *ngFor="let zn of (c.zonasNombres || [])" class="zone" [class.active]="zn === (reporte?.zonaId ? '' : '')">{{ zn }}</span></div>
 					<div class="person-meta">Última actualización: {{ c.fechaUltimoReporte || 'N/A' }}</div>
 					<button class="btn btn-assign-official" (click)="assignToUser(c.id)" [disabled]="!priority || saving || !c.enabled" [title]="!priority ? 'Selecciona una prioridad antes de asignar' : (c.enabled ? 'Asignar oficial' : 'Oficial no disponible')">
-						<span *ngIf="!saving">Asignar a {{ c.nombreCompleto }}</span>
-						<span *ngIf="saving">Asignando...</span>
+						<span *ngIf="!saving">Seleccionar {{ c.nombreCompleto }}</span>
+						<span *ngIf="saving">Seleccionando...</span>
 					</button>
 				</div>
+				</div>
 			</div>
+		</div>
+
+		<!-- Footer simplificado: solo Cancelar (Continuar ahora está en la tarjeta) -->
+		<div class="modal-footer" style="display:flex; justify-content:flex-end; align-items:center; padding:12px 20px; border-top:1px solid #eee;">
+			<button class="btn btn-cancel" (click)="closeModal()">Cancelar</button>
 		</div>
 	</div>
 </div>

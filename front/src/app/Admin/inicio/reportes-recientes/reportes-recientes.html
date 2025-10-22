@@ -70,12 +70,13 @@
 							<div class="form-row">
 								<div class="form-col">
 									<label class="label">Prioridad</label>
-									<select class="select" [value]="priorityById[rep.id]" (change)="onPriorityChange(rep.id, $any($event.target).value)">
+									<select class="select" [value]="priorityById[rep.id]" (change)="onPriorityChange(rep.id, $any($event.target).value)" [disabled]="prioritySavingById[rep.id]">
 										<option value="" disabled selected>Seleccionar</option>
 										<option value="baja">Baja</option>
 										<option value="media">Media</option>
 										<option value="alta">Alta</option>
 									</select>
+									<span *ngIf="prioritySavingById[rep.id]" class="saving-indicator">Guardando...</span>
 								</div>
 
 								<div class="form-col">
@@ -84,13 +85,20 @@
 										<button class="btn btn-assign" (click)="openAssignModal(rep.id)" [disabled]="!priorityById[rep.id]" [title]="!priorityById[rep.id] ? 'Selecciona una prioridad antes de asignar' : 'Asignar reporte'">Asignar aquí</button>
 									</ng-container>
 									<ng-template #assignedTpl>
-										<select class="select" [value]="statusById[rep.id]">
-											<option value="assigned_to_security">Asignado a Seguridad</option>
-											<option value="investigando">Investigando</option>
-											<option value="in_progress">En Progreso</option>
-											<option value="resuelto">Resuelto</option>
-											<option value="cancelado">Cancelado</option>
-										</select>
+										<!-- Mostrar info de seguridad asignada y botón editar -->
+										<div *ngIf="assignedSecurityById[rep.id]; else assignedUnknown">
+																	<span>{{ assignConfirmedById[rep.id] ? 'Asignado a' : 'Asignaste a' }} <strong>{{ assignedSecurityById[rep.id].codigo || ('S' + assignedSecurityById[rep.id].id) }} - {{ assignedSecurityById[rep.id].nombreCompleto }}</strong></span>
+																	<button class="btn btn-secondary" (click)="openAssignModal(rep.id, assignedSecurityById[rep.id].id)">Editar seguridad</button>
+																</div>
+										<ng-template #assignedUnknown>
+											<select class="select" [value]="statusById[rep.id]">
+												<option value="assigned_to_security">Asignado a Seguridad</option>
+												<option value="investigando">Investigando</option>
+												<option value="in_progress">En Progreso</option>
+												<option value="resuelto">Resuelto</option>
+												<option value="cancelado">Cancelado</option>
+											</select>
+										</ng-template>
 									</ng-template>
 								</div>
 
@@ -122,13 +130,18 @@
 				</div>
 				<div class="footer-right">
 					<button class="btn btn-cancel"> <svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg> Cancelar</button>
+					<!-- Si hay asignación pendiente localmente, mostrar Continuar al lado del Cancelar -->
+					<button *ngIf="assignedSecurityById[rep.id] && !assignConfirmedById[rep.id]" class="btn btn-primary" (click)="confirmAssignment(rep.id)" [disabled]="!priorityById[rep.id] || assignSavingById[rep.id]">
+						<span *ngIf="!assignSavingById[rep.id]">Continuar</span>
+						<span *ngIf="assignSavingById[rep.id]">Guardando...</span>
+					</button>
 				</div>
 			</div>
 
 		</article>
 
-		<!-- Modal de asignación -->
-		<app-asignar-seguridad [visible]="showAssignModal" [priority]="selectedReporteId ? priorityById[selectedReporteId] : ''" [reporteId]="selectedReporteId" (close)="closeAssignModal()"></app-asignar-seguridad>
+			<!-- Modal de asignación -->
+			<app-asignar-seguridad [visible]="showAssignModal" [priority]="selectedReporteId ? priorityById[selectedReporteId] : ''" [reporteId]="selectedReporteId" [initialSelectedUserId]="modalInitialSelectedUserId" (close)="closeAssignModal()" (selected)="onAssigned($event)"></app-asignar-seguridad>
 
 	</ng-container>
 

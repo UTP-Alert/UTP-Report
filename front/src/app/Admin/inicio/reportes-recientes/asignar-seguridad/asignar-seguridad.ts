@@ -21,6 +21,8 @@ export class AsignarSeguridad {
     if(v){
       document.body.style.overflow = 'hidden';
       // cuando se abre, cargar datos reales del reporte si se proporcionó reporteId
+      // reset selectedCandidate a menos que se abra con initialSelectedUserId
+      if(!this.initialSelectedUserId) this.selectedCandidate = null;
       if(this.reporteId){
         this.loadReporte(this.reporteId);
       } else {
@@ -43,6 +45,10 @@ export class AsignarSeguridad {
     }
   }
   get reporteId(): number | undefined{ return this._reporteId; }
+
+  // Input para preseleccionar un candidato cuando se abre el modal desde editar
+  @Input() initialSelectedUserId?: number | null = null;
+  @Output() selected = new EventEmitter<{ reporteId?: number; seguridad: any }>();
   reporte?: ReporteDTO | null = null;
   loading: boolean = false;
   saving: boolean = false;
@@ -53,6 +59,8 @@ export class AsignarSeguridad {
   tipoNombre: string = '';
   zonasCache: any[] = [];
   tiposCache: any[] = [];
+  selectedCandidate: any | null = null;
+  savingAssignment: boolean = false;
   constructor(private reporteService: ReporteService, private usuarioService: UsuarioService, private zonaService: ZonaService, private tipoService: TipoIncidenteService){}
 
   loadReporte(id: number){
@@ -123,6 +131,13 @@ export class AsignarSeguridad {
             if(disponible) this.recomendado = disponible;
             else this.recomendado = this.candidatos[0];
           }
+          // No pre-seleccionamos el recomendado automáticamente para evitar
+          // que el bloque "Asignaste a..." aparezca en el modal.
+          // Solo pre-seleccionamos si abrimos explícitamente para editar (initialSelectedUserId)
+          if(this.initialSelectedUserId != null){
+            const pre = this.candidatos.find((c:any) => c.id === this.initialSelectedUserId);
+            if(pre) this.selectedCandidate = pre;
+          }
         }
       }, error: err => { this.candidatos = []; this.recomendado = null; }});
     }
@@ -135,16 +150,21 @@ export class AsignarSeguridad {
 
     // Asignar a un usuario específico
     assignToUser(userId: number){
-      // por ahora reusa assignReport pero podría llamar a un endpoint con userId
-      // guardamos prioridad y estado como antes
-      if(!this.reporteId || !this.priority) return;
-      this.saving = true;
-      const prioridadPayload = this.priority.toUpperCase();
-      const estadoPayload = 'EN_PROCESO';
-      // TODO: si el backend soporta asignar a un usuario, usar endpoint distinto. Por ahora usamos updateGestion
-      this.reporteService.updateGestion(this.reporteId, estadoPayload, prioridadPayload)
-        .pipe(finalize(()=> this.saving = false))
-        .subscribe({ next: _ => this.closeModal(), error: err => console.error('Error asignando reporte', err) });
+      // Seleccionar candidato y emitir selección al padre; no persistimos aquí.
+      const found = this.candidatos.find(c => c.id === userId);
+      if(found){
+        this.selectedCandidate = found;
+        try{ this.selected.emit({ reporteId: this.reporteId, seguridad: this.selectedCandidate }); }catch(e){}
+      }
+      // cerrar modal inmediatamente después de seleccionar
+      this.closeModal();
+    }
+
+    // Note: saving now se realiza desde el padre (botón Continuar en la tarjeta)
+
+    // Permitir cambiar la selección (volver a lista)
+    editSelection(){
+      this.selectedCandidate = null;
     }
 
   closeModal(){
@@ -156,6 +176,8 @@ export class AsignarSeguridad {
     this.zonaNombre = '';
     this.tipoNombre = '';
     this._reporteId = undefined;
+    this.initialSelectedUserId = null;
+    this.selectedCandidate = null;
     this.close.emit();
   }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgIf, NgForOf } from '@angular/common';
+import { finalize } from 'rxjs/operators';
 import { AsignarSeguridad } from './asignar-seguridad/asignar-seguridad';
 import { ReporteService, ReporteDTO } from '../../../services/reporte.service';
 import { ZonaService, Zona } from '../../../services/zona.service';
@@ -32,11 +33,20 @@ export class ReportesRecientes {
   usuariosMap: Record<number,string> = {};
   // map para prioridades por reporte id
   priorityById: Record<number, 'baja'|'media'|'alta'|''> = {};
+  // flags de guardado para prioridades por reporte
+  prioritySavingById: Record<number, boolean> = {};
   // estado por reporte (simplificado)
   statusById: Record<number,string> = {};
   // control del modal
   showAssignModal: boolean = false;
   selectedReporteId?: number;
+  // si un reporte ya tiene una seguridad asignada (localmente después de guardar)
+  assignedSecurityById: Record<number, any> = {};
+  // valor que se pasa al modal como initialSelectedUserId
+  modalInitialSelectedUserId?: number | null = null;
+  // flags de guardado de asignación por reporte
+  assignSavingById: Record<number, boolean> = {};
+  assignConfirmedById: Record<number, boolean> = {};
   // indicador de carga para el botón Actualizar
   isLoading: boolean = false;
   // contador de reportes nuevos (estado 'nuevo')
@@ -173,17 +183,68 @@ export class ReportesRecientes {
 
   // Maneja el cambio desde el select por reporte
   onPriorityChange(reportId: number, value: string){
-    if(value === 'baja' || value === 'media' || value === 'alta'){ 
-      this.priorityById[reportId] = value as any;
+    const prev = this.priorityById[reportId] || '';
+    if(value === 'baja' || value === 'media' || value === 'alta'){
+      // llamar al backend para persistir prioridad
+      const prioridad = value as any;
+      this.prioritySavingById[reportId] = true;
+      const estadoPayload = 'PENDIENTE';
+      this.reporteService.updateGestion(reportId, estadoPayload, prioridad.toUpperCase())
+        .pipe(finalize(() => { this.prioritySavingById[reportId] = false; }))
+        .subscribe({ next: _ => {
+          this.priorityById[reportId] = prioridad;
+          // opcional: actualizar estado local
+          this.statusById[reportId] = this.statusById[reportId] || 'nuevo';
+        }, error: err => {
+          console.error('Error guardando prioridad', err);
+          // revertir en UI
+          this.priorityById[reportId] = prev as any;
+        }});
     } else {
       this.priorityById[reportId] = '';
     }
   }
 
   // Abrir modal de asignación
-  openAssignModal(reporteId?: number){
+  openAssignModal(reporteId?: number, initialSelectedUserId?: number | null){
     this.selectedReporteId = reporteId;
+    this.modalInitialSelectedUserId = initialSelectedUserId ?? null;
     this.showAssignModal = true;
+  }
+
+  // Maneja evento emitido por el modal cuando se guardó la asignación
+  onAssigned(event: { reporteId?: number; seguridad: any }){
+    if(!event || !event.reporteId || !event.seguridad) return;
+    this.assignedSecurityById[Number(event.reporteId)] = event.seguridad;
+    // actualizar estado localmente
+    this.statusById[Number(event.reporteId)] = 'assigned_to_security';
+  }
+
+  // Confirmar (persistir) la asignación seleccionada para un reporte
+  confirmAssignment(reporteId: number){
+    const seguridad = this.assignedSecurityById[reporteId];
+    if(!seguridad) return;
+    // validar que exista prioridad seleccionada
+    const prioridadVal = this.priorityById[reporteId];
+    if(!prioridadVal){
+      console.warn('Debe seleccionar una prioridad antes de continuar');
+      // podríamos mostrar UI/Toast aquí; por ahora sólo retornamos
+      return;
+    }
+    const prioridad = prioridadVal.toUpperCase();
+    const estadoPayload = 'EN_PROCESO';
+    this.assignSavingById[reporteId] = true;
+    this.reporteService.updateGestion(reporteId, estadoPayload, prioridad, seguridad.id)
+      .pipe(finalize(() => { this.assignSavingById[reporteId] = false; }))
+      .subscribe({ next: res => {
+        console.debug('Asignación persistida', res);
+        // actualizar estado/assigned
+        this.assignedSecurityById[reporteId] = seguridad;
+        this.statusById[reporteId] = 'assigned_to_security';
+        this.assignConfirmedById[reporteId] = true;
+      }, error: err => {
+        console.error('Error persistiendo asignación', err);
+      }});
   }
 
   closeAssignModal(){

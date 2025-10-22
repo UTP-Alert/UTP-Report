@@ -65,9 +65,13 @@ export class ReporteService {
     return this.http.get<ReporteDTO>(`${this.baseUrl}/${id}`);
   }
 
-  updateGestion(reporteId: number, estado: string, prioridad: string): Observable<ReporteGestionDTO> {
-    const url = `${this.baseUrl}/gestion/${reporteId}`;
-    // send as query params (backend expects @RequestParam EstadoReporte estado, PrioridadReporte prioridad)
-    return this.http.post<ReporteGestionDTO>(url + `?estado=${encodeURIComponent(estado)}&prioridad=${encodeURIComponent(prioridad)}`, {});
+  updateGestion(reporteId: number, estado: string, prioridad: string, seguridadId?: number | null): Observable<ReporteGestionDTO> {
+    let url = `${this.baseUrl}/gestion/${reporteId}`;
+    const params: string[] = [];
+    if (estado != null) params.push(`estado=${encodeURIComponent(estado)}`);
+    if (prioridad != null) params.push(`prioridad=${encodeURIComponent(prioridad)}`);
+    if (seguridadId != null) params.push(`seguridadId=${encodeURIComponent(String(seguridadId))}`);
+    if (params.length) url += `?${params.join('&')}`;
+    return this.http.post<ReporteGestionDTO>(url, {});
   }
 }
