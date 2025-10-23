@@ -12,6 +12,7 @@ import { InicioSeguridad } from './Seguridad/inicio/inicio';
 import { AuthService } from './services/auth.service';
 import { ZonasPageCompleteComponent } from './Usuario/Estado_zonas/zonas-page-complete.component';
 import { AdminZonasPageCompleteComponent } from './Admin/Estado_zonas/zonas-page-complete.component'; // Import the new admin component
+import { EstadoZonasComponent } from './Seguridad/estado-zonas/estado-zonas'; // Import the new seguridad component
 import { GuiaPage } from './Usuario/guia-page/guia-page'; // Importa el nuevo componente
 
 export const routes: Routes = [
@@ -48,6 +49,7 @@ export const routes: Routes = [
   canActivate: [roleGuard], 
   data: { roles: ['ROLE_USUARIO', 'ROLE_ADMIN'] } 
 },
+	{ path: 'seguridad/estado-zonas', component: EstadoZonasComponent, canActivate: [roleGuard], data: { roles: ['ROLE_SEGURIDAD'] } },
 	{ path: '', pathMatch: 'full', redirectTo: 'superadmin/dashboard' },
 	{ path: '**', redirectTo: 'superadmin/dashboard' }
 ];

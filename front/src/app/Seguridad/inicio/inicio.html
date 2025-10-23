@@ -1,0 +1,238 @@
+<!-- Panel de Seguridad -->
+<div class="security-panel">
+  <!-- Header Superior -->
+  <header class="header">
+    <div class="header-left">
+      <div class="shield-container">
+        <span class="shield-icon material-icons">security</span>
+      </div>
+      <div class="header-info">
+        <h1 class="header-title">Panel de Seguridad</h1>
+        <p class="header-subtitle">Oficial Carlos Ramírez - S001</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="status-badge available">DISPONIBLE</span>
+      <button class="report-btn">
+        <span class="btn-icon material-icons">warning</span>
+        Reportar Incidente
+      </button>
+    </div>
+  </header>
+
+  <!-- Tarjetas de Estadísticas -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card pending">
+        <div class="stat-icon material-icons">schedule</div>
+        <div class="stat-content">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Reportes<br>Pendientes</div>
+        </div>
+      </div>
+      <div class="stat-card investigating">
+        <div class="stat-icon material-icons">visibility</div>
+        <div class="stat-content">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Investigando</div>
+        </div>
+      </div>
+      <div class="stat-card completed">
+        <div class="stat-icon material-icons">check_circle</div>
+        <div class="stat-content">
+          <div class="stat-number">2</div>
+          <div class="stat-label">Completados<br>Hoy</div>
+        </div>
+      </div>
+      <div class="stat-card high-priority">
+        <div class="stat-icon material-icons">warning</div>
+        <div class="stat-content">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Alta<br>Prioridad</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Panel de Control de Estado -->
+  <section class="control-panel">
+    <div class="panel-header">
+      <span class="panel-icon material-icons">person</span>
+      <h2 class="panel-title">Control de Estado de Servicio</h2>
+    </div>
+    <div class="control-grid">
+      <div class="control-item">
+        <label class="control-label">Estado Actual</label>
+        <select class="control-select">
+          <option>✅ Disponible</option>
+          <option>🟡 Ocupado</option>
+          <option>🔴 Fuera de Servicio</option>
+        </select>
+      </div>
+      <div class="control-item">
+        <label class="control-label">Zona Actual</label>
+        <select class="control-select">
+          <option>Campus Norte</option>
+          <!-- Add more options -->
+        </select>
+      </div>
+      <div class="control-item">
+        <label class="control-label">Reportes Activos</label>
+        <div class="active-reports">
+          <div class="reports-number">3</div>
+          <div class="reports-label">casos asignados</div>
+        </div>
+      </div>
+    </div>
+    <div class="patrol-alert">
+      <span class="alert-icon material-icons">location_on</span>
+      <span class="alert-text">Actualmente en patrullaje: Biblioteca Central</span>
+    </div>
+  </section>
+
+  <!-- Reportes Asignados a Seguridad -->
+  <section class="reports-section">
+    <div class="panel-header">
+      <span class="panel-icon material-icons">security</span>
+      <h2 class="panel-title">Reportes Asignados a Seguridad</h2>
+    </div>
+    <div class="reports-list">
+      <!-- Empty state example -->
+      <!--
+      <div class="empty-state">
+        <span class="empty-state-icon material-icons">security</span>
+        <p class="empty-state-text">No hay reportes asignados</p>
+        <p class="empty-state-subtext">Cuando se le asigne un reporte, aparecerá aquí.</p>
+      </div>
+      -->
+      <div class="report-card">
+        <div class="report-header">
+          <span class="priority-badge high">Prioridad alta</span>
+          <span class="status-badge investigating">Investigando</span>
+          <span class="report-id">ID: demo_rep</span>
+        </div>
+        <div class="report-content">
+          <h3 class="report-title">Robo</h3>
+          <div class="report-details">
+            <div class="detail-item">
+              <span class="detail-icon material-icons">location_on</span>
+              <span class="detail-text">Biblioteca Central</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon material-icons">schedule</span>
+              <span class="detail-text">21/10/2025, 5:02:54 p. m.</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon material-icons">person</span>
+              <span class="detail-text">U1234567@utp.edu.pe</span>
+            </div>
+            <!-- Removed camera_alt as it's not in the image -->
+          </div>
+          <p class="report-description">Robo de laptop en el segundo piso de la biblioteca</p>
+        </div>
+        <div class="report-actions">
+          <button class="action-btn mark-in-progress">
+            <span class="btn-icon material-icons">visibility</span>
+            Marcar en Progreso
+          </button>
+          <button class="action-btn complete-report">
+            <span class="btn-icon material-icons">check_box</span>
+            Completar Reporte
+          </button>
+        </div>
+      </div>
+      <!-- Más reportes -->
+    </div>
+  </section>
+
+  <!-- Reportes Completados -->
+  <section class="completed-reports">
+    <div class="panel-header">
+      <span class="panel-icon material-icons">check_circle</span>
+      <h2 class="panel-title">Reportes Completados</h2>
+    </div>
+    <div class="completed-list">
+      <div class="completed-item">
+        <div class="completed-info">
+          <span class="completed-title">Robo de mochila - Biblioteca Central</span>
+          <span class="completed-badge">Resuelto</span>
+        </div>
+        <div class="completed-date">Completado: 22/10/2025</div>
+      </div>
+      <div class="completed-item">
+        <div class="completed-info">
+          <span class="completed-title">Persona sospechosa - Cafetería</span>
+          <span class="completed-badge">Resuelto</span>
+        </div>
+        <div class="completed-date">Completado: 22/10/2025</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Modal: Dirigiéndose a la Zona -->
+<div class="modal-overlay" id="going-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <span class="modal-icon material-icons">navigation</span>
+        Dirigiéndose a la Zona
+      </h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="navigation-icon">
+        <span class="nav-arrow material-icons">arrow_right_alt</span>
+      </div>
+      <p class="modal-text">
+        En camino a la zona del incidente<br><br>
+        Su estado ha sido actualizado a "Ocupado". Presione "He llegado" cuando esté en la ubicación.
+      </p>
+      <div class="destination-info">
+        <div class="info-item">Destino: Biblioteca Central</div>
+        <div class="info-item">Zona: Campus Norte</div>
+        <div class="info-item">Tipo: Robo de mochila</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary">Cerrar</button>
+      <button class="btn primary">
+        <span class="btn-icon material-icons">location_on</span>
+        He Llegado
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Completar Reporte -->
+<div class="modal-overlay" id="complete-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <span class="modal-icon material-icons">check_box</span>
+        Completar Reporte - Parte Policial
+      </h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="officer-info">Oficial: Carlos Ramírez (S001)</div>
+      <div class="report-summary">
+        <div class="summary-item">Reporte: Robo de mochila</div>
+        <div class="summary-item">Ubicación: Biblioteca Central</div>
+        <div class="summary-item">Descripción: [descripción original]</div>
+      </div>
+      <label class="textarea-label">
+        Descripción del Parte Policial *
+        <textarea class="police-description" placeholder="Describa detalladamente cómo se resolvió el incidente..."></textarea>
+      </label>
+      <p class="help-text">Esta descripción formará parte del parte oficial del incidente.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary">Cancelar</button>
+      <button class="btn primary">
+        <span class="btn-icon material-icons">check_box</span>
+        Completar Reporte
+      </button>
+    </div>
+  </div>
+</div>

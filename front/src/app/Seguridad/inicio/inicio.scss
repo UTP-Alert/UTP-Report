@@ -1,0 +1,954 @@
+// Paleta de colores
+$primary-red: #FF395C;
+$black: #000000;
+$white: #FFFFFF;
+$gray-50: #F9FAFB;
+$gray-100: #F3F4F6;
+$gray-200: #E5E7EB;
+$gray-500: #6B7280;
+$gray-600: #4B5563;
+$gray-700: #374151;
+$gray-900: #111827;
+$green-500: #10B981;
+$green-100: #D1FAE5;
+$green-50: #ECFDF5;
+$yellow-500: #EAB308;
+$yellow-100: #FEF3C7;
+$yellow-50: #FFF7ED;
+$red-500: #EF4444;
+$red-100: #FEE2E2;
+$blue-500: #3B82F6;
+$blue-100: #DBEAFE;
+$blue-50: #EFF6FF;
+$blue-200: #BFDBFE;
+$orange-500: #F97316;
+$orange-100: #FED7AA;
+$orange-600: #EA580C;
+$orange-700: #C2410C;
+$amber-500: #F59E0B;
+$purple-500: #A855F7;
+
+// Animaciones
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+// Estructura general
+.security-panel {
+  background-color: $gray-50;
+  padding: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Spacing entre secciones mobile */
+
+  @media (min-width: 768px) {
+    padding: 24px;
+    gap: 24px; /* Spacing entre secciones desktop */
+  }
+}
+
+// Header Superior
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px; /* Gap for responsive */
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.shield-container {
+  width: 40px;
+  height: 40px;
+  background-color: $primary-red;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.shield-icon {
+  font-size: 20px;
+  color: $white;
+
+  @media (min-width: 768px) {
+    font-size: 24px;
+  }
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: $gray-900;
+  margin: 0;
+
+  @media (min-width: 768px) {
+    font-size: 20px;
+  }
+}
+
+.header-subtitle {
+  font-size: 14px;
+  color: $gray-600;
+  margin: 4px 0 0 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  @media (max-width: 767px) {
+    justify-content: center;
+  }
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: $white; /* All status badges have white text */
+
+  &.available {
+    background-color: $green-500;
+  }
+
+  &.occupied {
+    background-color: $yellow-500;
+  }
+
+  &.out-of-service {
+    background-color: $red-500;
+  }
+}
+
+.report-btn {
+  background-color: $primary-red;
+  color: $white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.btn-icon {
+  font-size: 16px; /* AlertTriangle size 16px */
+}
+
+// Tarjetas de Estadísticas
+.stats-section {
+  /* No specific styles needed here, gap is handled by parent */
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+}
+
+.stat-card {
+  background-color: $white;
+  border: 1px solid $gray-200;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  @media (min-width: 768px) {
+    padding: 24px;
+    gap: 16px;
+  }
+
+  .stat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px; /* Icono tamaño 20px (mobile) */
+
+    @media (min-width: 768px) {
+      width: 40px;
+      height: 40px;
+      font-size: 24px; /* Icono tamaño 24px (desktop) */
+    }
+  }
+
+  .stat-content {
+    flex: 1;
+  }
+
+  .stat-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: $gray-900;
+
+    @media (min-width: 768px) {
+      font-size: 28px;
+    }
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: $gray-600;
+    line-height: 1.2;
+
+    @media (min-width: 768px) {
+      font-size: 14px;
+    }
+  }
+
+  &.pending {
+    .stat-icon {
+      background-color: $blue-100;
+      color: #2563EB; /* Blue 600 */
+    }
+  }
+
+  &.investigating {
+    .stat-icon {
+      background-color: $orange-100;
+      color: $orange-600;
+    }
+  }
+
+  &.completed {
+    .stat-icon {
+      background-color: $green-100;
+      color: #059669; /* Green 600 */
+    }
+  }
+
+  &.high-priority {
+    .stat-icon {
+      background-color: $red-100;
+      color: #DC2626; /* Red 600 */
+    }
+  }
+}
+
+// Panel de Control de Estado
+.control-panel {
+  background-color: $blue-50;
+  border: 1px solid $blue-200;
+  border-radius: 8px;
+  padding: 16px;
+
+  @media (min-width: 768px) {
+    padding: 24px;
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.panel-icon {
+  font-size: 16px; /* User icon size */
+  color: inherit; /* Color heredado */
+
+  @media (min-width: 768px) {
+    font-size: 20px;
+  }
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: $gray-900;
+  margin: 0;
+
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
+}
+
+.control-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.control-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-label {
+  font-size: 12px;
+  color: $gray-600;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.control-select {
+  padding: 8px 12px;
+  border: 1px solid $gray-200;
+  border-radius: 6px;
+  background-color: $white;
+  font-size: 14px;
+  color: $gray-900;
+  cursor: pointer;
+  appearance: none; /* Remove default browser styling */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%20viewBox%3D%220%200%20292.4%20292.4%22%3E%3Cpath%20fill%3D%22%234B5563%22%20d%3D%22M287%20197.9L159.3%2069.2c-4.7-4.7-12.3-4.7-17%200L5.4%20197.9c-4.7%204.7-4.7%2012.3%200%2017l13.7%2013.7c4.7%204.7%2012.3%204.7%2017%200l118.8-118.7L256.3%20228.6c4.7%204.7%2012.3%204.7%2017%200l13.7-13.7c4.7-4.7%204.7-12.3%200-17z%22%2F%3E%3C%2Fsvg%3E'); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+  padding-right: 30px; /* Make space for the arrow */
+
+  &:focus {
+    outline: none;
+    border-color: $primary-red;
+  }
+}
+
+.active-reports {
+  background-color: $white;
+  border: 1px solid $gray-200;
+  border-radius: 6px;
+  padding: 12px;
+  text-align: center;
+}
+
+.reports-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: $red-500; /* Changed to Red 500 as per image */
+}
+
+.reports-label {
+  font-size: 12px;
+  color: $gray-600;
+}
+
+.patrol-alert {
+  background-color: $yellow-100;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alert-icon {
+  font-size: 16px; /* MapPin icon size */
+  color: #92400E; /* Yellow 900 */
+}
+
+.alert-text {
+  font-size: 14px;
+  color: #92400E;
+}
+
+// Reportes Asignados a Seguridad
+.reports-section {
+  background-color: $white;
+  border: 1px solid $gray-200;
+  border-radius: 8px;
+  padding: 16px;
+
+  @media (min-width: 768px) {
+    padding: 24px;
+  }
+}
+
+.reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  color: $gray-500;
+
+  .empty-state-icon {
+    font-size: 48px;
+    color: $gray-500;
+    margin-bottom: 16px;
+
+    @media (min-width: 768px) {
+      font-size: 64px;
+    }
+  }
+
+  .empty-state-text {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .empty-state-subtext {
+    font-size: 14px;
+    color: $gray-600;
+  }
+}
+
+.report-card {
+  border: 1px solid $gray-200;
+  border-radius: 8px;
+  padding: 12px;
+  background-color: $white;
+  transition: background-color 0.2s;
+
+  @media (min-width: 768px) {
+    padding: 16px;
+  }
+
+  &:hover {
+    background-color: $gray-50;
+  }
+}
+
+.report-header {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.priority-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: $white;
+
+  &.high {
+    background-color: $red-500;
+  }
+
+  &.medium {
+    background-color: $yellow-500;
+  }
+
+  &.low {
+    background-color: $green-500;
+  }
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: $white;
+  border: none; /* Ensure no border */
+
+  &.assigned {
+    background-color: $blue-500;
+  }
+
+  &.going-to-zone {
+    background-color: $amber-500;
+  }
+
+  &.investigating {
+    background-color: $orange-500;
+  }
+
+  &.in-progress {
+    background-color: $purple-500;
+  }
+
+  &.resolved {
+    background-color: $green-500;
+  }
+}
+
+.report-id {
+  color: $gray-500;
+  font-size: 12px;
+}
+
+.report-content {
+  margin-bottom: 16px;
+}
+
+.report-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: $gray-900;
+  margin: 0 0 12px 0;
+
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
+}
+
+.report-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-icon {
+  font-size: 14px;
+  color: $gray-600;
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+.detail-text {
+  font-size: 14px;
+  color: $gray-600;
+}
+
+.report-description {
+  font-size: 14px;
+  color: $gray-700;
+  line-height: 1.5;
+  margin: 0 0 16px 0; /* Margin bottom 16px */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-clamp: 3; /* Standard property for compatibility */
+}
+
+.report-actions {
+  display: flex;
+  gap: 8px;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+  }
+}
+
+.action-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+
+  &.go-to-zone {
+    background-color: $orange-600;
+    color: $white;
+
+    &:hover {
+      background-color: $orange-700;
+    }
+  }
+
+  &.arrived-at-zone {
+    background-color: #2563EB; /* Blue 600 */
+    color: $white;
+
+    &:hover {
+      background-color: #1D4ED8; /* Blue 700 */
+    }
+  }
+
+  &.mark-in-progress {
+    background-color: transparent;
+    color: $gray-700;
+    border: 1px solid $gray-200;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+  }
+
+  &.complete-report {
+    background-color: #059669; /* Green 600 */
+    color: $white;
+
+    &:hover {
+      background-color: #047857;
+    }
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+// Reportes Completados
+.completed-reports {
+  background-color: $white;
+  border: 1px solid $gray-200;
+  border-radius: 8px;
+  padding: 16px;
+
+  @media (min-width: 768px) {
+    padding: 24px;
+  }
+}
+
+.completed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.completed-item {
+  background-color: $green-50;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+.completed-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.completed-title {
+  font-size: 14px;
+  color: $gray-900;
+  font-weight: 500;
+}
+
+.completed-badge {
+  background-color: $green-100;
+  color: #065F46;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.completed-date {
+  font-size: 12px;
+  color: $gray-600;
+}
+
+// Modales
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none; /* Hidden by default */
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal {
+  background-color: $white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px; /* Max width for going-modal */
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Specific styles for complete-modal */
+#complete-modal .modal {
+  max-width: 600px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 20px 0 20px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: $gray-900;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-icon {
+  font-size: 18px;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: $gray-500;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.navigation-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.nav-arrow {
+  width: 64px;
+  height: 64px;
+  background-color: $orange-100;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: $orange-600;
+  animation: pulse 2s infinite;
+
+  @media (min-width: 768px) {
+    width: 80px;
+    height: 80px;
+    font-size: 40px;
+  }
+}
+
+.modal-text {
+  text-align: center;
+  color: $gray-700;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.destination-info {
+  background-color: #FFF7ED; /* Replaced $orange-50 with literal value to resolve compilation error */
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.info-item {
+  font-size: 14px;
+  color: $gray-700;
+  margin-bottom: 4px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.officer-info {
+  font-size: 14px;
+  color: $gray-600;
+  margin-bottom: 16px;
+}
+
+.report-summary {
+  background-color: $gray-50;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.summary-item {
+  font-size: 14px;
+  color: $gray-700;
+  margin-bottom: 4px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.textarea-label {
+  display: block;
+  font-size: 14px;
+  color: $gray-700;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.police-description {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 14px;
+  color: $gray-900;
+  resize: vertical;
+  font-family: inherit;
+
+  @media (min-width: 768px) {
+    min-height: 120px;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-red;
+    box-shadow: 0 0 0 3px rgba($primary-red, 0.1);
+  }
+
+  &::placeholder {
+    color: $gray-500;
+  }
+}
+
+.help-text {
+  font-size: 12px;
+  color: $gray-500;
+  margin-top: 4px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  padding: 0 20px 20px 20px;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+  }
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  border: none;
+
+  &.secondary {
+    background-color: transparent;
+    color: $gray-700;
+    border: 1px solid $gray-200;
+
+    &:hover {
+      background-color: $gray-100;
+    }
+  }
+
+  &.primary {
+    background-color: #2563EB; /* Blue 600 */
+    color: $white;
+
+    &:hover {
+      background-color: #1D4ED8; /* Blue 700 */
+    }
+  }
+
+  &.success {
+    background-color: #059669; /* Green 600 */
+    color: $white;
+
+    &:hover {
+      background-color: #047857;
+    }
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+    justify-content: center;
+  }
+}
