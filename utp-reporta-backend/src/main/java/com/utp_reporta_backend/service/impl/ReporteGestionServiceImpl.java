@@ -55,12 +55,15 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
         if (existingReporteGestion.isPresent()) {
             reporteGestionToSave = existingReporteGestion.get();
             reporteGestionToSave.setEstado(estado);
-            reporteGestionToSave.setPrioridad(prioridad);
+            if (prioridad != null) { // Only update priority if provided
+                reporteGestionToSave.setPrioridad(prioridad);
+            }
             reporteGestionToSave.setFechaActualizacion(timeService.getCurrentLocalDateTimePeru());
         } else {
             reporteGestionToSave = new ReporteGestion();
             reporteGestionToSave.setReporte(reporte);
             reporteGestionToSave.setEstado(estado);
+            // For new ReporteGestion, set priority if provided, otherwise it will be null
             reporteGestionToSave.setPrioridad(prioridad);
             reporteGestionToSave.setFechaActualizacion(timeService.getCurrentLocalDateTimePeru());
         }
@@ -73,5 +76,27 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
         dto.setPrioridad(savedReporteGestion.getPrioridad());
         dto.setFechaActualizacion(savedReporteGestion.getFechaActualizacion());
         return dto;
+    }
+
+    @Override
+    public ReporteGestionDTO irAZona(Long reporteId) {
+        return updateReporteGestion(reporteId, EstadoReporte.UBICANDO, null, null);
+    }
+
+    @Override
+    public ReporteGestionDTO zonaUbicada(Long reporteId) {
+        return updateReporteGestion(reporteId, EstadoReporte.INVESTIGANDO, null, null);
+    }
+
+    @Override
+    public ReporteGestionDTO completarReporte(Long reporteId, String mensajeSeguridad) {
+        Optional<Reporte> reporteOptional = reporteRepository.findById(reporteId);
+        if (reporteOptional.isEmpty()) {
+            throw new RuntimeException("Reporte no encontrado con ID: " + reporteId);
+        }
+        Reporte reporte = reporteOptional.get();
+        reporte.setMensajeSeguridad(mensajeSeguridad); // Assuming a setter for mensajeSeguridad exists in Reporte
+        reporteRepository.save(reporte);
+        return updateReporteGestion(reporteId, EstadoReporte.RESUELTO, null, null);
     }
 }

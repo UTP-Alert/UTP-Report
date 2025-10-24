@@ -23,6 +23,7 @@ public class ReporteGestion {
     private Reporte reporte;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 30) // Increased length to accommodate longer enum names
     private EstadoReporte estado;
 
     @Enumerated(EnumType.STRING)
