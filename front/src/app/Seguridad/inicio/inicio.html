@@ -91,59 +91,8 @@
   </section>
 
   <!-- Reportes Asignados a Seguridad -->
-  <section class="reports-section">
-    <div class="panel-header">
-      <span class="panel-icon material-icons">security</span>
-      <h2 class="panel-title">Reportes Asignados a Seguridad</h2>
-    </div>
-    <div class="reports-list">
-      <!-- Empty state example -->
-      <!--
-      <div class="empty-state">
-        <span class="empty-state-icon material-icons">security</span>
-        <p class="empty-state-text">No hay reportes asignados</p>
-        <p class="empty-state-subtext">Cuando se le asigne un reporte, aparecerá aquí.</p>
-      </div>
-      -->
-      <div class="report-card">
-        <div class="report-header">
-          <span class="priority-badge high">Prioridad alta</span>
-          <span class="status-badge investigating">Investigando</span>
-          <span class="report-id">ID: demo_rep</span>
-        </div>
-        <div class="report-content">
-          <h3 class="report-title">Robo</h3>
-          <div class="report-details">
-            <div class="detail-item">
-              <span class="detail-icon material-icons">location_on</span>
-              <span class="detail-text">Biblioteca Central</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-icon material-icons">schedule</span>
-              <span class="detail-text">21/10/2025, 5:02:54 p. m.</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-icon material-icons">person</span>
-              <span class="detail-text">U1234567@utp.edu.pe</span>
-            </div>
-            <!-- Removed camera_alt as it's not in the image -->
-          </div>
-          <p class="report-description">Robo de laptop en el segundo piso de la biblioteca</p>
-        </div>
-        <div class="report-actions">
-          <button class="action-btn mark-in-progress">
-            <span class="btn-icon material-icons">visibility</span>
-            Marcar en Progreso
-          </button>
-          <button class="action-btn complete-report">
-            <span class="btn-icon material-icons">check_box</span>
-            Completar Reporte
-          </button>
-        </div>
-      </div>
-      <!-- Más reportes -->
-    </div>
-  </section>
+  <!-- Reportes Asignados a Seguridad (migrado al componente) -->
+  <app-reportes-asignados></app-reportes-asignados>
 
   <!-- Reportes Completados -->
   <section class="completed-reports">

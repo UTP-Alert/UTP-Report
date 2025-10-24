@@ -1,0 +1,62 @@
+<section class="reports-section">
+	<div class="panel-header">
+		<span class="panel-icon material-icons">security</span>
+		<h2 class="panel-title">Reportes Asignados a Seguridad</h2>
+	</div>
+	<div class="reports-list">
+		<ng-container *ngIf="loading; else loadedTpl">
+			<div class="loading">Cargando reportes...</div>
+		</ng-container>
+		<ng-template #loadedTpl>
+			<div *ngIf="reportes.length === 0" class="empty-state">
+				<span class="empty-state-icon material-icons">security</span>
+				<p class="empty-state-text">No hay reportes asignados</p>
+				<p class="empty-state-subtext">Cuando se le asigne un reporte, aparecerá aquí.</p>
+			</div>
+
+			<div *ngFor="let r of reportes" class="report-card">
+				<div class="report-header">
+								<span class="priority-badge" [ngClass]="{'high': r.ultimaPrioridad === 'alta', 'medium': r.ultimaPrioridad === 'media', 'low': r.ultimaPrioridad === 'baja'}">
+									{{ r.ultimaPrioridad ? ('Prioridad ' + (r.ultimaPrioridad === 'alta' ? 'alta' : (r.ultimaPrioridad === 'media' ? 'media' : (r.ultimaPrioridad === 'baja' ? 'baja' : r.ultimaPrioridad)))) : 'Sin prioridad' }}</span>
+					<span class="status-badge">{{ r.ultimoEstado || 'En espera' }}</span>
+					<span class="report-id">ID: {{ r.id }}</span>
+				</div>
+				<div class="report-content">
+					  <h3 class="report-title">{{ tiposMap[r.tipoIncidenteId] || r.tipoIncidenteId }}</h3>
+					<div class="report-details">
+						<div class="detail-item">
+							<span class="detail-icon material-icons">location_on</span>
+							<span class="detail-text">{{ zonasMap[r.zonaId] || 'Zona ' + r.zonaId }}</span>
+						</div>
+						<div class="detail-item">
+							<span class="detail-icon material-icons">schedule</span>
+							<span class="detail-text">{{ r.fechaCreacion | date:'short' }}</span>
+						</div>
+									<div class="detail-item">
+										<span class="detail-icon material-icons">person</span>
+										<span class="detail-text">
+											<ng-container *ngIf="r.isAnonimo; else notAnon">
+												Anónimo
+											</ng-container>
+											<ng-template #notAnon>
+												{{ r.contacto || (r.usuarioId ? usuariosMap[r.usuarioId] : '---') }}
+											</ng-template>
+										</span>
+									</div>
+					</div>
+					<p class="report-description">{{ r.descripcion }}</p>
+				</div>
+				<div class="report-actions">
+					<button class="action-btn mark-in-progress" (click)="marcarEnProgreso(r.id)">
+						<span class="btn-icon material-icons">visibility</span>
+						Marcar en Progreso
+					</button>
+					<button class="action-btn complete-report" (click)="completarReporte(r.id)">
+						<span class="btn-icon material-icons">check_box</span>
+						Completar Reporte
+					</button>
+				</div>
+			</div>
+		</ng-template>
+	</div>
+</section>

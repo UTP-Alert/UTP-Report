@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { PerfilService } from '../../services/perfil.service';
 import { RouterModule } from '@angular/router';
+import { ReportesAsignados } from './reportes-asignados/reportes-asignados';
 
 @Component({
   selector: 'app-inicio-seguridad',
-  imports: [RouterModule],
+  imports: [RouterModule, ReportesAsignados],
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss'
 })
