@@ -1,0 +1,109 @@
+/* Styles for Reportes Asignados - layout similar to the provided screenshot */
+
+.reports-section {
+	.panel-header {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin-bottom: 12px;
+	}
+
+	.reports-list {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+
+	.report-card {
+		background: #fff;
+		border-radius: 8px;
+		border: 1px solid #e6e6e6;
+		padding: 18px;
+		box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.report-header {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.priority-badge {
+		font-size: 12px;
+		padding: 6px 10px;
+		border-radius: 12px;
+		color: #fff;
+		display: inline-block;
+	}
+	/* Colores alineados con Admin (usar las variables fijas usadas en Admin) */
+	.priority-badge.high { background: #ef4444; } /* rojo - Admin: $red-500 */
+	.priority-badge.medium { background: #f59e0b; } /* amarillo - Admin: $yellow-500 */
+	.priority-badge.low { background: #3b82f6; } /* azul - Admin: $blue-500 */
+
+	.status-badge {
+		background: #6b5dd6;
+		color: #fff;
+		padding: 6px 10px;
+		border-radius: 12px;
+		font-size: 12px;
+		text-transform: none;
+	}
+
+	.report-id { color: #9aa0a6; font-size: 12px; margin-left: auto; }
+
+	.report-title { font-size: 20px; margin: 6px 0; color: #222; }
+
+	.report-details {
+		display: flex;
+		gap: 20px;
+		align-items: center;
+		color: #55606a;
+		font-size: 13px;
+	}
+
+	.detail-item { display:flex; gap:8px; align-items:center; }
+	.detail-item .material-icons { font-size: 18px; color:#9aa0a6; }
+
+	.report-description { color:#333; margin-top: 8px; }
+
+	.report-actions {
+		margin-top: 8px;
+		display: flex;
+		gap: 12px;
+	}
+
+	.complete-report {
+		background: #16a34a;
+		color: #fff;
+		border: none;
+		padding: 10px 14px;
+		border-radius: 6px;
+		width: 100%;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		font-weight: 600;
+	}
+
+	.action-btn {
+		border: 1px solid #e2e8f0;
+		padding: 8px 12px;
+		border-radius: 6px;
+		background: #fff;
+		color: #1f2937;
+		cursor: pointer;
+	}
+
+	.loading { padding: 12px; color: #6b7280 }
+
+	.empty-state { text-align: center; color: #6b7280; padding: 24px; }
+}
+
+/* Small responsive tweaks */
+@media (max-width: 640px){
+	.reports-section .report-details { flex-direction: column; align-items: flex-start; gap: 6px }
+}
