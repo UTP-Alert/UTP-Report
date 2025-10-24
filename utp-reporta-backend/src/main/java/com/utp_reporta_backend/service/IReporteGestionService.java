@@ -6,5 +6,8 @@ import com.utp_reporta_backend.enums.PrioridadReporte;
 
 public interface IReporteGestionService {
     ReporteGestionDTO updateReporteGestion(Long reporteId, EstadoReporte estado, PrioridadReporte prioridad, Long seguridadId);
+    ReporteGestionDTO irAZona(Long reporteId);
+    ReporteGestionDTO zonaUbicada(Long reporteId);
+    ReporteGestionDTO completarReporte(Long reporteId, String mensajeSeguridad);
     // Potentially add other methods like getLatestReporteGestion if needed later
 }
