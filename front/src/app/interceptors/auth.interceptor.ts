@@ -6,11 +6,13 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
   const token = localStorage.getItem('auth_token');
   const isAuthEndpoint = req.url.includes('/api/auth/');
   const isUsuariosMe = req.url.includes('/api/usuarios/me');
+  // Endpoints que consideramos públicos (no requieren token)
+  // NOTA: las llamadas a '/api/reportes' deben llevar token para acciones de seguridad,
+  // por eso NO se incluyen aquí.
   const isPublic = isAuthEndpoint
     || req.url.includes('/api/zonas')
     || req.url.includes('/api/tipoincidentes')
-    || req.url.includes('/api/sedes')
-    || req.url.includes('/api/reportes'); // ojo: '/api/usuarios/me' no es público
+    || req.url.includes('/api/sedes');
 
   const isExpired = (tok?: string): boolean => {
     if (!tok) return true;

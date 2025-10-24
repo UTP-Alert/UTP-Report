@@ -29,7 +29,7 @@
   <article *ngFor="let it of items" [ngClass]="cardClassFor(it.priority || '') + ' report-card'">
     <div class="badges">
       <span [ngClass]="priorityBadgeClassFor(it.priority)">{{ (it.priority || '') | uppercase }}</span>
-      <span class="badge bg-blue-500">EN PROCESO</span>
+      <span class="badge bg-blue-500">{{ estadoDisplay(it.report) }}</span>
     </div>
 
     <div class="report-inner">
@@ -62,6 +62,10 @@
               <div class="form-col">
                 <label class="label">Estado del Proceso</label>
                 <div class="info-grid" style="background:#fff; padding:12px; border-radius:8px;">
+                  <div style="grid-column:1/-1; margin-bottom:8px;">
+                
+                    <strong>Estado del proceso: {{ estadoDisplay(it.report) }}</strong>
+                  </div>
                   <div>
                     <p>Asignado a</p>
                     <strong>

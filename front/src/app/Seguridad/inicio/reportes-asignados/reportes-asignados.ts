@@ -46,6 +46,76 @@ export class ReportesAsignados {
     });
   }
 
+  // Modal state for "Ir a la Zona"
+  selectedReport: ReporteDTO | null = null;
+  modalVisible: boolean = false;
+  // When true, the modal cannot be dismissed except by 'heLlegado' action
+  modalLocked: boolean = false;
+  // Completar reporte modal
+  completeModalVisible: boolean = false;
+  policeDescription: string = '';
+
+  async irALaZona(reporte: ReporteDTO){
+    // Show modal UI immediately and call backend to set estado = 'UBICANDO'
+    // We avoid setting the global `loading` flag so the rest of the UI does not get hidden.
+    this.selectedReport = reporte;
+    this.modalVisible = true;
+    this.modalLocked = true; // lock modal while we optimistically set UBICANDO
+    // fire-and-handle the backend update; keep UI responsive
+    (async () => {
+      try{
+        // use dedicated backend endpoint PUT /ir-a-zona
+        this.reporteService.irAZona(reporte.id).subscribe({ next: (g: any) => {
+          const idx = this.reportes.findIndex(r => r.id === reporte.id);
+          if(idx !== -1){
+            this.reportes[idx] = {
+              ...this.reportes[idx],
+              ultimaPrioridad: (g && g.prioridad) ? String(g.prioridad).toLowerCase() : (this.reportes[idx].ultimaPrioridad || ''),
+              ultimoEstado: (g && g.estado) ? String(g.estado) : 'UBICANDO'
+            } as ReporteDTO;
+          }
+        }, error: (_: any) => { console.error('Error irAZona', _); this.modalLocked = false; } });
+      }catch(e){ this.modalLocked = false; }
+    })();
+  }
+
+  private async getCurrentUserId(): Promise<number | null> {
+    try{
+      const perfilObs: any = (this.perfil as any).obtenerPerfil ? (this.perfil as any).obtenerPerfil() : null;
+      if(perfilObs){
+        return new Promise<number|null>((resolve) => {
+          perfilObs.subscribe({ next: (p: any) => resolve(p && (p.id || p.usuarioId) ? Number(p.id || p.usuarioId) : null), error: () => resolve(null) });
+        });
+      }
+      const sig = (this.perfil as any).perfil ? (this.perfil as any).perfil() : null;
+      return sig && (sig.id || sig.usuarioId) ? Number(sig.id || sig.usuarioId) : null;
+    }catch(e){ return null; }
+  }
+
+  async heLlegadoALaZona(){
+    if(!this.selectedReport) return;
+    this.modalLocked = true;
+    this.reporteService.zonaUbicada(this.selectedReport.id).subscribe({ next: (g: any) => {
+      this.modalVisible = false;
+      this.modalLocked = false;
+      this.selectedReport = null;
+      this.loadReportesAsignados();
+    }, error: (_: any) => { this.modalLocked = false; } });
+  }
+
+  closeModal(){
+    if(this.modalLocked) return;
+    this.modalVisible = false;
+    this.selectedReport = null;
+  }
+
+  // Emergency force-close, for recovery if modal blocks the UI
+  forceClose(){
+    this.modalLocked = false;
+    this.modalVisible = false;
+    this.selectedReport = null;
+  }
+
   private loadAuxData(){
     // load zonas
     this.zonaService.obtenerZonas().subscribe({ next: list => { (list||[]).forEach(z => this.zonasMap[z.id] = z.nombre); }, error: _ => {} });
@@ -90,6 +160,61 @@ export class ReportesAsignados {
   }
 
   completarReporte(reporteId: number){
-    this.reporteService.updateGestion(reporteId, 'RESUELTO', 'media', null).subscribe({ next: _ => { this.loadReportesAsignados(); }, error: _ => { this.loadReportesAsignados(); } });
+    // open the completar modal for the selected report
+    const r = this.reportes.find(x => x.id === reporteId) || null;
+    if(r){
+      this.selectedReport = r;
+      this.policeDescription = '';
+      this.completeModalVisible = true;
+    }
+  }
+
+  submitComplete(){
+    if(!this.selectedReport) return;
+    const msg = (this.policeDescription || '').trim();
+    if(!msg) return;
+    // capture id locally to avoid race conditions if selectedReport is cleared before response
+    const reporteId = this.selectedReport.id;
+    this.reporteService.completarReporteConParte(reporteId, msg).subscribe({ next: (g: any) => {
+      // optimistic local update so UI shows pending approval immediately
+      const idx = this.reportes.findIndex(r => r.id === reporteId);
+      if(idx !== -1){
+        this.reportes[idx] = {
+          ...this.reportes[idx],
+          mensajeSeguridad: msg,
+          ultimoEstado: (g && g.estado) ? String(g.estado) : 'PENDIENTE_APROBACION'
+        } as ReporteDTO;
+        // publish to global snapshot so admin views (pend-aprobacion) can refresh live
+        try{ this.reportState.setReporte(this.reportes[idx]); }catch(e){}
+      }
+      this.completeModalVisible = false;
+      // clear selection
+      this.selectedReport = null;
+      this.policeDescription = '';
+      this.loadReportesAsignados();
+      console.log('Reporte completado y mensaje guardado');
+    }, error: (_: any) => {
+      // keep modal open and optionally show error
+      console.error('Error completando reporte', _);
+      alert('Error al completar el reporte. Revisa la consola o intenta de nuevo.');
+    } });
+  }
+
+  get officerLabel(): string {
+    try{
+      const sig = (this.perfil as any).perfil ? (this.perfil as any).perfil() : null;
+      if(!sig) return 'Oficial Seguridad';
+      return sig.nombreCompleto || sig.nombre || sig.username || (`SEC-${sig.id || sig.usuarioId || ''}`);
+    }catch(e){ return 'Oficial Seguridad'; }
+  }
+
+  getTipoName(tipoId?: number | null): string {
+    if(!tipoId && tipoId !== 0) return '';
+    return this.tiposMap[tipoId as number] || String(tipoId);
+  }
+
+  getZonaName(zonaId?: number | null): string {
+    if(!zonaId && zonaId !== 0) return '';
+    return this.zonasMap[zonaId as number] || ('Zona ' + String(zonaId));
   }
 }
