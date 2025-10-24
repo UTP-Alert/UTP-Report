@@ -5,7 +5,7 @@ public enum EstadoReporte {
     EN_PROCESO,
     UBICANDO,
     INVESTIGANDO,
+    PENDIENTE_APROBACION,
     RESUELTO,
-    CASOCERRADO,
     CANCELADO
 }

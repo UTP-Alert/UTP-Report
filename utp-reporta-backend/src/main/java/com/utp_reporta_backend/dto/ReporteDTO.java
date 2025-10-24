@@ -20,5 +20,6 @@ public class ReporteDTO {
     private String contacto;
     private Long usuarioId;
     private Long seguridadAsignadoId;
+    private String mensajeSeguridad;
     private ReporteGestionDTO reporteGestion;
 }

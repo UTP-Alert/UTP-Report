@@ -12,11 +12,13 @@ export interface ReporteDTO {
   isAnonimo: boolean;
   contacto?: string;
   usuarioId: number;
+  mensajeSeguridad?: string | null;
   // campos adicionales proporcionados por el backend para estado actual
   ultimoEstado?: string | null;
   ultimaPrioridad?: string | null;
   seguridadAsignadoId?: number | null;
   fechaUltimaGestion?: string | null;
+  reporteGestion?: ReporteGestionDTO | null;
 }
 
 export interface ReporteGestionDTO {
@@ -78,5 +80,18 @@ export class ReporteService {
     if (seguridadId != null) params.push(`seguridadId=${encodeURIComponent(String(seguridadId))}`);
     if (params.length) url += `?${params.join('&')}`;
     return this.http.post<ReporteGestionDTO>(url, {});
+  }
+
+  irAZona(reporteId: number): Observable<ReporteGestionDTO> {
+    return this.http.put<ReporteGestionDTO>(`${this.baseUrl}/gestion/${reporteId}/ir-a-zona`, {});
+  }
+
+  zonaUbicada(reporteId: number): Observable<ReporteGestionDTO> {
+    return this.http.put<ReporteGestionDTO>(`${this.baseUrl}/gestion/${reporteId}/zona-ubicada`, {});
+  }
+
+  completarReporteConParte(reporteId: number, mensajeSeguridad: string): Observable<ReporteGestionDTO> {
+    const url = `${this.baseUrl}/gestion/${reporteId}/completar?mensajeSeguridad=${encodeURIComponent(mensajeSeguridad)}`;
+    return this.http.put<ReporteGestionDTO>(url, {});
   }
 }

@@ -97,6 +97,6 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
         Reporte reporte = reporteOptional.get();
         reporte.setMensajeSeguridad(mensajeSeguridad); // Assuming a setter for mensajeSeguridad exists in Reporte
         reporteRepository.save(reporte);
-        return updateReporteGestion(reporteId, EstadoReporte.RESUELTO, null, null);
+    return updateReporteGestion(reporteId, EstadoReporte.PENDIENTE_APROBACION, null, null);
     }
 }

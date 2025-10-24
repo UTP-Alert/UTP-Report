@@ -86,8 +86,11 @@ export class EnProceso implements OnInit {
         // Compatibilidad: preferir `reporteGestion.estado` / `reporteGestion.prioridad`
         // y caer a campos antiguos (`ultimoEstado` / `ultimaPrioridad`) si no existen.
         const estado = (r as any).reporteGestion && (r as any).reporteGestion.estado ? String((r as any).reporteGestion.estado) : ((r as any).ultimoEstado || '');
-        // filter by estado EN_PROCESO and by selectedZonaId if provided
-        if(estado === 'EN_PROCESO'){
+  // filter by estados that represent an active in-process flow
+  // keep reports that are EN_PROCESO, UBICANDO or INVESTIGANDO so
+  // when seguridad marca 'Ir a la Zona' (UBICANDO) the report stays
+  // visible in this list until it's finally sent (PENDIENTE_APROBACION)
+  if(['EN_PROCESO','UBICANDO','INVESTIGANDO'].includes(estado)){
           if(zonaId != null && Number(r.zonaId) !== Number(zonaId)) continue;
           const priority = (r as any).reporteGestion && (r as any).reporteGestion.prioridad ? String((r as any).reporteGestion.prioridad).toLowerCase() : ((r as any).ultimaPrioridad ? String((r as any).ultimaPrioridad).toLowerCase() : '');
           map[r.id] = { id: r.id, priority: (priority as any), assigned: (r as any).seguridadAsignadoId ? { id: (r as any).seguridadAsignadoId } : undefined, report: r };
@@ -228,6 +231,22 @@ export class EnProceso implements OnInit {
     };
     if(!p) return '#d1d5db';
     return map[p] || '#d1d5db';
+  }
+
+  // Devuelve una cadena legible para el estado actual del reporte
+  estadoDisplay(report: any): string{
+    if(!report) return 'Sin estado';
+    const raw = (report.reporteGestion && report.reporteGestion.estado) ? String(report.reporteGestion.estado) : (report.ultimoEstado || '');
+    const key = (raw || '').toUpperCase();
+    switch(key){
+      case 'UBICANDO': return 'Ubicando';
+      case 'INVESTIGANDO': return 'Investigando';
+      case 'EN_PROCESO': return 'En proceso';
+      case 'PENDIENTE_APROBACION': return 'Pendiente de aprobación';
+      case 'RESUELTO': return 'Resuelto';
+      case 'CANCELADO': return 'Cancelado';
+      default: return raw ? (raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase()) : 'Sin estado';
+    }
   }
 
 }
