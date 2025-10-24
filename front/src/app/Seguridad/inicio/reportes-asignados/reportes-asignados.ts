@@ -61,8 +61,12 @@ export class ReportesAsignados {
     const perfilObs: any = (this.perfil as any).obtenerPerfil ? (this.perfil as any).obtenerPerfil() : null;
     const finishWithList = (list: ReporteDTO[], myId: number | null) => {
       const filtered = (list || []).filter(r => r.seguridadAsignadoId === myId);
-      // normalize prioridad to lowercase keys we expect
-      this.reportes = filtered.map(r => ({ ...r, ultimaPrioridad: (r as any).ultimaPrioridad ? String((r as any).ultimaPrioridad).toLowerCase() : '' }));
+      // normalize prioridad/estado to lowercase keys we expect, prefer backend.reporteGestion
+      this.reportes = filtered.map(r => ({
+        ...r,
+        ultimaPrioridad: (r as any).reporteGestion && (r as any).reporteGestion.prioridad ? String((r as any).reporteGestion.prioridad).toLowerCase() : ((r as any).ultimaPrioridad ? String((r as any).ultimaPrioridad).toLowerCase() : ''),
+        ultimoEstado: (r as any).reporteGestion && (r as any).reporteGestion.estado ? String((r as any).reporteGestion.estado) : ((r as any).ultimoEstado || '')
+      }));
       this.loading = false;
     };
 

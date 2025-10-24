@@ -82,11 +82,14 @@ export class EnProceso implements OnInit {
       this.reportSedeId = null;
       const zonaIds: Set<number> = new Set();
       for(const r of list || []){
-        const estado = (r as any).ultimoEstado || '';
+        // Backend ahora incorpora la info de gestión dentro de `reporteGestion`.
+        // Compatibilidad: preferir `reporteGestion.estado` / `reporteGestion.prioridad`
+        // y caer a campos antiguos (`ultimoEstado` / `ultimaPrioridad`) si no existen.
+        const estado = (r as any).reporteGestion && (r as any).reporteGestion.estado ? String((r as any).reporteGestion.estado) : ((r as any).ultimoEstado || '');
         // filter by estado EN_PROCESO and by selectedZonaId if provided
         if(estado === 'EN_PROCESO'){
           if(zonaId != null && Number(r.zonaId) !== Number(zonaId)) continue;
-          const priority = (r as any).ultimaPrioridad ? ((r as any).ultimaPrioridad as string).toLowerCase() : '';
+          const priority = (r as any).reporteGestion && (r as any).reporteGestion.prioridad ? String((r as any).reporteGestion.prioridad).toLowerCase() : ((r as any).ultimaPrioridad ? String((r as any).ultimaPrioridad).toLowerCase() : '');
           map[r.id] = { id: r.id, priority: (priority as any), assigned: (r as any).seguridadAsignadoId ? { id: (r as any).seguridadAsignadoId } : undefined, report: r };
           if(r.zonaId) zonaIds.add(Number(r.zonaId));
         }
