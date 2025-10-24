@@ -13,9 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ReporteGestionDTO {
     private Long id;
-    private Long reporteId;
     private EstadoReporte estado;
     private PrioridadReporte prioridad;
     private LocalDateTime fechaActualizacion;
-    private Long seguridadId;
 }

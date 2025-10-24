@@ -20,8 +20,5 @@ public class ReporteDTO {
     private String contacto;
     private Long usuarioId;
     private Long seguridadAsignadoId;
-    // Último estado/proceso (si existe)
-    private String ultimoEstado;
-    private String ultimaPrioridad;
-    private java.time.LocalDateTime fechaUltimaGestion;
+    private ReporteGestionDTO reporteGestion;
 }
