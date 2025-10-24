@@ -18,8 +18,8 @@ public class ReporteGestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Independent primary key for ReporteGestion
 
-    @ManyToOne
-    @JoinColumn(name = "reporte_id", nullable = false) // Many ReporteGestion entries can belong to one Reporte
+    @OneToOne
+    @JoinColumn(name = "reporte_id", nullable = false, unique = true) // One-to-one relationship with Reporte
     private Reporte reporte;
 
     @Enumerated(EnumType.STRING)

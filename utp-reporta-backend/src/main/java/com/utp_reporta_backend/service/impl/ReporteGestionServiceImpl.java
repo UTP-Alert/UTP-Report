@@ -49,11 +49,11 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
             reporteRepository.save(reporte);
         }
 
-        // Si existe una entrada PENDIENTE para este reporte, actualízala en lugar de crear una nueva
         ReporteGestion reporteGestionToSave;
-        Optional<ReporteGestion> pendingOpt = reporteGestionRepository.findFirstByReporteAndEstado(reporte, EstadoReporte.PENDIENTE);
-        if(pendingOpt.isPresent()){
-            reporteGestionToSave = pendingOpt.get();
+        Optional<ReporteGestion> existingReporteGestion = reporteGestionRepository.findByReporte(reporte);
+
+        if (existingReporteGestion.isPresent()) {
+            reporteGestionToSave = existingReporteGestion.get();
             reporteGestionToSave.setEstado(estado);
             reporteGestionToSave.setPrioridad(prioridad);
             reporteGestionToSave.setFechaActualizacion(timeService.getCurrentLocalDateTimePeru());
@@ -69,13 +69,9 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
 
         ReporteGestionDTO dto = new ReporteGestionDTO();
         dto.setId(savedReporteGestion.getId());
-        dto.setReporteId(savedReporteGestion.getReporte().getId());
         dto.setEstado(savedReporteGestion.getEstado());
         dto.setPrioridad(savedReporteGestion.getPrioridad());
         dto.setFechaActualizacion(savedReporteGestion.getFechaActualizacion());
-        if (reporte.getSeguridadAsignado() != null) {
-            dto.setSeguridadId(reporte.getSeguridadAsignado().getId());
-        }
         return dto;
     }
 }

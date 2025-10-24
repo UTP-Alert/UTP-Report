@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -40,8 +38,8 @@ public class Reporte {
 
     private String contacto;
 
-    @OneToMany(mappedBy = "reporte", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ReporteGestion> historialGestion;
+    @OneToOne(mappedBy = "reporte", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ReporteGestion reporteGestion;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)

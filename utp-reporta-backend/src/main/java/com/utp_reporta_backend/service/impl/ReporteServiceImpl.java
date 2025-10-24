@@ -2,7 +2,6 @@ package com.utp_reporta_backend.service.impl;
 
 import com.utp_reporta_backend.dto.ReporteDTO;
 import com.utp_reporta_backend.model.Reporte;
-import com.utp_reporta_backend.model.ReporteGestion;
 import com.utp_reporta_backend.model.TipoIncidente;
 import com.utp_reporta_backend.model.Usuario;
 import com.utp_reporta_backend.model.Zona;
@@ -11,6 +10,7 @@ import com.utp_reporta_backend.repository.TipoIncidenteRepository;
 import com.utp_reporta_backend.repository.UsuarioRepository;
 import com.utp_reporta_backend.repository.ZonaRepository;
 import com.utp_reporta_backend.service.ReporteService;
+import com.utp_reporta_backend.dto.ReporteGestionDTO;
 import com.utp_reporta_backend.service.TimeService; // Import TimeService
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,14 +57,13 @@ public class ReporteServiceImpl implements ReporteService {
                     dto.setContacto(reporte.getContacto());
                     dto.setUsuarioId(reporte.getUsuario().getId());
                     if(reporte.getSeguridadAsignado() != null) dto.setSeguridadAsignadoId(reporte.getSeguridadAsignado().getId());
-                    // Determinar la última gestión si existe
-                    if(reporte.getHistorialGestion() != null && !reporte.getHistorialGestion().isEmpty()){
-                        ReporteGestion ultima = reporte.getHistorialGestion().stream().max((a,b) -> a.getFechaActualizacion().compareTo(b.getFechaActualizacion())).orElse(null);
-                        if(ultima != null){
-                            dto.setUltimoEstado(ultima.getEstado() != null ? ultima.getEstado().name() : null);
-                            dto.setUltimaPrioridad(ultima.getPrioridad() != null ? ultima.getPrioridad().name() : null);
-                            dto.setFechaUltimaGestion(ultima.getFechaActualizacion());
-                        }
+                    if(reporte.getReporteGestion() != null){
+                        ReporteGestionDTO gestionDTO = new ReporteGestionDTO();
+                        gestionDTO.setId(reporte.getReporteGestion().getId());
+                        gestionDTO.setEstado(reporte.getReporteGestion().getEstado());
+                        gestionDTO.setPrioridad(reporte.getReporteGestion().getPrioridad());
+                        gestionDTO.setFechaActualizacion(reporte.getReporteGestion().getFechaActualizacion());
+                        dto.setReporteGestion(gestionDTO);
                     }
                     return dto;
                 })
@@ -86,13 +85,13 @@ public class ReporteServiceImpl implements ReporteService {
             dto.setContacto(r.getContacto());
             dto.setUsuarioId(r.getUsuario().getId());
             if(r.getSeguridadAsignado() != null) dto.setSeguridadAsignadoId(r.getSeguridadAsignado().getId());
-            if(r.getHistorialGestion() != null && !r.getHistorialGestion().isEmpty()){
-                ReporteGestion ultima = r.getHistorialGestion().stream().max((a,b) -> a.getFechaActualizacion().compareTo(b.getFechaActualizacion())).orElse(null);
-                if(ultima != null){
-                    dto.setUltimoEstado(ultima.getEstado() != null ? ultima.getEstado().name() : null);
-                    dto.setUltimaPrioridad(ultima.getPrioridad() != null ? ultima.getPrioridad().name() : null);
-                    dto.setFechaUltimaGestion(ultima.getFechaActualizacion());
-                }
+            if(r.getReporteGestion() != null){
+                ReporteGestionDTO gestionDTO = new ReporteGestionDTO();
+                gestionDTO.setId(r.getReporteGestion().getId());
+                gestionDTO.setEstado(r.getReporteGestion().getEstado());
+                gestionDTO.setPrioridad(r.getReporteGestion().getPrioridad());
+                gestionDTO.setFechaActualizacion(r.getReporteGestion().getFechaActualizacion());
+                dto.setReporteGestion(gestionDTO);
             }
             return dto;
         }).orElse(null);
@@ -230,13 +229,13 @@ public class ReporteServiceImpl implements ReporteService {
                     dto.setContacto(reporte.getContacto());
                     dto.setUsuarioId(reporte.getUsuario().getId());
                     if(reporte.getSeguridadAsignado() != null) dto.setSeguridadAsignadoId(reporte.getSeguridadAsignado().getId());
-                    if(reporte.getHistorialGestion() != null && !reporte.getHistorialGestion().isEmpty()){
-                        ReporteGestion ultima = reporte.getHistorialGestion().stream().max((a,b) -> a.getFechaActualizacion().compareTo(b.getFechaActualizacion())).orElse(null);
-                        if(ultima != null){
-                            dto.setUltimoEstado(ultima.getEstado() != null ? ultima.getEstado().name() : null);
-                            dto.setUltimaPrioridad(ultima.getPrioridad() != null ? ultima.getPrioridad().name() : null);
-                            dto.setFechaUltimaGestion(ultima.getFechaActualizacion());
-                        }
+                    if(reporte.getReporteGestion() != null){
+                        ReporteGestionDTO gestionDTO = new ReporteGestionDTO();
+                        gestionDTO.setId(reporte.getReporteGestion().getId());
+                        gestionDTO.setEstado(reporte.getReporteGestion().getEstado());
+                        gestionDTO.setPrioridad(reporte.getReporteGestion().getPrioridad());
+                        gestionDTO.setFechaActualizacion(reporte.getReporteGestion().getFechaActualizacion());
+                        dto.setReporteGestion(gestionDTO);
                     }
                     return dto;
                 })
