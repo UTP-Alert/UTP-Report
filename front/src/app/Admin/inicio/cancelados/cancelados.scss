@@ -1,0 +1,181 @@
+/* Estilos específicos para la pestaña Cancelados (simular imagen 2) */
+.card {
+	border-radius: 12px;
+	background: #fff6f6; /* tenue rosado */
+	border: 1px solid rgba(239,68,68,0.18);
+	padding: 0;
+	overflow: hidden;
+}
+
+.card + .card { margin-top: 1rem; }
+
+.card .card-content {
+	padding: 0.9rem 1.25rem;
+}
+
+.border-l-4.border-l-red-500 {
+	border-left: 4px solid #ef4444 !important; /* franja roja */
+}
+
+.card .text-base, .card h3 {
+	margin: 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+/* pequeño avatar circular a la izquierda del título (decorativo) */
+.card .card-content h3:before{
+	content: '';
+	width: 28px;
+	height: 28px;
+	border-radius: 999px;
+	display: inline-block;
+	background: radial-gradient(circle at 30% 20%, #fde68a, #fef3c7 40%, #fef3c7 60%);
+	box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.card .badge {
+	padding: 6px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	line-height: 1;
+}
+
+/* top-right badges container (ya en HTML con flex) */
+.card .card-content > .flex {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+}
+
+.card .card-content .badge.bg-red-500{
+	background: #ff6b6b;
+	color: #fff;
+}
+.card .card-content .badge.bg-gray-400{
+	background: #e6e9ee;
+	color: #374151;
+}
+
+.card .meta-row, .card .card-content .flex + .flex, .card .card-content .text-sm{
+	color: #6b7280;
+	font-size: 0.95rem;
+}
+
+.card p.line-through{
+	text-decoration: line-through;
+	color: rgba(107,114,128,0.9);
+}
+
+.card .bg-gray-100{
+	background: #f3f5f7;
+	border-radius: 8px;
+	padding: 0.9rem;
+	border: 1px solid rgba(0,0,0,0.03);
+}
+
+.card .bg-gray-100 h4{
+	margin: 0 0 0.6rem 0;
+	font-size: 0.98rem;
+}
+
+.card .card-content .flex.justify-end{ margin-top: 0.5rem; }
+
+/* pequeño ajuste del footer tags */
+.card .card-content .flex.items-center svg{ opacity: 0.7; }
+
+/* responsive */
+@media (min-width: 768px){
+	.card .card-content{ padding: 1.25rem 1.5rem; }
+}
+
+/* Forzar que la caja "Información de Cancelación" muestre las 3 columnas en una fila */
+.card .card-content .grid.grid-cols-3 {
+	display: flex;
+	gap: 1.25rem;
+}
+.card .card-content .grid.grid-cols-3 > div {
+	flex: 1 1 0;
+}
+
+/* Layout que reproduce la imagen: título y metadatos en la parte superior, badges en la esquina
+	 superior derecha y la caja "Información de Cancelación" ocupando todo el ancho debajo. */
+.card.horizontal {
+	display: block;
+	position: relative; /* necesario para posicionar badges respecto al card */
+}
+.card.horizontal .card-content {
+	display: block; /* contenido apilado: main-col arriba, side-col después (con badges absolute) */
+	position: relative;
+}
+.card.horizontal .main-col {
+	margin-right: 0; /* ocupar ancho completo */
+}
+.card.horizontal .side-col {
+	position: relative;
+	margin-top: 0.75rem;
+}
+
+/* Badges: colocadas como hijo directo del .card (fuera de la caja gris, dentro del recuadro rosado) */
+.card.horizontal > .card-badges {
+	position: absolute;
+	top: 0.8rem;
+	right: 0.8rem;
+	display: flex;
+	gap: 0.5rem;
+	z-index: 120;
+}
+
+/* Forzar que la caja gris no suba y quede claramente debajo de las badges */
+.card.horizontal .side-col .bg-gray-100 {
+	position: static;
+	width: calc(100% - 2rem);
+	margin: 3.6rem auto 0 auto;
+	display: block;
+}
+
+/* Mejorar apariencia de las badges cuando flotan en la esquina del card */
+.card .badge {
+	box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+	border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Colores específicos para badges cuando están como .card-badges (fuera de la caja gris) */
+.card > .card-badges .badge.bg-red-500{
+	background: #ff6b6b;
+	color: #fff;
+	padding: 8px 12px;
+	font-weight: 600;
+	border-radius: 999px;
+}
+.card > .card-badges .badge.bg-gray-400{
+	background: #e6eaef; /* ligero azul-gris */
+	color: #1f2937; /* gris oscuro para texto */
+	padding: 7px 11px;
+	font-weight: 600;
+	border-radius: 999px;
+}
+
+/* Asegurar contraste y separación cuando flotan */
+.card > .card-badges .badge{ box-shadow: 0 4px 10px rgba(15,23,42,0.06); border: 1px solid rgba(255,255,255,0.85); }
+
+/* Alineación del botón 'Ver Archivado' a la derecha dentro del footer del card */
+.card.horizontal .side-col .flex.justify-end { margin-top: 0.75rem; }
+
+/* reducir padding general para que no quede tanto espacio en la izquierda */
+.card { padding: 0; }
+.card .card-content { padding-left: 0.9rem; padding-right: 1rem; }
+
+/* Ajustes visuales para badges en esquina */
+.card .side-col .badge { display:block; margin-left:0.5rem; }
+
+/* Heading row styles (mirar reportes-recientes) */
+.heading-row{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; }
+.heading-row .heading{ display:flex; align-items:center; gap:0.75rem; font-size:1.6rem; margin:0; }
+.heading-row .controls-right{ display:flex; align-items:center; gap:0.75rem; }
+.heading-row .controls-right .btn{ padding:0.45rem 0.75rem; border-radius:8px; }
+.heading-row .controls-right .badge{ background:#fff; border:1px solid rgba(0,0,0,0.06); color:#374151; }
+
+

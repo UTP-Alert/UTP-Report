@@ -65,6 +65,8 @@ public class ReporteServiceImpl implements ReporteService {
                         gestionDTO.setFechaActualizacion(reporte.getReporteGestion().getFechaActualizacion());
                         dto.setReporteGestion(gestionDTO);
                     }
+                    dto.setMensajeSeguridad(reporte.getMensajeSeguridad());
+                    dto.setMensajeAdmin(reporte.getMensajeAdmin());
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -93,6 +95,8 @@ public class ReporteServiceImpl implements ReporteService {
                 gestionDTO.setFechaActualizacion(r.getReporteGestion().getFechaActualizacion());
                 dto.setReporteGestion(gestionDTO);
             }
+            dto.setMensajeSeguridad(r.getMensajeSeguridad());
+            dto.setMensajeAdmin(r.getMensajeAdmin());
             return dto;
         }).orElse(null);
     }
@@ -237,6 +241,8 @@ public class ReporteServiceImpl implements ReporteService {
                         gestionDTO.setFechaActualizacion(reporte.getReporteGestion().getFechaActualizacion());
                         dto.setReporteGestion(gestionDTO);
                     }
+                    dto.setMensajeSeguridad(reporte.getMensajeSeguridad());
+                    dto.setMensajeAdmin(reporte.getMensajeAdmin());
                     return dto;
                 })
                 .collect(Collectors.toList());

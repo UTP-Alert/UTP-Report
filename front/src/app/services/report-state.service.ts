@@ -6,6 +6,8 @@ export interface ReportStateSnapshot {
   inProcessIds: number[];
   assignedSecurity: Record<number, any>;
   reports?: Record<number, any>;
+  resolvedIds?: number[];
+  cancelledIds?: number[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -15,11 +17,18 @@ export class ReportStateService {
   private inProcessIdsSet = new Set<number>();
   private assignedSecurity: Record<number, any> = {};
   private reports: Record<number, any> = {};
+  private resolvedIdsSet = new Set<number>();
+  private cancelledIdsSet = new Set<number>();
 
   private snapshot$ = new BehaviorSubject<ReportStateSnapshot>({ priorities: {}, inProcessIds: [], assignedSecurity: {}, reports: {} });
 
   get snapshot(): Observable<ReportStateSnapshot> {
     return this.snapshot$.asObservable();
+  }
+
+  /** Devuelve el snapshot actual de forma síncrona */
+  getSnapshotValue(): ReportStateSnapshot {
+    return this.snapshot$.getValue();
   }
 
   setPriority(reportId: number, priority: 'baja'|'media'|'alta'|''){
@@ -56,7 +65,31 @@ export class ReportStateService {
     this.emit();
   }
 
+  /** Marca un reporte como resuelto para que otras vistas lo oculten */
+  markResolved(reportId: number){
+    if(reportId) this.resolvedIdsSet.add(reportId);
+    this.emit();
+  }
+
+  unmarkResolved(reportId: number){
+    this.resolvedIdsSet.delete(reportId);
+    this.emit();
+  }
+
+  /** Marca un reporte como cancelado para que otras vistas lo muestren/oculten */
+  markCancelled(reportId: number){
+    if(reportId) this.cancelledIdsSet.add(reportId);
+    // If it was previously in resolved set, remove it (cancel overrides)
+    this.resolvedIdsSet.delete(reportId);
+    this.emit();
+  }
+
+  unmarkCancelled(reportId: number){
+    this.cancelledIdsSet.delete(reportId);
+    this.emit();
+  }
+
   private emit(){
-    this.snapshot$.next({ priorities: { ...this.priorities }, inProcessIds: Array.from(this.inProcessIdsSet), assignedSecurity: { ...this.assignedSecurity }, reports: { ...this.reports } });
+    this.snapshot$.next({ priorities: { ...this.priorities }, inProcessIds: Array.from(this.inProcessIdsSet), assignedSecurity: { ...this.assignedSecurity }, reports: { ...this.reports }, resolvedIds: Array.from(this.resolvedIdsSet), cancelledIds: Array.from(this.cancelledIdsSet) });
   }
 }

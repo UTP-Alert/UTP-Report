@@ -65,6 +65,26 @@ export class ReportesRecientes {
     // Cargar datos auxiliares primero, luego reportes (los reportes intentarán filtrarse por sede del perfil)
     this.loadAuxData();
     this.loadReports();
+    // Suscribir al estado compartido para ocultar reportes resueltos en esta lista
+    try{
+      this.reportState.snapshot.subscribe(snapshot => {
+        const resolved = (snapshot && snapshot.resolvedIds) ? snapshot.resolvedIds : [];
+        const cancelled = (snapshot && snapshot.cancelledIds) ? snapshot.cancelledIds : [];
+        if(resolved && resolved.length){
+          // filtrar reports locales para eliminar resueltos
+          this.reports = (this.reports || []).filter(r => !resolved.includes(r.id));
+          // limpiar mapas relacionados
+          for(const id of resolved){ delete this.priorityById[id]; delete this.statusById[id]; }
+          this.newReportsCount = Math.max(0, this.reports.filter(x => this.statusById[x.id] === 'nuevo').length);
+        }
+        if(cancelled && cancelled.length){
+          // eliminar cancelados de la lista de recientes
+          this.reports = (this.reports || []).filter(r => !cancelled.includes(r.id));
+          for(const id of cancelled){ delete this.priorityById[id]; delete this.statusById[id]; }
+          this.newReportsCount = Math.max(0, this.reports.filter(x => this.statusById[x.id] === 'nuevo').length);
+        }
+      });
+    }catch(e){}
   }
 
   /** Carga reportes; si se pasa zonaId, aplica esa zona además de la sede del perfil */
@@ -75,11 +95,20 @@ export class ReportesRecientes {
         const bTime = b.fechaCreacion ? new Date(b.fechaCreacion).getTime() : (b.id || 0);
         return bTime - aTime;
       });
-      // Excluir reportes que ya están en EN_PROCESO según lo provisto por el backend
-      this.reports = sorted.filter(rep => {
-        const backendEstado = (rep as any).ultimoEstado ? ((rep as any).ultimoEstado || '').toUpperCase() : '';
-        return backendEstado !== 'EN_PROCESO';
+      // Excluir reportes que ya están en EN_PROCESO o RESUELTO según lo provisto por el backend
+      let filtered = sorted.filter(rep => {
+        const backendEstado = String(((rep as any).reporteGestion && (rep as any).reporteGestion.estado) || (rep as any).ultimoEstado || '').toUpperCase();
+        return backendEstado !== 'EN_PROCESO' && backendEstado !== 'RESUELTO';
       });
+      // También excluir aquellos que ya han sido marcados como RESUELTOS en el estado compartido
+      try{
+        const snap = this.reportState.getSnapshotValue();
+        const resolvedIds = (snap && snap.resolvedIds) ? snap.resolvedIds : [];
+        if(resolvedIds && resolvedIds.length){
+          filtered = filtered.filter(rep => !resolvedIds.includes(rep.id));
+        }
+      }catch(e){}
+      this.reports = filtered;
       for(const rep of this.reports){
         // Inicializar prioridad/estado desde el backend si están disponibles
         const backendPriority = (rep as any).ultimaPrioridad ? ((rep as any).ultimaPrioridad || '').toLowerCase() : '';
@@ -171,6 +200,30 @@ export class ReportesRecientes {
     this.showFilterMenu = false;
     this.isLoading = true;
     this.loadReports(this.selectedZonaId);
+  }
+
+  // Cancelar un reporte: persistir en backend y notificar estado compartido
+  cancelReport(reporteId: number){
+    if(!reporteId) return;
+    const prioridadVal = this.priorityById[reporteId] || '';
+    const prioridad = prioridadVal ? prioridadVal.toUpperCase() : '';
+    // desactivar UI o mostrar spinner si se desea
+    this.reporteService.updateGestion(reporteId, 'CANCELADO', prioridad)
+      .pipe(finalize(() => {}))
+      .subscribe({ next: (res: any) => {
+        // eliminar de la lista local
+        const idx = this.reports.findIndex(r => r.id === reporteId);
+        if(idx !== -1) this.reports.splice(idx, 1);
+        // limpiar mapas
+        delete this.priorityById[reporteId];
+        delete this.statusById[reporteId];
+        // notificar al estado compartido para que Cancelados se actualice
+        try{ this.reportState.markCancelled(reporteId); }catch(e){}
+        // actualizar contador
+        this.newReportsCount = Math.max(0, this.reports.filter(x => this.statusById[x.id] === 'nuevo').length);
+      }, error: err => {
+        console.error('Error cancelando reporte', err);
+      }});
   }
 
   toggleFilterMenu(){

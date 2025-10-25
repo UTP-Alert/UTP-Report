@@ -1,37 +1,25 @@
 <h2 class="text-2xl mb-4 flex items-center gap-3">
 	<i class="check-circle-icon h-8 w-8 text-green-600"></i>
-	Reportes Resueltos (X)
+	Reportes Resueltos ({{ reportes.length }})
 </h2>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-gray-50 p-4 rounded-lg">
-	<div>
-		<label class="text-sm text-gray-600">Prioridad</label>
-		<select class="w-full mt-1 p-2 border rounded text-sm">
-			<option value="baja">Baja</option>
-			<option value="media" selected>Media</option>
-			<option value="alta">Alta</option>
-		</select>
-	</div>
-	<div>
-		<label class="text-sm text-gray-600">Estado</label>
-		<select class="w-full mt-1 p-2 border rounded text-sm">
-			<option value="resuelto" selected>Resuelto</option>
-		</select>
-	</div>
-	<div class="flex items-end gap-2">
-		<button class="button button-outline button-sm w-full sm:w-auto">
-			<i class="filter-icon h-4 w-4 mr-2"></i>
-			Filtrar
-		</button>
-		<button class="button button-primary button-sm w-full sm:w-auto">
-			<i class="download-icon h-4 w-4 mr-2"></i>
-			Exportar
-		</button>
-		<span class="badge px-3 py-1 bg-green-100 text-green-800"><i class="check-circle-icon h-4 w-4 mr-1"></i>RESUELTOS</span>
+<div class="resueltos-list">
+
+  <div *ngIf="loading" class="card border-2 border-dashed border-gray-300">
+	<div class="card-content p-12 text-center">
+		<i class="check-circle-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
+		<h3 class="text-xl mb-2 text-gray-600">Cargando reportes resueltos...</h3>
 	</div>
 </div>
 
-<div class="card border-2 border-dashed border-gray-300">
+<!-- Image preview modal (Resueltos) - overlay fixed; click backdrop to close -->
+<div *ngIf="imageModalVisible" class="modal-overlay" (click)="closeImage()" style="position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); z-index:9999;">
+	<div class="modal-card" style="position:relative; z-index:10000; max-width:920px; width:auto; display:inline-block; padding:0;">
+		<img [src]="selectedImageSrc" alt="Evidencia" (click)="$event.stopPropagation()" style="max-width:100%; max-height:80vh; border-radius:8px; display:block; margin:0;" />
+	</div>
+</div>
+
+  <div *ngIf="!loading && reportes.length === 0" class="card border-2 border-dashed border-gray-300">
 	<div class="card-content p-12 text-center">
 		<i class="check-circle-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
 		<h3 class="text-xl mb-2 text-gray-600">No hay reportes resueltos</h3>
@@ -40,43 +28,52 @@
 	</div>
 </div>
 
-<div class="card border-l-4 border-l-green-500 bg-green-50 hover:shadow-lg transition-all mb-4">
-	<div class="card-content p-4">
-		<div class="flex justify-between items-start mb-2">
-			<h3 class="text-base sm:text-lg font-semibold">Incidente de Robo Menor</h3>
-			<div class="flex gap-2">
-				<span class="badge bg-gray-400 hover:bg-gray-500">BAJA</span>
-				<span class="badge bg-green-500 hover:bg-green-600">RESUELTO</span>
+		<div *ngFor="let r of reportes" class="card resolved-card hover:shadow-lg transition-all mb-4">
+			<div class="card-content row-flex">
+				<div class="avatar-col">
+					<div class="avatar-circle" [style.background]="(r.ultimaPrioridad||'')==='alta' ? '#ef4444' : ((r.ultimaPrioridad||'')==='media' ? '#f59e0b' : '#3b82f6')"></div>
+				</div>
+
+
+			<div class="main-col">
+				<div class="title-row">
+					<h3 class="title">{{ tiposMap[r.tipoIncidenteId] || 'Reporte' }}</h3>
+					<div class="meta small">
+						<span class="meta-item">{{ zonasMap[r.zonaId] || (r.zonaId ? ('Zona ' + r.zonaId) : 'Sin zona') }}</span>
+						<span class="dot">•</span>
+						<span class="meta-item">Resuelto: {{ (r.reporteGestion && r.reporteGestion.fechaActualizacion) ? (r.reporteGestion.fechaActualizacion | date:'short') : (r.fechaUltimaGestion ? (r.fechaUltimaGestion | date:'short') : (r.fechaCreacion | date:'short')) }}</span>
+						<span class="dot">•</span>
+						<span class="meta-item">ID: {{ r.id }}</span>
+					</div>
+				</div>
+
+						<p class="desc">{{ r.descripcion }}</p>
+
+						<!-- Ver foto debajo de la descripción -->
+								<div *ngIf="getImageSrc(r) as img" style="display:flex;align-items:center;gap:8px;margin-top:8px">
+									<button class="button-outline button-sm" (click)="openImage(img)">📷 Ver foto</button>
+									<img [src]="img" class="inline-thumb" alt="Evidencia" (click)="openImage(img)" />
+								</div>
+
+						<div class="icons-row">
+					<span class="icon-item">📷 Evidencia: {{ r.foto ? 'sí' : 'no' }}</span>
+					<span class="icon-item">🔔 {{ r.contacto ? 'Con contacto' : 'Sin contacto' }}</span>
+					<span class="icon-item">✅ Caso cerrado exitosamente</span>
+				</div>
 			</div>
-		</div>
-		<div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
-			<i class="map-pin-icon h-4 w-4"></i>
-			<span>Biblioteca Central</span>
-			<span>•</span>
-			<span>Resuelto: Hace 1 día</span>
-			<span>•</span>
-			<span>ID: #rob_4</span>
-		</div>
-		<p class="text-gray-700 mb-4">Se recuperó el objeto robado y se identificó al responsable.</p>
 
-		<div class="bg-green-100 p-4 rounded-lg border border-green-200 mb-4">
-			<h4 class="font-medium text-green-800 flex items-center gap-2 mb-3"><i class="check-circle-icon h-4 w-4"></i>Detalles de la Resolución</h4>
-			<p class="text-green-700">El incidente fue resuelto satisfactoriamente. Se aplicaron las medidas correctivas.</p>
-		</div>
+			<div class="actions-col">
+				<div class="badges-top">
+					<span class="badge priority" [ngClass]="{'high': (r.ultimaPrioridad||'')==='alta','medium': (r.ultimaPrioridad||'')==='media','low': (r.ultimaPrioridad||'')==='baja'}">{{ (r.ultimaPrioridad||'') | uppercase }}</span>
+					<span class="badge resuelto">RESUELTO</span>
+				</div>
 
-		<div class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
-			<h4 class="font-medium text-blue-800 flex items-center gap-2 mb-3"><i class="shield-icon h-4 w-4"></i>Acciones Realizadas</h4>
-			<p class="text-blue-700">Se contactó a la seguridad, se revisaron las cámaras y se recuperó el objeto.</p>
-		</div>
+				<div class="actions">
+					<button class="button button-sm button-outline"><i class="eye-icon h-4 w-4 mr-1"></i>Ver Detalle</button>
+				</div>
+			</div>
 
-		<div class="flex items-center gap-2 text-sm text-gray-600 mb-4">
-			<i class="check-circle-icon h-4 w-4"></i>
-			<span>Caso cerrado exitosamente</span>
-		</div>
-
-		<div class="flex justify-end gap-2">
-			<button class="button button-sm button-outline"><i class="eye-icon h-4 w-4 mr-1"></i>Ver Detalle</button>
-			<button class="button button-sm button-outline"><i class="check-circle-icon h-4 w-4 mr-1"></i>Cerrar Definitivamente</button>
 		</div>
 	</div>
+
 </div>

@@ -48,4 +48,7 @@ public class Reporte {
     @ManyToOne
     @JoinColumn(name = "seguridad_asignado_id")
     private Usuario seguridadAsignado;
+
+    private String mensajeSeguridad;
+    private String mensajeAdmin;
 }

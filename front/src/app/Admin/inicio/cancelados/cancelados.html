@@ -1,96 +1,81 @@
-<h2 class="text-2xl mb-4 flex items-center gap-3">
-	<i class="x-icon h-8 w-8 text-red-600"></i>
-	Reportes Cancelados (X)
-</h2>
+<div class="heading-row mb-4">
+  <h2 class="heading">
+	<!-- X icon red -->
+	<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M18 6L6 18M6 6l12 12"/></svg>
+	Reportes Cancelados ({{ reports.length || 0 }})
+  </h2>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-gray-50 p-4 rounded-lg">
-	<div>
-		<label class="text-sm text-gray-600">Prioridad</label>
-		<select class="w-full mt-1 p-2 border rounded text-sm">
-			<option value="baja">Baja</option>
-			<option value="media" selected>Media</option>
-			<option value="alta">Alta</option>
-		</select>
-	</div>
-	<div>
-		<label class="text-sm text-gray-600">Estado</label>
-		<select class="w-full mt-1 p-2 border rounded text-sm">
-			<option value="cancelado" selected>Cancelado</option>
-		</select>
-	</div>
-	<div class="flex items-end gap-2">
-		<button class="button button-outline button-sm w-full sm:w-auto">
-			<i class="filter-icon h-4 w-4 mr-2"></i>
-			Filtrar
-		</button>
-		<button class="button button-outline button-sm w-full sm:w-auto">
-			<i class="refresh-cw-icon h-4 w-4 mr-2"></i>
-			Actualizar
-		</button>
-		<span class="badge badge-outline px-3 py-1"><i class="x-icon h-4 w-4 mr-1"></i>CANCELADOS</span>
-	</div>
+  <div class="controls controls-right">
+	<button class="btn btn-outline">Filtrar</button>
+	<button class="btn btn-outline">Exportar</button>
+	<span class="badge badge-outline px-3 py-1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg> CANCELADOS</span>
+  </div>
 </div>
 
-<div class="card border-2 border-dashed border-gray-300">
-	<div class="card-content p-12 text-center">
-		<i class="x-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
-		<h3 class="text-xl mb-2 text-gray-600">No hay reportes cancelados</h3>
-		<p class="text-gray-500 mb-6">Los reportes cancelados se mostrarán aquí.</p>
-		<span class="badge badge-outline px-4 py-2">ℹ️ Estado: Sin cancelaciones</span>
+<ng-container *ngIf="reports && reports.length; else emptyTpl">
+			<div *ngFor="let rep of reports" class="card horizontal border-l-4 border-l-red-500 bg-red-50 mb-4 hover:shadow-lg transition-all">
+				<!-- Badges (prioridad + CANCELADO) colocadas aquí para que estén fuera de la caja gris pero dentro del card -->
+				<div class="card-badges">
+					<span class="badge bg-gray-400">{{ (rep.ultimaPrioridad || (rep.reporteGestion && rep.reporteGestion.prioridad) || 'MEDIA') | uppercase }}</span>
+					<span class="badge bg-red-500">CANCELADO</span>
+				</div>
+				<div class="card-content p-4">
+				<div class="main-col">
+					<h3 class="text-base sm:text-lg font-semibold text-gray-600">{{ tiposMap[rep.tipoIncidenteId] || rep.descripcion || ('Reporte #' + rep.id) }}</h3>
+					<div class="flex items-center gap-2 text-sm text-gray-600 mb-1" style="margin-top:6px">
+						<i class="map-pin-icon h-4 w-4 opacity-50"></i>
+						<span>{{ rep.zonaId ? (zonasMap[rep.zonaId] || ('Zona ' + rep.zonaId)) : 'Sin zona' }}</span>
+						<span>•</span>
+						<span>Cancelado: {{ (rep.reporteGestion && rep.reporteGestion.fechaActualizacion) ? (rep.reporteGestion.fechaActualizacion | date:'short') : (rep.fechaUltimaGestion ? (rep.fechaUltimaGestion | date:'short') : (rep.fechaCreacion ? (rep.fechaCreacion | date:'short') : '—')) }}</span>
+						<span>•</span>
+						<span>ID: {{ rep.id }}</span>
+					</div>
+					<p class="text-gray-600 mb-4 line-through">{{ rep.descripcion }}</p>
+				</div>
+					<div class="side-col">
+					<div class="bg-gray-100 p-4 rounded-lg border mb-4" style="width:100%; margin-top:0;">
+					  <h4 class="font-medium text-gray-600 flex items-center gap-2 mb-3"><i class="x-icon h-4 w-4"></i>Información de Cancelación</h4>
+					  <div class="grid grid-cols-3 gap-4 text-sm">
+						<div>
+						  <p class="text-sm text-gray-600">Fecha de cancelación:</p>
+						  <p class="text-sm font-medium">{{ (rep.reporteGestion && rep.reporteGestion.fechaActualizacion) ? (rep.reporteGestion.fechaActualizacion | date:'short') : (rep.fechaUltimaGestion ? (rep.fechaUltimaGestion | date:'short') : '—') }}</p>
+						</div>
+						<div>
+						  <p class="text-sm text-gray-600">Reporte original:</p>
+						  <p class="text-sm font-medium">{{ rep.fechaCreacion ? (rep.fechaCreacion | date:'short') : '—' }}</p>
+						</div>
+						<div>
+						  <p class="text-sm text-gray-600">Estado anterior:</p>
+						  <p class="text-sm font-medium">{{ (rep.reporteGestion && rep.reporteGestion.estado) ? (rep.reporteGestion.estado === 'EN_PROCESO' ? 'En proceso' : rep.reporteGestion.estado) : (rep.ultimoEstado || '—') }}</p>
+						</div>
+					  </div>
+					  <div class="flex items-center gap-2 text-sm text-gray-500 mt-4">
+						<i class="camera-icon h-4 w-4"></i>
+						<span *ngIf="rep.foto">Evidencia: <span class="line-through">{{ rep.foto ? 'imagen.jpg' : 'No' }}</span></span>
+						<span *ngIf="!rep.foto">Evidencia: No</span>
+					  </div>
+					  <div class="flex items-center gap-2 text-sm text-gray-500 mt-2">
+						<i class="user-icon h-4 w-4"></i>
+						<span>Contacto: {{ rep.contacto || '—' }}</span>
+					  </div>
+					  <div class="flex items-center gap-2 text-sm text-gray-600 mt-4">
+						<i class="x-icon h-4 w-4"></i>
+						<span>{{ (rep.reporteGestion && rep.reporteGestion.estado === 'CANCELADO') ? 'Cancelado por administrador' : 'Cancelado' }}</span>
+					  </div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+</ng-container>
+
+<ng-template #emptyTpl>
+	<div class="card border-2 border-dashed border-gray-300">
+		<div class="card-content p-12 text-center">
+			<i class="x-icon h-16 w-16 text-gray-400 mx-auto mb-4"></i>
+			<h3 class="text-xl mb-2 text-gray-600">No hay reportes cancelados</h3>
+			<p class="text-gray-500 mb-6">Los reportes cancelados se mostrarán aquí.</p>
+			<span class="badge badge-outline px-4 py-2">ℹ️ Estado: Sin cancelaciones</span>
+		</div>
 	</div>
-</div>
-
-<div class="card border-l-4 border-l-red-500 bg-red-50 opacity-75 hover:shadow-lg transition-all mb-4">
-	<div class="card-content p-4">
-		<div class="flex justify-between items-start mb-2">
-			<h3 class="text-base sm:text-lg font-semibold text-gray-600">Actividad Sospechosa</h3>
-			<div class="flex gap-2">
-				<span class="badge bg-gray-400 hover:bg-gray-500">MEDIA</span>
-				<span class="badge bg-red-500 hover:bg-red-600">CANCELADO</span>
-			</div>
-		</div>
-		<div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
-			<i class="map-pin-icon h-4 w-4 opacity-50"></i>
-			<span>Estacionamiento Este</span>
-			<span>•</span>
-			<span>Cancelado: Hace 2 días</span>
-			<span>•</span>
-			<span>ID: #port_2</span>
-		</div>
-		<p class="text-gray-600 mb-4 line-through">Persona merodeando en el estacionamiento de estudiantes</p>
-
-		<div class="bg-gray-100 p-4 rounded-lg border mb-4">
-			<h4 class="font-medium text-gray-600 flex items-center gap-2 mb-3"><i class="x-icon h-4 w-4"></i>Información de Cancelación</h4>
-			<div class="grid grid-cols-3 gap-4 text-sm">
-				<div>
-					<p class="text-sm text-gray-600">Fecha de cancelación:</p>
-					<p class="text-sm font-medium">2025-10-18</p>
-				</div>
-				<div>
-					<p class="text-sm text-gray-600">Reporte original:</p>
-					<p class="text-sm font-medium">2025-10-17</p>
-				</div>
-				<div>
-					<p class="text-sm text-gray-600">Estado anterior:</p>
-					<p class="text-sm font-medium">En proceso</p>
-				</div>
-			</div>
-			<div class="flex items-center gap-2 text-sm text-gray-500 mt-4">
-				<i class="camera-icon h-4 w-4"></i>
-				<span class="line-through">Evidencia: imagen.jpg</span>
-			</div>
-			<div class="flex items-center gap-2 text-sm text-gray-500 mt-2">
-				<i class="user-icon h-4 w-4"></i>
-				<span>Contacto: admin@utp.edu.pe</span>
-			</div>
-			<div class="flex items-center gap-2 text-sm text-gray-600 mt-4">
-				<i class="x-icon h-4 w-4"></i>
-				<span>Cancelado por administrador</span>
-			</div>
-		</div>
-
-		<div class="flex justify-end">
-			<button class="button button-sm button-outline" disabled><i class="eye-icon h-4 w-4 mr-1"></i>Ver Archivado</button>
-		</div>
-	</div>
-</div>
+</ng-template>

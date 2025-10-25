@@ -16,13 +16,16 @@
 
 			<div *ngFor="let r of reportes" class="report-card">
 				<div class="report-header">
+					<!-- Thumbnail removed as requested -->
 								<span class="priority-badge" [ngClass]="{'high': r.ultimaPrioridad === 'alta', 'medium': r.ultimaPrioridad === 'media', 'low': r.ultimaPrioridad === 'baja'}">
 									{{ r.ultimaPrioridad ? ('Prioridad ' + (r.ultimaPrioridad === 'alta' ? 'alta' : (r.ultimaPrioridad === 'media' ? 'media' : (r.ultimaPrioridad === 'baja' ? 'baja' : r.ultimaPrioridad)))) : 'Sin prioridad' }}</span>
 					<span class="status-badge">{{ r.ultimoEstado || 'En espera' }}</span>
+					<!-- Mostrar badge de pendiente de aprobación junto al estado cuando exista mensaje de seguridad tras completarse -->
+					<span *ngIf="r.mensajeSeguridad && (r.ultimoEstado||'').toLowerCase() === 'pendiente_aprobacion'" class="pending-badge">pending_approval</span>
 					<span class="report-id">ID: {{ r.id }}</span>
 				</div>
 				<div class="report-content">
-					  <h3 class="report-title">{{ tiposMap[r.tipoIncidenteId] || r.tipoIncidenteId }}</h3>
+				  <h3 class="report-title">{{ tiposMap[r.tipoIncidenteId] || r.tipoIncidenteId }}</h3>
 					<div class="report-details">
 						<div class="detail-item">
 							<span class="detail-icon material-icons">location_on</span>
@@ -42,16 +45,24 @@
 												{{ r.contacto || (r.usuarioId ? usuariosMap[r.usuarioId] : '---') }}
 											</ng-template>
 										</span>
+                                        
 									</div>
 					</div>
 					<p class="report-description">{{ r.descripcion }}</p>
+					<!-- Ver foto: botón debajo de la descripción -->
+					<div *ngIf="getImageSrc(r) as img" class="photo-action" style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+						<button class="action-btn" (click)="openImage(img)">📷 Ver foto</button>
+						<img [src]="img" class="inline-thumb" alt="Evidencia" (click)="openImage(img)" />
+					</div>
 				</div>
 				<div class="report-actions">
-					<button class="action-btn mark-in-progress" (click)="marcarEnProgreso(r.id)">
-						<span class="btn-icon material-icons">visibility</span>
-						Marcar en Progreso
+					<!-- Mostrar 'Ir a la Zona' sólo si el reporte aún no está en UBICANDO/INVESTIGANDO y no está ya completado con parte policial -->
+					<button *ngIf="!((r.ultimoEstado||'').toLowerCase() === 'ubicando' || (r.ultimoEstado||'').toLowerCase() === 'investigando' || (r.mensajeSeguridad && (r.ultimoEstado||'').toLowerCase() === 'pendiente_aprobacion'))" class="action-btn go-to-zone" (click)="irALaZona(r)">
+						<span class="btn-icon material-icons">near_me</span>
+						Ir a la Zona
 					</button>
-					<button class="action-btn complete-report" (click)="completarReporte(r.id)">
+					<!-- Mostrar 'Completar Reporte' sólo después de que haya llegado (INVESTIGANDO) -->
+					<button *ngIf="(r.ultimoEstado||'').toLowerCase() === 'investigando'" class="action-btn complete-report" (click)="completarReporte(r.id)">
 						<span class="btn-icon material-icons">check_box</span>
 						Completar Reporte
 					</button>
@@ -60,3 +71,66 @@
 		</ng-template>
 	</div>
 </section>
+
+<!-- Modal irrejectable until 'He Llegado a la Zona' is pressed -->
+<div class="modal-overlay" *ngIf="modalVisible">
+	<div class="modal-backdrop" (click)="modalLocked ? null : closeModal()"></div>
+	<div class="modal-card" role="dialog" aria-modal="true">
+		<div class="modal-header">
+			<h3><span class="material-icons">near_me</span> Dirigiéndose a la Zona</h3>
+			<button class="modal-close" aria-label="Cerrar" (click)="modalLocked ? null : closeModal()"><span class="material-icons">close</span></button>
+		</div>
+		<div class="modal-body">
+			<div class="modal-circle"><span class="material-icons">arrow_forward</span></div>
+			<p class="modal-lead">En camino a la zona del incidente</p>
+			<p class="modal-sub">Presione "He Llegado" cuando esté en la ubicación del reporte.</p>
+			<div class="modal-info">
+				<div><strong>Destino:</strong> {{ selectedReport ? (zonasMap[selectedReport.zonaId] || ('Zona ' + selectedReport.zonaId)) : '' }}</div>
+				<div><strong>Zona:</strong> {{ selectedReport ? (zonasMap[selectedReport.zonaId] || ('Zona ' + selectedReport.zonaId)) : '' }}</div>
+				<div><strong>Tipo:</strong> {{ selectedReport ? (tiposMap[selectedReport.tipoIncidenteId] || selectedReport.tipoIncidenteId) : '' }}</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-outline" (click)="closeModal()" [disabled]="modalLocked">Cerrar</button>
+			<button class="btn btn-primary" (click)="heLlegadoALaZona()">He Llegado a la Zona</button>
+		</div>
+	</div>
+</div>
+
+<!-- Emergency escape button to recover from a stuck modal -->
+<button *ngIf="modalVisible" class="modal-escape" (click)="forceClose()">Forzar cerrar modal</button>
+
+<!-- Completar reporte modal -->
+<div class="modal-overlay" *ngIf="completeModalVisible">
+	<div class="modal-backdrop" (click)="completeModalVisible ? null : null"></div>
+	<div class="modal-card" role="dialog" aria-modal="true">
+		<div class="modal-header">
+			<h3><span class="material-icons">check_box</span> Completar Reporte - Parte Policial</h3>
+			<button class="modal-close" (click)="completeModalVisible = false"><span class="material-icons">close</span></button>
+		</div>
+		<div class="modal-body">
+			<div class="officer-line"><strong>Oficial:</strong> {{ officerLabel }}</div>
+			<div class="report-summary">
+		<div><strong>Reporte:</strong> {{ getTipoName(selectedReport?.tipoIncidenteId) }}</div>
+		<div><strong>Ubicación:</strong> {{ getZonaName(selectedReport?.zonaId) }}</div>
+			<div><strong>Descripción:</strong> {{ selectedReport?.descripcion || '' }}</div>
+			</div>
+			<label class="textarea-label">
+				Descripción del Parte Policial *
+				<textarea class="police-description" placeholder="Describa detalladamente cómo se resolvió el incidente..." (input)="policeDescription = $any($event.target).value">{{ policeDescription }}</textarea>
+			</label>
+			<p class="help-text">Esta descripción formará parte del parte oficial del incidente.</p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-outline" (click)="completeModalVisible = false">Cancelar</button>
+			<button class="btn btn-primary" [disabled]="!policeDescription || policeDescription.trim().length === 0" (click)="submitComplete()">Completar y Registrar Parte</button>
+		</div>
+	</div>
+</div>
+
+		<!-- Image preview modal (overlay fixed) - click backdrop to close -->
+		<div class="modal-overlay" *ngIf="imageModalVisible" (click)="closeImage()" style="position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); z-index:9999;">
+			<div class="modal-card" role="dialog" aria-modal="true" style="position:relative; z-index:10000; max-width:920px; width:auto; display:inline-block; padding:0;">
+				<img [src]="selectedImageSrc" alt="Evidencia" (click)="$event.stopPropagation()" style="max-width:100%; max-height:80vh; border-radius:8px; display:block; margin:0;" />
+			</div>
+		</div>
