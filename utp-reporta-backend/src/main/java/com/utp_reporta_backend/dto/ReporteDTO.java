@@ -21,5 +21,6 @@ public class ReporteDTO {
     private Long usuarioId;
     private Long seguridadAsignadoId;
     private String mensajeSeguridad;
+    private String mensajeAdmin;
     private ReporteGestionDTO reporteGestion;
 }

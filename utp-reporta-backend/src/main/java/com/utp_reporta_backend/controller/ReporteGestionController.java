@@ -65,4 +65,17 @@ public class ReporteGestionController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PutMapping("/{reporteId}/marcar-resuelto-admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ReporteGestionDTO> marcarComoResueltoPorAdmin(
+            @PathVariable Long reporteId,
+            @RequestParam(required = false) String mensajeAdmin) {
+        try {
+            ReporteGestionDTO updatedGestion = reporteGestionService.marcarComoResueltoPorAdmin(reporteId, mensajeAdmin);
+            return new ResponseEntity<>(updatedGestion, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
