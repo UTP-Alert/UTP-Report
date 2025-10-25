@@ -1,0 +1,109 @@
+.gestion-paginas {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    border: 1px solid #e2e8f0;
+    background: #f9fafb;
+    transition: 0.3s ease;
+
+    &.active {
+      background: #eaffea;
+      border-color: #a3e4a3;
+    }
+
+    &.inactive {
+      background: #f4f4f4;
+    }
+
+    .icon {
+      font-size: 1.5rem;
+      color: #0d6efd;
+    }
+
+    .info {
+      flex: 1;
+      margin-left: 1rem;
+
+      h6 {
+        margin: 0;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #6c757d;
+      }
+    }
+
+    .estado {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .badge {
+        font-size: 0.75rem;
+      }
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+
+      input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        border-radius: 22px;
+        transition: 0.4s;
+
+        &:before {
+          position: absolute;
+          content: "";
+          height: 16px;
+          width: 16px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          border-radius: 50%;
+          transition: 0.4s;
+        }
+      }
+
+      input:checked + .slider {
+        background-color: #0d6efd;
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(18px);
+      }
+    }
+  }
+}
