@@ -50,4 +50,5 @@ public class Reporte {
     private Usuario seguridadAsignado;
 
     private String mensajeSeguridad;
+    private String mensajeAdmin;
 }

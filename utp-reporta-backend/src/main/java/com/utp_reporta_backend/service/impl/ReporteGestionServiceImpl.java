@@ -99,4 +99,18 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
         reporteRepository.save(reporte);
     return updateReporteGestion(reporteId, EstadoReporte.PENDIENTE_APROBACION, null, null);
     }
+
+    @Override
+    public ReporteGestionDTO marcarComoResueltoPorAdmin(Long reporteId, String mensajeAdmin) {
+        Optional<Reporte> reporteOptional = reporteRepository.findById(reporteId);
+        if (reporteOptional.isEmpty()) {
+            throw new RuntimeException("Reporte no encontrado con ID: " + reporteId);
+        }
+        Reporte reporte = reporteOptional.get();
+        if (mensajeAdmin != null && !mensajeAdmin.isEmpty()) {
+            reporte.setMensajeAdmin(mensajeAdmin);
+        }
+        reporteRepository.save(reporte);
+        return updateReporteGestion(reporteId, EstadoReporte.RESUELTO, null, null);
+    }
 }

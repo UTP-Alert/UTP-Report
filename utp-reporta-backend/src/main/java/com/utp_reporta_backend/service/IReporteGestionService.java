@@ -9,5 +9,6 @@ public interface IReporteGestionService {
     ReporteGestionDTO irAZona(Long reporteId);
     ReporteGestionDTO zonaUbicada(Long reporteId);
     ReporteGestionDTO completarReporte(Long reporteId, String mensajeSeguridad);
+    ReporteGestionDTO marcarComoResueltoPorAdmin(Long reporteId, String mensajeAdmin);
     // Potentially add other methods like getLatestReporteGestion if needed later
 }
