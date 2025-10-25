@@ -9,5 +9,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './sedes.scss'
 })
 export class Sedes {
-
+  zonas: any[] = []; // Initialize as an empty array
 }
