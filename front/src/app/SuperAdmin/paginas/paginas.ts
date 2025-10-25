@@ -9,5 +9,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './paginas.scss'
 })
 export class Paginas {
-
+  paginas: any[] = []; // Initialize as an empty array
 }
