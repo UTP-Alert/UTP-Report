@@ -16,6 +16,7 @@
 
 			<div *ngFor="let r of reportes" class="report-card">
 				<div class="report-header">
+					<!-- Thumbnail removed as requested -->
 								<span class="priority-badge" [ngClass]="{'high': r.ultimaPrioridad === 'alta', 'medium': r.ultimaPrioridad === 'media', 'low': r.ultimaPrioridad === 'baja'}">
 									{{ r.ultimaPrioridad ? ('Prioridad ' + (r.ultimaPrioridad === 'alta' ? 'alta' : (r.ultimaPrioridad === 'media' ? 'media' : (r.ultimaPrioridad === 'baja' ? 'baja' : r.ultimaPrioridad)))) : 'Sin prioridad' }}</span>
 					<span class="status-badge">{{ r.ultimoEstado || 'En espera' }}</span>
@@ -24,7 +25,7 @@
 					<span class="report-id">ID: {{ r.id }}</span>
 				</div>
 				<div class="report-content">
-					  <h3 class="report-title">{{ tiposMap[r.tipoIncidenteId] || r.tipoIncidenteId }}</h3>
+				  <h3 class="report-title">{{ tiposMap[r.tipoIncidenteId] || r.tipoIncidenteId }}</h3>
 					<div class="report-details">
 						<div class="detail-item">
 							<span class="detail-icon material-icons">location_on</span>
@@ -48,6 +49,11 @@
 									</div>
 					</div>
 					<p class="report-description">{{ r.descripcion }}</p>
+					<!-- Ver foto: botón debajo de la descripción -->
+					<div *ngIf="getImageSrc(r) as img" class="photo-action" style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+						<button class="action-btn" (click)="openImage(img)">📷 Ver foto</button>
+						<img [src]="img" class="inline-thumb" alt="Evidencia" (click)="openImage(img)" />
+					</div>
 				</div>
 				<div class="report-actions">
 					<!-- Mostrar 'Ir a la Zona' sólo si el reporte aún no está en UBICANDO/INVESTIGANDO y no está ya completado con parte policial -->
@@ -121,3 +127,10 @@
 		</div>
 	</div>
 </div>
+
+		<!-- Image preview modal (overlay fixed) - click backdrop to close -->
+		<div class="modal-overlay" *ngIf="imageModalVisible" (click)="closeImage()" style="position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); z-index:9999;">
+			<div class="modal-card" role="dialog" aria-modal="true" style="position:relative; z-index:10000; max-width:920px; width:auto; display:inline-block; padding:0;">
+				<img [src]="selectedImageSrc" alt="Evidencia" (click)="$event.stopPropagation()" style="max-width:100%; max-height:80vh; border-radius:8px; display:block; margin:0;" />
+			</div>
+		</div>

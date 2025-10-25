@@ -23,6 +23,11 @@
 .parte-content { background:#fff; padding:10px; border-radius:6px; border:1px solid #e2e8f0; color:#0f172a; min-height:36px }
 .parte-meta { color:#075985; font-weight:700; margin-top:8px }
 
+.small-thumb { width:64px; height:48px; object-fit:cover; border-radius:8px; display:block; margin-bottom:8px; border:1px solid rgba(0,0,0,0.04) }
+
+/* inline thumb next to Ver foto */
+.inline-thumb { width:36px; height:36px; object-fit:cover; border-radius:6px; border:1px solid rgba(0,0,0,0.06); cursor:pointer }
+
 .actions-row { margin-top:8px }
 .btn { padding:10px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600 }
 .btn.btn-review { background:#7c3aed; color:#fff }
@@ -30,3 +35,13 @@
 .btn.btn-reject { background:#fff; border:1px solid #f87171; color:#ef4444 }
 
 .priority { text-transform:uppercase }
+
+/* Modal styles for review dialog */
+.modal-overlay { position:fixed; left:0; right:0; top:0; bottom:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; z-index:60 }
+.modal-card { width:780px; max-width:95%; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.15) }
+.modal-header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid #f1f5f9 }
+.modal-body { padding:18px }
+.modal-footer { padding:12px 18px; display:flex; justify-content:flex-end; gap:10px; border-top:1px solid #f1f5f9 }
+.modal-card .info-box { background:#f8fafc; padding:12px; border-radius:8px }
+.close-x { background:transparent; border:none; font-size:16px; cursor:pointer }
+.modal-card .input { width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1 }

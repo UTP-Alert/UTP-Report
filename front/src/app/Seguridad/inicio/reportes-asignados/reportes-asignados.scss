@@ -119,6 +119,12 @@
 	.loading { padding: 12px; color: #6b7280 }
 
 	.empty-state { text-align: center; color: #6b7280; padding: 24px; }
+
+/* thumbnail image */
+.report-thumb { width:56px; height:56px; object-fit:cover; border-radius:8px; margin-right:8px; border:1px solid rgba(0,0,0,0.06) }
+
+/* inline small thumb used next to 'Ver foto' */
+.inline-thumb { width:36px; height:36px; object-fit:cover; border-radius:6px; border:1px solid rgba(0,0,0,0.06); cursor:pointer }
 }
 
 /* Modal styles */

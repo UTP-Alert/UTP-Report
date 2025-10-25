@@ -59,3 +59,20 @@ input, button { outline: none; }
   --sidebar-accent: oklch(0.97 0 0);     /* ≈ #F7F7F7 */
   --sidebar-border: oklch(0.922 0 0);    /* ≈ #EBEBEB */
 }
+
+/* Styles for Resueltos cards (Admin) */
+.resueltos-header { display:flex; align-items:center; gap:12px; }
+.resueltos-list .card { border-radius:12px; overflow:hidden; }
+.resueltos-list .card.border-l-green-500 { border-left-width:4px; border-left-style:solid; border-left-color:#10b981; background:#ecfdf5; }
+.resueltos-list .card .card-content { padding:18px }
+.resueltos-list .meta-row { color:#475569; font-size:0.95rem }
+.resueltos-list .badge.priority { background:#e6e7eb; color:#374151; padding:6px 10px; border-radius:8px; font-weight:600 }
+.resueltos-list .badge.priority.low { background:#3b82f6; color:#fff }
+.resueltos-list .badge.priority.medium { background:#f59e0b; color:#fff }
+.resueltos-list .badge.priority.high { background:#ef4444; color:#fff }
+.resueltos-list .badge.resuelto { background:#10b981; color:#fff; padding:6px 10px; border-radius:8px }
+.resueltos-list .card .parte-box { background:transparent; border:none }
+.resueltos-list .card p { color:#0f172a }
+.resueltos-list .card .actions { display:flex; gap:10px }
+.resueltos-list .card .actions .button { padding:8px 12px; border-radius:8px }
+

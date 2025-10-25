@@ -47,6 +47,10 @@ select, input[type="text"] { padding:0.5rem; border-radius:0.35rem; border:1px s
 .avatar { flex:0 0 auto; margin-right:0.5rem; }
 .avatar svg { border-radius:9999px; box-shadow:0 2px 8px rgba(16,24,40,0.06); }
 .avatar-circle { transition: fill 220ms ease; }
+.avatar-thumb { width:28px; height:28px; object-fit:cover; border-radius:6px; margin-left:6px; border:1px solid rgba(0,0,0,0.06) }
+
+/* inline thumbnail next to Ver foto */
+.inline-thumb { width:36px; height:36px; object-fit:cover; border-radius:6px; border:1px solid rgba(0,0,0,0.06); cursor:pointer }
 .report-body { flex:1 1 auto; }
 .title { font-size:1.125rem; margin:0 0 0.35rem 0; }
 .meta-row { display:flex; align-items:center; gap:0.5rem; color:#6b7280; font-size:0.9rem; margin-bottom:0.6rem; }

@@ -1,0 +1,98 @@
+/* Styles for Pend-Resueltos horizontal card layout */
+.resolved-card {
+	background: #ecfdf5; /* verde muy claro */
+	border-radius: 8px;
+	border: 1px solid rgba(16,185,129,0.12);
+	/* línea vertical verde a la izquierda */
+	border-left: 4px solid #10b981;
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+	padding: 0.5rem;
+	position: relative;
+}
+
+.resolved-card .card-content.row-flex {
+	display: flex;
+	gap: 1rem;
+	align-items: flex-start;
+	/* dejar más espacio a la izquierda para que la línea no quede pegada al contenido */
+	padding: 0.75rem 1rem 0.75rem 1rem;
+}
+
+.resolved-card .avatar-col {
+	width: 56px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.avatar-circle {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.resolved-card .main-col {
+	flex: 1 1 auto;
+}
+
+.resolved-card .title-row {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+}
+
+.resolved-card .title {
+	font-size: 1rem;
+	font-weight: 600;
+	margin: 0;
+}
+
+.resolved-card .meta.small {
+	color: #4b5563; /* gray-600 */
+	font-size: 0.85rem;
+	margin-top: 4px;
+}
+
+.resolved-card .meta .dot { margin: 0 6px; color: #9ca3af }
+
+.resolved-card .desc {
+	margin: 0.5rem 0 0.75rem 0;
+	color: #065f46; /* darker green-ish text */
+}
+
+.icons-row { display:flex; gap:1.25rem; color:#374151; font-size:0.9rem; }
+.icon-item { display:inline-flex; align-items:center; gap:0.5rem }
+
+.thumb-col { display:flex; align-items:center; justify-content:center; }
+.report-thumb-lg { width:72px; height:72px; object-fit:cover; border-radius:8px; border:1px solid rgba(0,0,0,0.04); }
+
+/* inline small thumb used next to 'Ver foto' */
+.inline-thumb { width:36px; height:36px; object-fit:cover; border-radius:6px; border:1px solid rgba(0,0,0,0.06); cursor:pointer }
+
+.resolved-card .actions-col {
+	width: 190px;
+	display:flex;
+	flex-direction:column;
+	align-items:flex-end;
+	justify-content:space-between;
+}
+
+.resolved-card .badges-top { display:flex; gap:0.5rem; align-items:center }
+.badge { padding: 4px 8px; border-radius: 12px; font-size:0.72rem; color:#fff; }
+.badge.resuelto { background:#10b981; }
+.badge.priority.high { background:#ef4444; }
+.badge.priority.medium { background:#f59e0b; color:#fff }
+.badge.priority.low { background:#3b82f6; }
+
+.resolved-card .actions { margin-top: 0.5rem }
+.button-outline { background:#fff; border:1px solid rgba(0,0,0,0.08); padding:6px 10px; border-radius:6px }
+.button-sm { font-size:0.85rem }
+
+/* responsive: stack on small screens */
+@media (max-width: 640px) {
+	.resolved-card .card-content.row-flex { flex-direction: column; }
+	.resolved-card .actions-col { width: 100%; align-items:flex-start; }
+}
+

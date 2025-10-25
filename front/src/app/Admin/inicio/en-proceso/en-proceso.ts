@@ -6,6 +6,7 @@ import { PerfilService } from '../../../services/perfil.service';
 import { ZonaService } from '../../../services/zona.service';
 import { TipoIncidenteService } from '../../../services/tipo-incidente.service';
 import { UsuarioService } from '../../../services/usuario.service';
+import { finalize } from 'rxjs/operators';
 
 interface InProcessItem { id: number; priority?: 'baja'|'media'|'alta'|''; assigned?: any; report?: any }
 
@@ -233,6 +234,21 @@ export class EnProceso implements OnInit {
     return map[p] || '#d1d5db';
   }
 
+  // Cancelar un reporte en proceso: persistir y notificar al estado compartido
+  cancelReport(reportId: number){
+    if(!reportId) return;
+    const item = this.items.find(i => i.id === reportId);
+    const prioridad = item && item.priority ? (item.priority as string).toUpperCase() : '';
+    this.reporteService.updateGestion(reportId, 'CANCELADO', prioridad)
+      .pipe(finalize(() => {}))
+      .subscribe({ next: (res: any) => {
+        // quitar del listado local
+        this.items = this.items.filter(it => it.id !== reportId);
+        // notificar al estado compartido
+        try{ this.reportState.markCancelled(reportId); }catch(e){}
+      }, error: err => console.error('Error cancelando reporte en proceso', err) });
+  }
+
   // Devuelve una cadena legible para el estado actual del reporte
   estadoDisplay(report: any): string{
     if(!report) return 'Sin estado';
@@ -247,6 +263,37 @@ export class EnProceso implements OnInit {
       case 'CANCELADO': return 'Cancelado';
       default: return raw ? (raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase()) : 'Sin estado';
     }
+  }
+
+  // helper para devolver src de imagen si el reporte contiene foto
+  getImageSrc(report: any): string | null {
+    if(!report) return null;
+    const f = (report.foto || report.file || report.image) as any;
+    if(!f) return null;
+    try{
+      if(typeof f === 'string'){
+        if(f.startsWith('data:')) return f;
+        return 'data:image/jpeg;base64,' + f;
+      }
+      if(Array.isArray(f)){
+        const binary = f.map((b: number) => String.fromCharCode(b)).join('');
+        return 'data:image/jpeg;base64,' + btoa(binary);
+      }
+    }catch(e){ console.error('getImageSrc', e); }
+    return null;
+  }
+
+  // image modal helpers
+  selectedImageSrc: string | null = null;
+  imageModalVisible: boolean = false;
+
+  openImage(src: string){ this.selectedImageSrc = src; this.imageModalVisible = true; }
+  closeImage(){ this.imageModalVisible = false; this.selectedImageSrc = null; }
+
+  // fallback: si el modal no aparece por CSS/overlay, abrir en nueva pestaña
+  openImageWithFallback(src: string){
+    this.openImage(src);
+    setTimeout(() => { try{ if(!this.imageModalVisible){ window.open(src, '_blank'); } }catch(e){} }, 80);
   }
 
 }

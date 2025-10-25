@@ -129,7 +129,7 @@
 					<span class="anon-text">{{ rep.isAnonimo ? 'Reporte Anónimo' : ('Usuario: ' + (usuariosMap[rep.usuarioId] || rep.usuarioId)) }}</span>
 				</div>
 				<div class="footer-right">
-					<button class="btn btn-cancel"> <svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg> Cancelar</button>
+					<button class="btn btn-cancel" (click)="cancelReport(rep.id)"> <svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg> Cancelar</button>
 					<!-- Si hay asignación pendiente localmente, mostrar Continuar al lado del Cancelar -->
 					<button *ngIf="assignedSecurityById[rep.id] && !assignConfirmedById[rep.id]" class="btn btn-primary" (click)="confirmAssignment(rep.id)" [disabled]="!priorityById[rep.id] || assignSavingById[rep.id]">
 						<span *ngIf="!assignSavingById[rep.id]">Continuar</span>

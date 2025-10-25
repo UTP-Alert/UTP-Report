@@ -1,6 +1,7 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ReporteService, ReporteDTO } from '../../../services/reporte.service';
 import { TipoIncidenteService, TipoIncidenteDTO } from '../../../services/tipo-incidente.service';
 import { ZonaService, Zona } from '../../../services/zona.service';
@@ -10,13 +11,15 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-pend-aprobacion',
   standalone: true,
-  imports: [CommonModule, NgClass],
+  imports: [CommonModule, NgClass, FormsModule],
   templateUrl: './pend-aprobacion.html',
   styleUrl: './pend-aprobacion.scss'
 })
 export class PendAprobacion implements OnInit, OnDestroy {
   reportes: ReporteDTO[] = [];
   loading = false;
+  selectedForReview: ReporteDTO | null = null;
+  adminComment: string = '';
 
   tiposMap: Record<number,string> = {};
   zonasMap: Record<number,string> = {};
@@ -33,6 +36,44 @@ export class PendAprobacion implements OnInit, OnDestroy {
     try{
       this.sub = (this as any).reportState?.snapshot?.subscribe ? (this as any).reportState.snapshot.subscribe(() => this.loadPendientes()) : null;
     }catch(e){}
+  }
+
+  openReview(r: ReporteDTO){
+    this.selectedForReview = r;
+    this.adminComment = '';
+  }
+
+  closeReview(){
+    this.selectedForReview = null;
+    this.adminComment = '';
+  }
+
+  approveSelected(){
+    if(!this.selectedForReview) return;
+    if(!this.adminComment || this.adminComment.trim().length === 0) return; // require comment
+    const id = this.selectedForReview.id;
+    const prioridad = (this.selectedForReview as any).reporteGestion && (this.selectedForReview as any).reporteGestion.prioridad ? (this.selectedForReview as any).reporteGestion.prioridad : (this.selectedForReview.ultimaPrioridad || '');
+    this.reporteService.updateGestion(id, 'RESUELTO', prioridad).subscribe({ next: _ => {
+      // refresh report and UI
+      this.reporteService.getById(id).subscribe(rf => {
+        this.reportState.setReporte(rf);
+        // marcar como resuelto en el estado compartido para que listas como "recientes" lo oculten
+        try{ this.reportState.markResolved(id); }catch(e){}
+        this.loadPendientes();
+        this.closeReview();
+      });
+    }, error: err => { console.error('Error approving', err); } });
+  }
+
+  rejectSelected(){
+    if(!this.selectedForReview) return;
+    if(!this.adminComment || this.adminComment.trim().length === 0) return; // require comment
+    const id = this.selectedForReview.id;
+    const prioridad = (this.selectedForReview as any).reporteGestion && (this.selectedForReview as any).reporteGestion.prioridad ? (this.selectedForReview as any).reporteGestion.prioridad : (this.selectedForReview.ultimaPrioridad || '');
+    // move back to in-process so security can re-open it
+    this.reporteService.updateGestion(id, 'EN_PROCESO', prioridad).subscribe({ next: _ => {
+      this.reporteService.getById(id).subscribe(rf => { this.reportState.setReporte(rf); this.loadPendientes(); this.closeReview(); });
+    }, error: err => { console.error('Error rejecting', err); } });
   }
 
   loadAux(){
@@ -63,8 +104,39 @@ export class PendAprobacion implements OnInit, OnDestroy {
       this.loading = false;
     }, error: _ => { this.loading = false; this.reportes = []; } });
   }
+
+  // helper para devolver src de imagen si el reporte contiene foto
+  getImageSrc(report: any): string | null {
+    if(!report) return null;
+    const f = (report.foto || report.file || report.image) as any;
+    if(!f) return null;
+    try{
+      if(typeof f === 'string'){
+        if(f.startsWith('data:')) return f;
+        return 'data:image/jpeg;base64,' + f;
+      }
+      if(Array.isArray(f)){
+        const binary = f.map((b: number) => String.fromCharCode(b)).join('');
+        return 'data:image/jpeg;base64,' + btoa(binary);
+      }
+    }catch(e){ console.error('getImageSrc', e); }
+    return null;
+  }
   
   ngOnDestroy(): void {
     try{ this.sub?.unsubscribe(); }catch(e){}
+  }
+
+  // Image modal state and helpers
+  selectedImageSrc: string | null = null;
+  imageModalVisible: boolean = false;
+
+  closeImage(){ this.imageModalVisible = false; this.selectedImageSrc = null; }
+
+  // abrir imagen y fallback a nueva pestaña si el modal no se visualiza
+  openImage(src: string){
+    this.selectedImageSrc = src;
+    this.imageModalVisible = true;
+    setTimeout(()=>{ try{ if(!this.imageModalVisible) window.open(src,'_blank'); }catch(e){} }, 80);
   }
 }

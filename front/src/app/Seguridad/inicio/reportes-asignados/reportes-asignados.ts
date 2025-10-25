@@ -54,6 +54,9 @@ export class ReportesAsignados {
   // Completar reporte modal
   completeModalVisible: boolean = false;
   policeDescription: string = '';
+  // Imagen modal
+  imageModalVisible: boolean = false;
+  selectedImageSrc: string | null = null;
 
   async irALaZona(reporte: ReporteDTO){
     // Show modal UI immediately and call backend to set estado = 'UBICANDO'
@@ -200,6 +203,18 @@ export class ReportesAsignados {
     } });
   }
 
+  openImage(src: string){
+    this.selectedImageSrc = src;
+    this.imageModalVisible = true;
+    // fallback: si por alguna razón el modal no aparece, abrir en nueva ventana tras un micro-delay
+    setTimeout(() => { try{ if(!this.imageModalVisible){ window.open(src, '_blank'); } }catch(e){} }, 80);
+  }
+
+  closeImage(){
+    this.imageModalVisible = false;
+    this.selectedImageSrc = null;
+  }
+
   get officerLabel(): string {
     try{
       const sig = (this.perfil as any).perfil ? (this.perfil as any).perfil() : null;
@@ -211,6 +226,26 @@ export class ReportesAsignados {
   getTipoName(tipoId?: number | null): string {
     if(!tipoId && tipoId !== 0) return '';
     return this.tiposMap[tipoId as number] || String(tipoId);
+  }
+
+  // Devuelve un src válido para la imagen del reporte (o null si no existe)
+  getImageSrc(report: any): string | null {
+    if(!report) return null;
+    const f = (report.foto || report.file || report.image) as any;
+    if(!f) return null;
+    try{
+      if(typeof f === 'string'){
+        if(f.startsWith('data:')) return f;
+        // asumir base64 sin prefijo
+        return 'data:image/jpeg;base64,' + f;
+      }
+      // si es un array de bytes serializado por el backend, convertir a base64
+      if(Array.isArray(f)){
+        const binary = f.map((b: number) => String.fromCharCode(b)).join('');
+        return 'data:image/jpeg;base64,' + btoa(binary);
+      }
+    }catch(e){ console.error('getImageSrc error', e); }
+    return null;
   }
 
   getZonaName(zonaId?: number | null): string {

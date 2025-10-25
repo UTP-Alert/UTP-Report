@@ -19,8 +19,9 @@
 	</div>
 </div>
 
-<div *ngFor="let r of reportes" class="card border-l-4 border-l-purple-500 bg-purple-50 hover:shadow-lg transition-all mb-4">
+	<div *ngFor="let r of reportes" class="card border-l-4 border-l-purple-500 bg-purple-50 hover:shadow-lg transition-all mb-4">
 	<div class="card-content p-4">
+
 		<!-- pending badge top-right -->
 		<span class="badge pending top-right">PENDIENTE APROBACIÓN</span>
 
@@ -38,6 +39,12 @@
 			<span>•</span>
 			<span>ID: {{ r.id }}</span>
 		</div>
+
+		<!-- Moved: Ver foto + miniatura placed under meta info as requested -->
+		<div *ngIf="getImageSrc(r) as img" style="display:flex;align-items:center;gap:8px;margin-top:12px">
+			<button class="action-btn" (click)="openImage(img)">📷 Ver foto</button>
+			<img [src]="img" class="inline-thumb" alt="Evidencia" (click)="openImage(img)" />
+		</div>
 		<p class="text-gray-700 mb-4">Incidente de seguridad resuelto, pendiente de aprobación final.</p>
 
 		<div class="parte-box mb-4">
@@ -51,10 +58,49 @@
 			<p class="text-gray-600">Fecha de asignación: <span class="font-medium">{{ r.fechaCreacion | date:'short' }}</span></p>
 		</div>
 
-		<div class="flex justify-end gap-2 actions-row">
-			<button class="btn btn-review">Revisar y Decidir</button>
-			<button class="btn btn-approve">Aprobar Inmediatamente</button>
-			<button class="btn btn-reject">Rechazar</button>
+				<div class="flex justify-end gap-2 actions-row">
+						<button class="btn btn-review" (click)="openReview(r)">Revisar y Decidir</button>
+						<button class="btn btn-reject">Rechazar</button>
+				</div>
+	</div>
+</div>
+
+<!-- Review Modal -->
+<div *ngIf="selectedForReview" class="modal-overlay">
+	<div class="modal-card">
+		<div class="modal-header">
+			<h3>Revisar Resolución del Reporte</h3>
+			<button class="close-x" (click)="closeReview()">✕</button>
+		</div>
+		<div class="modal-body">
+			<div class="info-box">
+				<p><strong>Tipo:</strong> {{ tiposMap[selectedForReview.tipoIncidenteId] || '---' }}</p>
+				<p><strong>Ubicación:</strong> {{ zonasMap[selectedForReview.zonaId] || '---' }}</p>
+				<p><strong>Descripción Original:</strong> {{ selectedForReview.descripcion }}</p>
+				<p><strong>ID:</strong> {{ selectedForReview.id }}</p>
+			</div>
+
+			<div class="parte-box" style="margin-top:12px">
+				<h4 class="parte-title">Parte de Seguridad</h4>
+				<div class="parte-content">{{ selectedForReview.mensajeSeguridad }}</div>
+				<div class="parte-meta" style="margin-top:8px">Oficial: <strong>Equipo de Seguridad</strong></div>
+			</div>
+
+			<label class="label" style="display:block; margin-top:12px">Comentario de Aprobación (Obligatorio)</label>
+			<textarea class="input" [(ngModel)]="adminComment" rows="4" placeholder="Agregue comentarios sobre la resolución del caso..." required></textarea>
+			<div *ngIf="!adminComment || (adminComment && adminComment.trim().length === 0)" style="color:#ef4444; font-size:13px; margin-top:6px">Debe ingresar un comentario para poder Aprobar o Rechazar.</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" (click)="closeReview()">Cancelar</button>
+			<button class="btn btn-reject" (click)="rejectSelected()" [disabled]="!adminComment || (adminComment && adminComment.trim().length === 0)">Rechazar y Devolver</button>
+			<button class="btn btn-approve" (click)="approveSelected()" [disabled]="!adminComment || (adminComment && adminComment.trim().length === 0)">Aprobar y Marcar como Resuelto</button>
 		</div>
 	</div>
 </div>
+
+		<!-- Image preview modal (Pend. Aprobación) - overlay fixed; click backdrop to close -->
+		<div *ngIf="imageModalVisible" class="modal-overlay" (click)="closeImage()" style="position:fixed; left:0; top:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); z-index:9999;">
+			<div class="modal-card" style="position:relative; z-index:10000; max-width:920px; width:auto; display:inline-block; padding:0;">
+				<img [src]="selectedImageSrc" alt="Evidencia" (click)="$event.stopPropagation()" style="max-width:100%; max-height:80vh; border-radius:8px; display:block; margin:0;" />
+			</div>
+		</div>
