@@ -95,10 +95,10 @@ export class ReportesRecientes {
         const bTime = b.fechaCreacion ? new Date(b.fechaCreacion).getTime() : (b.id || 0);
         return bTime - aTime;
       });
-      // Excluir reportes que ya están en EN_PROCESO o RESUELTO según lo provisto por el backend
+      // Excluir reportes que ya están en EN_PROCESO, RESUELTO o CANCELADO según lo provisto por el backend
       let filtered = sorted.filter(rep => {
         const backendEstado = String(((rep as any).reporteGestion && (rep as any).reporteGestion.estado) || (rep as any).ultimoEstado || '').toUpperCase();
-        return backendEstado !== 'EN_PROCESO' && backendEstado !== 'RESUELTO';
+        return backendEstado !== 'EN_PROCESO' && backendEstado !== 'RESUELTO' && backendEstado !== 'CANCELADO';
       });
       // También excluir aquellos que ya han sido marcados como RESUELTOS en el estado compartido
       try{
@@ -206,6 +206,8 @@ export class ReportesRecientes {
   cancelReport(reporteId: number){
     if(!reporteId) return;
     const prioridadVal = this.priorityById[reporteId] || '';
+    // intentar encontrar el reporte local antes de la petición para poder limpiar localStorage del autor
+    const targetReport = (this.reports || []).find(r => r.id === reporteId) || null;
     const prioridad = prioridadVal ? prioridadVal.toUpperCase() : '';
     // desactivar UI o mostrar spinner si se desea
     this.reporteService.updateGestion(reporteId, 'CANCELADO', prioridad)
@@ -217,6 +219,7 @@ export class ReportesRecientes {
         // limpiar mapas
         delete this.priorityById[reporteId];
         delete this.statusById[reporteId];
+        // No persistimos estados en localStorage; dejamos que la fuente de la verdad sea el backend.
         // notificar al estado compartido para que Cancelados se actualice
         try{ this.reportState.markCancelled(reporteId); }catch(e){}
         // actualizar contador

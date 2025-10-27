@@ -21,8 +21,8 @@ export class ReportaAhora implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<void>();
   @Output() authRequired = new EventEmitter<void>();
-  // Nuevo: evento para guardado optimista en localStorage
-  @Output() saved = new EventEmitter<void>();
+  // Evento que notifica al padre con el Reporte creado (DTO) para actualización inmediata del UI
+  @Output() saved = new EventEmitter<any>();
   tipos: any[] = [];
   zonas: Zona[] = [];
   selectedTipo: any | null = null;
@@ -108,14 +108,7 @@ export class ReportaAhora implements OnInit {
     const base = 'http://localhost:8080';
     const username = this.extractUsernameFromToken();
     if (!username) return;
-    // Intentar cache local del usuarioId para evitar roundtrip
-    try {
-      const cached = localStorage.getItem(`ur_uid_${username}`);
-      if (cached) {
-        const n = Number(cached);
-        if (!Number.isNaN(n)) this.usuarioId = n;
-      }
-    } catch {}
+    // NOTA: ya no cacheamos usuarioId en localStorage por motivos de privacidad y consistencia.
     this.timeService.getServerDateISO().subscribe({
       next: (serverISO) => {
         this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
@@ -123,7 +116,6 @@ export class ReportaAhora implements OnInit {
             const found = (lista || []).find(u => u.username === username);
             if (found?.id) {
               this.usuarioId = Number(found.id);
-              try { localStorage.setItem(`ur_uid_${username}`, String(this.usuarioId)); } catch {}
             }
             const fechaUlt = (found?.fechaUltimoReporte as string | undefined) || null;
             const intentos = typeof found?.intentos === 'number' ? found.intentos : 0;
@@ -143,7 +135,6 @@ export class ReportaAhora implements OnInit {
             const found = (lista || []).find(u => u.username === username);
             if (found?.id) {
               this.usuarioId = Number(found.id);
-              try { localStorage.setItem(`ur_uid_${username}`, String(this.usuarioId)); } catch {}
             }
             if (typeof found?.intentos === 'number') this.reportesUsadosHoy = found.intentos;
           },
@@ -395,10 +386,9 @@ export class ReportaAhora implements OnInit {
       this.http.get<any[]>(`${base}/api/usuarios`).subscribe({
         next: lista => {
           const found = (lista || []).find(u => u.username === username);
-          if (found?.id) {
+            if (found?.id) {
             this.usuarioId = Number(found.id);
-            // Guardado optimista antes del POST real
-            this._saveOptimistic();
+            // Enviar ahora al backend; no usamos guardado optimista en localStorage
             this._submitNow();
           } else {
             this.submitting = false;
@@ -413,8 +403,7 @@ export class ReportaAhora implements OnInit {
         }
       });
     } else {
-      // Guardado optimista antes del POST real
-      this._saveOptimistic();
+      // Enviar ahora al backend; no usamos guardado optimista en localStorage
       this._submitNow();
     }
   }
@@ -459,12 +448,11 @@ export class ReportaAhora implements OnInit {
         // Incrementar contador local de reportes usados (máximo al límite)
         this.reportesUsadosHoy = Math.min(this.reportesUsadosHoy + 1, this.reportesLimite);
 
-        // Marcar el registro optimista como "Pendiente" y ajustar fecha con el valor del backend si existe
-        this._markOptimisticAsPending(res);
-
-        // Notificar envío exitoso al padre y cerrar el modal
-        try { this.submitted.emit(); } catch {}
-        try { this.close.emit(); } catch {}
+  // Notificar envío exitoso al padre y cerrar el modal
+  try { this.submitted.emit(); } catch {}
+  // Enviar el DTO creado al componente padre para que lo muestre inmediatamente como PENDIENTE
+  try { this.saved.emit(res); } catch {}
+  try { this.close.emit(); } catch {}
       },
       error: err => {
         console.warn('Error al enviar reporte', err);
@@ -477,8 +465,7 @@ export class ReportaAhora implements OnInit {
         } else {
           alert('No se pudo enviar el reporte');
         }
-        // Revertir el item optimista para no dejar "Enviando..." en la lista
-        this._rollbackOptimisticOnError();
+  // No usamos localStorage para estados; simplemente notificamos error y dejamos que el backend sea la fuente de la verdad
       }
     });
   }
@@ -488,59 +475,5 @@ export class ReportaAhora implements OnInit {
     try { this.close.emit(); } catch {}
   }
 
-  // Guardado optimista en localStorage para mostrar de inmediato en el dashboard
-  private _saveOptimistic() {
-    try {
-      if (!this.usuarioId) return;
-      const tipoNombre = (this.selectedTipo as any)?.nombre ?? (this.selectedTipo as any)?.tipo ?? 'Incidente';
-      const zonaNombre = (this.selectedZona as any)?.nombre ?? 'Zona';
-      const resumen = {
-        id: undefined,
-        tipoNombre,
-        zonaNombre,
-        fechaCreacion: new Date().toISOString(),
-        estado: 'Enviando...',
-        usuarioId: this.usuarioId!
-      } as any;
-      const key = `ur_mis_reportes_${this.usuarioId}`;
-      const prevRaw = localStorage.getItem(key);
-      let prev = prevRaw ? JSON.parse(prevRaw) : [];
-      prev.unshift(resumen);
-      if (Array.isArray(prev) && prev.length > 10) prev = prev.slice(0, 10);
-      localStorage.setItem(key, JSON.stringify(prev));
-      try { this.saved.emit(); } catch {}
-    } catch {}
-  }
-
-  private _markOptimisticAsPending(res: any) {
-    try {
-      if (!this.usuarioId) return;
-      const key = `ur_mis_reportes_${this.usuarioId}`;
-      const prevRaw = localStorage.getItem(key);
-      const arr = prevRaw ? JSON.parse(prevRaw) : [];
-      if (Array.isArray(arr) && arr.length) {
-        const first = arr[0];
-        if (first && first.estado === 'Enviando...') {
-          first.estado = 'Pendiente';
-          if (res && res.fechaCreacion) first.fechaCreacion = String(res.fechaCreacion);
-          if (res && res.id) first.id = Number(res.id);
-        }
-        localStorage.setItem(key, JSON.stringify(arr));
-      }
-    } catch {}
-  }
-
-  private _rollbackOptimisticOnError() {
-    try {
-      if (!this.usuarioId) return;
-      const key = `ur_mis_reportes_${this.usuarioId}`;
-      const prevRaw = localStorage.getItem(key);
-      const arr = prevRaw ? JSON.parse(prevRaw) : [];
-      if (Array.isArray(arr) && arr.length && arr[0]?.estado === 'Enviando...') {
-        arr.shift();
-        localStorage.setItem(key, JSON.stringify(arr));
-        try { this.saved.emit(); } catch {}
-      }
-    } catch {}
-  }
+  // Ya no se usa guardado optimista ni se persisten estados en localStorage
 }

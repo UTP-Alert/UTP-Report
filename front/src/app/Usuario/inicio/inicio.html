@@ -539,7 +539,7 @@
       <button class="modal-close" (click)="closeReportModal()" aria-label="Cerrar modal">
         ✕
       </button>
-  <app-reporta-ahora (close)="closeReportModal()" (saved)="usuarioId !== null && cargarMisReportesLocal(usuarioId)" (submitted)="onReporteEnviado()" (authRequired)="onAuthRequired()"></app-reporta-ahora>
+  <app-reporta-ahora (close)="closeReportModal()" (saved)="onSavedReport($event)" (submitted)="onReporteEnviado()" (authRequired)="onAuthRequired()"></app-reporta-ahora>
     </div>
   </div>
 

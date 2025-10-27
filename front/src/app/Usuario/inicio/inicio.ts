@@ -137,6 +137,29 @@ export class InicioUsuario implements OnInit {
     }
   }
 
+  // Maneja el DTO creado desde el modal y lo inserta inmediatamente en la lista de 'misReportes'
+  onSavedReport(createdReport?: any) {
+    if (!createdReport || !this.usuarioId) return;
+    try {
+      const exists = this.misReportes.some(r => r.id && createdReport.id && Number(r.id) === Number(createdReport.id));
+      if (exists) return;
+      const item = {
+        id: createdReport.id,
+        tipoNombre: (createdReport as any).tipoNombre || '',
+        zonaNombre: (createdReport as any).zonaNombre || '',
+        fechaCreacion: createdReport.fechaCreacion || new Date().toISOString(),
+        estado: ((createdReport.ultimoEstado as string) || 'PENDIENTE') as string,
+        usuarioId: createdReport.usuarioId || this.usuarioId
+      };
+      // Insertar al inicio para visibilidad inmediata
+      this.misReportes = [item, ...this.misReportes];
+      this.hasReportesHoy = true;
+    } catch (e) {
+      // si ocurre algo, no bloquear la experiencia
+      console.warn('onSavedReport error', e);
+    }
+  }
+
   // Utilidades para mini-modales
   private showLimitToast() {
     this.showToastLimit = true;
@@ -198,12 +221,24 @@ export class InicioUsuario implements OnInit {
   }
 
   cargarMisReportesLocal(uid: number) {
-    try {
-      const key = `ur_mis_reportes_${uid}`;
-      const raw = localStorage.getItem(key);
-      const arr = raw ? JSON.parse(raw) : [];
-      this.misReportes = Array.isArray(arr) ? arr : [];
-    } catch { this.misReportes = []; }
+    // Ya no leemos desde localStorage; consultamos al backend y filtramos por usuarioId
+    this.reporteService.getAll().subscribe({
+      next: (lista: ReporteDTO[]) => {
+        try{
+          this.misReportes = (lista || [])
+            .filter(r => Number(r.usuarioId) === Number(uid))
+            .map(r => ({
+              id: r.id,
+              tipoNombre: (r as any).tipoNombre || '',
+              zonaNombre: (r as any).zonaNombre || '',
+              fechaCreacion: r.fechaCreacion || '',
+              estado: (r.ultimoEstado || 'nuevo') as string,
+              usuarioId: r.usuarioId
+            }));
+        }catch(e){ this.misReportes = []; }
+      },
+      error: _ => { this.misReportes = []; }
+    });
   }
 
   // Formato corto de fecha/hora para el template
