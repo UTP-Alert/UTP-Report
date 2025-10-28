@@ -11,4 +11,8 @@ public interface UsuarioService {
     List<UsuarioDTO> getFilteredSeguridadUsers(Long zonaId, Long sedeId);
     List<UsuarioDTO> getUsuariosByTipoDocente();
     List<UsuarioDTO> getUsuariosByTipoAlumno();
+    UsuarioDTO findByCodigo(String codigo);
+    List<UsuarioDTO> getUsuariosByEnabledStatus(boolean enabled);
+    UsuarioDTO updateUsuarioEnabledStatus(Long id, boolean enabled);
+    List<UsuarioDTO> getAllUsersExcludingSuperAdmin();
 }
