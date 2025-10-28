@@ -298,4 +298,29 @@ public class UsuarioServiceImpl implements UsuarioService {
                 })
                 .orElse(null); // Return null if user not found
     }
+
+    @Override
+    public List<UsuarioDTO> getAllUsersExcludingSuperAdmin() {
+        List<Usuario> usuarios = usuarioRepository.findByRoles_NombreNot(ERol.ROLE_SUPERADMIN);
+        return usuarios.stream().map(usuario -> {
+            UsuarioDTO usuarioDTO = new UsuarioDTO();
+            usuarioDTO.setId(usuario.getId());
+            usuarioDTO.setNombreCompleto(usuario.getNombreCompleto());
+            usuarioDTO.setUsername(usuario.getUsername());
+            usuarioDTO.setCorreo(usuario.getCorreo());
+            usuarioDTO.setTelefono(usuario.getTelefono());
+            usuarioDTO.setTipoUsuario(usuario.getTipoUsuario());
+            usuarioDTO.setSedeNombre(usuario.getSede() != null ? usuario.getSede().getNombre() : null);
+            usuarioDTO.setZonasNombres(usuario.getZonas().stream()
+                    .map(zona -> zona.getNombre())
+                    .collect(Collectors.toList()));
+            usuarioDTO.setIntentos(usuario.getIntentosReporte());
+            usuarioDTO.setFechaUltimoReporte(usuario.getFechaUltimoReporte());
+            usuarioDTO.setEnabled(usuario.isEnabled());
+            usuarioDTO.setRoles(usuario.getRoles().stream()
+                    .map(rol -> rol.getNombre().name())
+                    .collect(Collectors.toList()));
+            return usuarioDTO;
+        }).collect(Collectors.toList());
+    }
 }

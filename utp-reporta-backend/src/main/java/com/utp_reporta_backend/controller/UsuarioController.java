@@ -134,4 +134,11 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/excluding-superadmin")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')") // Add appropriate authorization
+    public ResponseEntity<List<UsuarioDTO>> getAllUsersExcludingSuperAdmin() {
+        List<UsuarioDTO> usuarios = usuarioService.getAllUsersExcludingSuperAdmin();
+        return ResponseEntity.ok(usuarios);
+    }
 }
