@@ -107,3 +107,134 @@
 @media (max-width:480px){
 	.modal-panel { width: 100%; }
 }
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    padding: 1.5rem 0.75rem;
+  }
+  .modal-panel {
+    width: 380px;
+    border-radius: 0.8rem;
+  }
+  .modal-header {
+    padding: 0.8rem 1rem;
+  }
+  .modal-header-left svg {
+    width: 28px;
+    height: 28px;
+  }
+  .modal-header h3 {
+    font-size: 0.95rem;
+  }
+  .modal-sub {
+    font-size: 0.75rem;
+  }
+  .close-x {
+    font-size: 1rem;
+  }
+  .modal-body {
+    padding: 0.6rem 1rem 1.2rem;
+  }
+  .report-card-small {
+    padding: 0.7rem;
+  }
+  .report-card-small .priority-badge {
+    top: 6px;
+    right: 6px;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+  }
+  .report-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+  }
+  .recommendation {
+    margin-top: 0.6rem;
+    padding: 0.7rem;
+  }
+  .available {
+    margin-top: 0.7rem;
+  }
+  .person-card {
+    padding: 0.7rem;
+  }
+  .person-badge {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+  }
+  .zone {
+    padding: 0.15rem 0.3rem;
+    margin-right: 0.3rem;
+    font-size: 0.75rem;
+  }
+  .btn-assign-official {
+    margin-top: 0.7rem;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 1rem 0.5rem;
+  }
+  .modal-panel {
+    width: 100%;
+    border-radius: 0.6rem;
+  }
+  .modal-header {
+    padding: 0.6rem 0.8rem;
+  }
+  .modal-header-left svg {
+    width: 24px;
+    height: 24px;
+  }
+  .modal-header h3 {
+    font-size: 0.85rem;
+  }
+  .modal-sub {
+    font-size: 0.7rem;
+  }
+  .close-x {
+    font-size: 0.9rem;
+  }
+  .modal-body {
+    padding: 0.5rem 0.8rem 1rem;
+  }
+  .report-card-small {
+    padding: 0.6rem;
+  }
+  .report-card-small .priority-badge {
+    top: 5px;
+    right: 5px;
+    font-size: 0.6rem;
+    padding: 0.15rem 0.4rem;
+  }
+  .report-title {
+    font-size: 0.8rem;
+  }
+  .recommendation {
+    margin-top: 0.5rem;
+    padding: 0.6rem;
+  }
+  .available {
+    margin-top: 0.6rem;
+  }
+  .person-card {
+    padding: 0.6rem;
+  }
+  .person-badge {
+    padding: 0.15rem 0.3rem;
+    font-size: 0.7rem;
+  }
+  .zone {
+    padding: 0.1rem 0.25rem;
+    margin-right: 0.25rem;
+    font-size: 0.7rem;
+  }
+  .btn-assign-official {
+    margin-top: 0.6rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+}

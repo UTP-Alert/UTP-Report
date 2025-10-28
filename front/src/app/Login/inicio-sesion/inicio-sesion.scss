@@ -214,3 +214,58 @@ form { display:flex; flex-direction:column; gap:1.15rem; }
 	.login-inner { max-width:520px; }
 }
 
+@media (max-width: 768px) {
+	.welcome { padding: 1.5rem 1rem 1rem; }
+	.welcome-inner { max-width: 90%; }
+	.brand-title h1 { font-size: 1.5rem; }
+	.brand-title .subtitle { font-size: .6rem; }
+	.welcome-text h2 { font-size: 1.3rem; }
+	.welcome-text p { font-size: .75rem; }
+	.features li { font-size: .65rem; }
+	.login { padding: 1.5rem 1rem 2rem; }
+	.card { padding: 1.5rem 1.5rem 1.8rem; }
+	.card-title-heading { font-size: 1.3rem; }
+	.card-desc { font-size: .65rem; }
+	.input-wrapper input { padding: .65rem 1rem .65rem 2.2rem; font-size: .8rem; }
+	.primary-btn { padding: .75rem 1rem; font-size: .8rem; }
+	.footer { font-size: .55rem; }
+}
+
+@media (max-width: 480px) {
+	.welcome { padding: 1rem 0.75rem 0.75rem; }
+	.welcome-inner { max-width: 95%; }
+	.brand-title h1 { font-size: 1.3rem; }
+	.brand-title .subtitle { font-size: .55rem; }
+	.welcome-text h2 { font-size: 1.1rem; }
+	.welcome-text p { font-size: .7rem; }
+	.features { gap:.55rem; }
+	.features li { font-size: .6rem; }
+	.login { padding: 1rem 0.75rem 1.5rem; }
+	.card { padding: 1.2rem 1.2rem 1.5rem; }
+	.card-title-heading { font-size: 1.1rem; }
+	.card-desc { font-size: .6rem; }
+	.input-wrapper input { padding: .6rem 0.8rem .6rem 2rem; font-size: .75rem; }
+	.primary-btn { padding: .7rem 0.9rem; font-size: .75rem; }
+	.footer { font-size: .5rem; }
+	.sos-button { bottom: 1rem; right: 1rem; width: 55px; height: 55px; padding: .75rem; font-size: .6rem; }
+	.sos-button span { font-size: .5rem; }
+}
+
+@media (max-width: 375px) {
+  .welcome { padding: 0.8rem 0.5rem 0.5rem; }
+  .welcome-inner { max-width: 98%; }
+  .brand-title h1 { font-size: 1.2rem; }
+  .brand-title .subtitle { font-size: .5rem; }
+  .welcome-text h2 { font-size: 1rem; }
+  .welcome-text p { font-size: .65rem; }
+  .features li { font-size: .55rem; }
+  .login { padding: 0.8rem 0.5rem 1.2rem; }
+  .card { padding: 1rem 1rem 1.2rem; }
+  .card-title-heading { font-size: 1rem; }
+  .card-desc { font-size: .55rem; }
+  .input-wrapper input { padding: .5rem 0.7rem .5rem 1.8rem; font-size: .7rem; }
+  .primary-btn { padding: .6rem 0.8rem; font-size: .7rem; }
+  .footer { font-size: .45rem; }
+  .sos-button { bottom: 0.8rem; right: 0.8rem; width: 50px; height: 50px; padding: .6rem; font-size: .55rem; }
+  .sos-button span { font-size: .45rem; }
+}

@@ -14,3 +14,78 @@
 .option:hover{box-shadow:0 6px 18px -4px rgba(0,0,0,.3);transform:translateY(-2px)}
 .back{background:#fafafa;border:1px solid #e3e5e8;color:#222;padding:.85rem 1rem;width:100%;border-radius:10px;cursor:pointer;font-size:.9rem}
 .back:hover{background:#f0f0f0}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card {
+    padding: 2rem 1.5rem;
+    max-width: 480px;
+    border-radius: 16px;
+  }
+  .icon-shield svg {
+    --shield-size: 56px;
+  }
+  .header h2 {
+    font-size: 1.8rem;
+  }
+  .sub {
+    font-size: 0.9rem;
+  }
+  .status.ok {
+    padding: 0.75rem 0.9rem;
+    font-size: 0.85rem;
+    margin: 0.8rem 0 1rem;
+  }
+  .option {
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.8rem;
+  }
+  .option .title {
+    font-size: 1.05rem;
+  }
+  .option .desc {
+    font-size: 0.75rem;
+  }
+  .back {
+    padding: 0.75rem 0.9rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .selector-wrapper {
+    padding: 0.75rem;
+  }
+  .card {
+    padding: 1.5rem 1rem;
+    border-radius: 14px;
+  }
+  .icon-shield svg {
+    --shield-size: 48px;
+  }
+  .header h2 {
+    font-size: 1.5rem;
+  }
+  .sub {
+    font-size: 0.8rem;
+  }
+  .status.ok {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+    margin: 0.7rem 0 0.9rem;
+  }
+  .option {
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.7rem;
+  }
+  .option .title {
+    font-size: 0.95rem;
+  }
+  .option .desc {
+    font-size: 0.7rem;
+  }
+  .back {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
