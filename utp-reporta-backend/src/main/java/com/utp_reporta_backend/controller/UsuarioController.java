@@ -15,6 +15,8 @@ import com.utp_reporta_backend.dto.UsuarioDTO;
 import com.utp_reporta_backend.model.Usuario;
 import com.utp_reporta_backend.repository.UsuarioRepository;
 import com.utp_reporta_backend.service.UsuarioService;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
@@ -102,5 +104,34 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioDTO>> getUsuariosByTipoAlumno() {
         List<UsuarioDTO> usuarios = usuarioService.getUsuariosByTipoAlumno();
         return ResponseEntity.ok(usuarios);
+    }
+
+    @GetMapping("/codigo/{codigo}")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')") // Add appropriate authorization
+    public ResponseEntity<UsuarioDTO> getUsuarioByCodigo(@PathVariable String codigo) {
+        UsuarioDTO usuario = usuarioService.findByCodigo(codigo);
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/enabled")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')") // Add appropriate authorization
+    public ResponseEntity<List<UsuarioDTO>> getUsuariosByEnabledStatus(@RequestParam boolean enabled) {
+        List<UsuarioDTO> usuarios = usuarioService.getUsuariosByEnabledStatus(enabled);
+        return ResponseEntity.ok(usuarios);
+    }
+
+    @PutMapping("/{id}/enabled")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('SUPERADMIN')") // Add appropriate authorization
+    public ResponseEntity<UsuarioDTO> updateUsuarioEnabledStatus(@PathVariable Long id, @RequestParam boolean enabled) {
+        UsuarioDTO updatedUsuario = usuarioService.updateUsuarioEnabledStatus(id, enabled);
+        if (updatedUsuario != null) {
+            return ResponseEntity.ok(updatedUsuario);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -23,6 +23,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return new User(
 					usuario.getUsername(),
 					usuario.getPassword(),
+					usuario.isEnabled(), // Pass the enabled status from our Usuario object
+					usuario.isAccountNonExpired(),
+					usuario.isCredentialsNonExpired(),
+					usuario.isAccountNonLocked(),
 					usuario.getAuthorities()
 				);
 	}

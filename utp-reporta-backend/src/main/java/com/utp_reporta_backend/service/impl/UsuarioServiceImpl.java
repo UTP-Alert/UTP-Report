@@ -219,4 +219,83 @@ public class UsuarioServiceImpl implements UsuarioService {
             return usuarioDTO;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public UsuarioDTO findByCodigo(String codigo) {
+        return usuarioRepository.findByUsername(codigo)
+                .map(usuario -> {
+                    UsuarioDTO usuarioDTO = new UsuarioDTO();
+                    usuarioDTO.setId(usuario.getId());
+                    usuarioDTO.setNombreCompleto(usuario.getNombreCompleto());
+                    usuarioDTO.setUsername(usuario.getUsername());
+                    usuarioDTO.setCorreo(usuario.getCorreo());
+                    usuarioDTO.setTelefono(usuario.getTelefono());
+                    usuarioDTO.setTipoUsuario(usuario.getTipoUsuario());
+                    usuarioDTO.setSedeNombre(usuario.getSede() != null ? usuario.getSede().getNombre() : null);
+                    usuarioDTO.setZonasNombres(usuario.getZonas().stream()
+                            .map(zona -> zona.getNombre())
+                            .collect(Collectors.toList()));
+                    usuarioDTO.setIntentos(usuario.getIntentosReporte());
+                    usuarioDTO.setFechaUltimoReporte(usuario.getFechaUltimoReporte());
+                    usuarioDTO.setEnabled(usuario.isEnabled());
+                    usuarioDTO.setRoles(usuario.getRoles().stream()
+                            .map(rol -> rol.getNombre().name())
+                            .collect(Collectors.toList()));
+                    return usuarioDTO;
+                })
+                .orElse(null); // Return null if user not found
+    }
+
+    @Override
+    public List<UsuarioDTO> getUsuariosByEnabledStatus(boolean enabled) {
+        List<Usuario> usuarios = usuarioRepository.findByEnabled(enabled);
+        return usuarios.stream().map(usuario -> {
+            UsuarioDTO usuarioDTO = new UsuarioDTO();
+            usuarioDTO.setId(usuario.getId());
+            usuarioDTO.setNombreCompleto(usuario.getNombreCompleto());
+            usuarioDTO.setUsername(usuario.getUsername());
+            usuarioDTO.setCorreo(usuario.getCorreo());
+            usuarioDTO.setTelefono(usuario.getTelefono());
+            usuarioDTO.setTipoUsuario(usuario.getTipoUsuario());
+            usuarioDTO.setSedeNombre(usuario.getSede() != null ? usuario.getSede().getNombre() : null);
+            usuarioDTO.setZonasNombres(usuario.getZonas().stream()
+                    .map(zona -> zona.getNombre())
+                    .collect(Collectors.toList()));
+            usuarioDTO.setIntentos(usuario.getIntentosReporte());
+            usuarioDTO.setFechaUltimoReporte(usuario.getFechaUltimoReporte());
+            usuarioDTO.setEnabled(usuario.isEnabled());
+            usuarioDTO.setRoles(usuario.getRoles().stream()
+                    .map(rol -> rol.getNombre().name())
+                    .collect(Collectors.toList()));
+            return usuarioDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public UsuarioDTO updateUsuarioEnabledStatus(Long id, boolean enabled) {
+        return usuarioRepository.findById(id)
+                .map(usuario -> {
+                    usuario.setEnabled(enabled);
+                    Usuario updatedUsuario = usuarioRepository.save(usuario);
+                    UsuarioDTO usuarioDTO = new UsuarioDTO();
+                    usuarioDTO.setId(updatedUsuario.getId());
+                    usuarioDTO.setNombreCompleto(updatedUsuario.getNombreCompleto());
+                    usuarioDTO.setUsername(updatedUsuario.getUsername());
+                    usuarioDTO.setCorreo(updatedUsuario.getCorreo());
+                    usuarioDTO.setTelefono(updatedUsuario.getTelefono());
+                    usuarioDTO.setTipoUsuario(updatedUsuario.getTipoUsuario());
+                    usuarioDTO.setSedeNombre(updatedUsuario.getSede() != null ? updatedUsuario.getSede().getNombre() : null);
+                    usuarioDTO.setZonasNombres(updatedUsuario.getZonas().stream()
+                            .map(zona -> zona.getNombre())
+                            .collect(Collectors.toList()));
+                    usuarioDTO.setIntentos(updatedUsuario.getIntentosReporte());
+                    usuarioDTO.setFechaUltimoReporte(updatedUsuario.getFechaUltimoReporte());
+                    usuarioDTO.setEnabled(updatedUsuario.isEnabled());
+                    usuarioDTO.setRoles(updatedUsuario.getRoles().stream()
+                            .map(rol -> rol.getNombre().name())
+                            .collect(Collectors.toList()));
+                    return usuarioDTO;
+                })
+                .orElse(null); // Return null if user not found
+    }
 }

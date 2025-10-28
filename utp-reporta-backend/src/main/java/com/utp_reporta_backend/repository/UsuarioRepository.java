@@ -30,4 +30,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     List<Usuario> findByRoles_NombreAndZonas_Id(ERol role, Long zonaId);
     List<Usuario> findByRoles_NombreAndSede_Id(ERol role, Long sedeId);
     List<Usuario> findByRoles_Nombre(ERol role);
+    List<Usuario> findByEnabled(boolean enabled);
 }

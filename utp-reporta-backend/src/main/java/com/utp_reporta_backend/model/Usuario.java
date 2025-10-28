@@ -108,6 +108,6 @@ public class Usuario implements UserDetails {
 	//Usuario habilitado
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled; // Return the actual enabled status
     }
 }
