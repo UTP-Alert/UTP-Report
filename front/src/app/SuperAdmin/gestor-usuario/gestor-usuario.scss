@@ -323,3 +323,46 @@ i.fas, i.far, i.fab {
 /* Ajustes de tipografía */
 h2, h3 { color: var(--slate-700); }
 
+/* Lista de usuarios y tarjetas */
+.user-list {
+	margin-top: 1.25rem;
+	padding: 1rem;
+	background: var(--white);
+	border: 1px solid rgba(16, 185, 129, 0.08);
+	border-radius: 14px;
+	box-shadow: 0 1px 2px rgba(16,24,40,0.03);
+}
+
+.user-card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	background: transparent;
+	border: 1px solid rgba(16,185,129,0.12);
+	padding: 1rem 1.25rem;
+	border-radius: 12px;
+	margin-bottom: 1rem;
+}
+
+.user-card .avatar {
+	width: 56px; height: 56px; border-radius: 9999px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.05rem; color:var(--white);
+}
+
+.avatar-admin { background: linear-gradient(180deg,#ff6b6b,#ef4444); }
+.avatar-seguridad { background: linear-gradient(180deg,#34d399,#059669); }
+.avatar-user { background: linear-gradient(180deg,#60a5fa,#2563eb); }
+
+.user-card .actions { min-width: 160px; text-align: right; display:flex; gap:1rem; align-items:center; justify-content:flex-end; }
+.user-card .actions button { background: transparent; border: 0; cursor: pointer; font-weight:700; padding: .25rem .5rem; }
+.user-card .actions button:hover { text-decoration: none; opacity: .9; }
+.user-card .actions button:first-child { color: #2563eb; }
+.user-card .actions button:nth-child(2) { color: #f97316; }
+.user-card .actions button:last-child { color: #dc2626; }
+
+.user-list .badge { margin-right: .35rem; }
+
+/* Role label more prominent (use when needed) */
+.user-card .badge { background: #0f172a; color: #ffffff; border-color: transparent; padding: .25rem .6rem; font-weight:700; border-radius: 9999px; }
+.user-card .badge + .badge { background: var(--slate-50); color: var(--slate-700); border: 1px solid var(--slate-200); font-weight:700; }
+

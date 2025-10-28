@@ -78,6 +78,7 @@
 	</div>
 
 	<!-- FORMULARIO DE CREACIÓN/EDICIÓN DE USUARIOS -->
+	<div class="form-wrapper">
 	<div *ngIf="isCreating || editingUser" class="card border-primary bg-red-50 mb-6">
 		<div class="card-header">
 			<h2 class="card-title">
@@ -308,4 +309,47 @@
 				{{ editingUser ? 'Actualizar Usuario' : 'Crear Usuario' }}
 			</button>
 		</div>
+		<!-- cierre form-wrapper -->
+		</div>
 	</div>
+
+	<div class="user-list mt-8 card bg-white border border-gray-200 p-4 rounded-md">
+			<h3 class="subsection-title">
+				<span class="title-icon" aria-hidden="true">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-users"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>
+				</span>
+				Lista de Usuarios ({{ users.length || 0 }})
+			</h3>
+
+			<div *ngIf="users && users.length; else sinUsuarios">
+				<div *ngFor="let u of users" class="user-card border-2 rounded-2xl p-4 mb-4 flex items-start justify-between">
+					<div class="flex items-center gap-3">
+						<div class="avatar" [ngClass]="getAvatarClasses(u)">
+							{{ (u.nombreCompleto || u.username || '?').charAt(0) | uppercase }}
+						</div>
+						<div>
+							<div class="font-medium text-lg">{{ u.nombreCompleto || '—' }}</div>
+							<div class="text-sm text-gray-600">{{ u.username }} · {{ u.correo }}</div>
+							<div class="mt-2 flex items-center gap-2">
+								<span class="badge" *ngFor="let r of (u.roles || [])">{{ r }}</span>
+								<span class="badge" *ngIf="u.enabled" style="background:#ecfdf5;border-color:#bbf7d0;color:#065f46;">Activo</span>
+								<span class="badge" *ngIf="!u.enabled" style="background:#fef2f2;border-color:#fecaca;color:#dc2626;">Inactivo</span>
+								<span class="badge" *ngIf="u.sedeNombre">{{ u.sedeNombre }}</span>
+							</div>
+						</div>
+					</div>
+					<div class="actions text-sm text-right">
+						<button class="text-blue-600 mr-3" (click)="editUser(u)">Editar</button>
+						<button class="text-orange-500 mr-3" (click)="deactivateUser(u)">{{ u.enabled ? 'Desactivar' : 'Activar' }}</button>
+						<button class="text-red-600" (click)="deleteUser(u)">Eliminar</button>
+					</div>
+				</div>
+			</div>
+
+			<ng-template #sinUsuarios>
+				<div class="border-2 border-dashed border-blue-200 rounded-2xl p-6 text-center text-gray-500">
+					No hay usuarios registrados todavía.
+				</div>
+			</ng-template>
+		</div>
+	

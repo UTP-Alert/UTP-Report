@@ -45,4 +45,16 @@ export class UsuarioService {
     console.debug('[UsuarioService] getSeguridadByRol -> URL:', url);
     return this.http.get<any[]>(url).pipe(catchError(err => { console.warn('getSeguridadByRol falló', err); return of([]); }));
   }
+
+  // Actualiza el estado enabled de un usuario
+  updateEnabled(id: number, enabled: boolean): Observable<any> {
+    const url = `${this.baseUrl}/api/usuarios/${id}/enabled?enabled=${enabled}`;
+    return this.http.put<any>(url, null).pipe(catchError(err => { console.warn('[UsuarioService] updateEnabled falló', err); return of(null); }));
+  }
+
+  // Intento de actualización completa de usuario (si el backend expone PUT /api/usuarios/{id})
+  updateUser(id: number, payload: any): Observable<any> {
+    const url = `${this.baseUrl}/api/usuarios/${id}`;
+    return this.http.put<any>(url, payload).pipe(catchError(err => { console.warn('[UsuarioService] updateUser falló', err); return of(null); }));
+  }
 }

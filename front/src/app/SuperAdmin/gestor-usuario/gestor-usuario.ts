@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Sede, SedeService } from '../../services/sede.service';
 import { Zona, ZonaService } from '../../services/zona.service';
 import { HttpClient } from '@angular/common/http';
+import { UsuarioService } from '../../services/usuario.service';
 import { firstValueFrom } from 'rxjs';
 import { RegistroAdminDTO, RegistroDTO, RegistroSecurityDTO, UsuarioRolService } from '../../services/usuario-rol.service';
 
@@ -65,11 +66,37 @@ export class GestorUsuario implements OnInit {
     private zonaService: ZonaService,
     private usuarioRolService: UsuarioRolService,
     private http: HttpClient,
+    private usuarioService: UsuarioService,
   ) {}
+
+  // Lista de usuarios (cargada desde backend)
+  users: Array<any> = [];
+
+  loadUsers(): void {
+    this.usuarioService.getAll().subscribe({
+      next: (lista) => {
+        this.users = (lista || []).map((u: any) => ({
+          id: u.id,
+          nombreCompleto: u.nombreCompleto || u.name || '',
+          username: u.username || '',
+          correo: u.correo || u.email || '',
+          telefono: u.telefono || '',
+          tipoUsuario: (u.tipoUsuario || (u.roles && u.roles[0]) || '').toString(),
+          sedeNombre: u.sedeNombre || '',
+          zonasNombres: u.zonasNombres || [],
+          enabled: typeof u.enabled === 'boolean' ? u.enabled : true,
+          roles: u.roles || []
+        }));
+      },
+      error: (err) => { console.error('Error cargando usuarios', err); this.users = []; }
+    });
+  }
 
   ngOnInit(): void {
     this.cargarSedes();
     this.cargarZonas();
+    // Cargar usuarios al iniciar
+    this.loadUsers();
   }
 
   // Abrir formulario de creación: limpiar y generar código según rol seleccionado
@@ -348,7 +375,14 @@ export class GestorUsuario implements OnInit {
         sedeId: Number(this.formData.campus)
       };
       this.usuarioRolService.registrarUsuario(dto).subscribe({
-        next: (res: string) => { console.log('✅ Usuario creado:', res); alert(res); this.resetForm(); this.isCreating = false; },
+        next: (res: string) => {
+          console.log('✅ Usuario creado:', res);
+          alert(res);
+          this.resetForm();
+          this.isCreating = false;
+          // recargar lista de usuarios
+          this.loadUsers();
+        },
         error: (err) => { console.error('❌ Error al registrar:', err); alert(err.error?.message || err.message || 'Error al registrar usuario'); }
       });
     } else if (role === 'admin') {
@@ -361,7 +395,13 @@ export class GestorUsuario implements OnInit {
         sedeId: Number(this.formData.campus)
       };
       this.usuarioRolService.registrarAdmin(dto).subscribe({
-        next: (res: string) => { console.log('✅ Admin creado:', res); alert(res); this.resetForm(); this.isCreating = false; },
+        next: (res: string) => {
+          console.log('✅ Admin creado:', res);
+          alert(res);
+          this.resetForm();
+          this.isCreating = false;
+          this.loadUsers();
+        },
         error: (err) => { console.error('❌ Error al registrar:', err); alert(err.error?.message || err.message || 'Error al registrar usuario'); }
       });
     } else if (role === 'seguridad') {
@@ -375,7 +415,13 @@ export class GestorUsuario implements OnInit {
         zonaIds: this.formData.assignedZones.map(z => z.id)
       };
       this.usuarioRolService.registrarSecurity(dto).subscribe({
-        next: (res: string) => { console.log('✅ Seguridad creada:', res); alert(res); this.resetForm(); this.isCreating = false; },
+        next: (res: string) => {
+          console.log('✅ Seguridad creada:', res);
+          alert(res);
+          this.resetForm();
+          this.isCreating = false;
+          this.loadUsers();
+        },
         error: (err) => { console.error('❌ Error al registrar:', err); alert(err.error?.message || err.message || 'Error al registrar usuario'); }
       });
     } else {
@@ -384,9 +430,191 @@ export class GestorUsuario implements OnInit {
   }
 
   handleUpdateUser() {
-    console.log('Updating user:', this.editingUser);
-    this.editingUser = null;
-    this.isCreating = false;
-    this.resetForm();
+    if (!this.editingUser || !this.editingUser.id) {
+      alert('No hay usuario seleccionado para actualizar.');
+      return;
+    }
+
+    // Validación ligera para actualización (contraseña opcional)
+    this.formErrors = { name: '', username: '', correo: '', password: '', phone: '', role: '', userType: '', campus: '', assignedZones: '' };
+    if (!this.formData.name.trim()) { this.formErrors.name = 'El nombre completo es obligatorio.'; alert('Corrige los errores del formulario'); return; }
+    const phoneRegex = /^\d{9}$/;
+    if (!this.formData.phone.trim() || !phoneRegex.test(this.formData.phone)) { this.formErrors.phone = 'Teléfono inválido (9 dígitos).'; alert('Corrige los errores del formulario'); return; }
+
+    // Construir payload para enviar al backend.
+    const payload: any = {
+      nombreCompleto: this.formData.name,
+      correo: this.formData.correo,
+      telefono: this.formData.phone,
+      sedeId: this.formData.campus ? Number(this.formData.campus) : null,
+    };
+    // incluir password sólo si se ingresó
+    if (this.formData.password && this.formData.password.length >= 6) payload.password = this.formData.password;
+    // si es seguridad incluir zonas
+    if (this.formData.role === 'seguridad') payload.zonaIds = this.formData.assignedZones.map(z => z.id);
+    // si es usuario incluir tipoUsuario (ALUMNO/DOCENTE)
+    if (this.formData.role === 'usuario' && this.formData.userType) {
+      payload.tipoUsuario = String(this.formData.userType).toUpperCase();
+    }
+
+    this.usuarioService.updateUser(this.editingUser.id, payload).subscribe({
+      next: (res) => {
+        if (!res) { alert('No se pudo actualizar el usuario (respuesta vacía).'); return; }
+        alert('Usuario actualizado correctamente.');
+        // actualizar lista local con respuesta si contiene id
+        if (res.id) {
+          this.users = this.users.map(x => x.id === res.id ? ({
+            id: res.id,
+            nombreCompleto: res.nombreCompleto || this.formData.name,
+            username: res.username || this.formData.username,
+            correo: res.correo || this.formData.correo,
+            telefono: res.telefono || this.formData.phone,
+            tipoUsuario: res.tipoUsuario || this.formData.userType,
+            sedeNombre: res.sedeNombre || '',
+            zonasNombres: res.zonasNombres || [],
+            enabled: typeof res.enabled === 'boolean' ? res.enabled : true,
+            roles: res.roles || []
+          }) : x);
+        }
+        this.editingUser = null;
+        this.isCreating = false;
+        this.resetForm();
+      },
+      error: (err) => { console.error('Error actualizando usuario', err); alert(err?.error?.message || err?.message || 'Error al actualizar usuario'); }
+    });
+  }
+
+  // Abrir editor con datos del usuario seleccionado
+  editUser(u: any) {
+    this.isCreating = true;
+    this.editingUser = u;
+    // Vaciar contraseña por seguridad (se cambia solo si el admin ingresa nueva)
+    this.formData.password = '';
+
+    // Intentamos obtener detalles frescos desde backend (si existe endpoint GET /api/usuarios/:id)
+    if (u && u.id) {
+      this.usuarioService.getById(Number(u.id)).subscribe({
+        next: (res: any) => {
+          const data = res || u;
+          this.applyUserToForm(data);
+        },
+        error: (err) => {
+          // Si falla, usar los datos que ya tenemos en "u"
+          console.warn('No se pudo obtener usuario por id, usando datos locales', err);
+          this.applyUserToForm(u);
+        }
+      });
+    } else {
+      this.applyUserToForm(u);
+    }
+  }
+
+  // Helper: mapear la respuesta del backend o el usuario local al formData
+  private applyUserToForm(data: any) {
+    this.formData.name = data.nombreCompleto || '';
+    this.formData.username = data.username || '';
+    this.formData.correo = data.correo || data.email || '';
+    this.formData.phone = data.telefono || '';
+
+    // Determinar sede: backend solo devuelve nombre de sede, mapear a id si es posible
+    const sedeNombre = data.sedeNombre || '';
+    const sedeObj = this.sedes.find(s => (s.nombre || '').toString() === sedeNombre);
+    this.formData.campus = sedeObj ? String(sedeObj.id) : (data.sedeId ? String(data.sedeId) : '');
+
+    // Roles / tipoUsuario
+    if (Array.isArray(data.roles) && data.roles.length) {
+      const r = (data.roles[0] || '').toLowerCase();
+      if (r.includes('admin')) this.formData.role = 'admin';
+      else if (r.includes('seguridad') || r.includes('security')) this.formData.role = 'seguridad';
+      else this.formData.role = 'usuario';
+    }
+
+    // Manejo robusto de tipoUsuario (puede venir como string, enum o como objeto)
+    let tipoVal: string | undefined = undefined;
+    if (data && data.tipoUsuario != null) {
+      if (typeof data.tipoUsuario === 'string') tipoVal = data.tipoUsuario;
+      else if (typeof data.tipoUsuario === 'object') {
+        // puede venir como { name: 'ALUMNO' } o similar
+        if ((data.tipoUsuario as any).name) tipoVal = (data.tipoUsuario as any).name;
+        else tipoVal = String(data.tipoUsuario);
+      } else {
+        tipoVal = String(data.tipoUsuario);
+      }
+    }
+    if (tipoVal) {
+      const t = tipoVal.toLowerCase();
+      // si es docente/alumno, estamos en rol usuario
+      if (t.includes('docente') || t.includes('alumno') || t.includes('teacher') || t.includes('student')) {
+        this.formData.role = 'usuario';
+        this.formData.userType = t.includes('docente') || t.includes('teacher') ? 'docente' : 'alumno';
+      } else {
+        // si no es alumno/docente, solo setear el tipo en userType si coincide
+        this.formData.userType = t;
+      }
+    }
+
+    // Zonas asignadas: backend solo devuelve nombres, intentar mapear a objetos Zona
+    this.formData.assignedZones = [];
+    if (Array.isArray(data.zonasNombres) && data.zonasNombres.length) {
+      data.zonasNombres.forEach((zn: string) => {
+        const match = this.zonas.find(z => (z.nombre || '').toString() === zn);
+        if (match) this.formData.assignedZones.push(match);
+      });
+    }
+
+    // Forzar username y correo como solo lectura
+    this.isUsernameAuto = true;
+    this.isCorreoAuto = true;
+  }
+
+  // Devuelve clases para el avatar según roles del usuario
+  getAvatarClasses(u: any) {
+    const roles = (u && u.roles) ? (u.roles || []).map((r: any) => ('' + r).toLowerCase()) : [];
+    const isAdmin = roles.some((r: string) => r.includes('admin'));
+    const isSeguridad = roles.some((r: string) => r.includes('segur'));
+    return {
+      'avatar-admin': isAdmin,
+      'avatar-seguridad': isSeguridad,
+      'avatar-user': !isAdmin && !isSeguridad
+    } as any;
+  }
+
+  // Toggle enable/disable locally (backend endpoint not available here)
+  deactivateUser(u: any) {
+    const action = u.enabled ? 'desactivar' : 'activar';
+    if (!confirm(`¿Deseas ${action} al usuario ${u.nombreCompleto || u.username}?`)) return;
+    // Llamar al endpoint del backend para actualizar enabled
+    this.usuarioService.updateEnabled(u.id, !u.enabled).subscribe({
+      next: (res) => {
+        if (!res) { alert('No se pudo actualizar el estado del usuario.'); return; }
+        // Si backend devuelve el usuario actualizado, usarlo; si no, alternar localmente
+        if (res.id) {
+          this.users = this.users.map(x => x.id === res.id ? ({
+            id: res.id,
+            nombreCompleto: res.nombreCompleto || x.nombreCompleto,
+            username: res.username || x.username,
+            correo: res.correo || x.correo,
+            telefono: res.telefono || x.telefono,
+            tipoUsuario: res.tipoUsuario || x.tipoUsuario,
+            sedeNombre: res.sedeNombre || x.sedeNombre,
+            zonasNombres: res.zonasNombres || x.zonasNombres,
+            enabled: typeof res.enabled === 'boolean' ? res.enabled : !x.enabled,
+            roles: res.roles || x.roles
+          }) : x);
+        } else {
+          u.enabled = !u.enabled;
+          this.users = this.users.map(x => x.id === u.id ? u : x);
+        }
+        alert(`Usuario ${action} correctamente.`);
+      },
+      error: (err) => { console.error('Error toggling enabled', err); alert('Error al actualizar estado del usuario: ' + (err?.error?.message || err?.message || 'desconocido')); }
+    });
+  }
+
+  // Eliminar usuario (localmente) - backend no expone endpoint de borrado actualmente
+  deleteUser(u: any) {
+    if (!confirm(`¿Eliminar usuario ${u.nombreCompleto || u.username}? Esta acción no puede revertirse.`)) return;
+    // Si existiera endpoint para borrar, llamarlo aquí. Ahora solo filtrar la lista localmente.
+    this.users = this.users.filter(x => x.id !== u.id);
   }
 }
