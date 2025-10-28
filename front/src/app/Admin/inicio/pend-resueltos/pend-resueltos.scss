@@ -96,3 +96,110 @@
 	.resolved-card .actions-col { width: 100%; align-items:flex-start; }
 }
 
+@media (max-width: 768px) {
+  .resolved-card {
+    padding: 0.4rem;
+    .card-content.row-flex {
+      padding: 0.6rem 0.8rem 0.6rem 0.8rem;
+      gap: 0.75rem;
+    }
+    .avatar-col {
+      width: 48px;
+    }
+    .avatar-circle {
+      width: 36px;
+      height: 36px;
+    }
+    .title {
+      font-size: 0.95rem;
+    }
+    .meta.small {
+      font-size: 0.75rem;
+      margin-top: 3px;
+    }
+    .desc {
+      margin: 0.4rem 0 0.6rem 0;
+      font-size: 0.85rem;
+    }
+    .icons-row {
+      gap: 1rem;
+      font-size: 0.8rem;
+    }
+    .report-thumb-lg {
+      width: 60px;
+      height: 60px;
+    }
+    .inline-thumb {
+      width: 30px;
+      height: 30px;
+    }
+    .actions-col {
+      width: 100%;
+      align-items: flex-start;
+    }
+    .badges-top {
+      gap: 0.4rem;
+    }
+    .badge {
+      padding: 3px 7px;
+      font-size: 0.65rem;
+    }
+    .actions {
+      margin-top: 0.4rem;
+    }
+    .button-outline {
+      padding: 5px 9px;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .resolved-card {
+    padding: 0.3rem;
+    .card-content.row-flex {
+      padding: 0.5rem 0.6rem 0.5rem 0.6rem;
+      gap: 0.6rem;
+    }
+    .avatar-col {
+      width: 40px;
+    }
+    .avatar-circle {
+      width: 30px;
+      height: 30px;
+    }
+    .title {
+      font-size: 0.85rem;
+    }
+    .meta.small {
+      font-size: 0.7rem;
+    }
+    .desc {
+      margin: 0.3rem 0 0.5rem 0;
+      font-size: 0.8rem;
+    }
+    .icons-row {
+      gap: 0.8rem;
+      font-size: 0.75rem;
+    }
+    .report-thumb-lg {
+      width: 50px;
+      height: 50px;
+    }
+    .inline-thumb {
+      width: 24px;
+      height: 24px;
+    }
+    .badges-top {
+      gap: 0.3rem;
+    }
+    .badge {
+      padding: 2px 5px;
+      font-size: 0.6rem;
+    }
+    .button-outline {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+    }
+  }
+}

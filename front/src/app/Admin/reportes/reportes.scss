@@ -887,3 +887,31 @@ $orange-600: #EA580C;
   mask: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>') no-repeat 50% 50%;
   -webkit-mask: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>') no-repeat 50% 50%;
 }
+
+/* Responsive adjustments for tabs */
+@media (max-width: 768px) {
+  .tabs-list {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.2rem;
+    padding: 0.15rem;
+  }
+  .tabs-trigger {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    &.active::after {
+      height: 1px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .tabs-list {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+    padding: 0.1rem;
+  }
+  .tabs-trigger {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
