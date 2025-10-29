@@ -49,6 +49,11 @@
 									</div>
 					</div>
 					<p class="report-description">{{ r.descripcion }}</p>
+					<!-- Mostrar comentario de rechazo del admin si existe -->
+					<div *ngIf="r.mensajeAdmin" class="admin-reject-comment" style="margin-top:8px; padding:8px; background:#fff3f2; border-left:4px solid #f87171; border-radius:4px;">
+						<strong>Comentario del admin:</strong>
+						<p style="margin:6px 0 0 0">{{ r.mensajeAdmin }}</p>
+					</div>
 					<!-- Ver foto: botón debajo de la descripción -->
 					<div *ngIf="getImageSrc(r) as img" class="photo-action" style="display:flex;align-items:center;gap:8px;margin-top:8px;">
 						<button class="action-btn" (click)="openImage(img)">📷 Ver foto</button>
@@ -57,7 +62,7 @@
 				</div>
 				<div class="report-actions">
 					<!-- Mostrar 'Ir a la Zona' sólo si el reporte aún no está en UBICANDO/INVESTIGANDO y no está ya completado con parte policial -->
-					<button *ngIf="!((r.ultimoEstado||'').toLowerCase() === 'ubicando' || (r.ultimoEstado||'').toLowerCase() === 'investigando' || (r.mensajeSeguridad && (r.ultimoEstado||'').toLowerCase() === 'pendiente_aprobacion'))" class="action-btn go-to-zone" (click)="irALaZona(r)">
+					<button *ngIf="!((r.ultimoEstado||'').toLowerCase() === 'ubicando' || (r.ultimoEstado||'').toLowerCase() === 'investigando' || (r.mensajeSeguridad && (r.ultimoEstado||'').toLowerCase() === 'pendiente_aprobacion') || (r._isCancelled))" class="action-btn go-to-zone" (click)="irALaZona(r)">
 						<span class="btn-icon material-icons">near_me</span>
 						Ir a la Zona
 					</button>

@@ -450,8 +450,21 @@ export class ReportaAhora implements OnInit {
 
   // Notificar envío exitoso al padre y cerrar el modal
   try { this.submitted.emit(); } catch {}
-  // Enviar el DTO creado al componente padre para que lo muestre inmediatamente como PENDIENTE
-  try { this.saved.emit(res); } catch {}
+  // Enviar el DTO creado al componente padre para que lo muestre inmediatamente como PENDIENTE.
+  // Si el backend ya devolvió reporteGestion, usamos esa respuesta; si no, pedimos el reporte por id para obtener la gestión creada en backend.
+  try {
+    if (res && res.reporteGestion) {
+      this.saved.emit(res);
+    } else if (res && res.id) {
+      // Obtener el reporte actualizado (incluye reporteGestion si el backend lo creó)
+      this.reporteService.getById(res.id).subscribe({
+        next: (full) => { try { this.saved.emit(full); } catch {} },
+        error: () => { try { this.saved.emit(res); } catch {} }
+      });
+    } else {
+      try { this.saved.emit(res); } catch {}
+    }
+  } catch (e) { try { this.saved.emit(res); } catch {} }
   try { this.close.emit(); } catch {}
       },
       error: err => {

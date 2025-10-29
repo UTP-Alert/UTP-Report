@@ -58,10 +58,9 @@
 			<p class="text-gray-600">Fecha de asignación: <span class="font-medium">{{ r.fechaCreacion | date:'short' }}</span></p>
 		</div>
 
-				<div class="flex justify-end gap-2 actions-row">
-						<button class="btn btn-review" (click)="openReview(r)">Revisar y Decidir</button>
-						<button class="btn btn-reject">Rechazar</button>
-				</div>
+		<div class="flex justify-end gap-2 actions-row">
+			<button class="btn btn-review" (click)="openReview(r)">Revisar y Decidir</button>
+		</div>
 	</div>
 </div>
 

@@ -133,12 +133,17 @@ export class ReportesAsignados {
     // intención: mostrar reportes donde seguridadAsignadoId === perfil.id
     const perfilObs: any = (this.perfil as any).obtenerPerfil ? (this.perfil as any).obtenerPerfil() : null;
     const finishWithList = (list: ReporteDTO[], myId: number | null) => {
-      const filtered = (list || []).filter(r => r.seguridadAsignadoId === myId);
+  // Mostrar sólo reportes que estén asignados a este usuario (seguridadAsignadoId === myId)
+  // y excluir reportes sin asignación previa (seguridadAsignadoId == null). Esto evita que
+  // reportes cancelados que nunca fueron asignados aparezcan cuando el perfil aún no carga.
+  const filtered = (list || []).filter(r => r.seguridadAsignadoId != null && r.seguridadAsignadoId === myId);
       // normalize prioridad/estado to lowercase keys we expect, prefer backend.reporteGestion
       this.reportes = filtered.map(r => ({
         ...r,
         ultimaPrioridad: (r as any).reporteGestion && (r as any).reporteGestion.prioridad ? String((r as any).reporteGestion.prioridad).toLowerCase() : ((r as any).ultimaPrioridad ? String((r as any).ultimaPrioridad).toLowerCase() : ''),
-        ultimoEstado: (r as any).reporteGestion && (r as any).reporteGestion.estado ? String((r as any).reporteGestion.estado) : ((r as any).ultimoEstado || '')
+        ultimoEstado: (r as any).reporteGestion && (r as any).reporteGestion.estado ? String((r as any).reporteGestion.estado) : ((r as any).ultimoEstado || ''),
+        // helper flag used in template to hide actions for cancelled reports
+        _isCancelled: (((r as any).reporteGestion && (r as any).reporteGestion.estado) ? String((r as any).reporteGestion.estado) : ((r as any).ultimoEstado || '')).toLowerCase() === 'cancelado'
       }));
       this.loading = false;
     };

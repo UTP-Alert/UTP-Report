@@ -70,8 +70,8 @@ export class PendAprobacion implements OnInit, OnDestroy {
     if(!this.adminComment || this.adminComment.trim().length === 0) return; // require comment
     const id = this.selectedForReview.id;
     const prioridad = (this.selectedForReview as any).reporteGestion && (this.selectedForReview as any).reporteGestion.prioridad ? (this.selectedForReview as any).reporteGestion.prioridad : (this.selectedForReview.ultimaPrioridad || '');
-    // move back to in-process so security can re-open it
-    this.reporteService.updateGestion(id, 'EN_PROCESO', prioridad).subscribe({ next: _ => {
+    // Reject via new admin endpoint: set mensajeAdmin and move estado back to INVESTIGANDO
+    this.reporteService.rechazarPorAdmin(id, this.adminComment).subscribe({ next: _ => {
       this.reporteService.getById(id).subscribe(rf => { this.reportState.setReporte(rf); this.loadPendientes(); this.closeReview(); });
     }, error: err => { console.error('Error rejecting', err); } });
   }
