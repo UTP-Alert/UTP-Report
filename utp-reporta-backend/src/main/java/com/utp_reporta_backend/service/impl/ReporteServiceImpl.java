@@ -12,6 +12,7 @@ import com.utp_reporta_backend.repository.ZonaRepository;
 import com.utp_reporta_backend.service.ReporteService;
 import com.utp_reporta_backend.dto.ReporteGestionDTO;
 import com.utp_reporta_backend.service.TimeService; // Import TimeService
+import com.utp_reporta_backend.service.IReporteGestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,6 +44,9 @@ public class ReporteServiceImpl implements ReporteService {
 
     @Autowired
     private TimeService timeService; // Inject TimeService
+
+    @Autowired
+    private IReporteGestionService reporteGestionService;
 
     @Override
     public List<ReporteDTO> getAllReportes() {
@@ -152,6 +156,14 @@ public class ReporteServiceImpl implements ReporteService {
 
         Reporte savedReporte = reporteRepository.save(reporte);
 
+        // Crear la gestión inicial en estado PENDIENTE para que el reporte tenga reporteGestion desde su creación
+        ReporteGestionDTO createdGestionDto = null;
+        try {
+            createdGestionDto = reporteGestionService.updateReporteGestion(savedReporte.getId(), EstadoReporte.PENDIENTE, null, null);
+        } catch (Exception e) {
+            // No detener la creación del reporte por un fallo al crear la gestión; pero loguear en futura iteración.
+        }
+
         ReporteDTO savedDto = new ReporteDTO();
         savedDto.setId(savedReporte.getId());
         savedDto.setTipoIncidenteId(savedReporte.getTipoIncidente().getId());
@@ -162,6 +174,20 @@ public class ReporteServiceImpl implements ReporteService {
         savedDto.setIsAnonimo(savedReporte.getIsAnonimo());
         savedDto.setContacto(savedReporte.getContacto());
         savedDto.setUsuarioId(savedReporte.getUsuario().getId());
+        // Si el servicio de gestión devolvió DTO, usarlo; si no, intentar reconsultar la entidad para anexar la gestión
+        if (createdGestionDto != null) {
+            savedDto.setReporteGestion(createdGestionDto);
+        } else {
+            Optional<Reporte> maybe = reporteRepository.findById(savedReporte.getId());
+            if (maybe.isPresent() && maybe.get().getReporteGestion() != null) {
+                ReporteGestionDTO gestionDTO = new ReporteGestionDTO();
+                gestionDTO.setId(maybe.get().getReporteGestion().getId());
+                gestionDTO.setEstado(maybe.get().getReporteGestion().getEstado());
+                gestionDTO.setPrioridad(maybe.get().getReporteGestion().getPrioridad());
+                gestionDTO.setFechaActualizacion(maybe.get().getReporteGestion().getFechaActualizacion());
+                savedDto.setReporteGestion(gestionDTO);
+            }
+        }
         return savedDto;
     }
 
