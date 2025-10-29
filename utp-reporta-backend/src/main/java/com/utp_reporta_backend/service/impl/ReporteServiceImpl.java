@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import com.utp_reporta_backend.enums.EstadoReporte;
+import com.utp_reporta_backend.enums.PrioridadReporte;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -216,6 +218,56 @@ public class ReporteServiceImpl implements ReporteService {
             reportes = reporteRepository.findByZonaId(zonaId);
         } else if (sedeId != null) {
             reportes = reporteRepository.findByZonaSedeId(sedeId);
+        } else {
+            reportes = reporteRepository.findAll();
+        }
+
+        return reportes.stream()
+                .map(reporte -> {
+                    ReporteDTO dto = new ReporteDTO();
+                    dto.setId(reporte.getId());
+                    dto.setTipoIncidenteId(reporte.getTipoIncidente().getId());
+                    dto.setZonaId(reporte.getZona().getId());
+                    dto.setDescripcion(reporte.getDescripcion());
+                    dto.setFoto(reporte.getFoto());
+                    dto.setFechaCreacion(reporte.getFechaCreacion());
+                    dto.setIsAnonimo(reporte.getIsAnonimo());
+                    dto.setContacto(reporte.getContacto());
+                    dto.setUsuarioId(reporte.getUsuario().getId());
+                    if(reporte.getSeguridadAsignado() != null) dto.setSeguridadAsignadoId(reporte.getSeguridadAsignado().getId());
+                    if(reporte.getReporteGestion() != null){
+                        ReporteGestionDTO gestionDTO = new ReporteGestionDTO();
+                        gestionDTO.setId(reporte.getReporteGestion().getId());
+                        gestionDTO.setEstado(reporte.getReporteGestion().getEstado());
+                        gestionDTO.setPrioridad(reporte.getReporteGestion().getPrioridad());
+                        gestionDTO.setFechaActualizacion(reporte.getReporteGestion().getFechaActualizacion());
+                        dto.setReporteGestion(gestionDTO);
+                    }
+                    dto.setMensajeSeguridad(reporte.getMensajeSeguridad());
+                    dto.setMensajeAdmin(reporte.getMensajeAdmin());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReporteDTO> getFilteredReports(PrioridadReporte prioridad, EstadoReporte estado, Boolean isAnonimo) {
+        List<Reporte> reportes;
+
+        if (prioridad != null && estado != null && isAnonimo != null) {
+            reportes = reporteRepository.findByReporteGestion_PrioridadAndReporteGestion_EstadoAndIsAnonimo(prioridad, estado, isAnonimo);
+        } else if (prioridad != null && estado != null) {
+            reportes = reporteRepository.findByReporteGestion_PrioridadAndReporteGestion_Estado(prioridad, estado);
+        } else if (prioridad != null && isAnonimo != null) {
+            reportes = reporteRepository.findByReporteGestion_PrioridadAndIsAnonimo(prioridad, isAnonimo);
+        } else if (estado != null && isAnonimo != null) {
+            reportes = reporteRepository.findByReporteGestion_EstadoAndIsAnonimo(estado, isAnonimo);
+        } else if (prioridad != null) {
+            reportes = reporteRepository.findByReporteGestion_Prioridad(prioridad);
+        } else if (estado != null) {
+            reportes = reporteRepository.findByReporteGestion_Estado(estado);
+        } else if (isAnonimo != null) {
+            reportes = reporteRepository.findByIsAnonimo(isAnonimo);
         } else {
             reportes = reporteRepository.findAll();
         }

@@ -8,6 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.utp_reporta_backend.enums.EstadoReporte;
+import com.utp_reporta_backend.enums.PrioridadReporte;
+
+
 import java.util.List;
 
 @RestController
@@ -28,6 +32,15 @@ public class ReporteController {
             @RequestParam(required = false) Long zonaId,
             @RequestParam(required = false) Long sedeId) {
         List<ReporteDTO> reportes = reporteService.getFilteredReportes(zonaId, sedeId);
+        return new ResponseEntity<>(reportes, HttpStatus.OK);
+    }
+
+    @GetMapping("/filtered")
+    public ResponseEntity<List<ReporteDTO>> getFilteredReports(
+            @RequestParam(required = false) PrioridadReporte prioridad,
+            @RequestParam(required = false) EstadoReporte estado,
+            @RequestParam(required = false) Boolean isAnonimo) {
+        List<ReporteDTO> reportes = reporteService.getFilteredReports(prioridad, estado, isAnonimo);
         return new ResponseEntity<>(reportes, HttpStatus.OK);
     }
 
