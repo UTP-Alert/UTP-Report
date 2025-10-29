@@ -78,4 +78,17 @@ public class ReporteGestionController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PutMapping("/{reporteId}/rechazar-admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ReporteGestionDTO> rechazarPorAdmin(
+            @PathVariable Long reporteId,
+            @RequestParam(required = false) String mensajeAdmin) {
+        try {
+            ReporteGestionDTO updatedGestion = reporteGestionService.rechazarPorAdmin(reporteId, mensajeAdmin);
+            return new ResponseEntity<>(updatedGestion, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

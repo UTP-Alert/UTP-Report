@@ -13,12 +13,15 @@ export interface ReporteDTO {
   contacto?: string;
   usuarioId: number;
   mensajeSeguridad?: string | null;
+  mensajeAdmin?: string | null;
   // campos adicionales proporcionados por el backend para estado actual
   ultimoEstado?: string | null;
   ultimaPrioridad?: string | null;
   seguridadAsignadoId?: number | null;
   fechaUltimaGestion?: string | null;
   reporteGestion?: ReporteGestionDTO | null;
+  // flag usado internamente por el frontend para filtros/local UI
+  _isCancelled?: boolean;
 }
 
 export interface ReporteGestionDTO {
@@ -92,6 +95,11 @@ export class ReporteService {
 
   completarReporteConParte(reporteId: number, mensajeSeguridad: string): Observable<ReporteGestionDTO> {
     const url = `${this.baseUrl}/gestion/${reporteId}/completar?mensajeSeguridad=${encodeURIComponent(mensajeSeguridad)}`;
+    return this.http.put<ReporteGestionDTO>(url, {});
+  }
+
+  rechazarPorAdmin(reporteId: number, mensajeAdmin: string): Observable<ReporteGestionDTO> {
+    const url = `${this.baseUrl}/gestion/${reporteId}/rechazar-admin` + (mensajeAdmin ? `?mensajeAdmin=${encodeURIComponent(mensajeAdmin)}` : '');
     return this.http.put<ReporteGestionDTO>(url, {});
   }
 }
