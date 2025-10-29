@@ -14,5 +14,6 @@ public interface UsuarioService {
     UsuarioDTO findByCodigo(String codigo);
     List<UsuarioDTO> getUsuariosByEnabledStatus(boolean enabled);
     UsuarioDTO updateUsuarioEnabledStatus(Long id, boolean enabled);
+    UsuarioDTO updateUsuario(Long id, UsuarioDTO usuarioDTO, String password); // Optional password as parameter
     List<UsuarioDTO> getAllUsersExcludingSuperAdmin();
 }

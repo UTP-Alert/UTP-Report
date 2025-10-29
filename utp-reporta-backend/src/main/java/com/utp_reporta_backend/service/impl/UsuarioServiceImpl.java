@@ -3,13 +3,19 @@ package com.utp_reporta_backend.service.impl;
 import com.utp_reporta_backend.dto.UsuarioDTO;
 import com.utp_reporta_backend.enums.ERol;
 import com.utp_reporta_backend.enums.TipoUsuario;
+import com.utp_reporta_backend.model.Sede;
 import com.utp_reporta_backend.model.Usuario;
+import com.utp_reporta_backend.model.Zona;
+import com.utp_reporta_backend.repository.SedeRepository;
 import com.utp_reporta_backend.repository.UsuarioRepository;
+import com.utp_reporta_backend.repository.ZonaRepository;
 import com.utp_reporta_backend.service.UsuarioService;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,6 +23,12 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private SedeRepository sedeRepository;
+    @Autowired
+    private ZonaRepository zonaRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<UsuarioDTO> getAllUsuarios() {
@@ -297,6 +309,75 @@ public class UsuarioServiceImpl implements UsuarioService {
                     return usuarioDTO;
                 })
                 .orElse(null); // Return null if user not found
+    }
+
+    @Override
+    public UsuarioDTO updateUsuario(Long id, UsuarioDTO usuarioDTO, String password) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+        if (usuarioOptional.isEmpty()) {
+            return null; // Usuario no encontrado
+        }
+
+        Usuario usuario = usuarioOptional.get();
+
+        // Actualizar campos básicos
+        if (usuarioDTO.getNombreCompleto() != null) {
+            usuario.setNombreCompleto(usuarioDTO.getNombreCompleto());
+        }
+        if (usuarioDTO.getCorreo() != null) {
+            usuario.setCorreo(usuarioDTO.getCorreo());
+        }
+        if (usuarioDTO.getTelefono() != null) {
+            usuario.setTelefono(usuarioDTO.getTelefono());
+        }
+        if (usuarioDTO.getTipoUsuario() != null) {
+            usuario.setTipoUsuario(usuarioDTO.getTipoUsuario());
+        }
+        // Actualizar contraseña si se proporciona y no está vacía
+        if (password != null && !password.isEmpty()) {
+            usuario.setPassword(passwordEncoder.encode(password));
+        }
+
+        // Actualizar sede
+        if (usuarioDTO.getSedeNombre() != null) {
+            Optional<Sede> sedeOptional = sedeRepository.findByNombre(usuarioDTO.getSedeNombre());
+            sedeOptional.ifPresent(usuario::setSede);
+        }
+
+        // Actualizar zonas (solo si el usuario tiene rol de seguridad)
+        if (usuario.getRoles().stream().anyMatch(rol -> rol.getNombre().equals(ERol.ROLE_SEGURIDAD))) {
+            if (usuarioDTO.getZonasNombres() != null) {
+                List<Zona> nuevasZonasList = usuarioDTO.getZonasNombres().stream()
+                        .map(zonaNombre -> zonaRepository.findByNombre(zonaNombre))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList());
+                usuario.setZonas(new java.util.HashSet<>(nuevasZonasList)); // Convert List to Set
+            }
+        }
+        
+        // Guardar el usuario actualizado
+        Usuario updatedUsuario = usuarioRepository.save(usuario);
+
+        // Convertir a DTO y retornar
+        UsuarioDTO resultDTO = new UsuarioDTO();
+        resultDTO.setId(updatedUsuario.getId());
+        resultDTO.setNombreCompleto(updatedUsuario.getNombreCompleto());
+        resultDTO.setUsername(updatedUsuario.getUsername());
+        resultDTO.setCorreo(updatedUsuario.getCorreo());
+        resultDTO.setTelefono(updatedUsuario.getTelefono());
+        resultDTO.setTipoUsuario(updatedUsuario.getTipoUsuario());
+        resultDTO.setSedeNombre(updatedUsuario.getSede() != null ? updatedUsuario.getSede().getNombre() : null);
+        resultDTO.setZonasNombres(updatedUsuario.getZonas().stream()
+                .map(zona -> zona.getNombre())
+                .collect(Collectors.toList()));
+        resultDTO.setIntentos(updatedUsuario.getIntentosReporte());
+        resultDTO.setFechaUltimoReporte(updatedUsuario.getFechaUltimoReporte());
+        resultDTO.setEnabled(updatedUsuario.isEnabled());
+        resultDTO.setRoles(updatedUsuario.getRoles().stream()
+                .map(rol -> rol.getNombre().name())
+                .collect(Collectors.toList()));
+        return resultDTO;
     }
 
     @Override

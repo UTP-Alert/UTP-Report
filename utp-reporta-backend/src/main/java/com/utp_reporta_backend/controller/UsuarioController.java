@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -27,6 +29,20 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioController {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioService usuarioService;
+
+    @PutMapping("/{id}")
+    //@PreAuthorize("hasRole('SUPERADMIN') or hasRole('ADMIN')") // Add appropriate authorization
+    public ResponseEntity<UsuarioDTO> updateUsuario(
+            @PathVariable Long id,
+            @RequestBody UsuarioDTO usuarioDTO,
+            @RequestParam(required = false) String password) { // Optional password as RequestParam
+        UsuarioDTO updatedUsuario = usuarioService.updateUsuario(id, usuarioDTO, password);
+        if (updatedUsuario != null) {
+            return ResponseEntity.ok(updatedUsuario);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @GetMapping("/seguridad/filter")
     public ResponseEntity<List<UsuarioDTO>> getFilteredSeguridadUsers(
