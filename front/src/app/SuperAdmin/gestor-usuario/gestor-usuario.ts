@@ -72,6 +72,19 @@ export class GestorUsuario implements OnInit {
   // Lista de usuarios (cargada desde backend)
   users: Array<any> = [];
 
+  // Filtrado / buscador UI
+  searchText: string = '';
+  selectedRoleFilter: string = 'all';
+  selectedEstadoFilter: string = 'all';
+
+  // Roles disponibles para filtro (key -> label)
+  availableRoleFilters: { key: string; label: string }[] = [
+    { key: 'all', label: 'Todos los roles' },
+    { key: 'usuario', label: 'Usuario' },
+    { key: 'admin', label: 'Admin' },
+    { key: 'seguridad', label: 'Seguridad' }
+  ];
+
   loadUsers(): void {
     this.usuarioService.getAll().subscribe({
       next: (lista) => {
@@ -97,6 +110,36 @@ export class GestorUsuario implements OnInit {
     this.cargarZonas();
     // Cargar usuarios al iniciar
     this.loadUsers();
+  }
+
+  // Computed lista filtrada segun buscador y filtros
+  get filteredUsers(): any[] {
+    const q = (this.searchText || '').trim().toLowerCase();
+    return (this.users || []).filter(u => {
+      // filtro por rol
+      if (this.selectedRoleFilter && this.selectedRoleFilter !== 'all') {
+        const roleLower = String(this.selectedRoleFilter || '').toLowerCase();
+        const hasRole = (u.roles || []).some((r: any) => String(r).toLowerCase().includes(roleLower));
+        if (!hasRole) return false;
+      }
+      // filtro por estado
+      if (this.selectedEstadoFilter && this.selectedEstadoFilter !== 'all') {
+        if (this.selectedEstadoFilter === 'activo' && !u.enabled) return false;
+        if (this.selectedEstadoFilter === 'inactivo' && u.enabled) return false;
+      }
+      // buscador por nombre, username o correo
+      if (!q) return true;
+      const name = (u.nombreCompleto || '').toString().toLowerCase();
+      const username = (u.username || '').toString().toLowerCase();
+      const correo = (u.correo || '').toString().toLowerCase();
+      return name.includes(q) || username.includes(q) || correo.includes(q);
+    });
+  }
+
+  clearFilters(){
+    this.searchText = '';
+    this.selectedRoleFilter = 'all';
+    this.selectedEstadoFilter = 'all';
   }
 
   // Abrir formulario de creación: limpiar y generar código según rol seleccionado
@@ -329,6 +372,74 @@ export class GestorUsuario implements OnInit {
     selectElement.value = '';
   }
 
+  // Sanitizar entrada de teléfono para permitir solo números
+  onPhoneInput(event: any) {
+    const raw = event && event.target ? String(event.target.value) : '';
+    this.formData.phone = raw.replace(/\D/g, '');
+  }
+
+  // Evitar que se ingresen letras en el campo celular
+  onPhoneKeypress(event: KeyboardEvent) {
+    const k = event.key;
+    // Permitir teclas de control (Backspace, Delete, Arrow keys, Tab)
+    if (k === 'Backspace' || k === 'Delete' || k === 'ArrowLeft' || k === 'ArrowRight' || k === 'Tab' || k === 'Home' || k === 'End') return;
+    // Permitir solo dígitos
+    if (!/^[0-9]$/.test(k)) {
+      event.preventDefault();
+    }
+  }
+
+  // Sanitizar texto pegado en celular: dejar solo dígitos
+  onPhonePaste(event: ClipboardEvent) {
+    const paste = event.clipboardData ? event.clipboardData.getData('text') : '';
+    const sanitized = (paste || '').replace(/\D/g, '');
+    if (!sanitized) {
+      // si no hay dígitos, impedir el pegado
+      event.preventDefault();
+      return;
+    }
+    // Reemplazar el contenido pegado por su versión sanitizada
+    event.preventDefault();
+    const target = event.target as HTMLInputElement;
+    const before = target.value.slice(0, target.selectionStart || 0);
+    const after = target.value.slice((target.selectionEnd || 0));
+    target.value = before + sanitized + after;
+    // actualizar ngModel
+    this.formData.phone = target.value.replace(/\D/g, '');
+  }
+
+  // Evitar que se ingresen números en el nombre
+  onNameKeypress(event: KeyboardEvent) {
+    const k = event.key;
+    // permitir teclas de control
+    if (k === 'Backspace' || k === 'Delete' || k === 'ArrowLeft' || k === 'ArrowRight' || k === 'Tab' || k === 'Home' || k === 'End') return;
+    // Si es un solo caracter y es dígito, bloquear
+    if (/^[0-9]$/.test(k)) {
+      event.preventDefault();
+      return;
+    }
+    // permitir letras y espacios y tildes/ñ (otros caracteres serán validados en submit)
+    if (k.length === 1 && !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]$/.test(k)) {
+      // bloquear símbolos no permitidos (ej: números ya bloqueados, algunos signos)
+      event.preventDefault();
+    }
+  }
+
+  // Sanitizar pegado en nombre: eliminar dígitos
+  onNamePaste(event: ClipboardEvent) {
+    const paste = event.clipboardData ? event.clipboardData.getData('text') : '';
+    if (!paste) { event.preventDefault(); return; }
+    const sanitized = (paste || '').replace(/[0-9]/g, '');
+    // Si después de quitar números queda vacío, impedir
+    if (!sanitized.trim()) { event.preventDefault(); return; }
+    event.preventDefault();
+    const target = event.target as HTMLInputElement;
+    const before = target.value.slice(0, target.selectionStart || 0);
+    const after = target.value.slice((target.selectionEnd || 0));
+    target.value = before + sanitized + after;
+    this.formData.name = target.value;
+  }
+
   resetForm() {
     this.formData = {
       name: '', username: '', correo: '', password: '', phone: '', role: '', userType: '', campus: '', assignedZones: []
@@ -339,8 +450,12 @@ export class GestorUsuario implements OnInit {
   validateForm(): boolean {
     let isValid = true;
     this.formErrors = { name: '', username: '', correo: '', password: '', phone: '', role: '', userType: '', campus: '', assignedZones: '' };
-
-    if (!this.formData.name.trim()) { this.formErrors.name = 'El nombre completo es obligatorio.'; isValid = false; }
+    // Nombre: obligatorio, solo letras y espacios, máximo 50 caracteres
+    const nameVal = (this.formData.name || '').trim();
+    const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+    if (!nameVal) { this.formErrors.name = 'El nombre completo es obligatorio.'; isValid = false; }
+    else if (nameVal.length > 50) { this.formErrors.name = 'El nombre no puede exceder 50 caracteres.'; isValid = false; }
+    else if (!nameRegex.test(nameVal)) { this.formErrors.name = 'El nombre solo puede contener letras y espacios.'; isValid = false; }
   if (!this.isUsernameAuto && !this.formData.username.trim()) { this.formErrors.username = 'El username es obligatorio.'; isValid = false; }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

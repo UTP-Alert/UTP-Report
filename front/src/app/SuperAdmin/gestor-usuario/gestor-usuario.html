@@ -65,15 +65,17 @@
 	</div>
 
 	<div class="user-filters">
-		<input type="text" placeholder="Buscar usuarios...">
-		<select>
-			<option>Todos los roles</option>
+		<input type="text" placeholder="Buscar usuarios..." [(ngModel)]="searchText" />
+		<select [(ngModel)]="selectedRoleFilter">
+			<option *ngFor="let r of availableRoleFilters" [value]="r.key">{{ r.label }}</option>
 		</select>
-		<select>
-			<option>Todos los estados</option>
+		<select [(ngModel)]="selectedEstadoFilter">
+			<option value="all">Todos los estados</option>
+			<option value="activo">Activo</option>
+			<option value="inactivo">Inactivo</option>
 		</select>
-		<button class="clear-filters-btn">Limpiar Filtros</button>
-			<button class="create-user-btn" (click)="openCreate()"><i class="fas fa-user-plus"></i> Crear
+		<button class="clear-filters-btn" (click)="clearFilters()">Limpiar Filtros</button>
+		<button class="create-user-btn" (click)="openCreate()"><i class="fas fa-user-plus"></i> Crear
 				Usuario</button>
 	</div>
 
@@ -94,7 +96,13 @@
 				<div>
 					<label class="block text-sm font-medium mb-1">Nombre Completo</label>
 					<input type="text" placeholder="Ej: Juan Pérez" [(ngModel)]="formData.name"
-						[class.border-red-500]="formErrors.name" class="input-field" />
+						[class.border-red-500]="formErrors.name" class="input-field"
+						maxlength="50"
+						pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+						title="Solo letras y espacios, máximo 50 caracteres"
+						inputmode="text"
+						(keypress)="onNameKeypress($event)"
+						(paste)="onNamePaste($event)" />
 					<p *ngIf="formErrors.name" class="text-xs text-red-500 mt-1">{{ formErrors.name }}</p>
 				</div>
 
@@ -158,7 +166,11 @@
 				<div>
 					<label class="block text-sm font-medium mb-1">Celular</label>
 					<input type="text" placeholder="999000000" [(ngModel)]="formData.phone" maxlength="9"
-						[class.border-red-500]="formErrors.phone" class="input-field" />
+						[class.border-red-500]="formErrors.phone" class="input-field"
+						inputmode="numeric" pattern="\\d*"
+						(input)="onPhoneInput($event)"
+						(keypress)="onPhoneKeypress($event)"
+						(paste)="onPhonePaste($event)" />
 					<p *ngIf="formErrors.phone" class="text-xs text-red-500 mt-1">{{ formErrors.phone }}</p>
 				</div>
 
@@ -321,8 +333,8 @@
 				Lista de Usuarios ({{ users.length || 0 }})
 			</h3>
 
-			<div *ngIf="users && users.length; else sinUsuarios">
-				<div *ngFor="let u of users" class="user-card border-2 rounded-2xl p-4 mb-4 flex items-start justify-between">
+			<div *ngIf="filteredUsers && filteredUsers.length; else sinUsuarios">
+				<div *ngFor="let u of filteredUsers" class="user-card border-2 rounded-2xl p-4 mb-4 flex items-start justify-between">
 					<div class="flex items-center gap-3">
 						<div class="avatar" [ngClass]="getAvatarClasses(u)">
 							{{ (u.nombreCompleto || u.username || '?').charAt(0) | uppercase }}
