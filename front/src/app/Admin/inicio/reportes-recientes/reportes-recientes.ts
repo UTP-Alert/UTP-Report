@@ -95,10 +95,15 @@ export class ReportesRecientes {
         const bTime = b.fechaCreacion ? new Date(b.fechaCreacion).getTime() : (b.id || 0);
         return bTime - aTime;
       });
-      // Excluir reportes que ya están en EN_PROCESO, RESUELTO o CANCELADO según lo provisto por el backend
+      // Mostrar únicamente reportes que el backend marque exactamente como 'PENDIENTE'.
+      // Normalizamos quitando caracteres no alfabéticos para evitar que abreviaciones como
+      // 'PEND. APROBACION' coincidan erróneamente.
       let filtered = sorted.filter(rep => {
-        const backendEstado = String(((rep as any).reporteGestion && (rep as any).reporteGestion.estado) || (rep as any).ultimoEstado || '').toUpperCase();
-        return backendEstado !== 'EN_PROCESO' && backendEstado !== 'RESUELTO' && backendEstado !== 'CANCELADO';
+        const raw = String(((rep as any).reporteGestion && (rep as any).reporteGestion.estado) || (rep as any).ultimoEstado || '');
+        const backendEstado = raw.toUpperCase().trim();
+        // normalización: eliminar cualquier carácter que no sea letra (espacios, puntos, comas)
+        const normalized = backendEstado.replace(/[^A-ZÑ]/g, '');
+        return normalized === 'PENDIENTE';
       });
       // También excluir aquellos que ya han sido marcados como RESUELTOS en el estado compartido
       try{
