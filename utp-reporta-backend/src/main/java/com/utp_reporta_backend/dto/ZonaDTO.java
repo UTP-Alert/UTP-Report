@@ -6,5 +6,7 @@ import lombok.Data;
 public class ZonaDTO {
 	private Long id;
 	private String nombre;
+	private String descripcion;
+	private byte[] foto;
 	private Long sedeId;
 }
