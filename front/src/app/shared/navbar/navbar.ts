@@ -193,8 +193,8 @@ export class NavbarComponent {
   }
 
   getZonasPath(): string[] {
+    if (this.auth.hasRole(ROLES.ADMIN)) return ['/admin','estado-zonas']; // Force Admin path if user has ROLE_ADMIN
     if (this.isSuperAdmin()) return ['/superadmin','zonas'];
-    if (this.isAdmin()) return ['/admin','zonas'];
     if (this.isSeguridad()) return ['/seguridad','zonas'];
     // Usuario puro o admin como usuario
     return ['/usuario','estado-zonas'];

@@ -67,6 +67,10 @@ export class PageConfigService {
     for (const role of Object.keys(merged) as RoleKey[]) {
       merged[role] = { ...merged[role], ...(existing?.[role] || {}) };
     }
+    // Ensure 'zonas' is always true for Admin, overriding any saved false value
+    if (merged[ROLES.ADMIN]) {
+      merged[ROLES.ADMIN].zonas = true;
+    }
     return merged;
   }
 }

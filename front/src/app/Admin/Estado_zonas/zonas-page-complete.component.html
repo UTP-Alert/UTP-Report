@@ -18,7 +18,7 @@
     <!-- ALERTA DE MODO EDICIÓN (Para Administradores): Muestra un mensaje informativo. -->
     <div class="edit-mode-alert">
       <!-- Icono de ShieldCheck para la alerta. -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="alert-icon"><path d="M11.46 20.846A12 12 0 0 1 3.5 6A12 12 0 0 0 12 3a12 12 0 0 0 8.5 3a12 12 0 0 1-.09 7.06M15 19l2 2l4-4"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-shield-bolt"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.342 20.566c-.436 .17 -.884 .315 -1.342 .434a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3a12 12 0 0 1 .117 6.34" /><path d="M19 16l-2 3h4l-2 3" /></svg>
       <p class="alert-description">
         <strong>Sistema de Edición Activo:</strong> Los cambios que realices en las zonas (descripciones, imágenes) se reflejarán automáticamente para todos los usuarios del sistema. Usa el botón "Editar" para modificar cualquier zona existente.
       </p>
@@ -28,7 +28,7 @@
     <div class="sede-selector-card">
       <div class="sede-selector-content">
         <!-- Icono de Building para el selector de sede. -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="sede-selector-icon"><path d="M3 21V5a2 2 0 0 1 2-2h14a1 1 0 0 1 1 1v-1a2 2 0 0 1 2-2h0"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF395C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" /><path d="M9 8l1 0" /><path d="M9 12l1 0" /><path d="M9 16l1 0" /><path d="M14 8l1 0" /><path d="M14 12l1 0" /><path d="M14 16l1 0" /><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16" /></svg>
         <div class="flex-1">
           <label class="sede-label">Seleccionar Sede:</label>
           <select class="sede-select">
@@ -65,6 +65,10 @@
           <div class="form-group">
             <label for="zoneImage">URL de Imagen</label>
             <input type="text" id="zoneImage" class="form-input" placeholder="Ej: https://example.com/image.jpg" [(ngModel)]="newZone.imageUrl">
+            <div class="image-quick-links">
+              <p>O sube una imagen:</p>
+              <button class="quick-link" (click)="openImageUpload()">Subir Imagen</button>
+            </div>
           </div>
           <!-- Botón para guardar la nueva zona. -->
           <button class="save-zone-button" (click)="addZone()">
@@ -270,6 +274,16 @@
           <textarea [(ngModel)]="zone.description" class="editable-textarea security-description-text" *ngIf="zone.isEditing"></textarea>
           <!-- Muestra la descripción de seguridad si no está en modo edición. -->
           <p class="security-description-text" *ngIf="!zone.isEditing">{{ zone.description }}</p>
+        </div>
+
+        <!-- Campo para la URL de la imagen y botón de subir imagen, visible en modo edición -->
+        <div class="form-group" *ngIf="zone.isEditing">
+          <label for="zoneImageEdit">URL de Imagen</label>
+          <input type="text" id="zoneImageEdit" class="form-input" placeholder="Ej: https://example.com/image.jpg" [(ngModel)]="zone.imageUrl">
+          <div class="image-quick-links">
+            <p>O sube una imagen:</p>
+            <button class="quick-link" (click)="openImageUploadForZone(zone)">Subir Imagen</button>
+          </div>
         </div>
 
         <!-- BOTONES DE ACCIÓN (Admin): Botones para editar, guardar, cancelar y eliminar zonas. -->

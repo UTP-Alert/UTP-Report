@@ -44,6 +44,20 @@ export class AdminZonasPageCompleteComponent implements OnInit {
   // Constructor del componente
   constructor() { }
 
+  // Método para abrir el diálogo de subida de imagen (simulado)
+  openImageUpload() {
+    alert('Funcionalidad de subir imagen (bit a bit) aún no implementada.');
+    // Aquí iría la lógica para abrir un selector de archivos o un modal de subida.
+    // Por ahora, solo se muestra una alerta.
+  }
+
+  // Método para abrir el diálogo de subida de imagen para una zona específica (simulado)
+  openImageUploadForZone(zone: Zone) {
+    alert(`Funcionalidad de subir imagen (bit a bit) para la zona "${zone.name}" aún no implementada.`);
+    // Aquí iría la lógica para abrir un selector de archivos o un modal de subida,
+    // y luego actualizar `zone.imageUrl` con la URL de la imagen subida.
+  }
+
   // Método del ciclo de vida que se ejecuta al inicializar el componente
   ngOnInit(): void {
     // Carga datos de ejemplo para demostración. Estos datos serán reemplazados por una llamada a un servicio en el futuro.
