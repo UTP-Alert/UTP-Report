@@ -90,4 +90,13 @@ public class ReporteController {
         reporteService.deleteReporte(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/by-username/{username}")
+    public ResponseEntity<List<ReporteDTO>> getReportsByUsername(@PathVariable String username) {
+        List<ReporteDTO> reportes = reporteService.getReportsByUsername(username);
+        if (!reportes.isEmpty()) {
+            return new ResponseEntity<>(reportes, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

@@ -16,4 +16,7 @@ public class TipoIncidente {
 
     @Column(nullable = false, unique = true)
     private String nombre;
+
+    @Column(nullable = true) 
+    private String descripcion;
 }

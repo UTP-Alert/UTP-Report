@@ -236,6 +236,36 @@ public class ReporteServiceImpl implements ReporteService {
     }
 
     @Override
+    public List<ReporteDTO> getReportsByUsername(String username) {
+        return reporteRepository.findByUsuarioUsername(username).stream()
+                .map(reporte -> {
+                    ReporteDTO dto = new ReporteDTO();
+                    dto.setId(reporte.getId());
+                    dto.setTipoIncidenteId(reporte.getTipoIncidente().getId());
+                    dto.setZonaId(reporte.getZona().getId());
+                    dto.setDescripcion(reporte.getDescripcion());
+                    dto.setFoto(reporte.getFoto());
+                    dto.setFechaCreacion(reporte.getFechaCreacion());
+                    dto.setIsAnonimo(reporte.getIsAnonimo());
+                    dto.setContacto(reporte.getContacto());
+                    dto.setUsuarioId(reporte.getUsuario().getId());
+                    if(reporte.getSeguridadAsignado() != null) dto.setSeguridadAsignadoId(reporte.getSeguridadAsignado().getId());
+                    if(reporte.getReporteGestion() != null){
+                        ReporteGestionDTO gestionDTO = new ReporteGestionDTO();
+                        gestionDTO.setId(reporte.getReporteGestion().getId());
+                        gestionDTO.setEstado(reporte.getReporteGestion().getEstado());
+                        gestionDTO.setPrioridad(reporte.getReporteGestion().getPrioridad());
+                        gestionDTO.setFechaActualizacion(reporte.getReporteGestion().getFechaActualizacion());
+                        dto.setReporteGestion(gestionDTO);
+                    }
+                    dto.setMensajeSeguridad(reporte.getMensajeSeguridad());
+                    dto.setMensajeAdmin(reporte.getMensajeAdmin());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<ReporteDTO> getFilteredReportes(Long zonaId, Long sedeId) {
         List<Reporte> reportes;
         if (zonaId != null && sedeId != null) {

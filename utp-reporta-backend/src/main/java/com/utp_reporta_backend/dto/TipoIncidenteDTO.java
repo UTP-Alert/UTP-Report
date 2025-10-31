@@ -10,4 +10,5 @@ import lombok.AllArgsConstructor;
 public class TipoIncidenteDTO {
     private Long id;
     private String nombre;
+    private String descripcion;
 }
