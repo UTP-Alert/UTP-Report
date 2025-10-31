@@ -46,6 +46,21 @@
       </div>
     </section>
 
+    <section class="charts-section">
+      <h2>
+        <svg class="section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12h4l3 8l3 -16l3 8h4" /></svg>
+        Gráficos de Usuarios
+      </h2>
+      <div class="chart-container">
+        <h3>Total de Usuarios por Rol y Tipo</h3>
+        <canvas baseChart
+          [data]="totalUsersChartData"
+          [options]="doughnutChartOptions"
+          [type]="doughnutChartType">
+        </canvas>
+      </div>
+    </section>
+
   <section class="navigation-tabs">
       <ul>
         <li>

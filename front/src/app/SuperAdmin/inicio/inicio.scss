@@ -114,6 +114,48 @@
   color: #28a745; /* Placeholder for a success color */
 }
 
+/* Charts section */
+.charts-section {
+  background-color: var(--card);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.charts-section h2 {
+  font-size: 1.5rem;
+  color: var(--foreground);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.charts-section .section-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--primary);
+  flex: 0 0 auto;
+}
+
+.charts-section .chart-container {
+  position: relative;
+  height: 400px; /* Adjust as needed */
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-top: 1.5rem;
+}
+
+.charts-section .chart-container h3 {
+  font-size: 1.25rem;
+  color: var(--foreground);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
 /* Navigation tabs */
 .navigation-tabs {
   background-color: #f3f4f6; /* gris del bloque */
@@ -784,7 +826,6 @@
   background-color: transparent; /* Fondo transparente */
   border: none;
   cursor: pointer;
-  color: var(--muted-foreground); /* Un color visible */
   padding: 0; /* Eliminar el padding predeterminado del botón */
   width: 2.5rem; /* Darle un ancho fijo */
   height: 2.5rem; /* Darle una altura fija */

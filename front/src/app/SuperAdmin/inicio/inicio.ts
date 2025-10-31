@@ -2,11 +2,17 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
 import { RegistroAdminDTO, RegistroDTO, RegistroSecurityDTO, UsuarioRolService } from '../../services/usuario-rol.service';
+import { ChartConfiguration, ChartOptions, ChartType, Chart, registerables } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+
+// Register Chart.js components
+Chart.register(...registerables);
 import { Sede, SedeService } from '../../services/sede.service';
 import { Zona, ZonaService } from '../../services/zona.service';
 import { IncidenteService } from '../../services/incidente.service';
 import { PageConfigService } from '../../services/page-config.service';
 import { AuthService } from '../../services/auth.service';
+import { UsuarioDTO, UsuarioService } from '../../services/usuario.service'; // Import UsuarioService
 import { ROLES } from '../../constants/roles';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Paginas } from '../paginas/paginas';
@@ -16,10 +22,21 @@ import { TipoIncidentes } from '../tipo-incidentes/tipo-incidentes';
 import { FeedBack } from '../feed-back/feed-back';
 import { GestorUsuario } from '../gestor-usuario/gestor-usuario';
 
+// Import ROLES to use its values directly
+import * as AllRoles from '../../constants/roles';
+const AppRoles: { [key: string]: string } = AllRoles.ROLES;
+
+// Define a more complete User interface based on what GestorUsuario expects
+interface EnrichedUser extends UsuarioDTO {
+  roles: string[];
+  tipoUsuario?: string;
+  enabled: boolean;
+}
+
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, FormsModule, Paginas, ReportesSensibles, Sedes, TipoIncidentes, FeedBack, GestorUsuario],
+  imports: [CommonModule, FormsModule, Paginas, ReportesSensibles, Sedes, TipoIncidentes, FeedBack, GestorUsuario, BaseChartDirective],
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss'
 })
@@ -30,6 +47,7 @@ export class Inicio implements OnInit, OnDestroy {
   sedes: Sede[] = [];
   zonas: Zona[] = [];
   tiposIncidente: any[] = [];
+  users: EnrichedUser[] = []; // Use the new EnrichedUser interface
   // Configuración de páginas por rol
   rolesOrder: string[] = [ROLES.USUARIO, ROLES.ADMIN, ROLES.SEGURIDAD, ROLES.SUPERADMIN];
   pages: Array<{ key: 'home'|'zonas'|'reportes'|'usuarios'|'sensibles'|'guia'; label: string }> = [
@@ -45,10 +63,32 @@ export class Inicio implements OnInit, OnDestroy {
 
   isCreating: boolean = false;
   editingUser: any = null;
-  showPassword = false; // New property for password visibility
+  showPassword = false; // New property for password visibilityerty for password visibility
   // pestaña activa en la barra
   activeTab: 'gestion-usuarios' | 'reportes-sensibles' | 'paginas' | 'sedes' | 'tipos-incidentes' | 'feedback' = 'gestion-usuarios';
   private readonly allowedTabs = ['gestion-usuarios','reportes-sensibles','paginas','sedes','tipos-incidentes','feedback'] as const;
+
+  // Chart properties
+  public doughnutChartOptions: ChartOptions<'doughnut'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+      },
+    },
+  };
+  public doughnutChartType: 'doughnut' = 'doughnut';
+
+  public totalUsersChartData: ChartConfiguration<'doughnut'>['data'] = {
+    labels: ['Estudiantes', 'Docentes', 'Administradores', 'Personal Seguridad', 'Usuarios Activos'],
+    datasets: [{
+      data: [0, 0, 0, 0, 0],
+      label: 'Cantidad de Usuarios',
+      backgroundColor: ['#2f6fee', '#7c3aed', '#dc2626', '#28a745', '#1aa16a']
+    }]
+  };
 
   // -------------------------------
   // 🔹 2. Constructor e inicialización
@@ -60,6 +100,7 @@ export class Inicio implements OnInit, OnDestroy {
     private incidenteService: IncidenteService,
     private pageConfig: PageConfigService,
     private auth: AuthService,
+    private usuarioService: UsuarioService, // Inject UsuarioService
     private route: ActivatedRoute,
     private router: Router,
   ) { }
@@ -68,6 +109,7 @@ export class Inicio implements OnInit, OnDestroy {
     this.cargarSedes();
     this.cargarZonas();
     this.cargarTiposIncidente();
+    this.cargarUsuariosYActualizarGraficos(); // New method to load users and update charts
 
     // Establecer pestaña activa desde el segmento de URL si existe
     this.route.paramMap.subscribe(pm => {
@@ -87,6 +129,7 @@ export class Inicio implements OnInit, OnDestroy {
     this.sedeService.obtenerSedes().subscribe({
       next: (data) => {
         this.sedes = data;
+        // No need to update sedes chart here, as we are consolidating into one chart
         console.log('Sedes cargadas:', this.sedes);
       },
       error: (err) => console.error('Error al cargar sedes', err)
@@ -121,6 +164,7 @@ export class Inicio implements OnInit, OnDestroy {
     this.incidenteService.obtenerTipos().subscribe({
       next: (data) => {
         this.tiposIncidente = data || [];
+        // No need to update incidentes chart here, as we are consolidating into one chart
         console.log('Tipos de incidente cargados:', this.tiposIncidente);
       },
       error: (err) => console.error('Error al cargar tipos de incidente', err)
@@ -469,5 +513,64 @@ export class Inicio implements OnInit, OnDestroy {
 
   // Ya no se usa hash; sincronizamos con el segmento de URL
 
+  // Chart related methods
+  cargarUsuariosYActualizarGraficos(): void {
+    console.log('Attempting to load and update user graphics...'); // New log
+    this.usuarioService.getAll().subscribe({
+      next: (users: UsuarioDTO[]) => { // Expect UsuarioDTO[]
+        this.users = (users || []).map((u: any) => ({
+          id: u.id,
+          nombreCompleto: u.nombreCompleto || u.name || '',
+          username: u.username || '',
+          correo: u.correo || u.email || '',
+          telefono: u.telefono || '',
+          tipoUsuario: (u.tipoUsuario || (u.roles && u.roles[0]) || '').toString(),
+          sedeNombre: u.sedeNombre || '',
+          zonasNombres: u.zonasNombres || [],
+          enabled: typeof u.enabled === 'boolean' ? u.enabled : true,
+          roles: u.roles && Array.isArray(u.roles) ? u.roles : [] // Ensure roles is always an array
+        }));
+        this.updateTotalUsersChart();
+      },
+      error: (err: any) => console.error('Error al cargar usuarios', err)
+    });
+  }
 
+  updateTotalUsersChart(): void {
+    let studentUsers = 0;
+    let teacherUsers = 0;
+    let adminUsers = 0;
+    let securityUsers = 0;
+    let activeUsers = 0;
+
+    this.users.forEach((user: EnrichedUser) => { // Use EnrichedUser here
+      if (user.enabled) {
+        activeUsers++;
+      }
+
+      const userRoles = user.roles ? user.roles.map(role => role.toUpperCase()) : [];
+      const userTipoUsuario = user.tipoUsuario ? user.tipoUsuario.toUpperCase() : '';
+
+      // Prioritize userType for students/teachers, then roles for admin/security
+      if (userTipoUsuario === 'ALUMNO') {
+        studentUsers++;
+      } else if (userTipoUsuario === 'DOCENTE') {
+        teacherUsers++;
+      } else if (userRoles.includes(AppRoles['ADMIN'].toUpperCase())) { // Exact match for ADMIN role
+        adminUsers++;
+      } else if (userRoles.includes(AppRoles['SEGURIDAD'].toUpperCase())) { // Exact match for SECURITY role
+        securityUsers++;
+      }
+      // If a user has no explicit role or tipoUsuario, they won't be counted in specific categories.
+      // The 'Usuarios Activos' count will still include them if enabled.
+    });
+
+    this.totalUsersChartData.datasets[0].data = [
+      studentUsers,
+      teacherUsers,
+      adminUsers,
+      securityUsers,
+      activeUsers
+    ];
+  }
 }
