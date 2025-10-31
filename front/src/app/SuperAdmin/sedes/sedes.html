@@ -5,37 +5,204 @@
   </div>
 
   <div class="inputs">
-    <input type="text" placeholder="Nombre de la sede" />
-    <input type="text" placeholder="Dirección de la sede" />
-    <button class="btn-add"><i class="bi bi-plus-lg me-1"></i>Agregar Sede</button>
+    <input type="text" placeholder="Nombre de la sede" [(ngModel)]="newNombre" />
+    <button class="btn-add" (click)="agregarSede()" [disabled]="loading || !newNombre.trim()"><i class="bi bi-plus-lg me-1"></i>Agregar Sede</button>
   </div>
 
-  <h6 class="mt-4 mb-2 fw-semibold">Sedes Existentes</h6>
-
-  <div class="sede-card">
-    <div class="sede-header">
-      <div>
-        <h6>UTP Campus Principal</h6>
-        <p>Vía Tocumen, Panamá</p>
-      </div>
-      <div class="actions">
-        <span class="badge bg-success">Activa</span>
-        <button class="text-primary"><i class="bi bi-pencil"></i> Editar</button>
-        <button class="text-danger"><i class="bi bi-trash"></i> Eliminar</button>
+  <!-- Topbar: selector de sedes estilizado y botón Agregar Zona -->
+  <div class="sede-topbar">
+    <div class="sede-select">
+      <label>Seleccionar Sede:</label>
+      <div class="select-box">
+        <!-- inline SVG icon (edificio) -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M3 21V3h14v18" stroke="#d6334f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 21V10h10v11" stroke="#d6334f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 7h.01M13 7h.01M9 11h.01M13 11h.01" stroke="#d6334f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <select [(ngModel)]="selectedSedeId" (change)="selectSede(selectedSedeId)">
+          <option *ngFor="let s of sedes" [ngValue]="s.id">{{ s.nombre }}</option>
+        </select>
       </div>
     </div>
 
-    <div class="zonas">
-      <div class="zona">Campus Principal <span class="x">×</span></div>
-      <div class="zona">Biblioteca Central <span class="x">×</span></div>
-      <div class="zona">Cafetería Norte <span class="x">×</span></div>
-      <div class="zona">Estacionamiento Este <span class="x">×</span></div>
-      <div class="zona">Laboratorios <span class="x">×</span></div>
-      <div class="zona">Zona Deportiva <span class="x">×</span></div>
-    </div>
-
-    <div class="add-zona">
-      <input type="text" placeholder="Nueva zona" />
-      <button class="btn-green"><i class="bi bi-plus-lg"></i></button>
+    <div class="sede-top-actions">
+      <button class="btn-add-zone" (click)="toggleCreateZone()">+ Agregar Zona</button>
     </div>
   </div>
+
+  <!-- Panel desplegable de creación de zona -->
+  <div id="create-zone-panel" class="create-panel" *ngIf="showCreateZone">
+    <div class="panel-header">
+      <i class="bi bi-plus-lg me-2"></i>
+      <strong>Crear Nueva Zona Completa</strong>
+      <small class="ms-2 text-muted">Complete TODOS los campos para crear una zona completa</small>
+    </div>
+    <div class="panel-body">
+      <app-zonas [parentSedeId]="selectedSede?.id" (created)="onZonaCreated($event)"></app-zonas>
+    </div>
+  </div>
+
+  <div class="sedes-layout">
+    <section class="sede-detail fullwidth" *ngIf="selectedSede">
+      <div class="detail-header">
+        <h3>{{ selectedSede.nombre }}</h3>
+        <div class="detail-actions">
+          <button class="btn btn-sm btn-primary">Editar Sede</button>
+          <button class="btn btn-sm btn-danger">Eliminar Sede</button>
+        </div>
+      </div>
+
+      <!-- Estadísticas rápidas -->
+      <div class="stats-row">
+        <div class="stat-card stat-safe">
+          <div class="stat-left">
+            <div class="stat-value">{{ sedeStats.seguras }}</div>
+            <div class="stat-label">Zonas Seguras</div>
+          </div>
+          <div class="stat-icon"> <i class="bi bi-shield-fill-check"></i> </div>
+        </div>
+
+        <div class="stat-card stat-caution">
+          <div class="stat-left">
+            <div class="stat-value">{{ sedeStats.precaucion }}</div>
+            <div class="stat-label">En Precaución</div>
+          </div>
+          <div class="stat-icon"> <i class="bi bi-exclamation-triangle-fill"></i> </div>
+        </div>
+
+        <div class="stat-card stat-danger">
+          <div class="stat-left">
+            <div class="stat-value">{{ sedeStats.peligrosas }}</div>
+            <div class="stat-label">Zonas Peligrosas</div>
+          </div>
+          <div class="stat-icon"> <i class="bi bi-exclamation-octagon-fill"></i> </div>
+        </div>
+
+        <div class="stat-card stat-info">
+          <div class="stat-left">
+            <div class="stat-value">{{ sedeStats.estudiantes }}</div>
+            <div class="stat-label">Estudiantes Activos</div>
+          </div>
+          <div class="stat-icon"> <i class="bi bi-people-fill"></i> </div>
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <div class="zones-grid">
+          <div class="zone-card" *ngFor="let z of selectedSede.zonas">
+            <div *ngIf="editingZoneId !== z.id">
+              <div class="zone-header">
+                <div class="zone-title">
+                  <h5>{{ z.nombre }}</h5>
+                </div>
+                <div class="zone-badges">
+                  <span class="badge status" *ngIf="categorizarZona(z) === 'precaucion'">PRECAUCIÓN</span>
+                </div>
+              </div>
+
+              <div class="zone-stats">
+                <div class="stat-item"><i class="bi bi-exclamation-triangle"></i> {{ z.incidentes || 0 }} incidentes</div>
+                <div class="stat-item"><i class="bi bi-people"></i> {{ z.estudiantes || z.studentCount || 0 }} estudiantes</div>
+              </div>
+
+              <div class="progress-row">
+                <label class="progress-label">Nivel de Seguridad</label>
+                <div class="progress-wrap">
+                  <div class="progress-bar">
+                    <div class="fill" [style.width]="(z.nivelSeguridad || 0) + '%'"></div>
+                  </div>
+                  <div class="percent">{{ z.nivelSeguridad || 0 }}%</div>
+                </div>
+              </div>
+
+              <!-- Imagen o placeholder -->
+              <div class="image-area">
+                <ng-container *ngIf="z.fotoUrl; else noImage">
+                  <img [src]="z.fotoUrl" alt="foto zona" />
+                </ng-container>
+                <ng-template #noImage>
+                  <div class="no-image">
+                    <i class="bi bi-image" aria-hidden="true"></i>
+                    <div class="no-image-text">Sin imagen</div>
+                  </div>
+                </ng-template>
+              </div>
+
+              <div class="info-box">
+                <label>Información de Seguridad:</label>
+                <div class="desc">{{ z.descripcion || 'Sin descripción' }}</div>
+              </div>
+
+              <div class="zone-actions">
+                <div class="small-icons">
+                  <button class="btn-icon" (click)="startEditZona(z)" title="Editar"><i class="bi bi-pencil"></i></button>
+                  <!-- Toggle activo/desactivo en lugar de eliminar -->
+                  <button class="btn-icon" (click)="toggleZona(z.id, selectedSede.id, !z.activo)" [title]="z.activo ? 'Desactivar' : 'Activar'">
+                    <i [class]="z.activo ? 'bi bi-toggle-on text-success' : 'bi bi-toggle-off text-secondary'"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="editingZoneId === z.id" class="zone-edit">
+              <div class="zone-edit-header">
+                <input class="edit-name" type="text" [(ngModel)]="editedZone['nombre']" placeholder="Nombre de la zona" />
+                <span class="badge status" *ngIf="categorizarZona(z) === 'segura'">ZONA SEGURA</span>
+              </div>
+
+              <div class="zone-stats small">
+                <div class="stat-item"><i class="bi bi-exclamation-triangle"></i> {{ z.incidentes || 0 }} incidentes</div>
+                <div class="stat-item"><i class="bi bi-people"></i> {{ z.estudiantes || z.studentCount || 0 }} estudiantes</div>
+              </div>
+
+              <div class="progress-row">
+                <label class="progress-label">Nivel de Seguridad</label>
+                <div class="progress-wrap">
+                  <div class="progress-bar">
+                    <div class="fill" [style.width]="(z.nivelSeguridad || 0) + '%'"></div>
+                  </div>
+                  <div class="percent">{{ z.nivelSeguridad || 0 }}%</div>
+                </div>
+              </div>
+
+              <div class="form-grid edit-grid">
+                <div class="col left">
+                  <label>Nombre</label>
+                  <input type="text" [(ngModel)]="editedZone['nombre']" />
+                </div>
+
+                <div class="col right">
+                  <label>Foto</label>
+                  <div class="file-row">
+                    <input id="editFotoInput-{{z.id}}" type="file" (change)="onEditFileSelected($event)" accept="image/*" />
+                    <label for="editFotoInput-{{z.id}}" class="file-picker">Seleccionar desde archivos</label>
+                  </div>
+                  <div class="edit-preview" *ngIf="editedFotoPreview">
+                    <img [src]="editedFotoPreview" alt="preview" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-wide">
+                <label>Descripción</label>
+                <textarea rows="3" [(ngModel)]="editedZone['descripcion']"></textarea>
+              </div>
+
+              <div class="edit-actions">
+                <button class="btn btn-sm btn-success" (click)="saveEditZona(z.id, selectedSede.id)">Guardar</button>
+                <button class="btn btn-sm btn-secondary" (click)="cancelEditZona()">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- create-zone removed: Zona creation moved to dedicated area / topbar button -->
+      </div>
+    </section>
+  </div>
+  <ng-template #emptySedes>
+    <div class="card empty">
+      <div class="card-content p-6 text-center">No hay sedes registradas.</div>
+    </div>
+  </ng-template>

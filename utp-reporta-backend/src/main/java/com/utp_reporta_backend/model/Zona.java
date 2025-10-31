@@ -31,4 +31,7 @@ public class Zona {
 	@ManyToOne
 	@JoinColumn(name = "sede_id", nullable = false)
 	private Sede sede;
+    
+	// Estado lógico: activa/desactiva la zona sin borrarla físicamente
+	private boolean activo = true;
 }

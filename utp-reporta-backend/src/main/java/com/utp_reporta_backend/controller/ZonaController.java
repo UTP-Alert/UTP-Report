@@ -2,9 +2,11 @@ package com.utp_reporta_backend.controller;
 
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,13 +28,14 @@ import lombok.RequiredArgsConstructor;
 public class ZonaController {
 	private final ZonaService zonaService;
 	@GetMapping
-    public ResponseEntity<List<ZonaDTO>> listarZonas() {
-        return ResponseEntity.ok(zonaService.obtenerTodasLasZonas());
+    public ResponseEntity<List<ZonaDTO>> listarZonas(@RequestParam(name = "includeInactive", required = false, defaultValue = "false") boolean includeInactive) {
+        return ResponseEntity.ok(zonaService.obtenerTodasLasZonas(includeInactive));
     }
 
     @GetMapping("/sede/{sedeId}")
-    public ResponseEntity<List<ZonaDTO>> listarZonasPorSede(@PathVariable Long sedeId) {
-        return ResponseEntity.ok(zonaService.obtenerZonasPorSedeId(sedeId));
+    public ResponseEntity<List<ZonaDTO>> listarZonasPorSede(@PathVariable Long sedeId,
+            @RequestParam(name = "includeInactive", required = false, defaultValue = "false") boolean includeInactive) {
+        return ResponseEntity.ok(zonaService.obtenerZonasPorSedeId(sedeId, includeInactive));
     }
 
     @PostMapping
@@ -57,8 +60,27 @@ public class ZonaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteZona(@PathVariable Long id) {
-        zonaService.deleteZona(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> deleteZona(@PathVariable Long id) {
+        try {
+            // Mantener compatibilidad: si se invoca DELETE, lo interpretamos como desactivar la zona
+            zonaService.setActivoZona(id, false);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (DataIntegrityViolationException dive) {
+            // No permitir eliminar si existen reportes que referencian la zona
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("No se puede eliminar la zona porque tiene reportes asociados.");
+        } catch (RuntimeException re) {
+            // Zona no encontrada u otro error de negocio
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(re.getMessage());
+        }
+    }
+
+    @PatchMapping("/{id}/activo")
+    public ResponseEntity<?> setActivoZona(@PathVariable Long id, @RequestParam boolean activo) {
+        try {
+            ZonaDTO updated = zonaService.setActivoZona(id, activo);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException re) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(re.getMessage());
+        }
     }
 }

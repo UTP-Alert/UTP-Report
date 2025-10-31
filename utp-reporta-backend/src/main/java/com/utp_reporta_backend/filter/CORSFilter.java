@@ -25,9 +25,10 @@ public class CORSFilter implements Filter{
         HttpServletRequest request = (HttpServletRequest) req;
        // Configurar los encabezados CORS 
         response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
+    // incluir PATCH para permitir cambios parciales (ej. activar/desactivar)
+    response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, PATCH, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With");
+    response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, X-Requested-By");
         // Si la solicitud es una preflight (OPTIONS), responder con OK
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);

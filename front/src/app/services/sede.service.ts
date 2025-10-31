@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 export interface Sede {
   id: number;
   nombre: string;
+  zonas?: any[];
 }
 @Injectable({
   providedIn: 'root'
@@ -15,5 +16,10 @@ export class SedeService {
   obtenerSedes(): Observable<Sede[]> {
     return this.http.get<Sede[]>(`${this.baseUrl}`);
    
+  }
+  
+  crearSede(nombre: string): Observable<Sede> {
+    const payload = { nombre };
+    return this.http.post<Sede>(`${this.baseUrl}`, payload);
   }
 }

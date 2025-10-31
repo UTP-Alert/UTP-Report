@@ -3,6 +3,8 @@ package com.utp_reporta_backend.config;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 	@Autowired
     private JwtTokenProvider jwtTokenProvider;
 
@@ -32,8 +35,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 			throws ServletException, IOException {
         //Obtener el token del header
         String token = getJWTFromRequest(request);
+        // Log diagnóstico mínimo para investigar 401 en DELETE
+        try {
+            logger.info("[JwtAuthFilter] {} {} Authorization-present={} tokenSample={}", request.getMethod(), request.getRequestURI(), (token!=null), (token!=null? token.substring(0, Math.min(10, token.length()))+"..." : "-"));
+        } catch (Exception e) {
+            logger.warn("[JwtAuthFilter] logging failed", e);
+        }
         //Validar token y autenticar usuario
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+            logger.info("[JwtAuthFilter] token validated OK for request {} {}", request.getMethod(), request.getRequestURI());
             String username = jwtTokenProvider.getUsernameFromJWT(token);
             
 			UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
@@ -43,6 +53,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        }
+        else {
+            logger.info("[JwtAuthFilter] token missing or invalid for request {} {}", request.getMethod(), request.getRequestURI());
         }
         //Continuar con la cadena de filtros
         filterChain.doFilter(request, response);
