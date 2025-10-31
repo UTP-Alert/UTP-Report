@@ -1,0 +1,61 @@
+<div class="zonas-container panel-full">
+	<div class="panel-top">
+		<div class="panel-title">
+			<i class="bi bi-plus-lg"></i>
+			<span>Crear Nueva Zona Completa</span>
+			<span class="badge">SUPERUSUARIO</span>
+		</div>
+		<div class="panel-sub">Complete TODOS los campos para crear una zona completa con imagen y descripción detallada</div>
+	</div>
+
+	<div class="panel-preview">
+		<div class="preview-header">Vista Previa de la Zona</div>
+		<div class="preview-body">
+			<div class="pv-row"><strong>Nombre:</strong> {{ newNombre || 'Nombre de la zona' }}</div>
+			<div class="pv-row"><strong>Descripción:</strong> {{ newDescripcion || 'Descripción corta de la zona' }}</div>
+			<div class="pv-row pv-image">Imagen:
+				<div class="pv-thumb" *ngIf="fotoPreview"><img [src]="fotoPreview" alt="preview"/></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-grid">
+		<div class="col left">
+			<label>Nombre de la Zona *</label>
+			<input type="text" [(ngModel)]="newNombre" placeholder="Nombre de la zona" />
+			<small class="muted">Nombre identificativo de la zona</small>
+		</div>
+
+			<div class="col right">
+				<label>Imagen</label>
+				<div class="file-row">
+					<input id="fotoInput" type="file" (change)="onFileSelected($event)" accept="image/*" />
+					<label for="fotoInput" class="file-picker">Seleccionar desde archivos</label>
+				</div>
+				<label>Sede</label>
+				<select [(ngModel)]="selectedSedeId" (change)="onSedeChange()">
+					<option *ngFor="let s of sedes" [ngValue]="s.id">{{ s.nombre }}</option>
+				</select>
+				<small class="muted">Imagen representativa de la zona</small>
+				<div class="sample-links">
+					<strong>Ejemplos de imágenes (haga clic para usar):</strong>
+					<ul>
+						<li>Edificio universitario general</li>
+						<li>Biblioteca/Sala de estudio</li>
+						<li>Cafetería/Comedor</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	<div class="form-wide">
+		<label>Descripción de Seguridad</label>
+		<textarea rows="4" [(ngModel)]="newDescripcion" placeholder="Información de seguridad que verán los usuarios"></textarea>
+	</div>
+
+		<div class="panel-actions">
+			<button class="btn-create" (click)="crearZona()" [disabled]="loading">{{ loading ? 'Creando...' : 'Crear Zona Completa' }}</button>
+			<button class="btn-cancel" (click)="cancelCrearZona()">Cancelar</button>
+		</div>
+
+</div>

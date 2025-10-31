@@ -14,6 +14,7 @@ import com.utp_reporta_backend.model.Zona;
 import com.utp_reporta_backend.repository.SedeRepository;
 import com.utp_reporta_backend.repository.ZonaRepository;
 import com.utp_reporta_backend.service.ZonaService;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,26 +27,40 @@ public class ZonaServiceImpl implements ZonaService{
 	
 	@Override
 	public List<ZonaDTO> obtenerTodasLasZonas() {
-		return zonaRepository.findAll().stream().map(zona -> {
+		return obtenerTodasLasZonas(false);
+	}
+
+	@Override
+	public List<ZonaDTO> obtenerTodasLasZonas(boolean includeInactive) {
+		List<Zona> zonas = includeInactive ? zonaRepository.findAll() : zonaRepository.findAllByActivoTrue();
+		return zonas.stream().map(zona -> {
 			ZonaDTO dto = new ZonaDTO();
 			dto.setId(zona.getId());
 			dto.setNombre(zona.getNombre());
 			dto.setDescripcion(zona.getDescripcion());
 			dto.setFoto(zona.getFoto());
 			dto.setSedeId(zona.getSede().getId()); // Set sedeId
+			dto.setActivo(zona.isActivo());
 			return dto;
 		}).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<ZonaDTO> obtenerZonasPorSedeId(Long sedeId) {
-		return zonaRepository.findBySedeId(sedeId).stream().map(zona -> {
+		return obtenerZonasPorSedeId(sedeId, false);
+	}
+
+	@Override
+	public List<ZonaDTO> obtenerZonasPorSedeId(Long sedeId, boolean includeInactive) {
+		List<Zona> zonas = includeInactive ? zonaRepository.findBySedeId(sedeId) : zonaRepository.findBySedeIdAndActivoTrue(sedeId);
+		return zonas.stream().map(zona -> {
 			ZonaDTO dto = new ZonaDTO();
 			dto.setId(zona.getId());
 			dto.setNombre(zona.getNombre());
 			dto.setDescripcion(zona.getDescripcion());
 			dto.setFoto(zona.getFoto());
 			dto.setSedeId(zona.getSede().getId()); // Set sedeId
+			dto.setActivo(zona.isActivo());
 			return dto;
 		}).collect(Collectors.toList());
 	}
@@ -78,6 +93,7 @@ public class ZonaServiceImpl implements ZonaService{
 		savedZonaDTO.setDescripcion(savedZona.getDescripcion());
 		savedZonaDTO.setFoto(savedZona.getFoto());
 		savedZonaDTO.setSedeId(savedZona.getSede().getId());
+		savedZonaDTO.setActivo(savedZona.isActivo());
 		return savedZonaDTO;
 	}
 
@@ -117,6 +133,7 @@ public class ZonaServiceImpl implements ZonaService{
 		updatedZonaDTO.setDescripcion(updatedZona.getDescripcion());
 		updatedZonaDTO.setFoto(updatedZona.getFoto());
 		updatedZonaDTO.setSedeId(updatedZona.getSede().getId());
+		updatedZonaDTO.setActivo(updatedZona.isActivo());
 		return updatedZonaDTO;
 	}
 
@@ -127,5 +144,25 @@ public class ZonaServiceImpl implements ZonaService{
 			throw new RuntimeException("Zona no encontrada con ID: " + id);
 		}
 		zonaRepository.deleteById(id);
+	}
+
+	@Override
+	@Transactional
+	public ZonaDTO setActivoZona(Long id, boolean activo) {
+		Optional<Zona> zonaOptional = zonaRepository.findById(id);
+		if (!zonaOptional.isPresent()) {
+			throw new RuntimeException("Zona no encontrada con ID: " + id);
+		}
+		Zona zona = zonaOptional.get();
+		zona.setActivo(activo);
+		Zona saved = zonaRepository.save(zona);
+		ZonaDTO dto = new ZonaDTO();
+		dto.setId(saved.getId());
+		dto.setNombre(saved.getNombre());
+		dto.setDescripcion(saved.getDescripcion());
+		dto.setFoto(saved.getFoto());
+		dto.setSedeId(saved.getSede().getId());
+		dto.setActivo(saved.isActivo());
+		return dto;
 	}
 }

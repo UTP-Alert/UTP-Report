@@ -143,30 +143,37 @@ public class DataInitializer implements CommandLineRunner{
                 
                 Zona zona1 = new Zona();
                 zona1.setNombre("Pabellón A - " + sedeName);
+                zona1.setActivo(true);
                 zona1.setSede(sede);
                 zonaRepository.save(zona1);
 
                 Zona zona2 = new Zona();
                 zona2.setNombre("Biblioteca - " + sedeName);
+                zona2.setActivo(true);
                 zona2.setSede(sede);
                 zonaRepository.save(zona2);
 
                 Zona zona3 = new Zona();
                 zona3.setNombre("Cafetería - " + sedeName);
+                zona3.setActivo(true);
                 zona3.setSede(sede);
                 zonaRepository.save(zona3);
 
                 Zona zona4 = new Zona();
                 zona4.setNombre("Estacionamiento - " + sedeName);
+                zona4.setActivo(true);
                 zona4.setSede(sede);
                 zonaRepository.save(zona4);
 
                 Zona zona5 = new Zona();
                 zona5.setNombre("Laboratorio - " + sedeName);
+                zona5.setActivo(true);
                 zona5.setSede(sede);
                 zonaRepository.save(zona5);
             });
         }
+        // Nota: no forzamos el estado 'activo' para todas las zonas existentes al arranque
+        // porque queremos respetar desactivaciones realizadas por usuarios.
 	}
 
 	

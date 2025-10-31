@@ -9,4 +9,5 @@ public class ZonaDTO {
 	private String descripcion;
 	private byte[] foto;
 	private Long sedeId;
+	private Boolean activo;
 }

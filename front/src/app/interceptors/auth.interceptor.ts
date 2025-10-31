@@ -10,7 +10,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
   // NOTA: las llamadas a '/api/reportes' deben llevar token para acciones de seguridad,
   // por eso NO se incluyen aquí.
   const isPublic = isAuthEndpoint
-    || req.url.includes('/api/zonas')
+    /* Do NOT treat /api/zonas as public — require token for create/update/delete */
     || req.url.includes('/api/tipoincidentes')
     || req.url.includes('/api/sedes');
 
@@ -26,7 +26,10 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
   };
 
   // No adjuntar token en endpoints de autenticación
+  // Adjuntar token si existe y no está expirado, excepto para endpoints marcados como públicos
   if (!isAuthEndpoint && token && !isExpired(token) && (!isPublic || isUsuariosMe)) {
+    // en modo desarrollo: loguear para depuración rápida
+    try { console.debug('[authInterceptor] adding Authorization header for', req.url); } catch (_) {}
     req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
   } else if (token && isExpired(token)) {
     // limpiar token vencido para no causar 401
