@@ -14,4 +14,5 @@ public interface ReporteService {
     ReporteDTO createReporte(Long tipoIncidenteId, Long zonaId, String descripcion, MultipartFile foto, Boolean isAnonimo, String contacto, Long usuarioId);
     ReporteDTO updateReporte(Long id, Long tipoIncidenteId, Long zonaId, String descripcion, MultipartFile foto, Boolean isAnonimo, String contacto, Long usuarioId);
     void deleteReporte(Long id);
+    List<ReporteDTO> getReportsByUsername(String username);
 }

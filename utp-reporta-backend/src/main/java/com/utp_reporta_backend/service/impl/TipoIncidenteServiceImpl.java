@@ -20,22 +20,23 @@ public class TipoIncidenteServiceImpl implements TipoIncidenteService {
     @Override
     public List<TipoIncidenteDTO> getAllTipoIncidentes() {
         return tipoIncidenteRepository.findAll().stream()
-                .map(tipoIncidente -> new TipoIncidenteDTO(tipoIncidente.getId(), tipoIncidente.getNombre()))
+                .map(tipoIncidente -> new TipoIncidenteDTO(tipoIncidente.getId(), tipoIncidente.getNombre(), tipoIncidente.getDescripcion()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public TipoIncidenteDTO getTipoIncidenteById(Long id) {
         Optional<TipoIncidente> tipoIncidente = tipoIncidenteRepository.findById(id);
-        return tipoIncidente.map(ti -> new TipoIncidenteDTO(ti.getId(), ti.getNombre())).orElse(null);
+        return tipoIncidente.map(ti -> new TipoIncidenteDTO(ti.getId(), ti.getNombre(), ti.getDescripcion())).orElse(null);
     }
 
     @Override
     public TipoIncidenteDTO createTipoIncidente(TipoIncidenteDTO tipoIncidenteDTO) {
         TipoIncidente tipoIncidente = new TipoIncidente();
         tipoIncidente.setNombre(tipoIncidenteDTO.getNombre());
+        tipoIncidente.setDescripcion(tipoIncidenteDTO.getDescripcion());
         TipoIncidente savedTipoIncidente = tipoIncidenteRepository.save(tipoIncidente);
-        return new TipoIncidenteDTO(savedTipoIncidente.getId(), savedTipoIncidente.getNombre());
+        return new TipoIncidenteDTO(savedTipoIncidente.getId(), savedTipoIncidente.getNombre(), savedTipoIncidente.getDescripcion());
     }
 
     @Override
@@ -44,8 +45,9 @@ public class TipoIncidenteServiceImpl implements TipoIncidenteService {
         if (tipoIncidente.isPresent()) {
             TipoIncidente existingTipoIncidente = tipoIncidente.get();
             existingTipoIncidente.setNombre(tipoIncidenteDetailsDTO.getNombre());
+            existingTipoIncidente.setDescripcion(tipoIncidenteDetailsDTO.getDescripcion());
             TipoIncidente updatedTipoIncidente = tipoIncidenteRepository.save(existingTipoIncidente);
-            return new TipoIncidenteDTO(updatedTipoIncidente.getId(), updatedTipoIncidente.getNombre());
+            return new TipoIncidenteDTO(updatedTipoIncidente.getId(), updatedTipoIncidente.getNombre(), updatedTipoIncidente.getDescripcion());
         }
         return null;
     }

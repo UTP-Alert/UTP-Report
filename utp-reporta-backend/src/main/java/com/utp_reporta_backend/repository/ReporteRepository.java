@@ -33,4 +33,6 @@ public interface ReporteRepository extends JpaRepository<Reporte, Long> {
     List<Reporte> findByReporteGestion_Estado(EstadoReporte estado);
 
     List<Reporte> findByIsAnonimo(Boolean isAnonimo);
+
+    List<Reporte> findByUsuarioUsername(String username);
 }
