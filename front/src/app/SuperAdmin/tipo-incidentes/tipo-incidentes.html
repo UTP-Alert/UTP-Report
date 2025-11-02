@@ -2,96 +2,32 @@
   <div class="form-card">
     <h2><span class="plus">+</span> Agregar Tipo de Incidente</h2>
     <div class="form-row">
-      <input type="text" placeholder="Nombre del tipo de incidente" />
-      <input type="text" placeholder="Descripción" />
+      <input type="text" placeholder="Nombre del tipo de incidente" [(ngModel)]="nombre" />
+      <input type="text" placeholder="Descripción" [(ngModel)]="descripcion" />
     </div>
     <div class="form-row">
-      <select>
-        <option>Media</option>
-        <option>Alta</option>
-        <option>Baja</option>
-      </select>
+      <button class="btn-primary" (click)="save()">{{ editingId ? 'Guardar cambios' : '+ Agregar Tipo de Incidente' }}</button>
+      <button class="btn-secondary" *ngIf="editingId" (click)="cancelEdit()">Cancelar</button>
     </div>
-    <button class="btn-primary">+ Agregar Tipo de Incidente</button>
   </div>
 
   <div class="existing-types">
     <h3>Tipos de Incidentes Existentes</h3>
 
     <div class="incident-list">
-      <div class="incident-card critical">
-        <div class="card-header">
-          <div class="dot red"></div>
-          <div>
-            <h4>Robo</h4>
-            <p>Sustracción de pertenencias con o sin violencia</p>
-            <div class="tags">
-              <span class="tag gray">delito</span>
-              <span class="tag red">Crítica</span>
+      <div class="incident-list">
+        <div *ngFor="let t of tipos" class="incident-card">
+          <div class="card-header">
+            <div>
+              <h4>{{ t.nombre }}</h4>
+              <p>{{ t.descripcion || '' }}</p>
             </div>
+            <span class="status active">Activo</span>
           </div>
-          <span class="status active">Activo</span>
-        </div>
-        <div class="card-actions">
-          <a href="#" class="edit">✏️ Editar</a>
-          <a href="#" class="delete">🗑️ Eliminar</a>
-        </div>
-      </div>
-
-      <div class="incident-card high">
-        <div class="card-header">
-          <div class="dot orange"></div>
-          <div>
-            <h4>Intento de Robo</h4>
-            <p>Intento de sustracción que no se completó</p>
-            <div class="tags">
-              <span class="tag gray">delito</span>
-              <span class="tag orange">Alta</span>
-            </div>
+          <div class="card-actions">
+            <a href="#" class="edit" (click)="startEdit(t); $event.preventDefault()">✏️ Editar</a>
+            <a href="#" class="delete" (click)="remove(t.id); $event.preventDefault()">🗑️ Eliminar</a>
           </div>
-          <span class="status active">Activo</span>
-        </div>
-        <div class="card-actions">
-          <a href="#" class="edit">✏️ Editar</a>
-          <a href="#" class="delete">🗑️ Eliminar</a>
-        </div>
-      </div>
-
-      <div class="incident-card medium">
-        <div class="card-header">
-          <div class="dot yellow"></div>
-          <div>
-            <h4>Actividad Sospechosa</h4>
-            <p>Comportamiento inusual o sospechoso de personas</p>
-            <div class="tags">
-              <span class="tag gray">seguridad</span>
-              <span class="tag yellow">Media</span>
-            </div>
-          </div>
-          <span class="status active">Activo</span>
-        </div>
-        <div class="card-actions">
-          <a href="#" class="edit">✏️ Editar</a>
-          <a href="#" class="delete">🗑️ Eliminar</a>
-        </div>
-      </div>
-
-      <div class="incident-card critical">
-        <div class="card-header">
-          <div class="dot red"></div>
-          <div>
-            <h4>Acoso o Intimidación</h4>
-            <p>Comportamiento de acoso hacia estudiantes</p>
-            <div class="tags">
-              <span class="tag gray">delito</span>
-              <span class="tag red">Crítica</span>
-            </div>
-          </div>
-          <span class="status active">Activo</span>
-        </div>
-        <div class="card-actions">
-          <a href="#" class="edit">✏️ Editar</a>
-          <a href="#" class="delete">🗑️ Eliminar</a>
         </div>
       </div>
     </div>

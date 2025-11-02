@@ -75,6 +75,11 @@ export class ReporteService {
     return this.http.get<ReporteDTO>(`${this.baseUrl}/${id}`);
   }
 
+  exportExcel(): Observable<Blob> {
+    const url = `${this.baseUrl}/export/excel`;
+    return this.http.get(url, { responseType: 'blob' });
+  }
+
   updateGestion(reporteId: number, estado: string, prioridad: string, seguridadId?: number | null): Observable<ReporteGestionDTO> {
     let url = `${this.baseUrl}/gestion/${reporteId}`;
     const params: string[] = [];
