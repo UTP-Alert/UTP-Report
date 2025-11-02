@@ -259,4 +259,34 @@ export class ReportesSensibles {
     return s.size;
   }
 
+  // Limpiar filtros
+  clearFilters(){
+    this.searchText = '';
+    this.selectedEstado = 'all';
+    this.selectedPrioridad = 'all';
+    this.selectedTipo = 'all';
+  }
+
+  // Exportar reportes sensibles a Excel (usa endpoint backend que devuelve un blob)
+  exportToExcel(){
+    // llamar al servicio y forzar descarga
+    this.reporteService.exportExcel().subscribe({
+      next: (blob: Blob) => {
+        try {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'reportes.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        } catch (e) {
+          console.error('Error descargando el excel', e);
+        }
+      },
+      error: (err) => { console.error('Export failed', err); alert('Error al exportar. Revisa la consola.'); }
+    });
+  }
+
 }

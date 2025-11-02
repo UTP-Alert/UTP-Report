@@ -140,6 +140,12 @@
 			<option value="all">Todos</option>
 			<option *ngFor="let t of tipos" [value]="t.id">{{ t.nombre }}</option>
 		</select>
+
+		<!-- Botones adicionales: Limpiar y Exportar -->
+		<div class="filter-actions">
+			<button class="btn btn-outline" (click)="clearFilters()">Limpiar</button>
+			<button class="btn btn-primary" (click)="exportToExcel()">Exportar</button>
+		</div>
 	</div>
 
 	<div class="report-list">
