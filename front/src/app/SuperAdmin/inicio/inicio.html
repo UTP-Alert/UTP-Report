@@ -22,13 +22,6 @@
             <div class="metric-label">Sedes Activas</div>
           </div>
         </div>
-        <div class="card paginas">
-          <svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 5a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10z" /><path d="M7 20h10" /><path d="M9 16v4" /><path d="M15 16v4" /></svg>
-          <div class="metric">
-            <div class="metric-value">{{ pagesActiveCount }}</div>
-            <div class="metric-label">Páginas Activas</div>
-          </div>
-        </div>
         <div class="card incidentes">
           <svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" /></svg>
           <div class="metric">
@@ -62,12 +55,6 @@
           </a>
         </li>
         <li>
-          <a href="/superadmin/dashboard/paginas" [class.active]="activeTab==='paginas'" (click)="setActiveTab('paginas', $event)">
-            <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 10a2 2 0 0 1 2 -2h9a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-9a2 2 0 0 1 -2 -2z" /><path d="M16 8v-3a2 2 0 0 0 -2 -2h-9a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h3" /></svg>
-            Páginas
-          </a>
-        </li>
-        <li>
           <a href="/superadmin/dashboard/sedes" [class.active]="activeTab==='sedes'" (click)="setActiveTab('sedes', $event)">
             <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0" /><path d="M9 8l1 0" /><path d="M9 12l1 0" /><path d="M9 16l1 0" /><path d="M14 8l1 0" /><path d="M14 12l1 0" /><path d="M14 16l1 0" /><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16" /></svg>
             Sedes
@@ -79,18 +66,11 @@
             Tipos de Incidentes
           </a>
         </li>
-        <li>
-          <a href="/superadmin/dashboard/feedback" [class.active]="activeTab==='feedback'" (click)="setActiveTab('feedback', $event)">
-            <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1" /></svg>
-            Feedback
-          </a>
-        </li>
+        <!-- Páginas y Feedback eliminados del dashboard según petición -->
       </ul>
     </section> <!-- Closing tag for navigation-tabs section -->
 
-      <section id="paginas" class="user-management-section" *ngIf="activeTab==='paginas'">
-        <app-paginas></app-paginas>
-      </section>
+      <!-- Sección 'paginas' removida del dashboard -->
 
     <!-- Secciones de destino para pestañas -->
       <section id="reportes-sensibles" class="user-management-section" style="margin-top:1rem;" *ngIf="activeTab==='reportes-sensibles'">
@@ -105,9 +85,7 @@
         <app-tipo-incidentes></app-tipo-incidentes>
       </section>
 
-      <section id="feedback" class="user-management-section" style="margin-top:1.5rem;" *ngIf="activeTab==='feedback'">
-        <app-feed-back></app-feed-back>
-      </section>
+      <!-- Sección 'feedback' removida del dashboard -->
 
       <section id="gestion-usuarios" class="user-management-section" *ngIf="activeTab==='gestion-usuarios'">
         <app-gestor-usuario></app-gestor-usuario>

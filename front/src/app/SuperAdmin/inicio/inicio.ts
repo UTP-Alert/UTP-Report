@@ -9,17 +9,17 @@ import { PageConfigService } from '../../services/page-config.service';
 import { AuthService } from '../../services/auth.service';
 import { ROLES } from '../../constants/roles';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Paginas } from '../paginas/paginas';
+// Paginas removed from dashboard
 import { ReportesSensibles } from '../reportes-sensibles/reportes-sensibles';
 import { Sedes } from '../sedes/sedes';
 import { TipoIncidentes } from '../tipo-incidentes/tipo-incidentes';
-import { FeedBack } from '../feed-back/feed-back';
+// FeedBack removed from dashboard
 import { GestorUsuario } from '../gestor-usuario/gestor-usuario';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, FormsModule, Paginas, ReportesSensibles, Sedes, TipoIncidentes, FeedBack, GestorUsuario],
+  imports: [CommonModule, FormsModule, ReportesSensibles, Sedes, TipoIncidentes, GestorUsuario],
   templateUrl: './inicio.html',
   styleUrl: './inicio.scss'
 })
@@ -47,8 +47,8 @@ export class Inicio implements OnInit, OnDestroy {
   editingUser: any = null;
   showPassword = false; // New property for password visibility
   // pestaña activa en la barra
-  activeTab: 'gestion-usuarios' | 'reportes-sensibles' | 'paginas' | 'sedes' | 'tipos-incidentes' | 'feedback' = 'gestion-usuarios';
-  private readonly allowedTabs = ['gestion-usuarios','reportes-sensibles','paginas','sedes','tipos-incidentes','feedback'] as const;
+  activeTab: 'gestion-usuarios' | 'reportes-sensibles' | 'sedes' | 'tipos-incidentes' = 'gestion-usuarios';
+  private readonly allowedTabs = ['gestion-usuarios','reportes-sensibles','sedes','tipos-incidentes'] as const;
 
   // -------------------------------
   // 🔹 2. Constructor e inicialización
@@ -454,7 +454,7 @@ export class Inicio implements OnInit, OnDestroy {
     this.showPassword = !this.showPassword;
   }
 
-  setActiveTab(tab: 'gestion-usuarios' | 'reportes-sensibles' | 'paginas' | 'sedes' | 'tipos-incidentes' | 'feedback', event?: Event) {
+  setActiveTab(tab: 'gestion-usuarios' | 'reportes-sensibles' | 'sedes' | 'tipos-incidentes', event?: Event) {
     if (event) event.preventDefault();
     if (!(this.allowedTabs as readonly string[]).includes(tab)) return;
     this.activeTab = tab;
