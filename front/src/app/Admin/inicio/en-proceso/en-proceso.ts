@@ -28,6 +28,10 @@ export class EnProceso implements OnInit {
   // Sede detectada a partir de las zonas de los reportes cargados
   reportSedeId?: number | null = null;
   loading: boolean = false;
+  // Timers: llevar el tiempo en proceso y refrescar cada segundo
+  private tickTimer: any;
+  private processStartAt: Record<number, number> = {};
+  timeInProcessLabel: Record<number, string> = {};
   constructor(private reportState: ReportStateService,
               private reporteService: ReporteService,
               private perfilService: PerfilService,
@@ -53,6 +57,8 @@ export class EnProceso implements OnInit {
         };
       });
       this.items = Object.values(map).sort((a,b) => (b.report?.fechaCreacion ? new Date(b.report.fechaCreacion).getTime() : b.id) - (a.report?.fechaCreacion ? new Date(a.report.fechaCreacion).getTime() : a.id));
+      this.recomputeProcessStarts();
+      this.startTicking();
     });
 
     // Load persisted EN_PROCESO items from backend (filtered by sede si está disponible)
@@ -130,6 +136,8 @@ export class EnProceso implements OnInit {
       const merged = { ...map };
       for(const it of this.items) merged[it.id] = it;
       this.items = Object.values(merged).sort((a,b) => (b.report?.fechaCreacion ? new Date(b.report.fechaCreacion).getTime() : b.id) - (a.report?.fechaCreacion ? new Date(a.report.fechaCreacion).getTime() : a.id));
+        this.recomputeProcessStarts();
+        this.startTicking();
         if(onComplete) onComplete();
       },
       (err: any) => { console.error('Error cargando reportes EN_PROCESO desde backend', err); if(onComplete) onComplete(); }
@@ -294,6 +302,83 @@ export class EnProceso implements OnInit {
   openImageWithFallback(src: string){
     this.openImage(src);
     setTimeout(() => { try{ if(!this.imageModalVisible){ window.open(src, '_blank'); } }catch(e){} }, 80);
+  }
+
+  ngOnDestroy(){
+    try{ if(this.tickTimer) clearInterval(this.tickTimer); }catch(e){}
+  }
+
+  private inProcessStates = new Set(['EN_PROCESO','UBICANDO','INVESTIGANDO']);
+  private isPendingApproval(key: string){ return key.includes('PENDIENTE') && key.includes('APROB'); }
+  private storageKey(id: number){ return `procStart_${id}`; }
+
+  private recomputeProcessStarts(){
+    // Calcula el inicio del conteo para cada item en proceso
+    for(const it of this.items){
+      const r: any = it.report || {};
+      const estado: string = (r.reporteGestion?.estado || r.ultimoEstado || '').toString().toUpperCase();
+      // Si salió de 'en proceso' o ya está Pendiente de Aprobación, limpiar y detener
+      if(!this.inProcessStates.has(estado) || this.isPendingApproval(estado)) {
+        delete this.processStartAt[it.id];
+        this.timeInProcessLabel[it.id] = '—';
+        try{ localStorage.removeItem(this.storageKey(it.id)); }catch{}
+        continue;
+      }
+      // Mantener el inicio original si ya existe (no reiniciar)
+      if(this.processStartAt[it.id]) continue;
+      // Intentar restaurar de almacenamiento local para persistencia entre recargas
+      try{
+        const saved = Number(localStorage.getItem(this.storageKey(it.id)) || '');
+        if(!isNaN(saved) && saved > 0) { this.processStartAt[it.id] = saved; continue; }
+      }catch{}
+      // Estimar inicio (si no hay persistido): usar fecha de última gestión o creación
+      const startISO: string | null = r.reporteGestion?.fechaActualizacion || r.fechaUltimaGestion || r.fechaCreacion || null;
+      const t = startISO ? new Date(startISO).getTime() : NaN;
+      if(!isNaN(t)) { this.processStartAt[it.id] = t; try{ localStorage.setItem(this.storageKey(it.id), String(t)); }catch{} }
+    }
+    // Actualiza inmediatamente una vez
+    this.updateTimeLabels();
+  }
+
+  private startTicking(){
+    if(this.tickTimer) return; // ya corriendo
+    this.tickTimer = setInterval(() => this.updateTimeLabels(), 1000);
+  }
+
+  private updateTimeLabels(){
+    const now = Date.now();
+    for(const it of this.items){
+      const start = this.processStartAt[it.id];
+      if(!start) { this.timeInProcessLabel[it.id] = '—'; continue; }
+      const ms = Math.max(0, now - start);
+      this.timeInProcessLabel[it.id] = this.formatDuration(ms);
+    }
+  }
+
+  private formatDuration(ms: number): string{
+    const sec = Math.floor(ms / 1000);
+    const s = sec % 60;
+    const m = Math.floor(sec / 60) % 60;
+    const h = Math.floor(sec / 3600) % 24;
+    const d = Math.floor(sec / 86400);
+    const pad = (n: number) => String(n).padStart(2,'0');
+    if(d > 0) return `${d}d ${pad(h)}:${pad(m)}:${pad(s)}`;
+    return `${pad(h)}:${pad(m)}:${pad(s)}`;
+  }
+
+  lastUpdate(report: any): string{
+    try{
+      const iso = report?.reporteGestion?.fechaActualizacion || report?.fechaUltimaGestion || null;
+      if(!iso) return '—';
+      const d = new Date(iso);
+      // Formato corto similar al resto de la UI
+      const dd = String(d.getDate()).padStart(2,'0');
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const yyyy = d.getFullYear();
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mi = String(d.getMinutes()).padStart(2,'0');
+      return `${dd}/${mm}/${yyyy}, ${hh}:${mi}`;
+    }catch{ return '—'; }
   }
 
 }

@@ -80,11 +80,11 @@
                   </div>
                   <div>
                     <p>Tiempo en proceso</p>
-                    <strong>—</strong>
+                    <strong>{{ timeInProcessLabel[it.id] || '—' }}</strong>
                   </div>
                   <div>
                     <p>Última actualización</p>
-                    <strong>—</strong>
+                    <strong>{{ lastUpdate(it.report) }}</strong>
                   </div>
                 </div>
               </div>

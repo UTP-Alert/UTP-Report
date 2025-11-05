@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { PerfilService } from '../../services/perfil.service';
+import { Sede, SedeService } from '../../services/sede.service';
+import { Zona, ZonaService } from '../../services/zona.service';
 
 @Component({
   selector: 'app-zonas-page-complete',
@@ -9,6 +12,106 @@ import { RouterModule } from '@angular/router';
   templateUrl: './zonas-page-complete.component.html',
   styleUrls: ['./zonas-page-complete.component.scss']
 })
-export class ZonasPageCompleteComponent {
-  
+export class ZonasPageCompleteComponent implements OnInit {
+  loading = false;
+  sedes: Sede[] = [];
+  selectedSedeId: number | null = null;
+  selectedSedeNombre: string | null = null;
+  zonas: Array<Zona & { foto?: any; fotoUrl?: string; [k: string]: any } > = [];
+
+  constructor(
+    private perfilService: PerfilService,
+    private sedeService: SedeService,
+    private zonaService: ZonaService,
+  ) {}
+
+  ngOnInit(): void {
+    this.loading = true;
+    // Cargar sedes y perfil en paralelo y luego resolver la sede del alumno por nombre
+    this.sedeService.obtenerSedes().subscribe({
+      next: (sedes) => {
+        this.sedes = sedes || [];
+        this.perfilService.obtenerPerfil()?.subscribe({
+          next: (perfil: any) => {
+            // Backend expone /api/usuarios/me devolviendo UsuarioDTO con sedeNombre
+            const sedeNombre: string | null = perfil?.sedeNombre || null;
+            this.selectedSedeNombre = sedeNombre;
+            const encontrada = sedeNombre ? this.sedes.find(s => (s.nombre || '').toLowerCase() === sedeNombre.toLowerCase()) : null;
+            const sedeId = encontrada?.id ?? (this.sedes.length ? this.sedes[0].id : null);
+            this.selectedSedeId = sedeId;
+            if (sedeId != null) this.loadZonasForSede(sedeId);
+            else this.loading = false;
+          },
+          error: _ => {
+            // Si no hay perfil, usar primera sede disponible como fallback
+            const sedeId = this.sedes.length ? this.sedes[0].id : null;
+            this.selectedSedeId = sedeId;
+            this.selectedSedeNombre = this.sedes.length ? this.sedes[0].nombre : null;
+            if (sedeId != null) this.loadZonasForSede(sedeId); else this.loading = false;
+          }
+        });
+      },
+      error: _ => { this.loading = false; }
+    });
+  }
+
+  private loadZonasForSede(sedeId: number) {
+    this.zonaService.obtenerZonasPorSede(sedeId).subscribe({
+      next: (z) => {
+        // Convertir byte[] o string base64 a data URL para mostrar imagen
+        this.zonas = (z || []).map((zone: any) => {
+          let fotoUrl: string | null = null;
+          try {
+            if (zone.foto && Array.isArray(zone.foto) && zone.foto.length > 0) {
+              const bin = new Uint8Array(zone.foto);
+              let binary = '';
+              bin.forEach((b: number) => binary += String.fromCharCode(b));
+              const b64 = btoa(binary);
+              fotoUrl = `data:image/jpeg;base64,${b64}`;
+            } else if (zone.foto && typeof zone.foto === 'string' && zone.foto.length > 0) {
+              fotoUrl = zone.foto.startsWith('data:') ? zone.foto : `data:image/jpeg;base64,${zone.foto}`;
+            }
+          } catch { fotoUrl = null; }
+          return { ...zone, fotoUrl } as any;
+        });
+        this.loading = false;
+      },
+      error: _ => { this.zonas = []; this.loading = false; }
+    });
+  }
+
+  // Heurística simple (misma que en panel de sedes) para categorizar si existiera algún campo relacionado
+  categorizeZone(z: any): 'segura' | 'precaucion' | 'peligrosa' | 'desconocida' {
+    if (!z) return 'desconocida';
+    const vals: string[] = [];
+    const add = (v: any) => { if (v != null) vals.push(String(v).toLowerCase()); };
+    add(z.estado); add(z.nivel); add(z.nivelSeguridad); add(z.prioridad); add(z.status); add(z.risk);
+    for (const val of vals) {
+      if (val.includes('segur') || val.includes('safe') || val.includes('bajo')) return 'segura';
+      if (val.includes('precauc') || val.includes('medio') || val.includes('caution')) return 'precaucion';
+      if (val.includes('pelig') || val.includes('danger') || val.includes('alto') || val.includes('riesgo')) return 'peligrosa';
+    }
+    const pri = z.prioridad || z.priority || z.level;
+    if (pri != null) {
+      const n = Number(pri);
+      if (!isNaN(n)) {
+        if (n >= 75) return 'peligrosa';
+        if (n >= 40) return 'precaucion';
+        return 'segura';
+      }
+    }
+    return 'desconocida';
+  }
+
+  get stats() {
+    let seguras = 0, precaucion = 0, peligrosas = 0;
+    for (const z of this.zonas) {
+      const c = this.categorizeZone(z);
+      if (c === 'segura') seguras++;
+      else if (c === 'precaucion') precaucion++;
+      else if (c === 'peligrosa') peligrosas++;
+    }
+    const estudiantes = 0; // sin fuente de datos, mostrar 0 por ahora
+    return { seguras, precaucion, peligrosas, estudiantes };
+  }
 }

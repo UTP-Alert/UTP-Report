@@ -134,45 +134,25 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 sm:h-8 sm:w-8 text-primary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
         Estado de Zonas Universitarias
       </h2>
-
-      <!-- Contenedor de las tarjetas de zonas. -->
+      <!-- Contenedor de las tarjetas de zonas (dinámico por sede del alumno) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-        <!-- Tarjeta de ejemplo para una zona. Los datos serían dinámicos. -->
-  <div class="border-2 border-green-200 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl">
+        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl"
+             *ngFor="let z of zonasSede"
+             [ngClass]="{
+               'border-green-200': z._status === 'segura',
+               'border-yellow-200': z._status === 'precaucion',
+               'border-red-200': z._status === 'peligrosa'
+             }">
           <div class="pb-2 sm:pb-3 p-4">
             <div class="flex items-center justify-between">
-              <!-- Nombre de la zona. -->
-              <h3 class="text-base sm:text-lg">Campus Principal</h3>
-              <!-- Badge de estado de la zona. El color y texto serían dinámicos. -->
-              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
-                ZONA SEGURA
-              </span>
-            </div>
-          </div>
-          <div class="p-4 pt-0">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1 sm:gap-2">
-                <!-- Icono de alerta. -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                <span class="text-base sm:text-lg">0 incidentes</span>
-              </div>
-              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
-                <!-- Icono de reloj. -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <!-- Indicador de tiempo. -->
-                <span class="text-sm sm:text-base">Hoy</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Repetición de tarjetas de zona para demostración estática. -->
-  <div class="border-2 border-green-200 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl">
-          <div class="pb-2 sm:pb-3 p-4">
-            <div class="flex items-center justify-between">
-              <h3 class="text-base sm:text-lg">Biblioteca Central</h3>
-              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
-                ZONA SEGURA
+              <h3 class="text-base sm:text-lg">{{ z.nombre }}</h3>
+              <span class="text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full"
+                    [ngClass]="{
+                      'bg-green-500': z._status === 'segura',
+                      'bg-yellow-500': z._status === 'precaucion',
+                      'bg-red-500': z._status === 'peligrosa'
+                    }">
+                {{ z._status === 'segura' ? 'ZONA SEGURA' : (z._status === 'precaucion' ? 'EN PRECAUCIÓN' : 'ZONA PELIGROSA') }}
               </span>
             </div>
           </div>
@@ -180,103 +160,11 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-1 sm:gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                <span class="text-base sm:text-lg">0 incidentes</span>
+                <span class="text-base sm:text-lg">{{ z._incidentes || 0 }} incidentes</span>
               </div>
               <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span class="text-sm sm:text-base">Hoy</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-  <div class="border-2 border-green-200 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl">
-          <div class="pb-2 sm:pb-3 p-4">
-            <div class="flex items-center justify-between">
-              <h3 class="text-base sm:text-lg">Cafetería Norte</h3>
-              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
-                ZONA SEGURA
-              </span>
-            </div>
-          </div>
-          <div class="p-4 pt-0">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1 sm:gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                <span class="text-base sm:text-lg">0 incidentes</span>
-              </div>
-              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span class="text-sm sm:text-base">Hoy</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-  <div class="border-2 border-green-200 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl">
-          <div class="pb-2 sm:pb-3 p-4">
-            <div class="flex items-center justify-between">
-              <h3 class="text-base sm:text-lg">Estacionamiento Este</h3>
-              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
-                ZONA SEGURA
-              </span>
-            </div>
-          </div>
-          <div class="p-4 pt-0">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1 sm:gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                <span class="text-base sm:text-lg">0 incidentes</span>
-              </div>
-              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span class="text-sm sm:text-base">Hoy</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-  <div class="border-2 border-green-200 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-2xl">
-          <div class="pb-2 sm:pb-3 p-4">
-            <div class="flex items-center justify-between">
-              <h3 class="text-base sm:text-lg">Laboratorios</h3>
-              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
-                ZONA SEGURA
-              </span>
-            </div>
-          </div>
-          <div class="p-4 pt-0">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1 sm:gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                <span class="text-base sm:text-lg">0 incidentes</span>
-              </div>
-              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span class="text-sm sm:text-base">Hoy</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="border-2 hover:shadow-md transition-all cursor-pointer focus:ring-4 focus:ring-primary/50 rounded-lg">
-          <div class="pb-2 sm:pb-3 p-4">
-            <div class="flex items-center justify-between">
-              <h3 class="text-base sm:text-lg">Zona Deportiva</h3>
-              <span class="bg-green-500 text-white px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-full">
-                ZONA SEGURA
-              </span>
-            </div>
-          </div>
-          <div class="p-4 pt-0">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-1 sm:gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5 text-gray-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                <span class="text-base sm:text-lg">0 incidentes</span>
-              </div>
-              <div class="flex items-center gap-1 sm:gap-2 text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 sm:h-5 sm:w-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span class="text-sm sm:text-base">Hoy</span>
+                <span class="text-sm sm:text-base">{{ lastRefreshLabel }}</span>
               </div>
             </div>
           </div>
@@ -331,26 +219,50 @@
             <span class="text-sm text-gray-500">{{ misReportes.length || 0 }} reportes</span>
           </div>
 
+          
+
           <!-- Lista de reportes guardados localmente -->
           <ng-container *ngIf="misReportes && misReportes.length; else sinReportes">
             <div *ngFor="let r of misReportes; let i = index" class="border-2 border-blue-200 rounded-2xl p-4 mb-3 last:mb-0">
+              <!-- Fila superior: tipo de incidente y estado, acciones a la derecha (opcionales) -->
               <div class="flex items-start justify-between mb-2">
-                <div class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-                  <div>
-                    <p class="font-medium">{{ r.tipoNombre | uppercase }} <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs ml-2">{{ r.estado }}</span></p>
-                    <p class="text-sm text-gray-600 flex items-center gap-1 mt-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                      {{ r.zonaNombre }}
-                    </p>
-                  </div>
+                <div class="flex items-center gap-3">
+                  <!-- Mini card del tipo de reporte -->
+                  <span class="inline-flex items-center gap-2 bg-white border border-gray-300 rounded-full px-3 py-1 shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-primary"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span class="text-xs font-medium">{{ r.tipoNombre | uppercase }}</span>
+                  </span>
+                  <!-- Estado -->
+                  <span class="text-white px-2 sm:px-3 py-1 rounded-full text-xs font-medium border shadow-sm" [ngClass]="getEstadoBadgeClass(r)">{{ formatEstadoLabel(r.estado) || getEstadoLabel(r) }}</span>
                 </div>
-                <div class="text-sm text-gray-500">{{ formatFecha(r.fechaCreacion) }}</div>
+                <div class="flex items-center gap-3 text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </div>
               </div>
-              <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-                <div class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
+
+              <!-- Fila de ubicación y fecha -->
+              <div class="text-sm text-gray-600 flex items-center gap-4 mb-2">
+                <span class="inline-flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  {{ r.zonaNombre }}
+                </span>
+                <span class="inline-flex items-center gap-1 text-gray-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  {{ formatFecha(r.fechaCreacion) }}
+                </span>
               </div>
-              <p class="text-xs text-gray-500 mt-2">Estado desconocido</p>
+
+              <!-- Subtítulo del estado -->
+              <p class="text-sm text-gray-700 mb-2">{{ getEstadoSubtitle(r) }}</p>
+
+              <!-- Progreso -->
+              <div class="text-xs text-gray-600 mb-1">Progreso</div>
+              <div class="relative w-full bg-gray-200 rounded-full h-2.5">
+                <div class="h-2.5 rounded-full transition-all duration-500" [ngClass]="getBarClass(r)" [style.width.%]="getReporteProgress(r)"></div>
+                <span class="absolute -top-5 right-0 text-xs text-gray-500">{{ getReporteProgress(r) }}%</span>
+              </div>
+
               <p class="text-xs text-gray-500 mt-4">Recibirás notificaciones cuando el estado de tus reportes cambie</p>
             </div>
           </ng-container>
