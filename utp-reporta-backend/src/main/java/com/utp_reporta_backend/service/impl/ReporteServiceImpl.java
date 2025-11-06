@@ -5,6 +5,7 @@ import com.utp_reporta_backend.model.Reporte;
 import com.utp_reporta_backend.model.TipoIncidente;
 import com.utp_reporta_backend.model.Usuario;
 import com.utp_reporta_backend.model.Zona;
+import com.utp_reporta_backend.enums.EstadoZona;
 import com.utp_reporta_backend.repository.ReporteRepository;
 import com.utp_reporta_backend.repository.TipoIncidenteRepository;
 import com.utp_reporta_backend.repository.UsuarioRepository;
@@ -13,6 +14,7 @@ import com.utp_reporta_backend.service.ReporteService;
 import com.utp_reporta_backend.dto.ReporteGestionDTO;
 import com.utp_reporta_backend.service.TimeService; // Import TimeService
 import com.utp_reporta_backend.service.IReporteGestionService;
+import com.utp_reporta_backend.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +55,9 @@ public class ReporteServiceImpl implements ReporteService {
 
     @Autowired
     private IReporteGestionService reporteGestionService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public List<ReporteDTO> getAllReportes() {
@@ -164,6 +169,18 @@ public class ReporteServiceImpl implements ReporteService {
         reporte.setFechaCreacion(timeService.getCurrentLocalDateTimePeru()); // Use TimeService
 
         Reporte savedReporte = reporteRepository.save(reporte);
+
+        // Update zone status based on report count
+        long reportCount = reporteRepository.countByZonaId(zonaId);
+        if (reportCount >= 1 && reportCount <= 5) {
+            zona.setEstado(EstadoZona.ZONA_SEGURA);
+        } else if (reportCount >= 6 && reportCount <= 10) {
+            zona.setEstado(EstadoZona.ZONA_PRECAUCION);
+        } else if (reportCount >= 11 && reportCount <= 15) {
+            zona.setEstado(EstadoZona.ZONA_PELIGROSA);
+        }
+        zonaRepository.save(zona);
+        notificationService.notifyZoneStatusChange(zona);
 
         // Crear la gestión inicial en estado PENDIENTE para que el reporte tenga
         // reporteGestion desde su creación

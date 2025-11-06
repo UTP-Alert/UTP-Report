@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+    <h1>Zone Status Notifications</h1>
+    <ul id="messages"></ul>
+
+    <script type="text/javascript">
+        var stompClient = null;
+
+        function connect() {
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/zone-status', function (message) {
+                    showMessage(JSON.parse(message.body));
+                });
+            });
+        }
+
+        function showMessage(message) {
+            var messages = document.getElementById('messages');
+            var li = document.createElement('li');
+            li.appendChild(document.createTextNode('Zone: ' + message.nombre + ', Status: ' + message.estado));
+            messages.appendChild(li);
+        }
+
+        connect();
+    </script>
+</body>
+</html>

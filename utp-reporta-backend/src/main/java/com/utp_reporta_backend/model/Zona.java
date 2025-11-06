@@ -1,8 +1,11 @@
 package com.utp_reporta_backend.model;
 
+import com.utp_reporta_backend.enums.EstadoZona;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,6 +34,9 @@ public class Zona {
 	@ManyToOne
 	@JoinColumn(name = "sede_id", nullable = false)
 	private Sede sede;
+
+	@Enumerated(EnumType.STRING)
+    private EstadoZona estado = EstadoZona.ZONA_SEGURA;
     
 	// Estado lógico: activa/desactiva la zona sin borrarla físicamente
 	private boolean activo = true;
