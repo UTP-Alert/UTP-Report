@@ -366,3 +366,119 @@ h2, h3 { color: var(--slate-700); }
 .user-card .badge { background: #0f172a; color: #ffffff; border-color: transparent; padding: .25rem .6rem; font-weight:700; border-radius: 9999px; }
 .user-card .badge + .badge { background: var(--slate-50); color: var(--slate-700); border: 1px solid var(--slate-200); font-weight:700; }
 
+@media (max-width: 767.98px) { /* Medium devices (tablets) */
+  .user-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .user-filters input[type="text"],
+  .user-filters select {
+    flex: 1 1 auto;
+    min-width: unset;
+    width: 100%;
+  }
+
+  .user-filters .clear-filters-btn,
+  .user-filters .create-user-btn {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .user-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .user-card .actions {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 575.98px) { /* Extra small devices (phones) */
+  .section-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .section-banner .banner-content h2 {
+    font-size: 0.9rem;
+  }
+
+  .section-banner .banner-content p {
+    font-size: 0.8rem;
+  }
+
+  .subsection-title {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  .stat-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 0.8rem;
+  }
+
+  .stat-card .metric .value {
+    font-size: 1.1rem;
+  }
+
+  .stat-card .metric .label {
+    font-size: 0.7rem;
+  }
+
+  .user-filters input[type="text"],
+  .user-filters select,
+  .user-filters button {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-content {
+    padding: 0.8rem;
+  }
+
+  .input-field,
+  .select-field {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .user-card .avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 0.9rem;
+  }
+
+  .user-card .font-medium {
+    font-size: 1rem;
+  }
+
+  .user-card .text-sm {
+    font-size: 0.8rem;
+  }
+
+  .user-card .badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+  }
+
+  .user-card .actions button {
+    font-size: 0.8rem;
+    padding: 0.15rem 0.4rem;
+  }
+}

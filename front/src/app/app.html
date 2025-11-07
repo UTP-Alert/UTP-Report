@@ -1,4 +1,4 @@
-<app-navbar></app-navbar>
-<main class="app-shell">
+<app-navbar *ngIf="showAppNavbar()"></app-navbar>
+<main class="app-shell" [class.with-navbar]="showAppNavbar()">
   <router-outlet></router-outlet>
 </main>

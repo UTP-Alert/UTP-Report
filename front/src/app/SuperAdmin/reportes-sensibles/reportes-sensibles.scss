@@ -11,22 +11,21 @@
 }
 
 .modal-card {
-	/* Tarjeta cuadrada más compacta */
-	width: 420px;
-	max-width: calc(100% - 48px);
-	aspect-ratio: 1 / 1; /* forma cuadrada */
-	max-height: calc(100vh - 80px); /* que no rebase la pantalla */
+	/* Ajustes para un tamaño más adecuado y profesional */
+	width: 500px; /* Un poco más ancho por defecto */
+	max-width: 90%; /* Máximo 90% del ancho de la ventana */
+	max-height: 90vh; /* Máximo 90% de la altura de la ventana */
 	background: #ffffff;
 	border-radius: 14px; /* esquinas redondeadas */
 	box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-	padding: 14px 16px;
+	padding: 20px 24px; /* Aumentar padding para más espacio */
 	position: relative;
 	color: #111827;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	font-size: 13px; /* texto un poco más pequeño */
-	overflow: hidden;
+	font-size: 14px; /* Tamaño de fuente ligeramente mayor */
+	overflow: auto; /* Permitir scroll si el contenido es muy largo */
 }
 
 .modal-card h3 {
@@ -170,8 +169,169 @@
 
 
 /* Small screen tweaks */
-@media (max-width: 720px) {
-	.modal-card { width: calc(100% - 32px); aspect-ratio: auto; max-height: none; padding: 12px; border-radius: 10px; }
-	.modal-actions { flex-direction: column; }
+@media (max-width: 767.98px) { /* Medium devices (tablets) */
+  .top-banner .banner-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .banner-right {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .banner-right .btn {
+    width: 100%;
+  }
+
+  .stats-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .filters input,
+  .filters select {
+    width: 100%;
+  }
+
+  .filter-actions {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .filter-actions button {
+    flex: 1;
+  }
+
+  .report-main {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .conf-rows {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .report-main .report-left {
+    width: 100%; /* Ensure it takes full width when stacked */
+  }
+
+  .card-footer.horizontal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 }
 
+@media (max-width: 575.98px) { /* Extra small devices (phones) */
+  .modal-card {
+    width: calc(100% - 32px);
+    aspect-ratio: auto;
+    max-height: none;
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .sensitive-area {
+    padding: 1rem;
+  }
+
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .header-row h2 {
+    font-size: 1.2rem;
+  }
+
+  .top-banner {
+    padding: 10px;
+  }
+
+  .banner-title {
+    font-size: 14px;
+  }
+
+  .banner-sub {
+    font-size: 12px;
+  }
+
+  .stat-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 10px;
+  }
+
+  .stat-number {
+    font-size: 18px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  .report-card {
+    padding: 10px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .card-header .btn-outline {
+    width: 100%;
+  }
+
+  .badges {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .report-title {
+    font-size: 14px;
+  }
+
+  .report-subtitle {
+    font-size: 12px;
+  }
+
+  .report-desc {
+    font-size: 13px;
+  }
+
+  .confidential-box {
+    padding: 8px;
+  }
+
+  .conf-title {
+    font-size: 13px;
+  }
+
+  .conf-item {
+    font-size: 12px;
+  }
+
+  .meta-left,
+  .meta-right {
+    font-size: 12px;
+  }
+}

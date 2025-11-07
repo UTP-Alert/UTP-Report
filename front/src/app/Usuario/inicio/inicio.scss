@@ -1,8 +1,60 @@
 /* Base */
-body { margin: 0; font-family: sans-serif; color: #000; }
+body { margin: 0; font-family: sans-serif; }
 
 /* Variables (KPI) */
 :host { --kpi-border-width: 1px; }
+
+/* Dark Mode specific styles for Usuario/inicio */
+body.dark-mode {
+  .kpi-card {
+    border-color: var(--border) !important;
+  }
+  .alert-banner {
+    background: var(--card);
+    border-color: var(--border);
+  }
+  .alert-banner .alert-icon {
+    color: var(--primary);
+  }
+  .alert-banner .alert-text {
+    color: var(--foreground);
+  }
+  .bg-white { background-color: var(--card); }
+  .bg-gray-50 { background-color: var(--muted); }
+  .bg-gray-100 { background-color: var(--accent); }
+  .bg-gray-200 { background-color: var(--muted); } /* Adjust as needed */
+  .bg-gray-300 { border-color: var(--border); } /* Adjust as needed */
+  .border-gray-300 { border-color: var(--border); }
+  .text-gray-500 { color: var(--muted-foreground); }
+  .text-gray-600 { color: var(--muted-foreground); } /* Adjust as needed */
+  .text-gray-700 { color: var(--foreground); } /* Adjust as needed */
+  .text-gray-800 { color: var(--foreground); }
+  .bg-gray-600 { background-color: var(--muted); } /* Adjust as needed */
+  .bg-gray-700 { background-color: var(--accent); } /* Adjust as needed */
+  .bg-gray-500 { background-color: var(--muted); } /* Adjust as needed */
+  .bg-gray-400 { background-color: var(--muted); } /* Adjust as needed */
+  .border-white { border-color: var(--border); }
+  .modal-container {
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+  .modal-close {
+    color: var(--muted-foreground);
+  }
+  .modal-close:hover { background: var(--muted); }
+  .toast {
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+  .toast.success { border-color: var(--chart-4); background: var(--chart-4); color: var(--primary-foreground); } /* Adjust colors */
+  .toast.warn { border-color: var(--chart-1); background: var(--chart-1); color: var(--primary-foreground); } /* Adjust colors */
+  .mini-modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+  .mm-title { color: var(--foreground); }
+  .mm-text { color: var(--muted-foreground); }
+}
 
 /* KPI cards (grosor por variable) */
 .kpi-card { border-style: solid; border-width: var(--kpi-border-width, 2px) !important; }

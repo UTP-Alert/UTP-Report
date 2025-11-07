@@ -35,6 +35,15 @@ $gray-light-bg: #F3F4F6; // gray-100
 $gray-dark-bg: #4B5563; // gray-700
 $gray-light-text: #6B7280; // gray-500
 
+/* Dark Mode Variables */
+$dark-bg: #121212;
+$dark-card-bg: #1e1e1e;
+$dark-text: #e0e0e0;
+$dark-gray-text: #b0b0b0;
+$dark-border: #333;
+$dark-alert-bg: #282828;
+$dark-alert-border: #444;
+
 /* Mixins para estilos comunes */
 @mixin flex-center-y {
   display: flex;
@@ -75,6 +84,184 @@ $gray-light-text: #6B7280; // gray-500
   min-height: 100vh;
   background-color: $gray-bg;
   padding: 2rem 1rem; /* py-8 px-4 */
+}
+
+@media (prefers-color-scheme: dark) {
+  .page-container {
+    background-color: $dark-bg;
+    color: $dark-text;
+  }
+  .main-header .header-subtitle {
+    color: $dark-gray-text;
+  }
+  .read-only-alert {
+    background-color: $dark-alert-bg;
+    border-color: $dark-alert-border;
+  }
+  .sede-selector-card {
+    background-color: $dark-alert-bg;
+    border-color: $dark-border;
+  }
+  .sede-selector-card .sede-select {
+    background-color: $dark-card-bg;
+    border-color: $dark-border;
+    color: $dark-text;
+  }
+  .quick-stats-grid .stat-card {
+    background-color: $dark-card-bg;
+    border-color: $dark-border;
+  }
+  .quick-stats-grid .stat-card.stat-safe {
+    background-color: #1e3a24; /* Darker green */
+    border-color: #16a34a;
+    .stat-icon { color: #d1fae5; }
+  }
+  .quick-stats-grid .stat-card.stat-caution {
+    background-color: #3a2e1e; /* Darker yellow */
+    border-color: #d97706;
+    .stat-icon { color: #fef9c3; }
+  }
+  .quick-stats-grid .stat-card.stat-dangerous {
+    background-color: #3a1e1e; /* Darker red */
+    border-color: #dc2626;
+    .stat-icon { color: #fecaca; }
+  }
+  .quick-stats-grid .stat-card.stat-students {
+    background-color: #1e2a3a; /* Darker blue */
+    border-color: #2563eb;
+    .stat-icon { color: #bfdbfe; }
+  }
+  .controls-section .action-button {
+    background-color: $dark-card-bg;
+    border-color: $dark-border;
+    color: $dark-text;
+    &:hover {
+      background-color: #333;
+    }
+  }
+  .controls-section .update-badge {
+    border-color: $dark-border;
+    color: $dark-text;
+  }
+  .zone-cards-grid .zone-card {
+    border-color: $dark-border;
+    background-color: $dark-card-bg;
+  }
+  .zone-cards-grid .zone-card .zone-details {
+    color: $dark-gray-text;
+  }
+  .zone-cards-grid .zone-card .trend-info.trend-down {
+    color: #16a34a;
+  }
+  .zone-cards-grid .zone-card .trend-info.trend-stable {
+    color: #2563eb;
+  }
+  .zone-cards-grid .zone-card .security-level-section .progress-bar-container {
+    background-color: $dark-border;
+  }
+  .zone-cards-grid .zone-card .zone-image-wrapper {
+    background-color: #333;
+  }
+  .zone-cards-grid .zone-card .security-description-section .security-description-label {
+    color: $dark-gray-text;
+  }
+  .zone-cards-grid .zone-card .security-description-section .security-description-text {
+    background-color: $dark-alert-bg;
+    border-color: $dark-border;
+    color: $dark-text;
+  }
+  .zone-cards-grid .zone-card .report-button-wrapper {
+    border-top-color: $dark-border;
+  }
+}
+
+body.dark-mode {
+  .page-container {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+  .main-header .header-subtitle {
+    color: var(--muted-foreground);
+  }
+  .read-only-alert {
+    background-color: var(--card);
+    border-color: var(--border);
+  }
+  .sede-selector-card {
+    background-color: var(--card);
+    border-color: var(--border);
+  }
+  .sede-selector-card .sede-select {
+    background-color: var(--input-background);
+    border-color: var(--border);
+    color: var(--foreground);
+  }
+  .quick-stats-grid .stat-card {
+    background-color: var(--card);
+    border-color: var(--border);
+  }
+  .quick-stats-grid .stat-card.stat-safe {
+    background-color: var(--chart-4); /* Using chart colors for specific states */
+    border-color: var(--chart-4);
+    .stat-icon { color: var(--primary-foreground); }
+  }
+  .quick-stats-grid .stat-card.stat-caution {
+    background-color: var(--chart-1);
+    border-color: var(--chart-1);
+    .stat-icon { color: var(--primary-foreground); }
+  }
+  .quick-stats-grid .stat-card.stat-dangerous {
+    background-color: var(--destructive);
+    border-color: var(--destructive);
+    .stat-icon { color: var(--destructive-foreground); }
+  }
+  .quick-stats-grid .stat-card.stat-students {
+    background-color: var(--chart-3);
+    border-color: var(--chart-3);
+    .stat-icon { color: var(--primary-foreground); }
+  }
+  .controls-section .action-button {
+    background-color: var(--card);
+    border-color: var(--border);
+    color: var(--foreground);
+    &:hover {
+      background-color: var(--muted);
+    }
+  }
+  .controls-section .update-badge {
+    border-color: var(--border);
+    color: var(--foreground);
+  }
+  .zone-cards-grid .zone-card {
+    border-color: var(--border);
+    background-color: var(--card);
+  }
+  .zone-cards-grid .zone-card .zone-details {
+    color: var(--muted-foreground);
+  }
+  .zone-cards-grid .zone-card .trend-info.trend-down {
+    color: var(--chart-4);
+  }
+  .zone-cards-grid .zone-card .trend-info.trend-stable {
+    color: var(--chart-3);
+  }
+  .zone-cards-grid .zone-card .security-level-section .progress-bar-container {
+    background-color: var(--muted);
+  }
+  .zone-cards-grid .zone-card .zone-image-wrapper {
+    background-color: var(--muted);
+  }
+  .zone-cards-grid .zone-card .security-description-section .security-description-label {
+    color: var(--muted-foreground);
+  }
+  .zone-cards-grid .zone-card .security-description-section .security-description-text {
+    background-color: var(--input-background);
+    border-color: var(--border);
+    color: var(--foreground);
+  }
+  .zone-cards-grid .zone-card .report-button-wrapper {
+    border-top-color: var(--border);
+  }
 }
 
 .content-wrapper {

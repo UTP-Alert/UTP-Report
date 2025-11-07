@@ -4,9 +4,6 @@ html, body { height: 100%; }
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 body { margin:0; font-family: 'Poppins', 'Inter', 'Segoe UI', Roboto, system-ui, Arial, sans-serif; background:#ffffff; -webkit-font-smoothing: antialiased; }
-/* Compensación por navbar fixed-top: solo cuando el navbar está visible */
-body.with-fixed-navbar { padding-top: 72px; }
-@media (max-width: 992px) { body.with-fixed-navbar { padding-top: 64px; } }
 img, svg { display:block; max-width:100%; }
 button { font: inherit; }
 input, button { outline: none; }
@@ -60,19 +57,138 @@ input, button { outline: none; }
   --sidebar-border: oklch(0.922 0 0);    /* ≈ #EBEBEB */
 }
 
+body.dark-mode {
+  --primary: #FF395C;
+  --primary-foreground: #ffffff;
+  --secondary: #ffffff;
+  --secondary-foreground: #000000;
+
+  --background: oklch(0.09 0 0); /* Fondo oscuro casi negro */
+  --card: oklch(0.12 0 0);      /* Tarjetas un poco más claras que el fondo */
+  --popover: oklch(0.12 0 0);
+  --foreground: oklch(0.98 0 0); /* Texto principal blanco */
+
+  --muted: oklch(0.15 0 0);     /* Gris oscuro para fondos sutiles */
+  --muted-foreground: oklch(0.6 0 0); /* Gris medio claro para texto secundario */
+  --accent: oklch(0.18 0 0);    /* Gris oscuro para elementos destacados */
+  --accent-foreground: oklch(0.98 0 0); /* Blanco para texto en accent */
+
+  --destructive: #FF395C;
+  --destructive-foreground: #ffffff;
+
+  --input: transparent;
+  --input-background: oklch(0.15 0 0); /* Fondo oscuro para inputs */
+  --border: rgba(255, 255, 255, 0.1); /* Bordes sutiles con 10% opacidad */
+  --switch-background: oklch(0.3 0 0); /* Gris oscuro para switches */
+  --ring: oklch(0.4 0 0);       /* Gris para focus outline */
+
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+
+  --sidebar: oklch(0.12 0 0);           /* Sidebar oscuro */
+  --sidebar-foreground: oklch(0.98 0 0); /* Texto blanco */
+  --sidebar-primary: #FF395C;            /* Rojo principal */
+  --sidebar-accent: oklch(0.15 0 0);     /* Gris oscuro */
+  --sidebar-border: oklch(0.2 0 0);      /* Borde más oscuro */
+}
+
+/* Reset for dark mode specific elements */
+body.dark-mode .navbar-dark {
+  --bs-navbar-color: var(--foreground);
+  --bs-navbar-hover-color: var(--primary);
+  --bs-navbar-active-color: var(--primary);
+  --bs-navbar-brand-color: var(--foreground);
+  --bs-navbar-brand-hover-color: var(--primary);
+  --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  --bs-navbar-toggler-border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .bg-black {
+  background-color: var(--card) !important;
+}
+
+body.dark-mode .utp-navbar .shield {
+  stroke: var(--foreground);
+}
+
+body.dark-mode .utp-navbar .brand-text {
+  color: var(--foreground);
+}
+
+body.dark-mode .utp-navbar .nav-link {
+  color: var(--foreground);
+}
+
+body.dark-mode .utp-navbar .nav-link.active {
+  color: var(--primary);
+}
+
+body.dark-mode .utp-navbar .user-name {
+  color: var(--foreground);
+}
+
+body.dark-mode .utp-navbar .user-status .label {
+  color: var(--foreground);
+}
+
+body.dark-mode .utp-navbar .logout-link {
+  color: var(--foreground);
+}
+
+body.dark-mode .utp-navbar .report-cta {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+body.dark-mode .utp-navbar .btn-outline-secondary {
+  border-color: var(--border);
+  color: var(--foreground);
+}
+
+body.dark-mode .utp-navbar .btn-outline-secondary:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+body.dark-mode .mobile-drawer {
+  background-color: var(--card);
+}
+
+body.dark-mode .mobile-drawer .drawer-header .navbar-brand .brand-text {
+  color: var(--foreground);
+}
+
+body.dark-mode .mobile-drawer .drawer-header .btn-close {
+  filter: invert(1);
+}
+
+body.dark-mode .mobile-drawer .nav-link {
+  color: var(--foreground);
+}
+
+body.dark-mode .mobile-drawer .nav-link.active {
+  color: var(--primary);
+}
+
 /* Styles for Resueltos cards (Admin) */
 .resueltos-header { display:flex; align-items:center; gap:12px; }
 .resueltos-list .card { border-radius:12px; overflow:hidden; }
 .resueltos-list .card.border-l-green-500 { border-left-width:4px; border-left-style:solid; border-left-color:#10b981; background:#ecfdf5; }
+body.dark-mode .resueltos-list .card.border-l-green-500 { background:#1a2e05; } /* Dark mode for specific card */
 .resueltos-list .card .card-content { padding:18px }
 .resueltos-list .meta-row { color:#475569; font-size:0.95rem }
+body.dark-mode .resueltos-list .meta-row { color:var(--muted-foreground); }
 .resueltos-list .badge.priority { background:#e6e7eb; color:#374151; padding:6px 10px; border-radius:8px; font-weight:600 }
+body.dark-mode .resueltos-list .badge.priority { background:var(--muted); color:var(--muted-foreground); }
 .resueltos-list .badge.priority.low { background:#3b82f6; color:#fff }
 .resueltos-list .badge.priority.medium { background:#f59e0b; color:#fff }
 .resueltos-list .badge.priority.high { background:#ef4444; color:#fff }
 .resueltos-list .badge.resuelto { background:#10b981; color:#fff; padding:6px 10px; border-radius:8px }
 .resueltos-list .card .parte-box { background:transparent; border:none }
 .resueltos-list .card p { color:#0f172a }
+body.dark-mode .resueltos-list .card p { color:var(--foreground); }
 .resueltos-list .card .actions { display:flex; gap:10px }
 .resueltos-list .card .actions .button { padding:8px 12px; border-radius:8px }
-

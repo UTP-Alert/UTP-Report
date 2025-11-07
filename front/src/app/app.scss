@@ -3,3 +3,13 @@
 	 display: flex;
 	 flex-direction: column;
  }
+
+ .app-shell.with-navbar {
+   margin-top: 72px; /* Default margin-top for larger screens, matching navbar height */
+ }
+
+ @media (max-width: 991.98px) { /* Adjust for smaller screens */
+   .app-shell.with-navbar {
+     margin-top: 64px; /* Margin-top for smaller screens, matching navbar height */
+   }
+ }

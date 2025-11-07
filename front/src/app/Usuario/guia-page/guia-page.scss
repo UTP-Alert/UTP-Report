@@ -29,12 +29,289 @@ $white-color: var(--background);
 $black-color: var(--foreground);
 
 .guia-page-container {
-  background-color: $gray-50; // bg-gray-50
+  background-color: var(--muted);
   padding-top: 32px; // py-8
   padding-bottom: 32px; // py-8
   padding-left: 16px; // px-4
   padding-right: 16px; // px-4
   min-height: 100vh; // min-h-screen
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--background);
+    .header {
+      .icon-title h1 {
+        color: var(--foreground);
+      }
+      p {
+        color: var(--muted-foreground);
+      }
+    }
+    .tutorial-grid .card {
+      background-color: var(--card);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      &:hover {
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+      }
+      .card-title {
+        color: var(--foreground);
+      }
+      .card-description {
+        color: var(--muted-foreground);
+      }
+      &.tour-card {
+        border-color: var(--border);
+      }
+      &.report-card {
+        border-color: var(--border);
+      }
+    }
+    .emergency-contact-card {
+      border-color: var(--border);
+      background-color: var(--card);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      .card-title {
+        color: var(--destructive);
+      }
+      .card-description {
+        color: var(--destructive);
+      }
+      .btn-emergency.campus-security {
+        border-color: var(--destructive);
+        color: var(--destructive);
+        &:hover {
+          background-color: rgba(var(--destructive), 0.1);
+        }
+        .btn-icon {
+          color: var(--destructive);
+        }
+      }
+    }
+    .faq-card {
+      background-color: var(--card);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      border-color: var(--border);
+      .card-title {
+        color: var(--foreground);
+      }
+      .card-description {
+        color: var(--muted-foreground);
+      }
+      .accordion-item {
+        border-bottom-color: var(--border);
+        .accordion-trigger {
+          background-color: var(--muted);
+          color: var(--foreground);
+          &:hover {
+            background-color: var(--accent);
+          }
+        }
+        .accordion-content {
+          background-color: var(--card);
+          color: var(--muted-foreground);
+        }
+      }
+    }
+    .modal {
+      --bs-modal-bg: #{var(--card)};
+      --bs-modal-box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+    .modal-header {
+      .modal-title {
+        color: #{var(--foreground)};
+      }
+      .tutorial-badge {
+        border-color: #{var(--border)};
+        color: #{var(--muted-foreground)};
+      }
+      .tutorial-step-description {
+        color: #{var(--muted-foreground)} !important;
+      }
+    }
+    .modal-body {
+      .tutorial-progress-text {
+        color: #{var(--muted-foreground)};
+      }
+      .tutorial-h3-title {
+        color: #{var(--foreground)};
+      }
+      .tutorial-description {
+        color: #{var(--muted-foreground)};
+      }
+      .tutorial-option-title {
+        color: #{var(--foreground)};
+      }
+      .tutorial-option-description {
+        color: #{var(--muted-foreground)};
+      }
+      .tutorial-h4-title {
+        color: #{var(--foreground)};
+      }
+      .tutorial-list-text {
+        color: #{var(--muted-foreground)};
+      }
+      .tutorial-footer-text {
+        color: #{var(--muted-foreground)};
+      }
+    }
+    .progress {
+      background-color: #{var(--border)};
+    }
+    .step-indicator-bs {
+      background-color: #{var(--border)};
+    }
+    .btn-outline-secondary {
+      border-color: #{var(--border)} !important;
+      color: #{var(--foreground)} !important;
+      &:hover {
+        background-color: #{var(--muted)} !important;
+      }
+    }
+    .btn-link {
+      color: #{var(--muted-foreground)} !important;
+      &:hover {
+        color: #{var(--foreground)} !important;
+      }
+    }
+  }
+}
+
+body.dark-mode .guia-page-container {
+  background-color: var(--background);
+  .header {
+    .icon-title h1 {
+      color: var(--foreground);
+    }
+    p {
+      color: var(--muted-foreground);
+    }
+  }
+  .tutorial-grid .card {
+    background-color: var(--card);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    &:hover {
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+    .card-title {
+      color: var(--foreground);
+    }
+    .card-description {
+      color: var(--muted-foreground);
+    }
+    &.tour-card {
+      border-color: var(--border);
+    }
+    &.report-card {
+      border-color: var(--border);
+    }
+  }
+  .emergency-contact-card {
+    border-color: var(--border);
+    background-color: var(--card);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    .card-title {
+      color: var(--destructive);
+    }
+    .card-description {
+      color: var(--destructive);
+    }
+    .btn-emergency.campus-security {
+      border-color: var(--destructive);
+      color: var(--destructive);
+      &:hover {
+        background-color: rgba(var(--destructive), 0.1);
+      }
+      .btn-icon {
+        color: var(--destructive);
+      }
+    }
+  }
+  .faq-card {
+    background-color: var(--card);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-color: var(--border);
+    .card-title {
+      color: var(--foreground);
+    }
+    .card-description {
+      color: var(--muted-foreground);
+    }
+    .accordion-item {
+      border-bottom-color: var(--border);
+      .accordion-trigger {
+        background-color: var(--muted);
+        color: var(--foreground);
+        &:hover {
+          background-color: var(--accent);
+        }
+      }
+      .accordion-content {
+        background-color: var(--card);
+        color: var(--muted-foreground);
+      }
+    }
+  }
+  .modal {
+    --bs-modal-bg: #{var(--card)};
+    --bs-modal-box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  }
+  .modal-header {
+    .modal-title {
+      color: #{var(--foreground)};
+    }
+    .tutorial-badge {
+      border-color: #{var(--border)};
+      color: #{var(--muted-foreground)};
+    }
+    .tutorial-step-description {
+      color: #{var(--muted-foreground)} !important;
+    }
+  }
+  .modal-body {
+    .tutorial-progress-text {
+      color: #{var(--muted-foreground)};
+    }
+    .tutorial-h3-title {
+      color: #{var(--foreground)};
+    }
+    .tutorial-description {
+      color: #{var(--muted-foreground)};
+    }
+    .tutorial-option-title {
+      color: #{var(--foreground)};
+    }
+    .tutorial-option-description {
+      color: #{var(--muted-foreground)};
+    }
+    .tutorial-h4-title {
+      color: #{var(--foreground)};
+    }
+    .tutorial-list-text {
+      color: #{var(--muted-foreground)};
+    }
+    .tutorial-footer-text {
+      color: #{var(--muted-foreground)};
+    }
+  }
+  .progress {
+    background-color: #{var(--border)};
+  }
+  .step-indicator-bs {
+    background-color: #{var(--border)};
+  }
+  .btn-outline-secondary {
+    border-color: #{var(--border)} !important;
+    color: #{var(--foreground)} !important;
+    &:hover {
+      background-color: #{var(--muted)} !important;
+    }
+  }
+  .btn-link {
+    color: #{var(--muted-foreground)} !important;
+    &:hover {
+      color: #{var(--foreground)} !important;
+    }
+  }
+}
 
   .content-wrapper {
     max-width: 1152px; // max-w-6xl
@@ -341,7 +618,7 @@ $black-color: var(--foreground);
       }
     }
   }
-}
+
 
 /* MODAL PRINCIPAL (Bootstrap Overrides) */
 .modal {

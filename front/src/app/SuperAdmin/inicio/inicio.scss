@@ -130,6 +130,7 @@
   margin: 0;
   padding: 0;
   display: flex; /* distribución en línea */
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
   justify-content: space-between; /* ocupa todo el ancho con espacios */
   align-items: center;
   gap: .75rem;
@@ -183,6 +184,95 @@
   padding: 1.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow-x: auto; /* Permite el scroll horizontal si el contenido es muy ancho */
+}
+
+/* Responsive adjustments for tabs */
+@media (max-width: 991.98px) { /* Bootstrap's lg breakpoint is 992px */
+  .navigation-tabs ul {
+    flex-direction: column; /* Apila las pestañas verticalmente */
+    align-items: stretch; /* Estira los elementos para ocupar el ancho disponible */
+    gap: 0.5rem; /* Reduce el espacio entre pestañas apiladas */
+  }
+
+  .navigation-tabs a {
+    width: 100%; /* Ocupa todo el ancho disponible */
+    justify-content: flex-start; /* Alinea el contenido a la izquierda */
+    padding: .5rem .75rem; /* Ajusta el padding */
+    font-size: .95rem; /* Ajusta el tamaño de la fuente */
+  }
+
+  .summary-cards {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+  }
+}
+
+@media (max-width: 767.98px) { /* Bootstrap's md breakpoint is 768px */
+  .dashboard-content {
+    padding: 1rem; /* Reduce el padding general en pantallas muy pequeñas */
+  }
+
+  .panel-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .panel-header p {
+    font-size: .85rem;
+  }
+
+  .summary-section h2 {
+    font-size: 1.25rem;
+  }
+
+  .summary-cards .card {
+    flex-direction: column; /* Apila el icono y el texto en tarjetas de resumen */
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .summary-cards .card .metric-value {
+    font-size: 1.2rem;
+  }
+
+  .summary-cards .card .metric-label {
+    font-size: .8rem;
+  }
+}
+
+@media (max-width: 575.98px) { /* Extra small devices (e.g., phones) */
+  .dashboard-content {
+    padding: 0.75rem; /* Even smaller padding for tiny screens */
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .panel-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .panel-header p {
+    font-size: 0.8rem;
+  }
+
+  .summary-section h2 {
+    font-size: 1.1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .navigation-tabs ul {
+    gap: 0.25rem; /* Even less space between stacked tabs */
+  }
+
+  .navigation-tabs a {
+    padding: .4rem .6rem; /* Adjust padding for very small tabs */
+    font-size: .85rem; /* Smaller font size for tabs */
+  }
 }
 
 .user-management-section .section-header {

@@ -247,3 +247,154 @@
 .zone-edit .form-wide textarea { min-height:80px }
 .zone-edit .edit-actions { display:flex; gap:8px; margin-top:10px }
 
+@media (max-width: 767.98px) { /* Medium devices (tablets) */
+  .zone-edit .zone-edit-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .zone-edit .edit-name {
+    width: 100%;
+  }
+
+  .zone-edit .form-grid.edit-grid {
+    grid-template-columns: 1fr; /* Stack columns in edit form */
+  }
+
+  .zone-edit .edit-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .zone-edit .edit-actions button {
+    width: 100%;
+  }
+
+  .inputs {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sede-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .sede-select {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .select-box {
+    width: 100%;
+  }
+
+  .sede-top-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-add-zone {
+    width: 100%;
+  }
+
+  .stats-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .detail-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .detail-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) { /* Extra small devices (phones) */
+  .sedes {
+    padding: 1rem;
+  }
+
+  .inputs input,
+  .inputs .btn-add {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .sede-select label {
+    font-size: 0.9rem;
+  }
+
+  .select-box select {
+    font-size: 0.9rem;
+  }
+
+  .btn-add-zone {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .stat-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .stat-left {
+    align-items: center;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  .detail-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .zone-card {
+    padding: 10px;
+  }
+
+  .zone-header h5 {
+    font-size: 1rem;
+  }
+
+  .zone-badges .badge.status {
+    font-size: 0.7rem;
+    padding: 4px 6px;
+  }
+
+  .zone-stats {
+    font-size: 0.8rem;
+    gap: 10px;
+  }
+
+  .progress-label {
+    font-size: 0.8rem;
+  }
+
+  .percent {
+    font-size: 0.9rem;
+  }
+
+  .no-image-text {
+    font-size: 0.85rem;
+  }
+
+  .info-box .desc {
+    font-size: 0.85rem;
+  }
+}

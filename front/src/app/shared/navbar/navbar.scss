@@ -2,6 +2,7 @@
   /* Base */
   background: #000 !important;
 
+
   /* Marca */
   .navbar-brand {
     color: #fff;
@@ -177,15 +178,277 @@
       flex: 1 1 auto;
     }
   }
+
+  /* Adjustments for screens between 992px and 1200px (medium-large desktops) */
+  @media (min-width: 992px) and (max-width: 1199.98px) {
+    .nav-link {
+      font-size: .85rem; /* Slightly smaller font for nav links */
+      padding: .3rem .6rem;
+      gap: .3rem;
+    }
+
+    .nav-link .icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    .user-name, .user-status {
+      font-size: .8rem; /* Smaller user info */
+      padding: .3rem .4rem;
+      gap: .25rem;
+    }
+
+    .report-cta {
+      padding: .3rem .6rem; /* Smaller CTA button */
+      font-size: .85rem;
+      gap: .3rem;
+    }
+
+    .report-cta .icon {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  /* Responsive adjustments for smaller screens (e.g., tablets, phones) */
+  @media (max-width: 991.98px) { /* Bootstrap's lg breakpoint */
+    .navbar-brand {
+      font-size: 1.1rem; /* Slightly smaller brand text */
+    }
+    .navbar-brand .shield {
+      width: 20px;
+      height: 20px;
+    }
+    .navbar-toggler {
+      padding: .25rem .5rem; /* Smaller toggler padding */
+      font-size: 1rem;
+    }
+    .navbar-toggler-icon {
+      width: 1.2em;
+      height: 1.2em;
+    }
+    .report-cta {
+      padding: .3rem .6rem; /* Smaller CTA button */
+      font-size: .85rem;
+      gap: .3rem;
+    }
+    .report-cta .icon {
+      width: 16px;
+      height: 16px;
+    }
+    .user-name, .user-status {
+      font-size: .8rem; /* Smaller user info */
+      padding: .3rem .4rem;
+      gap: .25rem;
+    }
+    .user-status .dot {
+      width: 7px;
+      height: 7px;
+    }
+    .user-status .label {
+      font-size: .8rem;
+    }
+  }
+
+  @media (max-width: 767.98px) { /* Bootstrap's md breakpoint */
+    .navbar-brand {
+      font-size: 1rem; /* Even smaller brand text */
+    }
+    .navbar-brand .shield {
+      width: 18px;
+      height: 18px;
+    }
+    .report-cta {
+      padding: .25rem .5rem; /* Further smaller CTA button */
+      font-size: .8rem;
+      gap: .25rem;
+    }
+    .report-cta .icon {
+      width: 14px;
+      height: 14px;
+    }
+    .user-name, .user-status {
+      font-size: .75rem; /* Further smaller user info */
+      padding: .25rem .3rem;
+    }
+    .user-status .dot {
+      width: 6px;
+      height: 6px;
+    }
+    .user-status .label {
+      font-size: .75rem;
+    }
+  }
+
+  @media (max-width: 575.98px) { /* Bootstrap's sm breakpoint */
+    .navbar-brand {
+      font-size: 0.9rem; /* Smallest brand text */
+    }
+    .navbar-brand .shield {
+      width: 16px;
+      height: 16px;
+    }
+    .report-cta {
+      padding: .2rem .4rem; /* Smallest CTA button */
+      font-size: .75rem;
+      gap: .2rem;
+    }
+    .report-cta .icon {
+      width: 12px;
+      height: 12px;
+    }
+    .user-name, .user-status {
+      display: none; /* Hide user name and status on very small screens if space is tight */
+    }
+    .left-nav .nav-item .navbar-text.user-name {
+      margin-left: 0;
+    }
+  }
+}
+
+/* Mobile Drawer */
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px; /* Ancho del drawer */
+  height: 100%;
+  background-color: #000; /* Fondo oscuro como el navbar */
+  color: #fff;
+  transform: translateX(-100%); /* Oculto por defecto */
+  transition: transform 0.3s ease-in-out;
+  z-index: 1050; /* Por encima del backdrop y navbar */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+
+}
+
+.mobile-drawer.open {
+  transform: translateX(0); /* Visible cuando está abierto */
+}
+
+.mobile-drawer .drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}
+
+.mobile-drawer .navbar-brand {
+  color: #fff;
+  font-size: 1.25rem;
+}
+
+.mobile-drawer .btn-close {
+  background-color: transparent;
+  border: 0;
+  font-size: 1.5rem;
+  color: #fff;
+  opacity: 0.7;
+  padding: 0;
+}
+
+.mobile-drawer .btn-close:hover {
+  opacity: 1;
+}
+
+.mobile-drawer .drawer-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* Para que ocupe el espacio restante */
+  overflow-y: auto; /* Si hay muchos elementos, que se pueda hacer scroll */
+}
+
+.mobile-drawer .drawer-nav .nav-item {
+  margin-bottom: 0.5rem;
+}
+
+.mobile-drawer .drawer-nav .nav-link {
+  color: #fff;
+  opacity: .9;
+  padding: .75rem 1rem;
+  border-radius: .5rem;
+  transition: background-color .15s ease, color .15s ease;
+  display: flex; /* Usar flex para alinear icono y texto */
+  align-items: center;
+  gap: .75rem; /* Espacio entre icono y texto */
+  font-size: 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mobile-drawer .drawer-nav .nav-link:hover,
+.mobile-drawer .drawer-nav .nav-link:focus {
+  color: #fff;
+  opacity: 1;
+  background-color: rgba(128,128,128,.2);
+}
+
+.mobile-drawer .drawer-nav .nav-link.active {
+  color: #fff;
+  opacity: 1;
+  background-color: #ff3252;
+}
+
+.mobile-drawer .drawer-nav .icon {
+  width: 20px; /* Ajustar tamaño de icono para el drawer */
+  height: 20px;
+}
+
+.mobile-drawer .drawer-nav .navbar-text.user-name,
+.mobile-drawer .drawer-nav .user-status {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .75rem 1rem;
+  font-size: 1rem;
+  background-color: rgba(128,128,128,.2);
+  border-radius: .5rem;
+  margin-top: .5rem;
+}
+
+.mobile-drawer .drawer-nav .user-status {
+  margin-left: 0;
+}
+
+.mobile-drawer .drawer-nav .report-cta {
+  width: 100%;
+  padding: .75rem 1rem;
+  font-size: 1rem;
+}
+
+/* Backdrop */
+.mobile-drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+  z-index: 1040; /* Por debajo del drawer, por encima del contenido */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+
+}
+
+.mobile-drawer-backdrop.show {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Evitar que el contenido quede oculto bajo el navbar fijo */
-body {
+body.with-fixed-navbar {
   padding-top: 72px; /* altura extra para navbar con píldoras e iconos */
 }
 
 @media (max-width: 992px) {
-  body {
+  body.with-fixed-navbar {
     padding-top: 64px; /* navbar compacto en móviles */
   }
 }

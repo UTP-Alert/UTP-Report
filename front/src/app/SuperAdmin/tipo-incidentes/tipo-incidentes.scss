@@ -19,8 +19,139 @@
         font-size: 1.5rem;
         color: #2563eb;
         margin-right: 0.3rem;
-      }
-    }
+  }
+}
+
+@media (max-width: 767.98px) { /* Medium devices (tablets) */
+  .incident-types {
+    padding: 1rem;
+  }
+
+  .form-card {
+    padding: 1rem;
+  }
+
+  .form-card h2 {
+    font-size: 1.1rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .form-row input,
+  .form-row select,
+  .form-row button {
+    width: 100%;
+  }
+
+  .existing-types {
+    padding: 1rem;
+  }
+
+  .existing-types h3 {
+    font-size: 1rem;
+  }
+
+  .incident-list {
+    grid-template-columns: 1fr; /* Single column layout */
+  }
+
+  .incident-card {
+    padding: 0.8rem 1rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .card-header h4 {
+    font-size: 1rem;
+  }
+
+  .card-header p {
+    font-size: 0.8rem;
+  }
+
+  .card-header .status {
+    align-self: flex-end; /* Align status to the right when stacked */
+  }
+
+  .card-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .card-actions a {
+    width: 100%;
+    text-align: center;
+    padding: 0.4rem 0;
+    border: 1px solid #e2e8f0; /* Add border for button-like appearance */
+    border-radius: 0.4rem;
+  }
+
+  .card-actions a.edit {
+    background: #e0f2fe; /* Light blue background */
+    color: #2563eb;
+    border-color: #93c5fd;
+  }
+
+  .card-actions a.delete {
+    background: #fee2e2; /* Light red background */
+    color: #ef4444;
+    border-color: #fecaca;
+  }
+}
+
+@media (max-width: 575.98px) { /* Extra small devices (phones) */
+  .incident-types {
+    padding: 0.75rem;
+  }
+
+  .form-card h2 {
+    font-size: 1rem;
+  }
+
+  .form-card .plus {
+    font-size: 1.2rem;
+  }
+
+  .form-row input,
+  .form-row select,
+  .form-row button {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .existing-types h3 {
+    font-size: 0.9rem;
+  }
+
+  .incident-card {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .card-header h4 {
+    font-size: 0.9rem;
+  }
+
+  .card-header p {
+    font-size: 0.75rem;
+  }
+
+  .card-header .status {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .card-actions a {
+    font-size: 0.75rem;
+    padding: 0.3rem 0;
+  }
+}
 
     .form-row {
       display: flex;

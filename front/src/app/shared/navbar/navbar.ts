@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal, HostListener, ElementRef } from '@angular/core';
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { ROLES } from '../../constants/roles';
 import { PageConfigService, PageKey } from '../../services/page-config.service';
 import { TourService } from '../tour/tour.service';
 import { TourComponent } from '../tour/tour.component';
+import { DarkModeService } from '../../services/dark-mode';
 
 @Component({
   selector: 'app-navbar',
@@ -18,16 +19,18 @@ import { TourComponent } from '../tour/tour.component';
 })
 export class NavbarComponent {
   private router = inject(Router);
+  private elementRef = inject(ElementRef); // Inject ElementRef
   auth = inject(AuthService);
   perfilSrv = inject(PerfilService);
   pageCfg = inject(PageConfigService);
-  // Tour service inyectado como campo
-  tour = inject(TourService);
+  tour = inject(TourService); // Tour service inyectado como campo
+  darkModeService = inject(DarkModeService); // Inject DarkModeService
 
   // Estado público requerido
   userRole = signal<string>('');
   userName = signal<string>('');
   currentUrl = signal<string>('');
+  isDrawerOpen = signal<boolean>(false); // State for mobile drawer
 
   // Derivados
   isAuthenticated = computed(() => this.auth.isAuthenticated());
@@ -87,17 +90,24 @@ export class NavbarComponent {
     return 'bi-person-badge';
   });
 
-  // Mostrar navbar solo si está autenticado
-  showNavbar = computed(() => this.isAuthenticated() && !this.isLoginRoute());
+  // Mostrar navbar solo si está autenticado y no es una ruta de login
+  showNavbar = computed(() => {
+    if (this.isLoginRoute()) {
+      return false;
+    }
+    return this.isAuthenticated();
+  });
 
-  constructor(){
+  constructor() {
     this.tour = inject(TourService);
     this.auth.loadFromStorage();
     this.perfilSrv.cargarPerfil();
+
     // Sincronizar la URL actual para reactividad
     this.currentUrl.set(this.router.url || '');
-    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((e: any) => {
+    this.router.events.pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd)).subscribe((e: NavigationEnd) => {
       this.currentUrl.set(e.urlAfterRedirects || e.url || '');
+      this.closeDrawer(); // Close drawer on navigation
     });
     // Rellenar nombre + rol en cuanto haya perfil o roles
     effect(() => {
@@ -118,6 +128,18 @@ export class NavbarComponent {
       if (!body) return;
       if (visible) body.classList.add('with-fixed-navbar');
       else body.classList.remove('with-fixed-navbar');
+    });
+
+    // Debugging navbar visibility
+    effect(() => {
+      console.log('Navbar Debug:', {
+        isAuthenticated: this.isAuthenticated(),
+        isLoginRoute: this.isLoginRoute(),
+        showNavbar: this.showNavbar(),
+        currentUrl: this.currentUrl(),
+        isDrawerOpen: this.isDrawerOpen(),
+        darkMode: this.darkModeService.darkMode()
+      });
     });
   }
 
@@ -217,14 +239,25 @@ export class NavbarComponent {
     if (this.isSuperAdmin()) this.router.navigate(['/superadmin','reportes-sensibles']);
   }
 
-openGuide(){
+openGuide() {
   if (this.isUsuario() || this.isAdminAsUser()) {
     this.router.navigate(['/usuario', 'guia-page']);
   }
 }
 
+  toggleDrawer() {
+    this.isDrawerOpen.update(val => !val);
+  }
 
-  openNotifications(){ /* TODO: panel de notificaciones */ }
-  reportar(){ /* TODO: modal de reporte */ }
-  logout(){ this.auth.logout(); }
+  closeDrawer() {
+    this.isDrawerOpen.set(false);
+  }
+
+  openNotifications() { /* TODO: panel de notificaciones */ }
+  reportar() { /* TODO: modal de reporte */ }
+  logout() { this.auth.logout(); }
+
+  toggleDarkMode() {
+    this.darkModeService.toggleDarkMode();
+  }
 }
