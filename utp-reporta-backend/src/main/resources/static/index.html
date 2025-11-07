@@ -23,10 +23,14 @@
             });
         }
 
-        function showMessage(message) {
+        function showMessage(notification) {
             var messages = document.getElementById('messages');
             var li = document.createElement('li');
-            li.appendChild(document.createTextNode('Zone: ' + message.nombre + ', Status: ' + message.estado));
+            if (notification.message) {
+                li.appendChild(document.createTextNode('Notification: ' + notification.message));
+            } else if (notification.zona) {
+                li.appendChild(document.createTextNode('Zone: ' + notification.zona.nombre + ', Status: ' + notification.zona.estado));
+            }
             messages.appendChild(li);
         }
 

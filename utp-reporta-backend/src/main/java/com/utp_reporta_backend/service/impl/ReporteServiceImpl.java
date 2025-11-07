@@ -170,18 +170,6 @@ public class ReporteServiceImpl implements ReporteService {
 
         Reporte savedReporte = reporteRepository.save(reporte);
 
-        // Update zone status based on report count
-        long reportCount = reporteRepository.countByZonaId(zonaId);
-        if (reportCount >= 1 && reportCount <= 5) {
-            zona.setEstado(EstadoZona.ZONA_SEGURA);
-        } else if (reportCount >= 6 && reportCount <= 10) {
-            zona.setEstado(EstadoZona.ZONA_PRECAUCION);
-        } else if (reportCount >= 11 && reportCount <= 15) {
-            zona.setEstado(EstadoZona.ZONA_PELIGROSA);
-        }
-        zonaRepository.save(zona);
-        notificationService.notifyZoneStatusChange(zona);
-
         // Crear la gestión inicial en estado PENDIENTE para que el reporte tenga
         // reporteGestion desde su creación
         ReporteGestionDTO createdGestionDto = null;

@@ -15,6 +15,8 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 //Entidad para representar una zona en el sistema.
 @Data
 @AllArgsConstructor
@@ -40,4 +42,8 @@ public class Zona {
     
 	// Estado lógico: activa/desactiva la zona sin borrarla físicamente
 	private boolean activo = true;
+
+	private Integer reportCount = 0;
+
+    private LocalDateTime firstReportDate;
 }
