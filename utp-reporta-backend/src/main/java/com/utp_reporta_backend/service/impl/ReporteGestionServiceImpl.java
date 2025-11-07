@@ -6,10 +6,14 @@ import com.utp_reporta_backend.enums.PrioridadReporte;
 import com.utp_reporta_backend.model.Reporte;
 import com.utp_reporta_backend.model.ReporteGestion;
 import com.utp_reporta_backend.model.Usuario;
+import com.utp_reporta_backend.model.Zona;
+import com.utp_reporta_backend.enums.EstadoZona;
 import com.utp_reporta_backend.repository.ReporteGestionRepository;
 import com.utp_reporta_backend.repository.ReporteRepository;
 import com.utp_reporta_backend.repository.UsuarioRepository;
+import com.utp_reporta_backend.repository.ZonaRepository;
 import com.utp_reporta_backend.service.IReporteGestionService;
+import com.utp_reporta_backend.service.NotificationService;
 import com.utp_reporta_backend.service.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,12 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
 
     @Autowired
     private TimeService timeService;
+
+    @Autowired
+    private ZonaRepository zonaRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public ReporteGestionDTO updateReporteGestion(Long reporteId, EstadoReporte estado, PrioridadReporte prioridad, Long seguridadId) {
@@ -69,6 +79,37 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
         }
 
         ReporteGestion savedReporteGestion = reporteGestionRepository.save(reporteGestionToSave);
+
+        if (estado == EstadoReporte.RESUELTO) {
+            Zona zona = reporte.getZona();
+            if (zona.getFirstReportDate() == null) {
+                zona.setFirstReportDate(timeService.getCurrentLocalDateTimePeru());
+                zona.setReportCount(1);
+            } else {
+                if (timeService.getCurrentLocalDateTimePeru().isAfter(zona.getFirstReportDate().plusWeeks(1))) {
+                    zona.setFirstReportDate(timeService.getCurrentLocalDateTimePeru());
+                    zona.setReportCount(1);
+                } else {
+                    zona.setReportCount(zona.getReportCount() + 1);
+                }
+            }
+
+            int reportCount = zona.getReportCount();
+            if (reportCount >= 1 && reportCount <= 5) {
+                zona.setEstado(EstadoZona.ZONA_SEGURA);
+            } else if (reportCount == 6) {
+                zona.setEstado(EstadoZona.ZONA_PRECAUCION);
+                notificationService.notifyZoneStatusChange(zona, "Esta zona ha llegado a precaución, tener cuidado");
+            } else if (reportCount >= 7 && reportCount <= 10) {
+                zona.setEstado(EstadoZona.ZONA_PRECAUCION);
+            } else if (reportCount == 11) {
+                zona.setEstado(EstadoZona.ZONA_PELIGROSA);
+                notificationService.notifyZoneStatusChange(zona, "Esta zona es peligrosa");
+            } else if (reportCount >= 12) {
+                zona.setEstado(EstadoZona.ZONA_PELIGROSA);
+            }
+            zonaRepository.save(zona);
+        }
 
         ReporteGestionDTO dto = new ReporteGestionDTO();
         dto.setId(savedReporteGestion.getId());
