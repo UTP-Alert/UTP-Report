@@ -58,6 +58,14 @@ export class ReportesAsignados {
   imageModalVisible: boolean = false;
   selectedImageSrc: string | null = null;
 
+  // Derivados para separar activos vs completados (RESUELTO)
+  get reportesActivos(): ReporteDTO[] {
+    return this.reportes.filter(r => (r.ultimoEstado || '').toLowerCase() !== 'resuelto');
+  }
+  get reportesCompletados(): ReporteDTO[] {
+    return this.reportes.filter(r => (r.ultimoEstado || '').toLowerCase() === 'resuelto');
+  }
+
   async irALaZona(reporte: ReporteDTO){
     // Show modal UI immediately and call backend to set estado = 'UBICANDO'
     // We avoid setting the global `loading` flag so the rest of the UI does not get hidden.

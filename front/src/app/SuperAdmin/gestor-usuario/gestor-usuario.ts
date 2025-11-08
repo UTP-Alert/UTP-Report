@@ -5,6 +5,7 @@ import { Sede, SedeService } from '../../services/sede.service';
 import { Zona, ZonaService } from '../../services/zona.service';
 import { HttpClient } from '@angular/common/http';
 import { UsuarioService } from '../../services/usuario.service';
+import { PerfilService } from '../../services/perfil.service';
 import { firstValueFrom } from 'rxjs';
 import { RegistroAdminDTO, RegistroDTO, RegistroSecurityDTO, UsuarioRolService } from '../../services/usuario-rol.service';
 
@@ -67,6 +68,7 @@ export class GestorUsuario implements OnInit {
     private usuarioRolService: UsuarioRolService,
     private http: HttpClient,
     private usuarioService: UsuarioService,
+    private perfil: PerfilService,
   ) {}
 
   // Lista de usuarios (cargada desde backend)
@@ -86,23 +88,48 @@ export class GestorUsuario implements OnInit {
   ];
 
   loadUsers(): void {
-    this.usuarioService.getAll().subscribe({
-      next: (lista) => {
-        this.users = (lista || []).map((u: any) => ({
-          id: u.id,
-          nombreCompleto: u.nombreCompleto || u.name || '',
-          username: u.username || '',
-          correo: u.correo || u.email || '',
-          telefono: u.telefono || '',
-          tipoUsuario: (u.tipoUsuario || (u.roles && u.roles[0]) || '').toString(),
-          sedeNombre: u.sedeNombre || '',
-          zonasNombres: u.zonasNombres || [],
-          enabled: typeof u.enabled === 'boolean' ? u.enabled : true,
-          roles: u.roles || []
-        }));
-      },
-      error: (err) => { console.error('Error cargando usuarios', err); this.users = []; }
-    });
+    const finish = (myId: number | null, myUsername: string | null) => {
+      this.usuarioService.getAll().subscribe({
+        next: (lista) => {
+          const mapped = (lista || []).map((u: any) => ({
+            id: u.id,
+            nombreCompleto: u.nombreCompleto || u.name || '',
+            username: u.username || '',
+            correo: u.correo || u.email || '',
+            telefono: u.telefono || '',
+            tipoUsuario: (u.tipoUsuario || (u.roles && u.roles[0]) || '').toString(),
+            sedeNombre: u.sedeNombre || '',
+            zonasNombres: u.zonasNombres || [],
+            enabled: typeof u.enabled === 'boolean' ? u.enabled : true,
+            roles: u.roles || []
+          }));
+          // Excluir del listado al propio usuario (superadmin) por id o, si no hay id, por username
+          const uname = (myUsername || '').toLowerCase();
+          this.users = mapped.filter(u => {
+            if (myId != null && u.id === myId) return false;
+            if (uname && (u.username || '').toLowerCase() === uname) return false;
+            return true;
+          });
+        },
+        error: (err) => { console.error('Error cargando usuarios', err); this.users = []; }
+      });
+    };
+
+    try {
+      const obs: any = (this.perfil as any).obtenerPerfil ? this.perfil.obtenerPerfil() : null;
+      if (obs) {
+        obs.subscribe({
+          next: (p: any) => finish(((p && (p.id || p.usuarioId)) ? Number(p.id || p.usuarioId) : null), (p && p.username) ? String(p.username) : null),
+          error: () => finish(null, null)
+        });
+        return;
+      }
+      // fallback por señal
+      const sig: any = (this.perfil as any).perfil ? (this.perfil as any).perfil() : null;
+      finish((sig && (sig.id || sig.usuarioId)) ? Number(sig.id || sig.usuarioId) : null, sig && sig.username ? String(sig.username) : null);
+    } catch {
+      finish(null, null);
+    }
   }
 
   ngOnInit(): void {

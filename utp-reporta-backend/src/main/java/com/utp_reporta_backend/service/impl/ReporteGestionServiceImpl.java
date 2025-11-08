@@ -82,33 +82,41 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
 
         if (estado == EstadoReporte.RESUELTO) {
             Zona zona = reporte.getZona();
+            // estado previo para decidir notificación de cambio de estado
+            EstadoZona anterior = zona.getEstado();
+
             if (zona.getFirstReportDate() == null) {
                 zona.setFirstReportDate(timeService.getCurrentLocalDateTimePeru());
                 zona.setReportCount(1);
+            } else if (timeService.getCurrentLocalDateTimePeru().isAfter(zona.getFirstReportDate().plusWeeks(1))) {
+                // reiniciar ventana semanal
+                zona.setFirstReportDate(timeService.getCurrentLocalDateTimePeru());
+                zona.setReportCount(1);
             } else {
-                if (timeService.getCurrentLocalDateTimePeru().isAfter(zona.getFirstReportDate().plusWeeks(1))) {
-                    zona.setFirstReportDate(timeService.getCurrentLocalDateTimePeru());
-                    zona.setReportCount(1);
-                } else {
-                    zona.setReportCount(zona.getReportCount() + 1);
-                }
+                zona.setReportCount(zona.getReportCount() + 1);
             }
 
             int reportCount = zona.getReportCount();
-            if (reportCount >= 1 && reportCount <= 5) {
+            if (reportCount <= 5) {
                 zona.setEstado(EstadoZona.ZONA_SEGURA);
-            } else if (reportCount == 6) {
+            } else if (reportCount <= 10) {
                 zona.setEstado(EstadoZona.ZONA_PRECAUCION);
-                notificationService.notifyZoneStatusChange(zona, "Esta zona ha llegado a precaución, tener cuidado");
-            } else if (reportCount >= 7 && reportCount <= 10) {
-                zona.setEstado(EstadoZona.ZONA_PRECAUCION);
-            } else if (reportCount == 11) {
-                zona.setEstado(EstadoZona.ZONA_PELIGROSA);
-                notificationService.notifyZoneStatusChange(zona, "Esta zona es peligrosa");
-            } else if (reportCount >= 12) {
+            } else {
                 zona.setEstado(EstadoZona.ZONA_PELIGROSA);
             }
+
             zonaRepository.save(zona);
+
+            // Notificar SOLO cuando cambia de estado y el nuevo estado es de alerta (precaución o peligrosa)
+            if (zona.getEstado() != anterior) {
+                if (zona.getEstado() == EstadoZona.ZONA_PRECAUCION || zona.getEstado() == EstadoZona.ZONA_PELIGROSA) {
+                    String msg = (zona.getEstado() == EstadoZona.ZONA_PRECAUCION)
+                            ? "Zona en precaución, mantener cuidado"
+                            : "Zona peligrosa, evitar";
+                    notificationService.notifyZoneStatusChange(zona, msg);
+                }
+                // Si vuelve a ZONA_SEGURA, no enviamos notificación al usuario final.
+            }
         }
 
         ReporteGestionDTO dto = new ReporteGestionDTO();

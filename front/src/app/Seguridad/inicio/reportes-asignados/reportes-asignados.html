@@ -8,13 +8,13 @@
 			<div class="loading">Cargando reportes...</div>
 		</ng-container>
 		<ng-template #loadedTpl>
-			<div *ngIf="reportes.length === 0" class="empty-state">
+			<div *ngIf="reportesActivos.length === 0" class="empty-state">
 				<span class="empty-state-icon material-icons">security</span>
 				<p class="empty-state-text">No hay reportes asignados</p>
 				<p class="empty-state-subtext">Cuando se le asigne un reporte, aparecerá aquí.</p>
 			</div>
 
-			<div *ngFor="let r of reportes" class="report-card">
+			<div *ngFor="let r of reportesActivos" class="report-card">
 				<div class="report-header">
 					<!-- Thumbnail removed as requested -->
 								<span class="priority-badge" [ngClass]="{'high': r.ultimaPrioridad === 'alta', 'medium': r.ultimaPrioridad === 'media', 'low': r.ultimaPrioridad === 'baja'}">
@@ -62,7 +62,7 @@
 				</div>
 				<div class="report-actions">
 					<!-- Mostrar 'Ir a la Zona' sólo si el reporte aún no está en UBICANDO/INVESTIGANDO y no está ya completado con parte policial -->
-					<button *ngIf="!((r.ultimoEstado||'').toLowerCase() === 'ubicando' || (r.ultimoEstado||'').toLowerCase() === 'investigando' || (r.mensajeSeguridad && (r.ultimoEstado||'').toLowerCase() === 'pendiente_aprobacion') || (r._isCancelled))" class="action-btn go-to-zone" (click)="irALaZona(r)">
+					<button *ngIf="!((r.ultimoEstado||'').toLowerCase() === 'ubicando' || (r.ultimoEstado||'').toLowerCase() === 'investigando' || (r.mensajeSeguridad && (r.ultimoEstado||'').toLowerCase() === 'pendiente_aprobacion') || (r._isCancelled) || (r.ultimoEstado||'').toLowerCase() === 'resuelto')" class="action-btn go-to-zone" (click)="irALaZona(r)">
 						<span class="btn-icon material-icons">near_me</span>
 						Ir a la Zona
 					</button>
@@ -74,6 +74,23 @@
 				</div>
 			</div>
 		</ng-template>
+	</div>
+</section>
+
+<!-- Reportes Completados dinámicos -->
+<section class="completed-reports" *ngIf="reportesCompletados.length > 0">
+	<div class="panel-header">
+		<span class="panel-icon material-icons">check_circle</span>
+		<h2 class="panel-title">Reportes Completados</h2>
+	</div>
+	<div class="completed-list">
+		<div class="completed-item" *ngFor="let r of reportesCompletados">
+			<div class="completed-info">
+				<span class="completed-title">{{ getTipoName(r.tipoIncidenteId) }} - {{ getZonaName(r.zonaId) }}</span>
+				<span class="completed-badge">Resuelto</span>
+			</div>
+			<div class="completed-date">Completado: {{ (r.fechaUltimaGestion || r.fechaCreacion) | date:'shortDate' }}</div>
+		</div>
 	</div>
 </section>
 

@@ -61,6 +61,33 @@ export class InicioUsuario implements OnInit {
   // Estado de Zonas Universitarias (sección solicitada)
   zonasSede: Array<(Zona & { _incidentes?: number; _status?: 'segura'|'precaucion'|'peligrosa' })> = [];
   lastRefreshLabel: string = 'Hoy';
+  private zoneStatusListenerBound = false;
+
+  // Handler para actualizaciones en tiempo real provenientes del Navbar (evento global 'zone-status-update')
+  private onZoneStatusUpdate = (ev: Event) => {
+    try {
+      const detail: any = (ev as CustomEvent).detail;
+      if (!detail || typeof detail.id !== 'number') return;
+      const idx = this.zonasSede.findIndex(z => z.id === detail.id);
+      if (idx === -1) return;
+      const current = this.zonasSede[idx];
+      const updated: Zona & { _incidentes?: number; _status?: 'segura'|'precaucion'|'peligrosa' } = {
+        ...current,
+        estado: detail.estado ?? current.estado,
+        reportCount: detail.reportCount ?? current.reportCount,
+        _incidentes: detail.reportCount ?? current.reportCount ?? current._incidentes ?? 0,
+        _status: this.mapEstadoEnum(detail.estado ?? current.estado)
+      } as any;
+      // Reemplazar inmutable para que Angular detecte cambio
+      this.zonasSede = [
+        ...this.zonasSede.slice(0, idx),
+        updated,
+        ...this.zonasSede.slice(idx + 1)
+      ];
+    } catch (e) {
+      console.warn('[InicioUsuario] Error procesando zone-status-update', e);
+    }
+  };
 
   constructor(
     private http: HttpClient,
@@ -126,6 +153,12 @@ export class InicioUsuario implements OnInit {
 
     // Cargar sólo la sección de estado de zonas universitarias
     this.cargarEstadoZonasUniversitarias();
+
+    // Suscribir a eventos de actualización en tiempo real si aún no
+    if (!this.zoneStatusListenerBound) {
+      window.addEventListener('zone-status-update', this.onZoneStatusUpdate);
+      this.zoneStatusListenerBound = true;
+    }
   }
 
   private extractUsernameFromToken(): string | null {
@@ -174,45 +207,26 @@ export class InicioUsuario implements OnInit {
 
   private cargarZonasYConteos(sedeId: number | null) {
     if (sedeId == null) { this.zonasSede = []; return; }
-    // 3) Obtener zonas por sede
+    // Obtener zonas por sede y usar directamente los campos expuestos por backend (estado, reportCount)
     this.zonaService.obtenerZonasPorSede(sedeId).subscribe({
       next: (zonas: Zona[]) => {
-        const mapaZonas: Record<number, Zona & { _incidentes?: number; _status?: 'segura'|'precaucion'|'peligrosa' }> = {} as any;
-        (zonas || []).forEach(z => { mapaZonas[z.id] = { ...z, _incidentes: 0, _status: 'segura' }; });
-        // 4) Obtener reportes filtrados por sede para contar incidentes reales
-        this.reporteService.getFiltered(undefined, sedeId).subscribe({
-          next: (reportes: ReporteDTO[]) => {
-            const counts: Record<number, number> = {};
-            (reportes || []).forEach(r => {
-              const zid = Number(r.zonaId);
-              if (!isNaN(zid)) counts[zid] = (counts[zid] || 0) + 1;
-            });
-            // 5) Mapear conteos y estado a cada zona
-            const resultado: Array<Zona & { _incidentes?: number; _status?: 'segura'|'precaucion'|'peligrosa' }> = [];
-            for (const z of zonas || []) {
-              const c = counts[z.id] || 0;
-              const st = this.clasificarEstadoPorConteo(c);
-              resultado.push({ ...z, _incidentes: c, _status: st });
-            }
-            this.zonasSede = resultado;
-            this.lastRefreshLabel = 'Hoy';
-          },
-          error: _ => {
-            // Si falla el conteo, mostrar solo las zonas como seguras por defecto
-            this.zonasSede = (zonas || []).map(z => ({ ...z, _incidentes: 0, _status: 'segura' as const }));
-          }
-        });
+        this.zonasSede = (zonas || []).map(z => ({
+          ...z,
+          _incidentes: z.reportCount ?? 0, // Solo incidentes RESUELTOS ya contabilizados por backend
+          _status: this.mapEstadoEnum(z.estado as any)
+        }));
+        this.lastRefreshLabel = 'Hoy';
       },
       error: _ => { this.zonasSede = []; }
     });
   }
 
-  private clasificarEstadoPorConteo(cantidad: number): 'segura'|'precaucion'|'peligrosa' {
-    // Regla solicitada: 1–5 -> segura, 6–10 -> precaución, 11–15 -> peligrosa.
-    // Asumimos 0 también como segura y >15 permanece como peligrosa.
-    if (cantidad >= 11) return 'peligrosa';
-    if (cantidad >= 6) return 'precaucion';
-    return 'segura'; // 0–5
+  // Mapea el enum del backend (ZONA_SEGURA, ZONA_PRECAUCION, ZONA_PELIGROSA) a claves internas usadas para clases CSS
+  private mapEstadoEnum(estado: string): 'segura'|'precaucion'|'peligrosa' {
+    const s = (estado || '').toUpperCase();
+    if (s.includes('PELIG')) return 'peligrosa';
+    if (s.includes('PRECAU')) return 'precaucion';
+    return 'segura';
   }
 
   // ----- Progreso por estado del reporte (para "Mis Reportes") -----
@@ -390,6 +404,10 @@ export class InicioUsuario implements OnInit {
     if (this.toastTimer) { try { clearTimeout(this.toastTimer); } catch {} }
     if (this.dialogTimer) { try { clearTimeout(this.dialogTimer); } catch {} }
     if (this.reportsRefreshTimer) { try { clearInterval(this.reportsRefreshTimer); } catch {} }
+    if (this.zoneStatusListenerBound) {
+      window.removeEventListener('zone-status-update', this.onZoneStatusUpdate);
+      this.zoneStatusListenerBound = false;
+    }
   }
 
   private checkReportesHoy(uid: number) {

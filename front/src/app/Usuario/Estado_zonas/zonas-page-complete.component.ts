@@ -27,6 +27,15 @@ export class ZonasPageCompleteComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
+    // Escuchar actualizaciones de zona provenientes del navbar (WS)
+    window.addEventListener('zone-status-update', (ev: any) => {
+      const z = ev?.detail;
+      if (!z || z.id == null) return;
+      const idx = this.zonas.findIndex(zz => zz.id === z.id);
+      if (idx >= 0) {
+        this.zonas[idx] = { ...this.zonas[idx], estado: z.estado, reportCount: z.reportCount } as any;
+      }
+    });
     // Cargar sedes y perfil en paralelo y luego resolver la sede del alumno por nombre
     this.sedeService.obtenerSedes().subscribe({
       next: (sedes) => {
