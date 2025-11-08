@@ -24,12 +24,12 @@ public class ZonaServiceImpl implements ZonaService{
 	
 	private final ZonaRepository zonaRepository;
 	private final SedeRepository sedeRepository;
-	
+    
 	@Override
 	public List<ZonaDTO> obtenerTodasLasZonas() {
 		return obtenerTodasLasZonas(false);
 	}
-
+    
 	@Override
 	public List<ZonaDTO> obtenerTodasLasZonas(boolean includeInactive) {
 		List<Zona> zonas = includeInactive ? zonaRepository.findAll() : zonaRepository.findAllByActivoTrue();
@@ -41,6 +41,8 @@ public class ZonaServiceImpl implements ZonaService{
 			dto.setFoto(zona.getFoto());
 			dto.setSedeId(zona.getSede().getId()); // Set sedeId
 			dto.setActivo(zona.isActivo());
+			dto.setEstado(zona.getEstado());
+			dto.setReportCount(zona.getReportCount());
 			return dto;
 		}).collect(Collectors.toList());
 	}
@@ -61,6 +63,8 @@ public class ZonaServiceImpl implements ZonaService{
 			dto.setFoto(zona.getFoto());
 			dto.setSedeId(zona.getSede().getId()); // Set sedeId
 			dto.setActivo(zona.isActivo());
+			dto.setEstado(zona.getEstado());
+			dto.setReportCount(zona.getReportCount());
 			return dto;
 		}).collect(Collectors.toList());
 	}
@@ -94,6 +98,9 @@ public class ZonaServiceImpl implements ZonaService{
 		savedZonaDTO.setFoto(savedZona.getFoto());
 		savedZonaDTO.setSedeId(savedZona.getSede().getId());
 		savedZonaDTO.setActivo(savedZona.isActivo());
+		savedZonaDTO.setEstado(savedZona.getEstado());
+		savedZonaDTO.setReportCount(savedZona.getReportCount());
+
 		return savedZonaDTO;
 	}
 
@@ -134,6 +141,9 @@ public class ZonaServiceImpl implements ZonaService{
 		updatedZonaDTO.setFoto(updatedZona.getFoto());
 		updatedZonaDTO.setSedeId(updatedZona.getSede().getId());
 		updatedZonaDTO.setActivo(updatedZona.isActivo());
+		updatedZonaDTO.setEstado(updatedZona.getEstado());
+		updatedZonaDTO.setReportCount(updatedZona.getReportCount());
+
 		return updatedZonaDTO;
 	}
 
@@ -147,7 +157,7 @@ public class ZonaServiceImpl implements ZonaService{
 	}
 
 	@Override
-	@Transactional
+    @Transactional
 	public ZonaDTO setActivoZona(Long id, boolean activo) {
 		Optional<Zona> zonaOptional = zonaRepository.findById(id);
 		if (!zonaOptional.isPresent()) {
@@ -163,6 +173,9 @@ public class ZonaServiceImpl implements ZonaService{
 		dto.setFoto(saved.getFoto());
 		dto.setSedeId(saved.getSede().getId());
 		dto.setActivo(saved.isActivo());
+		dto.setEstado(saved.getEstado());
+		dto.setReportCount(saved.getReportCount());
+
 		return dto;
 	}
 }

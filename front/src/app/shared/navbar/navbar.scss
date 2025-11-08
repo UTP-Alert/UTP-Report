@@ -85,6 +85,20 @@
     margin-left: .35rem;
   }
 
+  /* Dropdown flotante de notificaciones */
+  .notifications-dropdown {
+    position: absolute;
+    top: 54px; /* debajo del navbar */
+    right: 1rem;
+    z-index: 2000;
+    animation: notifFade .18s ease-out;
+  }
+
+  @keyframes notifFade {
+    from { opacity:0; transform: translateY(-6px) scale(.95); }
+    to { opacity:1; transform: translateY(0) scale(1); }
+  }
+
   .left-nav .nav-link span {
     white-space: nowrap;
   }

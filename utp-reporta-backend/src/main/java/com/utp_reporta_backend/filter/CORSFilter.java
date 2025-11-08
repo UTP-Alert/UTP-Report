@@ -13,30 +13,31 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-//Filtro para manejar las solicitudes CORS.
+// Filtro CORS ajustado: permite solo origen de frontend dev y credenciales.
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class CORSFilter implements Filter{
-// Maneja las solicitudes CORS y establece los encabezados apropiados.
+public class CORSFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
-       // Configurar los encabezados CORS 
-        response.setHeader("Access-Control-Allow-Origin", "*");
-    // incluir PATCH para permitir cambios parciales (ej. activar/desactivar)
-    response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, PATCH, OPTIONS, DELETE");
+
+        String origin = request.getHeader("Origin");
+        if (origin != null && origin.matches("^http://localhost:4200$")) {
+            response.setHeader("Access-Control-Allow-Origin", origin);
+            response.setHeader("Vary", "Origin");
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+        }
+        // Métodos permitidos
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
         response.setHeader("Access-Control-Max-Age", "3600");
-    response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, X-Requested-By");
-        // Si la solicitud es una preflight (OPTIONS), responder con OK
+        response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Content-Length, X-Requested-With, X-Requested-By");
+
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            chain.doFilter(req, res);
+            return;
         }
-		
-	
+        chain.doFilter(req, res);
 	}
-
 }

@@ -8,15 +8,26 @@ import { ROLES } from '../../constants/roles';
 import { PageConfigService, PageKey } from '../../services/page-config.service';
 import { TourService } from '../tour/tour.service';
 import { TourComponent } from '../tour/tour.component';
+import { Notificaciones } from '../../Usuario/notificaciones/notificaciones';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, NgIf, NgClass, RouterModule, TourComponent],
+  imports: [CommonModule, NgIf, NgClass, RouterModule, TourComponent, Notificaciones],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.scss']
 })
 export class NavbarComponent {
+  // Conexión WS/STOMP
+  // Nota: NO cacheamos SockJS/Stomp en campos al construir, porque los scripts CDN
+  // pueden cargarse después de bootstrap. Mejor leerlos dinámicamente al conectar.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private wsClient: any | null = null;
+  private wsConnecting = false;
+  private wsConnected = false;
+  // Audio de alerta (sonido corto embebido en base64). Se inicializa bajo demanda.
+  private alertAudio: HTMLAudioElement | null = null;
+
   private router = inject(Router);
   auth = inject(AuthService);
   perfilSrv = inject(PerfilService);
@@ -90,10 +101,52 @@ export class NavbarComponent {
   // Mostrar navbar solo si está autenticado
   showNavbar = computed(() => this.isAuthenticated() && !this.isLoginRoute());
 
+  // Notificaciones
+  showNotifs = signal(false);
+  notifications = signal<Array<{ id: number; title: string; body: string; zonaNombre?: string; estado?: string; ts: Date; read: boolean }>>([]);
+  unreadCount = computed(() => this.notifications().filter(n => !n.read).length);
+  private storageKey = 'utp_notifications';
+
   constructor(){
     this.tour = inject(TourService);
     this.auth.loadFromStorage();
     this.perfilSrv.cargarPerfil();
+
+    // Desbloquear audio al primer gesto del usuario (políticas de autoplay)
+    try {
+      document.addEventListener('click', () => {
+        try {
+          this.initAlertAudio();
+          if (this.alertAudio) {
+            const a = this.alertAudio;
+            a.muted = true;
+            a.play().then(() => {
+              a.pause();
+              a.currentTime = 0;
+              a.muted = false;
+            }).catch(() => {/* ignorar */});
+          }
+        } catch {}
+      }, { once: true, passive: true } as any);
+    } catch {}
+
+    // Cargar notificaciones persistidas (para no perderlas al refrescar)
+    try {
+      const raw = localStorage.getItem(this.storageKey);
+      if (raw) {
+        const arr = JSON.parse(raw) as any[];
+        const items = (arr || []).map(it => ({
+          id: Number(it.id) || Date.now(),
+          title: String(it.title || ''),
+          body: String(it.body || ''),
+          zonaNombre: it.zonaNombre ? String(it.zonaNombre) : undefined,
+          estado: it.estado ? String(it.estado) : undefined,
+          ts: it.ts ? new Date(it.ts) : new Date(),
+          read: Boolean(it.read)
+        }));
+        this.notifications.set(items.slice(0, 50));
+      }
+    } catch {}
     // Sincronizar la URL actual para reactividad
     this.currentUrl.set(this.router.url || '');
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((e: any) => {
@@ -119,6 +172,111 @@ export class NavbarComponent {
       if (visible) body.classList.add('with-fixed-navbar');
       else body.classList.remove('with-fixed-navbar');
     });
+
+    // Conectar WS para notificaciones cuando el usuario esté autenticado
+    effect(() => {
+      // Conectar para cualquier usuario autenticado (todos los roles) y así al iniciar sesión cargar histórico.
+      const shouldConnect = this.isAuthenticated();
+      if (shouldConnect) {
+        this.ensureWsConnected();
+      }
+    });
+
+    // Persistir notificaciones ante cualquier cambio
+    effect(() => {
+      try {
+        const items = this.notifications();
+        localStorage.setItem(this.storageKey, JSON.stringify(items));
+      } catch {}
+    });
+  }
+
+  private initAlertAudio() {
+    if (this.alertAudio) return;
+    try {
+      // WAV 8-bit mono ~0.25s beep (generado sintéticamente). Puedes reemplazar por otro.
+      const base64 =
+        'UklGRvQAAABXQVZFZm10IBAAAAABAAEAIlYAABAAAAACAAACaAgACAAACABkYXRhAAAAAP//AAD/\n' +
+        'AAD/AAAA//8AAP//AAD/AAAA//8AAP//AAD/AAAA//8AAP//AAD/AAAA//8AAP//AAD/AAAA//8A\n' +
+        'AP//AAD/AAAA//8AAP//AAD/AAAA//8AAAAA';
+      this.alertAudio = new Audio('data:audio/wav;base64,' + base64.replace(/\n/g, ''));
+      this.alertAudio.volume = 0.55; // volumen moderado
+      this.alertAudio.preload = 'auto';
+    } catch {}
+  }
+
+  private playAlertSound() {
+    try {
+      this.initAlertAudio();
+      if (!this.alertAudio) return;
+      // Clonar para permitir reproducción solapada si llegan varias seguidas
+      const a = this.alertAudio.cloneNode(true) as HTMLAudioElement;
+      void a.play().catch(() => {/* Silenciar fallo (autoplay policies) */});
+    } catch {}
+  }
+
+  // Intenta establecer la conexión STOMP; reintenta si las librerías aún no están listas
+  private ensureWsConnected(attempt = 0) {
+    if (this.wsConnected || this.wsConnecting) return;
+    const W: any = window as any;
+    if (!W || !W.SockJS || !W.Stomp) {
+      try { console.debug('[Navbar][WS] Libs not ready, attempt', attempt); } catch {}
+      // Esperar a que carguen los scripts CDN
+      if (attempt < 20) { // ~10s si el delay es 500ms
+        setTimeout(() => this.ensureWsConnected(attempt + 1), 500);
+      }
+      return;
+    }
+    try {
+      this.wsConnecting = true;
+      try { console.debug('[Navbar][WS] Connecting...'); } catch {}
+      const socket = new W.SockJS('http://localhost:8080/ws');
+      const client = W.Stomp.over(socket);
+      client.debug = () => {};
+      client.connect({}, () => {
+        try { console.info('[Navbar][WS] Connected and subscribed'); } catch {}
+        this.wsClient = client;
+        this.wsConnected = true;
+        this.wsConnecting = false;
+        client.subscribe('/topic/zone-status', (msg: any) => {
+          try {
+            const payload = JSON.parse(msg.body || '{}');
+            try { console.info('[Navbar][WS] Message received', payload); } catch {}
+            const zona = payload?.zona || {};
+            // Ignorar mensajes sin texto (silenciosos) para no saturar
+            if (payload?.message) {
+              const item = {
+                id: Date.now(),
+                title: 'Cambio de estado de zona',
+                body: payload.message,
+                zonaNombre: zona?.nombre,
+                estado: zona?.estado,
+                ts: new Date(),
+                read: false,
+              };
+              const next = [item, ...this.notifications()].slice(0, 50);
+              this.notifications.set(next);
+              // Reproducir sonido solo si rol es usuario (para no molestar a admin/seguridad) y hay interacción previa
+              if (this.isUsuario() || this.isAdminAsUser()) {
+                this.playAlertSound();
+              }
+            }
+            window.dispatchEvent(new CustomEvent('zone-status-update', { detail: zona }));
+          } catch {}
+        });
+      }, () => {
+        // onError: reintentar con backoff ligero
+        try { console.warn('[Navbar][WS] Connection error, retrying...'); } catch {}
+        this.wsConnecting = false;
+        this.wsConnected = false;
+        setTimeout(() => this.ensureWsConnected(0), 1500);
+      });
+    } catch {
+      try { console.warn('[Navbar][WS] Connect threw, retrying...', attempt); } catch {}
+      this.wsConnecting = false;
+      this.wsConnected = false;
+      setTimeout(() => this.ensureWsConnected(attempt + 1), 1000);
+    }
   }
 
   openTour(){
@@ -224,7 +382,15 @@ openGuide(){
 }
 
 
-  openNotifications(){ /* TODO: panel de notificaciones */ }
+  openNotifications(){
+    const newVal = !this.showNotifs();
+    this.showNotifs.set(newVal);
+    if (newVal) {
+      // Marcar como leídas al abrir
+      const marked = this.notifications().map(n => ({ ...n, read: true }));
+      this.notifications.set(marked);
+    }
+  }
   reportar(){ /* TODO: modal de reporte */ }
   logout(){ this.auth.logout(); }
 }

@@ -1,0 +1,17 @@
+<div class="notifications-panel">
+	<h6 class="mb-2">Notificaciones</h6>
+	<div *ngIf="!items || items.length === 0" class="text-muted small">Sin notificaciones</div>
+	<ul class="list-unstyled mb-0" *ngIf="items && items.length > 0">
+		<li *ngFor="let n of items" class="notification-item" [class.unread]="!n.read">
+			<div class="d-flex align-items-start">
+				<div class="flex-grow-1">
+					<div class="fw-semibold small" *ngIf="n.title">{{ n.title }}</div>
+					<div class="small" *ngIf="n.zonaNombre">Zona: <strong>{{ n.zonaNombre }}</strong></div>
+					<div class="small" *ngIf="n.estado">Estado: <span [class.segura]="n.estado==='ZONA_SEGURA'" [class.precaucion]="n.estado==='ZONA_PRECAUCION'" [class.peligrosa]="n.estado==='ZONA_PELIGROSA'">{{ n.estado }}</span></div>
+					<div class="small" *ngIf="n.body">{{ n.body }}</div>
+					<div class="timestamp small text-muted" *ngIf="n.ts">{{ n.ts | date:'shortTime' }}</div>
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>

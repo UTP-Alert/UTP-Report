@@ -1,0 +1,54 @@
+// Panel de notificaciones estilo tarjeta flotante
+.notifications-panel {
+	background: #fff;
+	border: 2px solid #FF395C;
+	border-radius: 20px;
+	padding: .75rem .85rem 1rem;
+	min-width: 260px;
+	max-width: 320px;
+	box-shadow: 0 8px 24px -6px rgba(0,0,0,.35), 0 4px 10px -2px rgba(0,0,0,.25);
+	font-size: .8rem;
+	position: relative;
+}
+
+.notifications-panel h6 {
+	font-size: .9rem;
+	font-weight: 600;
+	margin: 0 0 .4rem;
+	color: #111;
+}
+
+.notifications-panel ul { margin:0; padding:0; }
+
+.notification-item {
+	padding: .45rem .4rem .4rem;
+	border-radius: 12px;
+	transition: background .15s ease;
+	position: relative;
+	display: flex;
+}
+
+.notification-item.unread {
+	background: #fff4f6;
+	box-shadow: inset 0 0 0 1px #ff395c55;
+}
+
+.notification-item:not(.unread):hover { background: #f7f7f7; }
+
+.notification-item + .notification-item { margin-top: .35rem; }
+
+.notification-item .timestamp { font-size: .65rem; margin-top: .15rem; }
+
+/* Estados */
+.notification-item span.segura { color: #16a34a; font-weight: 600; }
+.notification-item span.precaucion { color: #ca8a04; font-weight: 600; }
+.notification-item span.peligrosa { color: #dc2626; font-weight: 600; }
+
+/* Scroll si excede altura */
+.notifications-panel ul { max-height: 320px; overflow-y: auto; }
+
+/* Barra de scroll sutil */
+.notifications-panel ul::-webkit-scrollbar { width: 6px; }
+.notifications-panel ul::-webkit-scrollbar-track { background: transparent; }
+.notifications-panel ul::-webkit-scrollbar-thumb { background: #ff395c55; border-radius: 3px; }
+

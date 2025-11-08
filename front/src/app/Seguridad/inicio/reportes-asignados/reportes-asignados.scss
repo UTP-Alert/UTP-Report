@@ -371,6 +371,22 @@
 .inline-thumb { width:36px; height:36px; object-fit:cover; border-radius:6px; border:1px solid rgba(0,0,0,0.06); cursor:pointer }
 }
 
+/* ==== Completed reports (scoped to this component) ==== */
+.completed-reports {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.completed-list { display:flex; flex-direction:column; gap:12px; }
+.completed-item { background:#ecfdf5; padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; }
+.completed-info { display:flex; align-items:center; gap:8px; }
+.completed-title { font-size:14px; font-weight:500; color:#111827; }
+.completed-badge { background:#d1fae5; color:#065F46; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600; text-transform:uppercase; }
+.completed-date { font-size:12px; color:#4b5563; }
+
 /* Modal styles */
 .modal-overlay { position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; z-index:2147483647; }
 /* soft backdrop to avoid full black screen */

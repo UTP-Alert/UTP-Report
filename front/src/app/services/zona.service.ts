@@ -10,6 +10,8 @@ export interface Zona {
   fotoUrl?: string;
   sedeId?: number;
   activo?: boolean;
+  estado?: 'ZONA_SEGURA' | 'ZONA_PRECAUCION' | 'ZONA_PELIGROSA' | string;
+  reportCount?: number;
 }
 
 @Injectable({
