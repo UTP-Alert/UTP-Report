@@ -21,7 +21,7 @@ public class ReporteGestionController {
     public ResponseEntity<ReporteGestionDTO> createReporteGestion(
             @PathVariable Long reporteId,
             @RequestParam EstadoReporte estado,
-            @RequestParam PrioridadReporte prioridad,
+            @RequestParam(required = false) PrioridadReporte prioridad,
             @RequestParam(required = false) Long seguridadId) {
         try {
             ReporteGestionDTO updatedGestion = reporteGestionService.updateReporteGestion(reporteId, estado, prioridad, seguridadId);

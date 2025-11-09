@@ -6,21 +6,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
-    <h1>Zone Status Notifications</h1>
+    <h1>Report Status Notifications</h1>
+    <p>Enter username to subscribe to report notifications:</p>
+    <input type="text" id="usernameInput" placeholder="Enter username">
+    <button onclick="subscribeToUserNotifications()">Subscribe</button>
     <ul id="messages"></ul>
 
     <script type="text/javascript">
         var stompClient = null;
+        var subscribedUsername = null;
 
         function connect() {
             var socket = new SockJS('/ws');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
                 console.log('Connected: ' + frame);
+                // Subscribe to public zone status notifications (if still desired)
                 stompClient.subscribe('/topic/zone-status', function (message) {
                     showMessage(JSON.parse(message.body));
                 });
+
+                // If a username was already set, re-subscribe to user-specific notifications
+                if (subscribedUsername) {
+                    subscribeToUserNotifications(subscribedUsername);
+                }
             });
+        }
+
+        function subscribeToUserNotifications() {
+            if (stompClient && stompClient.connected) {
+                var username = document.getElementById('usernameInput').value;
+                if (username) {
+                    if (subscribedUsername) {
+                        // Unsubscribe from previous user's notifications if any
+                        stompClient.unsubscribe('/user/' + subscribedUsername + '/queue/notifications');
+                    }
+                    subscribedUsername = username;
+                    stompClient.subscribe('/user/' + username + '/queue/notifications', function (message) {
+                        showMessage(JSON.parse(message.body));
+                    });
+                    console.log('Subscribed to notifications for user: ' + username);
+                } else {
+                    alert('Please enter a username.');
+                }
+            } else {
+                alert('WebSocket not connected. Please refresh the page.');
+            }
         }
 
         function showMessage(notification) {
@@ -28,8 +59,12 @@
             var li = document.createElement('li');
             if (notification.message) {
                 li.appendChild(document.createTextNode('Notification: ' + notification.message));
-            } else if (notification.zona) {
+            }
+            if (notification.zona) {
                 li.appendChild(document.createTextNode('Zone: ' + notification.zona.nombre + ', Status: ' + notification.zona.estado));
+            }
+            if (notification.reporte) {
+                li.appendChild(document.createTextNode('Report ID: ' + notification.reporte.id + ', Status: ' + notification.reporte.reporteGestion.estado));
             }
             messages.appendChild(li);
         }

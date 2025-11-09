@@ -80,6 +80,17 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
 
         ReporteGestion savedReporteGestion = reporteGestionRepository.save(reporteGestionToSave);
 
+        // Send notification if report status is one of the specified states
+        boolean shouldNotify = (estado == EstadoReporte.UBICANDO ||
+                                estado == EstadoReporte.INVESTIGANDO ||
+                                estado == EstadoReporte.RESUELTO ||
+                                estado == EstadoReporte.CANCELADO);
+
+        if (shouldNotify) {
+            String notificationMessage = "El estado de tu reporte ha cambiado a " + estado.toString() + ".";
+            notificationService.notifyReportStatusChange(reporteId, notificationMessage);
+        }
+
         if (estado == EstadoReporte.RESUELTO) {
             Zona zona = reporte.getZona();
             // estado previo para decidir notificación de cambio de estado
