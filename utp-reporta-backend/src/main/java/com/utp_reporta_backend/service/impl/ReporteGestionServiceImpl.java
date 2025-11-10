@@ -80,15 +80,19 @@ public class ReporteGestionServiceImpl implements IReporteGestionService {
 
         ReporteGestion savedReporteGestion = reporteGestionRepository.save(reporteGestionToSave);
 
-        // Send notification if report status is one of the specified states
-        boolean shouldNotify = (estado == EstadoReporte.UBICANDO ||
-                                estado == EstadoReporte.INVESTIGANDO ||
-                                estado == EstadoReporte.RESUELTO ||
-                                estado == EstadoReporte.CANCELADO);
-
-        if (shouldNotify) {
-            String notificationMessage = "El estado de tu reporte ha cambiado a " + estado.toString() + ".";
-            notificationService.notifyReportStatusChange(reporteId, notificationMessage);
+        // Notificaciones personalizadas por estado para el usuario dueño del reporte
+        String perUserMessage = null;
+        if (estado == EstadoReporte.UBICANDO) {
+            perUserMessage = "Un agente de seguridad se dirige a la zona de tu reporte. Mantente visible y en un lugar seguro.";
+        } else if (estado == EstadoReporte.INVESTIGANDO) {
+            perUserMessage = "Tu reporte está siendo investigado por el equipo de seguridad.";
+        } else if (estado == EstadoReporte.RESUELTO) {
+            perUserMessage = "Tu reporte ha sido resuelto. Gracias por colaborar con la seguridad del campus.";
+        } else if (estado == EstadoReporte.CANCELADO) {
+            perUserMessage = "Tu reporte ha sido cancelado. Si crees que esto es un error, puedes crear uno nuevo.";
+        }
+        if (perUserMessage != null) {
+            notificationService.notifyReportStatusChange(reporteId, perUserMessage);
         }
 
         if (estado == EstadoReporte.RESUELTO) {

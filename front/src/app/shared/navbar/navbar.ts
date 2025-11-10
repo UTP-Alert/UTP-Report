@@ -25,6 +25,10 @@ export class NavbarComponent {
   private wsClient: any | null = null;
   private wsConnecting = false;
   private wsConnected = false;
+  private reportFallbackSubscribed = false;
+  // Dedupe de notificaciones de reporte (cola /user y fallback /topic)
+  private recentReportKeys = new Set<string>();
+  private recentReportKeysQueue: string[] = [];
   // Audio de alerta (sonido corto embebido en base64). Se inicializa bajo demanda.
   private alertAudio: HTMLAudioElement | null = null;
 
@@ -189,6 +193,64 @@ export class NavbarComponent {
         localStorage.setItem(this.storageKey, JSON.stringify(items));
       } catch {}
     });
+
+    // Si la conexión WS ya está lista pero el perfil llega después, suscribir al fallback por username
+    effect(() => {
+      const connected = this.wsConnected;
+      const p = this.perfilSrv.perfil();
+      const uname = p && (p as any).username ? String((p as any).username) : '';
+      if (connected && uname && this.wsClient && !this.reportFallbackSubscribed) {
+        try {
+          this.wsClient.subscribe(`/topic/report-status.${uname}`, (msg: any) => {
+            try {
+              const payload = JSON.parse(msg.body || '{}');
+              const rep = payload?.reporte || {};
+              const text = payload?.message || '';
+              this.addReportNotification(rep, text);
+            } catch {}
+          });
+          this.reportFallbackSubscribed = true;
+        } catch {}
+      }
+    });
+  }
+
+  // Construye una clave estable para identificar una notificación de reporte
+  private makeReportKey(rep: any, text: string): string {
+    try {
+      const id = rep && rep.id ? String(rep.id) : 'unknown';
+      const est = rep && rep.reporteGestion && rep.reporteGestion.estado ? String(rep.reporteGestion.estado) : '';
+      const fecha = rep && rep.reporteGestion && rep.reporteGestion.fechaActualizacion ? String(rep.reporteGestion.fechaActualizacion) : '';
+      return `${id}|${est}|${fecha}|${text}`;
+    } catch { return 'unknown|' + String(text || ''); }
+  }
+
+  // Inserta una notificación de reporte con deduplicación (para evitar duplicados por doble suscripción)
+  private addReportNotification(rep: any, text: string) {
+    if (!text) return;
+    const key = this.makeReportKey(rep, text);
+    if (this.recentReportKeys.has(key)) return; // duplicada, ignorar
+    // registrar clave reciente (cap 100)
+    this.recentReportKeys.add(key);
+    this.recentReportKeysQueue.push(key);
+    if (this.recentReportKeysQueue.length > 100) {
+      const rm = this.recentReportKeysQueue.shift();
+      if (rm) this.recentReportKeys.delete(rm);
+    }
+
+    const item = {
+      id: Date.now(),
+      title: 'Actualización de tu reporte',
+      body: text,
+      zonaNombre: undefined as string | undefined,
+      estado: (rep && rep.reporteGestion && rep.reporteGestion.estado) ? String(rep.reporteGestion.estado) : undefined,
+      ts: new Date(),
+      read: false,
+    };
+    const next = [item, ...this.notifications()].slice(0, 50);
+    this.notifications.set(next);
+    if (this.isUsuario() || this.isAdminAsUser()) this.playAlertSound();
+    try { window.dispatchEvent(new CustomEvent('reporte-status-update', { detail: rep })); } catch {}
   }
 
   private initAlertAudio() {
@@ -264,6 +326,33 @@ export class NavbarComponent {
             window.dispatchEvent(new CustomEvent('zone-status-update', { detail: zona }));
           } catch {}
         });
+
+  // Suscripción a notificaciones por reporte (cola del usuario)
+        client.subscribe('/user/queue/notifications', (msg: any) => {
+          try {
+            const payload = JSON.parse(msg.body || '{}');
+            try { console.info('[Navbar][WS] Report notification', payload); } catch {}
+            const rep = payload?.reporte || {};
+            const text = payload?.message || '';
+            this.addReportNotification(rep, text);
+          } catch {}
+        });
+
+        // Suscripción fallback por username en topic público, por si el servidor no asocia Principal
+        try {
+          const p = this.perfilSrv.perfil();
+          const uname = (p && (p as any).username) ? String((p as any).username) : '';
+          if (uname) {
+            client.subscribe(`/topic/report-status.${uname}`, (msg: any) => {
+              try {
+                const payload = JSON.parse(msg.body || '{}');
+                const rep = payload?.reporte || {};
+                const text = payload?.message || '';
+                this.addReportNotification(rep, text);
+              } catch {}
+            });
+          }
+        } catch {}
       }, () => {
         // onError: reintentar con backoff ligero
         try { console.warn('[Navbar][WS] Connection error, retrying...'); } catch {}
