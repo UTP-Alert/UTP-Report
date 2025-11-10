@@ -83,6 +83,12 @@ public class NotificationService {
                 "/queue/notifications",
                 new NotificationMessage(message, mapReporteToDto(reporte))
             );
+            // Fallback broadcast por username si la sesión STOMP no tiene Principal asociado
+            // Permite que el frontend se suscriba a /topic/report-status.{username}
+            messagingTemplate.convertAndSend(
+                "/topic/report-status." + recipientUsername,
+                new NotificationMessage(message, mapReporteToDto(reporte))
+            );
         });
     }
 }
