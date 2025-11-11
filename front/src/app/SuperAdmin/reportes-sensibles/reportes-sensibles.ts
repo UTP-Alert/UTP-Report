@@ -92,8 +92,80 @@ export class ReportesSensibles {
     } catch (err: any) {
       console.error('Error loadReports', err);
     }
+
   }
 
+  // ================= Detalle (modal) =================
+  detalleVisible: boolean = false;
+  reporteSeleccionado: ReporteDTO | null = null;
+
+  abrirDetalle(r: ReporteDTO){
+    this.reporteSeleccionado = r;
+    this.detalleVisible = true;
+  }
+  cerrarDetalle(){
+    this.detalleVisible = false;
+    this.reporteSeleccionado = null;
+  }
+
+  // Evidencia helpers (mismo de otros módulos)
+  selectedImageSrc: string | null = null;
+  imageModalVisible: boolean = false;
+  openImage(src: string){
+    this.selectedImageSrc = src; this.imageModalVisible = true;
+    setTimeout(()=>{ try{ if(!this.imageModalVisible) window.open(src,'_blank'); }catch(e){} }, 80);
+  }
+  closeImage(){ this.imageModalVisible = false; this.selectedImageSrc = null; }
+
+  getImageSrc(report: any): string | null {
+    if(!report) return null;
+    const f = (report.foto || report.file || report.image) as any;
+    if(!f) return null;
+    try{
+      if(typeof f === 'string'){
+        if(f.startsWith('data:')) return f;
+        return 'data:image/jpeg;base64,' + f;
+      }
+      if(Array.isArray(f)){
+        const binary = f.map((b: number) => String.fromCharCode(b)).join('');
+        return 'data:image/jpeg;base64,' + btoa(binary);
+      }
+    }catch(e){ console.error('getImageSrc', e); }
+    return null;
+  }
+
+  // Estados y comentarios (similar a Admin Resueltos)
+  estadosDetalle(): Array<{ key: 'PENDIENTE'|'UBICANDO'|'INVESTIGANDO'|'PENDIENTE_APROBACION'|'RESUELTO'|'CANCELADO'; label: string; fecha?: string | Date | null; comentarios?: string | null; origin?: 'admin'|'seguridad'|null }> {
+    const r: any = this.reporteSeleccionado;
+    if(!r) return [];
+    const comentarioAdmin = r.mensajeAdmin || null; // Admin comenta al aprobar
+    const comentarioSeg = r.mensajeSeguridad || null; // Seguridad comenta al completar para aprobación
+
+    const ultimo = String(r.ultimoEstado || r.reporteGestion?.estado || '').toUpperCase();
+    const fechaActual = r.reporteGestion?.fechaActualizacion || r.fechaUltimaGestion || null;
+    const fechaCreado = r.fechaCreacion || null;
+
+    const orden: string[] = ['PENDIENTE','UBICANDO','INVESTIGANDO','PENDIENTE_APROBACION','RESUELTO','CANCELADO'];
+    const indiceUltimo = orden.indexOf(ultimo);
+
+    function fechaPara(key: string): string | Date | null {
+      if(key==='PENDIENTE') return fechaCreado;
+      if(indiceUltimo >= orden.indexOf(key)){
+        if(key===ultimo) return fechaActual;
+        return null;
+      }
+      return null;
+    }
+
+    return [
+      { key: 'PENDIENTE',            label: 'Pendiente',            fecha: fechaPara('PENDIENTE') },
+      { key: 'UBICANDO',             label: 'Ubicando',             fecha: fechaPara('UBICANDO') },
+      { key: 'INVESTIGANDO',         label: 'Investigando',         fecha: fechaPara('INVESTIGANDO') },
+      { key: 'PENDIENTE_APROBACION', label: 'Pend. Aprobación',     fecha: fechaPara('PENDIENTE_APROBACION'), comentarios: indiceUltimo >= orden.indexOf('PENDIENTE_APROBACION') ? comentarioSeg : null, origin: comentarioSeg && indiceUltimo >= orden.indexOf('PENDIENTE_APROBACION') ? 'seguridad' : null },
+      { key: 'RESUELTO',             label: 'Resuelto',             fecha: fechaPara('RESUELTO'), comentarios: ultimo==='RESUELTO' ? comentarioAdmin : null, origin: ultimo==='RESUELTO' && comentarioAdmin ? 'admin' : null },
+      { key: 'CANCELADO',            label: 'Cancelado',            fecha: fechaPara('CANCELADO') }
+    ];
+  }
   // Llamar loadReports cuando se concede acceso
   private onAccessGranted() {
     this.loadReports();

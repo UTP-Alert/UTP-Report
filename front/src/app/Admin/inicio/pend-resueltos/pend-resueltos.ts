@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf, NgFor, NgClass } from '@angular/common';
 import { ReporteService, ReporteDTO } from '../../../services/reporte.service';
 import { TipoIncidenteService } from '../../../services/tipo-incidente.service';
 import { ZonaService } from '../../../services/zona.service';
@@ -7,7 +7,7 @@ import { ZonaService } from '../../../services/zona.service';
 @Component({
   selector: 'app-pend-resueltos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgIf, NgFor, NgClass],
   templateUrl: './pend-resueltos.html',
   styleUrl: './pend-resueltos.scss'
 })
@@ -16,12 +16,23 @@ export class PendResueltos implements OnInit {
   loading = false;
   tiposMap: Record<number,string> = {};
   zonasMap: Record<number,string> = {};
+  // Modal de detalle
+  detalleVisible = false;
+  reporteSeleccionado: ReporteDTO | null = null;
+  private sub: any = null; // suscripción para refrescar al cambiar estados
 
   constructor(private reporteService: ReporteService, private tipoService: TipoIncidenteService, private zonaService: ZonaService){}
 
   ngOnInit(): void{
     this.loadAux();
     this.loadResueltos();
+    // Suscribirse al estado global si existe ReportStateService para refrescar tras aprobar
+    try {
+      const rs: any = (this as any).reportState || (this as any).reportStateService;
+      if(rs && rs.snapshot && rs.snapshot.subscribe){
+        this.sub = rs.snapshot.subscribe(() => this.loadResueltos());
+      }
+    } catch(e) { /* silencioso */ }
   }
 
   loadAux(){
@@ -69,5 +80,61 @@ export class PendResueltos implements OnInit {
       this.loading = false;
     }, error: _ => { this.reportes = []; this.loading = false; } });
   }
+
+  // Abrir/cerrar modal de detalle
+  abrirDetalle(r: ReporteDTO){
+    this.reporteSeleccionado = r;
+    this.detalleVisible = true;
+  }
+  cerrarDetalle(){ this.detalleVisible = false; this.reporteSeleccionado = null; }
+
+  // Construye columnas por estado (mostrar SIEMPRE todas las etapas conocidas en orden fijo)
+  // Estados esperados: PENDIENTE, UBICANDO, INVESTIGANDO, PENDIENTE_APROBACION, RESUELTO, CANCELADO.
+  // Heurística de fechas: sólo conocemos fechaCreacion y fechaActualizacion final; las demás quedan sin registro.
+  estadosDetalle(): Array<{ key: 'PENDIENTE'|'UBICANDO'|'INVESTIGANDO'|'PENDIENTE_APROBACION'|'RESUELTO'|'CANCELADO'; label: string; fecha?: string | Date | null; comentarios?: string | null; origin?: 'admin'|'seguridad'|null }>{
+    const r: any = this.reporteSeleccionado;
+    if(!r) return [];
+    const comentarioAdmin = r.mensajeAdmin || null; // comentario opcional del Admin
+    const comentarioSeg = r.mensajeSeguridad || null; // comentario ingresado por Seguridad al completar (Pend. Aprobación)
+
+    // Si el backend expone un único reporteGestion (estado actual) sólo tenemos su fechaActualizacion.
+    // Para evitar poner la misma hora en todo, sólo asignamos fechas a los estados ocurridos según últimoEstado.
+    const ultimo = String(r.ultimoEstado || r.reporteGestion?.estado || '').toUpperCase();
+    const fechaActual = r.reporteGestion?.fechaActualizacion || r.fechaUltimaGestion || null;
+    const fechaCreado = r.fechaCreacion || null;
+
+    // Map de orden de estados esperados
+    const orden: string[] = ['PENDIENTE','UBICANDO','INVESTIGANDO','PENDIENTE_APROBACION','RESUELTO','CANCELADO'];
+
+    // Determinar qué estados han sido alcanzados por comparación con ultimo
+    const indiceUltimo = orden.indexOf(ultimo);
+
+    function fechaPara(key: string): string | Date | null {
+      if(key==='PENDIENTE') return fechaCreado;
+      // Para estados intermedios sin timestamp específico, sólo mostrar fecha si ya fueron alcanzados pero sin repetir la final.
+      if(indiceUltimo >= orden.indexOf(key)) {
+        // Si es el estado final y tenemos fechaActual la usamos, si no dejamos null para "No registrado"
+        if(key===ultimo) return fechaActual;
+        // Para intermedios: dejamos null (No registrado) hasta que tengamos historial real
+        return null;
+      }
+      return null; // futuro/no alcanzado
+    }
+
+    return [
+      { key: 'PENDIENTE',            label: 'Pendiente',            fecha: fechaPara('PENDIENTE') },
+      { key: 'UBICANDO',             label: 'Ubicando',             fecha: fechaPara('UBICANDO') },
+      // El comentario de Seguridad (parte) pertenece a Pendiente de Aprobación, no a Investigando
+      { key: 'INVESTIGANDO',         label: 'Investigando',         fecha: fechaPara('INVESTIGANDO'), comentarios: null, origin: null },
+  { key: 'PENDIENTE_APROBACION', label: 'Pend. Aprobación',     fecha: fechaPara('PENDIENTE_APROBACION'), comentarios: indiceUltimo >= orden.indexOf('PENDIENTE_APROBACION') ? comentarioSeg : null, origin: comentarioSeg && indiceUltimo >= orden.indexOf('PENDIENTE_APROBACION') ? 'seguridad' : null },
+      // En RESUELTO solo mostrar comentario del ADMIN; si no existe, dejar 'Sin comentarios'
+      { key: 'RESUELTO',             label: 'Resuelto',             fecha: fechaPara('RESUELTO'),
+        comentarios: ultimo==='RESUELTO' ? comentarioAdmin : null,
+        origin: (ultimo==='RESUELTO' && comentarioAdmin) ? 'admin' : null },
+      { key: 'CANCELADO',            label: 'Cancelado',            fecha: fechaPara('CANCELADO') }
+    ];
+  }
+
+  ngOnDestroy(){ try{ this.sub?.unsubscribe(); }catch(e){} }
 
 }

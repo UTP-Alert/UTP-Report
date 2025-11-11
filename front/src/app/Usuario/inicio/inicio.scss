@@ -56,6 +56,8 @@ body { margin: 0; font-family: sans-serif; color: #000; }
 .bg-purple-500 { background-color: #A855F7; }
 
 /* Neutros y otros */
+.bg-red-50 { background-color: #FFF1F2; }
+.bg-yellow-50 { background-color: #FFFBEB; }
 .bg-white { background-color: #fff; }
 .bg-gray-50 { background-color: #F9FAFB; }
 .bg-gray-100 { background-color: #f3f4f6; }
@@ -343,3 +345,19 @@ body { padding-top: 100px; }
 .mm-actions { display: flex; justify-content: flex-end; }
 .mm-btn { background: #FF395C; color: #fff; border: none; border-radius: 10px; padding: .45rem .9rem; font-weight: 600; cursor: pointer; }
 .mm-btn:hover { filter: brightness(.95); }
+
+/* ---- Reportes de Compañeros: franja izquierda del card (fina) ---- */
+.companero-card { position: relative; overflow: hidden; z-index: 0; }
+.companero-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px; /* franja más delgada */
+  background: transparent;
+  border-radius: inherit; /* que siga el redondeado del card */
+  z-index: 1;
+  pointer-events: none;
+}
+.companero-card.prio-alta::before { background: #ef4444; }
+.companero-card.prio-media::before { background: #f59e0b; }
+.companero-card.prio-baja::before { background: #3b82f6; }
