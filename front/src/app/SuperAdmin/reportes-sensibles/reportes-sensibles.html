@@ -155,9 +155,9 @@
 					<div class="badges">
 						<span class="badge priority" *ngIf="r.reporteGestion && r.reporteGestion.prioridad"
 						      [ngClass]="{
-						        'alta': (r.reporteGestion?.prioridad||'').toUpperCase() === 'ALTA',
-						        'media': (r.reporteGestion?.prioridad||'').toUpperCase() === 'MEDIA',
-						        'baja': (r.reporteGestion?.prioridad||'').toUpperCase() === 'BAJA'
+						        'alta': (r.reporteGestion.prioridad||'').toUpperCase() === 'ALTA',
+						        'media': (r.reporteGestion.prioridad||'').toUpperCase() === 'MEDIA',
+						        'baja': (r.reporteGestion.prioridad||'').toUpperCase() === 'BAJA'
 						      }">{{ r.reporteGestion.prioridad }}</span>
 						<span class="badge estado">{{ (r.reporteGestion && r.reporteGestion.estado) ? r.reporteGestion.estado : (r.ultimoEstado || '') }}</span>
 						<span class="badge tipo">{{ (r.isAnonimo ? 'ANÓNIMO' : 'IDENTIFICADO') }}</span>

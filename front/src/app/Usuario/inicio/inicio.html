@@ -352,68 +352,74 @@
       </div>
     </section>
 
-    <!-- Recent Reports from Colleagues -->
+    <!-- Reportes Recientes de Compañeros (dinámico) -->
     <section class="mb-12">
       <h2 class="text-2xl mb-6 flex items-center gap-3">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-primary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Reportes Recientes de Compañeros
       </h2>
-
       <div class="space-y-4">
-        <!-- Example Report 1 (from image) -->
-  <div class="border-2 border-blue-200 hover:shadow-md transition-shadow rounded-2xl">
-          <div class="pb-3 p-4">
-            <div class="flex items-start justify-between mb-4">
-              <div class="flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-gray-500"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" x2="22" y1="2" y2="7"/><line x1="22" x2="17" y1="2" y2="7"/></svg>
-                <div>
-                  <h3 class="text-lg">Anónimo</h3>
-                  <p class="flex items-center gap-2 mt-1 text-gray-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                    Estacionamiento Este
-                  </p>
+        <ng-container *ngIf="companerosReportes && companerosReportes.length; else sinCompaneros">
+          <div *ngFor="let r of companerosReportes" class="border-2 rounded-2xl hover:shadow-md transition-shadow companero-card"
+               [ngClass]="{
+                 'border-red-200 bg-red-50': r.prioridad === 'alta',
+                 'border-yellow-200 bg-yellow-100': r.prioridad === 'media',
+                 'border-blue-200 bg-blue-50 prio-baja': r.prioridad === 'baja',
+                 'border-blue-200 bg-white': r.prioridad === 'ninguna',
+                 'prio-alta': r.prioridad === 'alta',
+                 'prio-media': r.prioridad === 'media'
+               }">
+            <div class="p-4 pb-3">
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <svg *ngIf="r.anonimo" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-gray-500"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" x2="22" y1="2" y2="7"/><line x1="22" x2="17" y1="2" y2="7"/></svg>
+                  <svg *ngIf="!r.anonimo" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-primary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  <div>
+                    <h3 class="text-lg">{{ r.nombreMostrar }}</h3>
+                    <p class="flex items-center gap-2 mt-1 text-gray-600">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                      {{ r.zonaNombre }}
+                    </p>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-end">
+                  <span *ngIf="r.prioridadLabel" class="text-white px-2 py-1 rounded-full text-xs"
+                        [ngClass]="{
+                          'bg-red-500': r.prioridad==='alta',
+                          'bg-yellow-500': r.prioridad==='media',
+                          'bg-blue-500': r.prioridad==='baja'
+                        }">{{ r.prioridadLabel }}</span>
+                  <span class="text-white px-2 py-1 rounded-full text-xs" [ngClass]="getBadgeClassFromEstado(r.estadoLabel)">{{ r.estadoLabel }}</span>
                 </div>
               </div>
-              <div class="flex flex-col gap-2 items-end">
-                <span class="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs">
-                  Media
-                </span>
-                <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs">
-                  Nuevo
-                </span>
+
+              <div class="bg-primary/10 rounded-lg p-4 border-l-4 border-primary">
+                <div class="flex items-center gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-primary"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                  <div>
+                    <p class="text-sm text-primary/70 uppercase tracking-wide">Tipo de Incidente</p>
+                    <h3 class="text-2xl font-bold text-primary">{{ r.tipoNombre }}</h3>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <div class="bg-primary/10 rounded-lg p-4 border-l-4 border-primary">
-              <div class="flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8 text-primary"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                <div>
-                  <p class="text-sm text-primary/70 uppercase tracking-wide">Tipo de Incidente</p>
-                  <h3 class="text-2xl font-bold text-primary">Actividad Sospechosa</h3>
+            <div class="p-4 pt-0">
+              <p class="text-gray-700 mb-3 line-clamp-2">{{ r.descripcion }}</p>
+              <div class="flex items-center justify-between text-sm text-gray-500">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>{{ formatFecha(r.fechaCreacion) }}</span>
                 </div>
               </div>
             </div>
           </div>
-          <div class="p-4 pt-0">
-            <p class="text-gray-700 mb-3 line-clamp-2">
-              Persona merodeando en el estacionamiento de estudiantes
-            </p>
-            <div class="flex items-center justify-between text-sm text-gray-500">
-              <div class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span>07/10/25, 13:26</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Botón para ver todos los reportes. -->
-  <div class="border-2 border-dashed border-primary rounded-2xl">
+        </ng-container>
+        <ng-template #sinCompaneros>
+          <div class="border-2 border-dashed border-blue-200 rounded-2xl p-6 text-center text-gray-500">No hay reportes recientes de otros compañeros.</div>
+        </ng-template>
+        <div class="border-2 border-dashed border-primary rounded-2xl">
           <div class="p-6 text-center">
-            <button
-              class="text-primary border-primary hover:bg-primary/5 font-medium py-2 px-4 rounded-md bg-transparent inline-flex items-center"
-              aria-label="Ver todos los reportes de la comunidad"
-            >
+            <button class="text-primary border-primary hover:bg-primary/5 font-medium py-2 px-4 rounded-md bg-transparent inline-flex items-center" aria-label="Ver todos los reportes de la comunidad">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
               Ver Todos los Reportes
             </button>

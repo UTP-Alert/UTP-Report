@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule, NgIf, NgFor, NgClass } from '@angular/common';
 import { ReportaAhora } from './reporta-ahora/reporta-ahora';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TimeService } from '../../services/time.service';
@@ -8,11 +8,14 @@ import { ReporteService, ReporteDTO } from '../../services/reporte.service';
 import { PerfilService } from '../../services/perfil.service';
 import { Sede, SedeService } from '../../services/sede.service';
 import { Zona, ZonaService } from '../../services/zona.service';
+import { UsuarioService, UsuarioDTO } from '../../services/usuario.service';
+import { TipoIncidenteService, TipoIncidenteDTO } from '../../services/tipo-incidente.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-inicio-usuario',
   standalone: true,
-  imports: [CommonModule, NgIf, HttpClientModule, ReportaAhora, DetalleReporte],
+  imports: [CommonModule, NgIf, NgFor, NgClass, HttpClientModule, ReportaAhora, DetalleReporte],
   templateUrl: './inicio.html',
   styleUrls: ['./inicio.scss']
 })
@@ -32,12 +35,30 @@ export class InicioUsuario implements OnInit {
   private toastTimer: any;
   private dialogTimer: any;
   private reportsRefreshTimer: any;
+  private colleaguesRefreshTimer: any;
   // Fuente de verdad: el hijo reporta el conteo, pero aquí retenemos el estado para bloquear botón
   reportesUsadosHoy = 0;
   reportesLimite = 3;
   get limiteAlcanzado(): boolean { return this.reportesUsadosHoy >= this.reportesLimite; }
   // Seguimiento de mis reportes (temporal/local hasta que admin gestione estados)
   misReportes: Array<{ id?: number; tipoNombre: string; zonaNombre: string; fechaCreacion: string; estado: string; usuarioId: number; }> = [];
+
+  // Reportes recientes de compañeros (excluye los del usuario actual)
+  companerosReportes: Array<{
+    id: number;
+    nombreMostrar: string;
+    anonimo: boolean;
+    zonaNombre: string;
+    tipoNombre: string;
+    descripcion: string;
+    fechaCreacion: string;
+    prioridad: 'alta' | 'media' | 'baja' | 'ninguna';
+    prioridadLabel: string;
+    estadoLabel: string;
+  }> = [];
+
+  // Sede actual del usuario (para filtrar reportes de compañeros)
+  sedeIdActual: number | null = null;
   // Helpers para progreso visual en "Mis Reportes"
   getReporteProgress(r: any): number { return (r && typeof r._progress === 'number') ? r._progress : this.progressInfo(r?.estado).percent; }
   getEstadoLabel(r: any): string { return (r && r._estadoLabel) ? r._estadoLabel : this.progressInfo(r?.estado).label; }
@@ -95,7 +116,9 @@ export class InicioUsuario implements OnInit {
     private timeService: TimeService,
     private perfilService: PerfilService,
     private sedeService: SedeService,
-    private zonaService: ZonaService
+    private zonaService: ZonaService,
+    private usuarioService: UsuarioService,
+    private tipoService: TipoIncidenteService
   ) {}
 
   ngOnInit(): void {
@@ -128,6 +151,8 @@ export class InicioUsuario implements OnInit {
               this.checkReportesHoy(found.id);
               this.cargarMisReportesLocal(found.id);
               this.startAutoRefresh(found.id);
+              this.cargarReportesCompaneros(found.id);
+              this.startColleaguesAutoRefresh(found.id);
             }
           },
           error: _ => { /* silencioso */ }
@@ -144,6 +169,8 @@ export class InicioUsuario implements OnInit {
               this.checkReportesHoy(found.id);
               this.cargarMisReportesLocal(found.id);
               this.startAutoRefresh(found.id);
+              this.cargarReportesCompaneros(found.id);
+              this.startColleaguesAutoRefresh(found.id);
             }
           },
           error: _ => {}
@@ -190,10 +217,12 @@ export class InicioUsuario implements OnInit {
               ? listaSedes.find(s => (s.nombre || '').toLowerCase() === String(sedeNombre).toLowerCase())
               : null;
             const sedeId = encontrada?.id ?? (listaSedes.length ? listaSedes[0].id : null);
+            this.sedeIdActual = sedeId;
             this.cargarZonasYConteos(sedeId);
           },
           error: _ => {
             const sedeId = listaSedes.length ? listaSedes[0].id : null;
+            this.sedeIdActual = sedeId;
             this.cargarZonasYConteos(sedeId);
           }
         });
@@ -404,6 +433,7 @@ export class InicioUsuario implements OnInit {
     if (this.toastTimer) { try { clearTimeout(this.toastTimer); } catch {} }
     if (this.dialogTimer) { try { clearTimeout(this.dialogTimer); } catch {} }
     if (this.reportsRefreshTimer) { try { clearInterval(this.reportsRefreshTimer); } catch {} }
+    if (this.colleaguesRefreshTimer) { try { clearInterval(this.colleaguesRefreshTimer); } catch {} }
     if (this.zoneStatusListenerBound) {
       window.removeEventListener('zone-status-update', this.onZoneStatusUpdate);
       this.zoneStatusListenerBound = false;
@@ -466,6 +496,102 @@ export class InicioUsuario implements OnInit {
     this.reportsRefreshTimer = setInterval(() => {
       this.cargarMisReportesLocal(uid);
     }, 30000);
+  }
+
+  // ---- Reportes de compañeros ----
+  private startColleaguesAutoRefresh(uid: number) {
+    if (this.colleaguesRefreshTimer) { try { clearInterval(this.colleaguesRefreshTimer); } catch {} }
+    this.colleaguesRefreshTimer = setInterval(() => {
+      this.cargarReportesCompaneros(uid);
+    }, 60000); // cada 60s
+  }
+
+  private prioridadKey(p: any): 'alta' | 'media' | 'baja' | 'ninguna' {
+    const s = (p ?? '').toString().toUpperCase();
+    if (s.includes('ALTA')) return 'alta';
+    if (s.includes('MEDIA')) return 'media';
+    if (s.includes('BAJA')) return 'baja';
+    return 'ninguna';
+  }
+
+  private capitalizar(s: string): string {
+    try {
+      const t = (s || '').toLowerCase();
+      return t.charAt(0).toUpperCase() + t.slice(1);
+    } catch { return s; }
+  }
+
+  getBadgeClassFromEstado(label: string): string {
+    return this.progressInfo(label).badgeClass;
+  }
+
+  cargarReportesCompaneros(uid: number | null) {
+    // Traer reportes, usuarios, tipos y zonas en paralelo para construir tarjetas ricas
+    const req = forkJoin({
+      reportes: this.reporteService.getAll(),
+      usuarios: this.usuarioService.getAll(),
+      tipos: this.tipoService.getAll(),
+      zonas: this.zonaService.obtenerZonas()
+    });
+
+    req.subscribe({
+      next: ({ reportes, usuarios, tipos, zonas }) => {
+        try {
+          const usersById = Object.fromEntries((usuarios || []).map((u: UsuarioDTO) => [u.id, u]));
+          const tiposById = Object.fromEntries((tipos || []).map((t: TipoIncidenteDTO) => [t.id, t]));
+          const zonasById = Object.fromEntries((zonas || []).map((z: Zona) => [z.id, z]));
+
+          const sedeFiltro = this.sedeIdActual;
+          const otros = (reportes || []).filter(r => {
+            // Excluir propios
+            if (uid != null && Number(r.usuarioId) === Number(uid)) return false;
+            // Filtrar por sede si tenemos sede definida
+            if (sedeFiltro != null) {
+              const zona = zonasById[r.zonaId];
+              if (!zona || Number(zona.sedeId) !== Number(sedeFiltro)) return false;
+            }
+            return true;
+          });
+          // Ordenar por fecha (desc)
+          otros.sort((a, b) => {
+            const da = new Date(a.fechaCreacion || 0).getTime();
+            const db = new Date(b.fechaCreacion || 0).getTime();
+            return db - da;
+          });
+
+          // Limitar a los más recientes (ej. 6)
+          const top = otros.slice(0, 6).map(r => {
+            const prioridadRaw = (r.reporteGestion?.prioridad ?? r.ultimaPrioridad ?? '').toString();
+            const prioKey = this.prioridadKey(prioridadRaw);
+            const estadoRaw = (r.reporteGestion?.estado ?? r.ultimoEstado ?? '') as string;
+            const estadoLabel = this.formatEstadoLabel(estadoRaw);
+            const user = usersById[r.usuarioId];
+            const nombre = r.isAnonimo ? 'Anónimo' : (user?.nombreCompleto || user?.username || 'Usuario');
+            const tipoNombre = (r as any).tipoNombre || tiposById[r.tipoIncidenteId]?.nombre || '';
+            const zonaNombre = (r as any).zonaNombre || zonasById[r.zonaId]?.nombre || '';
+            const prioridadLabel = prioKey === 'ninguna' ? '' : this.capitalizar(prioKey);
+            return {
+              id: r.id,
+              nombreMostrar: nombre,
+              anonimo: !!r.isAnonimo,
+              zonaNombre,
+              tipoNombre,
+              descripcion: r.descripcion,
+              fechaCreacion: r.fechaCreacion,
+              prioridad: prioKey,
+              prioridadLabel,
+              estadoLabel
+            } as any;
+          });
+
+          this.companerosReportes = top;
+        } catch (e) {
+          console.warn('[InicioUsuario] construir compañeros falló', e);
+          this.companerosReportes = [];
+        }
+      },
+      error: _ => { this.companerosReportes = []; }
+    });
   }
 
   // Formato corto de fecha/hora para el template
