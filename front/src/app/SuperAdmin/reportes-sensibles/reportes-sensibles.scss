@@ -128,7 +128,15 @@
 .filters { display:flex; gap:12px; align-items:center; margin:12px 0 16px 0; }
 .filters .select-field { padding:8px 10px; border-radius:8px; border:1px solid #e5e7eb; }
 .report-list { display:flex; flex-direction:column; gap:14px; }
-.report-card { border:1px solid #eef2f7; padding:14px; border-radius:10px; background:white; }
+.report-card { border:1px solid #eef2f7; padding:14px; border-radius:10px; background:white; position:relative; overflow:hidden; }
+/* Barra lateral izquierda con color por prioridad */
+.report-card::before {
+	content: '';
+	position: absolute;
+	left: 0; top: 0; bottom: 0;
+	width: 4px; /* antes 6px: se hace más delgada la franja de prioridad */
+	background: transparent;
+}
 .card-header { display:flex; justify-content:space-between; align-items:center; }
 .badges { display:flex; gap:8px; }
 .badge { background:#fde68a; padding:4px 8px; border-radius:6px; font-weight:700; font-size:12px; }
@@ -167,6 +175,36 @@
 
 .report-card .report-desc { margin-top:8px; }
 .report-card .btn-outline { padding:6px 10px; }
+
+/* === Tinte de tarjeta por prioridad (igual que Admin) ===
+	 Usamos :has() para aplicar color al contenedor cuando el badge tiene la clase
+	 .alta | .media | .baja. Chrome/Edge modernos lo soportan. */
+.report-card:has(.badge.priority.alta) {
+	background: #fff1f2; /* rojo muy claro */
+	border-color: #fecdd3;
+}
+.report-card:has(.badge.priority.alta)::before { background:#ef4444; }
+.report-card:has(.badge.priority.media) {
+	background: #fffbeb; /* amarillo muy claro */
+	border-color: #fde68a;
+}
+.report-card:has(.badge.priority.media)::before { background:#f59e0b; }
+.report-card:has(.badge.priority.baja) {
+	background: #eff6ff; /* azul muy claro */
+	border-color: #bfdbfe;
+}
+.report-card:has(.badge.priority.baja)::before { background:#3b82f6; }
+
+/* Ajuste de contraste del bloque confidencial sobre fondos tintados */
+.report-card:has(.badge.priority.alta) .confidential-box {
+	background: #ffe4e6; border-color: #fecdd3;
+}
+.report-card:has(.badge.priority.media) .confidential-box {
+	background: #fef3c7; border-color: #fde68a;
+}
+.report-card:has(.badge.priority.baja) .confidential-box {
+	background: #e0f2fe; border-color: #bfdbfe;
+}
 
 
 /* Small screen tweaks */

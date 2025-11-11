@@ -153,7 +153,12 @@
 			<div *ngFor="let r of filteredReports" class="report-card">
 				<div class="card-header">
 					<div class="badges">
-						<span class="badge priority" *ngIf="r.reporteGestion && r.reporteGestion.prioridad">{{ r.reporteGestion.prioridad }}</span>
+						<span class="badge priority" *ngIf="r.reporteGestion && r.reporteGestion.prioridad"
+						      [ngClass]="{
+						        'alta': (r.reporteGestion?.prioridad||'').toUpperCase() === 'ALTA',
+						        'media': (r.reporteGestion?.prioridad||'').toUpperCase() === 'MEDIA',
+						        'baja': (r.reporteGestion?.prioridad||'').toUpperCase() === 'BAJA'
+						      }">{{ r.reporteGestion.prioridad }}</span>
 						<span class="badge estado">{{ (r.reporteGestion && r.reporteGestion.estado) ? r.reporteGestion.estado : (r.ultimoEstado || '') }}</span>
 						<span class="badge tipo">{{ (r.isAnonimo ? 'ANÓNIMO' : 'IDENTIFICADO') }}</span>
 						<span class="badge small" *ngIf="r.ultimaPrioridad === 'nuevo'">nuevo</span>
