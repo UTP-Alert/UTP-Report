@@ -52,8 +52,8 @@ export class PendAprobacion implements OnInit, OnDestroy {
     if(!this.selectedForReview) return;
     if(!this.adminComment || this.adminComment.trim().length === 0) return; // require comment
     const id = this.selectedForReview.id;
-    const prioridad = (this.selectedForReview as any).reporteGestion && (this.selectedForReview as any).reporteGestion.prioridad ? (this.selectedForReview as any).reporteGestion.prioridad : (this.selectedForReview.ultimaPrioridad || '');
-    this.reporteService.updateGestion(id, 'RESUELTO', prioridad).subscribe({ next: _ => {
+    // Usar endpoint específico para que se guarde el mensaje del admin al resolver
+    this.reporteService.marcarResueltoPorAdmin(id, this.adminComment).subscribe({ next: _ => {
       // refresh report and UI
       this.reporteService.getById(id).subscribe(rf => {
         this.reportState.setReporte(rf);

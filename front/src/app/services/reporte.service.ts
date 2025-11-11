@@ -107,4 +107,9 @@ export class ReporteService {
     const url = `${this.baseUrl}/gestion/${reporteId}/rechazar-admin` + (mensajeAdmin ? `?mensajeAdmin=${encodeURIComponent(mensajeAdmin)}` : '');
     return this.http.put<ReporteGestionDTO>(url, {});
   }
+
+  marcarResueltoPorAdmin(reporteId: number, mensajeAdmin: string): Observable<ReporteGestionDTO> {
+    const url = `${this.baseUrl}/gestion/${reporteId}/marcar-resuelto-admin` + (mensajeAdmin ? `?mensajeAdmin=${encodeURIComponent(mensajeAdmin)}` : '');
+    return this.http.put<ReporteGestionDTO>(url, {});
+  }
 }
