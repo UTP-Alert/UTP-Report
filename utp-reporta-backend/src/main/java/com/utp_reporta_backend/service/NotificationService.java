@@ -125,9 +125,12 @@ public class NotificationService {
 
             // Send email to the user who sent the report
             String userEmail = reporte.getUsuario().getCorreo();
-            String subject = "Actualización de Estado de Reporte: " + reporte.getId();
+            String subject = "Actualización de Reporte - " + reporte.getTipoIncidente().getNombre() + " en " + reporte.getZona().getNombre();
             Map<String, Object> templateVariables = new java.util.HashMap<>();
             templateVariables.put("reporteId", reporte.getId());
+            templateVariables.put("reporteDescripcion", reporte.getDescripcion());
+            templateVariables.put("reporteTipoIncidente", reporte.getTipoIncidente().getNombre()); // Add incident type
+            templateVariables.put("reporteZona", reporte.getZona().getNombre()); // Add zone name
             templateVariables.put("message", message);
             templateVariables.put("reporteEstado", reporte.getReporteGestion().getEstado());
 

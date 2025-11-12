@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Actualización de Estado de Reporte</title>
+    <title>Actualización de Reporte - <span th:text="${reporteTipoIncidente}"></span> en <span th:text="${reporteZona}"></span></title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -75,11 +75,15 @@
             <p>Estimado usuario,</p>
             <p>Le escribimos para informarle sobre una actualización importante en el estado de su reporte en UTP Reporta.</p>
             <div class="status-info">
-                <p>Su reporte (ID: <strong><span class="highlight" th:text="${reporteId}">[ID del Reporte]</span></strong>) ha sido actualizado.</p>
+                <p>Su reporte sobre <strong class="highlight" th:text="${reporteTipoIncidente}">[Tipo de Incidente]</strong> en la zona <strong class="highlight" th:text="${reporteZona}">[Nombre de la Zona]</strong> ha sido actualizado.</p>
+                <p>Descripción del reporte: <span th:text="${reporteDescripcion}">[Descripción del Reporte]</span></p>
                 <p th:if="${message != null and message != ''}"><strong>Mensaje Adicional:</strong> <span th:text="${message}">[Mensaje]</span></p>
                 <p><strong>Estado Actual:</strong> <span class="highlight" th:text="${reporteEstado}">[Estado Actual]</span></p>
             </div>
-            <p>Agradecemos su paciencia y colaboración. Para cualquier consulta, no dude en contactarnos.</p>
+            <p>Agradecemos su paciencia y colaboración en la resolución de este incidente. Para cualquier consulta o para ver los detalles completos de su reporte, no dude en contactarnos o visitar nuestra plataforma.</p>
+            <p style="text-align: center; margin-top: 25px;">
+                <a href="#" style="display: inline-block; background-color: #0056b3; color: #ffffff; padding: 12px 25px; border-radius: 5px; text-decoration: none; font-weight: bold;">Ver Detalles del Reporte</a>
+            </p>
             <p>Saludos cordiales,</p>
             <p>El equipo de <strong>UTP Reporta</strong></p>
         </div>
