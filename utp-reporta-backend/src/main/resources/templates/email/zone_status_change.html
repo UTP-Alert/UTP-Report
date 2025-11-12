@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Actualización de Estado de Zona</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef1f5;
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #0056b3; /* Darker blue for a professional look */
+            color: #ffffff;
+            padding: 25px 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .content {
+            padding: 30px;
+            color: #333333;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+        .content p {
+            margin-bottom: 15px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #0056b3;
+        }
+        .status-info {
+            background-color: #f0f8ff; /* Light blue background for status */
+            border-left: 5px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .status-info strong {
+            color: #0056b3;
+        }
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: #777777;
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eeeeee;
+        }
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>UTP Reporta</h1>
+        </div>
+        <div class="content">
+            <p>Estimado usuario,</p>
+            <p>Le escribimos para informarle sobre una actualización importante en el estado de una zona monitoreada por UTP Reporta.</p>
+            <div class="status-info">
+                <p>La zona <strong><span class="highlight" th:text="${zonaNombre}">[Nombre de la Zona]</span></strong> ha cambiado su estado a:</p>
+                <p><strong>Nuevo Estado:</strong> <span class="highlight" th:text="${zonaEstado}">[Estado Actual]</span></p>
+                <p th:if="${message != null and message != ''}"><strong>Mensaje Adicional:</strong> <span th:text="${message}">[Mensaje]</span></p>
+            </div>
+            <p>Agradecemos su atención y comprensión. Para cualquier consulta, no dude en contactarnos.</p>
+            <p>Saludos cordiales,</p>
+            <p>El equipo de <strong>UTP Reporta</strong></p>
+        </div>
+        <div class="footer">
+            <p>&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span> UTP Reporta. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>
