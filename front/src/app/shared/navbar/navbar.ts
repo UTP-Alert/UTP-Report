@@ -110,6 +110,8 @@ export class NavbarComponent {
   notifications = signal<Array<{ id: number; title: string; body: string; zonaNombre?: string; estado?: string; ts: Date; read: boolean }>>([]);
   unreadCount = computed(() => this.notifications().filter(n => !n.read).length);
   private storageKey = 'utp_notifications';
+  private storageMetaKey = 'utp_notifications_meta';
+  private dailyResetTimer: any = null;
 
   constructor(){
     this.tour = inject(TourService);
@@ -151,6 +153,10 @@ export class NavbarComponent {
         this.notifications.set(items.slice(0, 50));
       }
     } catch {}
+
+    // Reset diario de notificaciones (todas las cuentas/roles que usan navbar)
+    this.ensureDailyReset();
+    this.scheduleMidnightReset();
     // Sincronizar la URL actual para reactividad
     this.currentUrl.set(this.router.url || '');
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((e: any) => {
@@ -213,6 +219,50 @@ export class NavbarComponent {
         } catch {}
       }
     });
+  }
+
+  // ====== Reset diario de notificaciones ======
+  private getTodayKey(): string {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`; // fecha local
+  }
+
+  private ensureDailyReset(){
+    try {
+      const today = this.getTodayKey();
+      const raw = localStorage.getItem(this.storageMetaKey);
+      let last = '';
+      if (raw) {
+        try {
+          const obj = JSON.parse(raw);
+          last = obj && obj.lastDate ? String(obj.lastDate) : String(raw);
+        } catch { last = String(raw); }
+      }
+      if (last !== today) {
+        // Nuevo día: limpiar lista y contador (efecto de persistencia guardará [])
+        this.notifications.set([]);
+      }
+      localStorage.setItem(this.storageMetaKey, JSON.stringify({ lastDate: today }));
+    } catch {}
+  }
+
+  private scheduleMidnightReset(){
+    try {
+      if (this.dailyResetTimer) { clearTimeout(this.dailyResetTimer); this.dailyResetTimer = null; }
+      const now = new Date();
+      const next = new Date(now);
+      next.setHours(24, 0, 0, 0); // próxima medianoche local
+      const ms = next.getTime() - now.getTime();
+      this.dailyResetTimer = setTimeout(() => {
+        // Al cruzar medianoche: limpiar y volver a programar
+        this.notifications.set([]);
+        this.ensureDailyReset();
+        this.scheduleMidnightReset();
+      }, Math.max(ms, 1000));
+    } catch {}
   }
 
   // Construye una clave estable para identificar una notificación de reporte
