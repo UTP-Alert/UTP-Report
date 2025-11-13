@@ -172,9 +172,9 @@
 .card .side-col .badge { display:block; margin-left:0.5rem; }
 
 /* Heading row styles (mirar reportes-recientes) */
-.heading-row{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; }
+.heading-row{ display:flex; flex-wrap: wrap; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; }
 .heading-row .heading{ display:flex; align-items:center; gap:0.75rem; font-size:1.6rem; margin:0; }
-.heading-row .controls-right{ display:flex; align-items:center; gap:0.75rem; }
+.heading-row .controls-right{ display:flex; flex-wrap: wrap; align-items:center; gap:0.75rem; }
 .heading-row .controls-right .btn{ padding:0.45rem 0.75rem; border-radius:8px; }
 .heading-row .controls-right .badge{ background:#fff; border:1px solid rgba(0,0,0,0.06); color:#374151; }
 

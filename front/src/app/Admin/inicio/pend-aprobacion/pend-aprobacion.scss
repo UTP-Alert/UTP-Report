@@ -2,6 +2,10 @@
 	display:block; padding: 8px 0;
 }
 
+.text-2xl.mb-4.flex.items-center.gap-3 {
+  flex-wrap: wrap;
+}
+
 .card { border-radius: 12px; overflow: hidden; }
 
 .card { position: relative; }

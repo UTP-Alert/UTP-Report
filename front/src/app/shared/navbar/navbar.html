@@ -7,13 +7,21 @@
     </a>
 
     <!-- Toggler -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarOffcanvas" aria-controls="navbarOffcanvas" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarMain">
-      <!-- Left/Common links -->
-  <ul class="navbar-nav mx-auto mb-2 mb-lg-0 left-nav">
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="navbarOffcanvas" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title d-flex align-items-center" id="offcanvasNavbarLabel">
+          <svg class="shield me-2" viewBox="0 0 24 24" aria-hidden="true"><path stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M12 3 4 7v7c0 5 8 9 8 9s8-4 8-9V7l-8-4Z"/></svg>
+          <span class="brand-text">UTP+Report</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <!-- Left/Common links -->
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 left-nav">
         <!-- Inicio siempre -->
         <li class="nav-item" *ngIf="canShow('home')">
           <a class="nav-link" [routerLink]="getHomePath()" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
@@ -108,29 +116,24 @@
           </a>
         </li>
       </ul>
-
-      <!-- Right side -->
-  <ul class="navbar-nav ms-auto align-items-lg-center">
-
-        <!-- CTA Reportar Ahora -->
-        <!-- Reportar Ahora: solo Usuario o Admin actuando como usuario -->
-        <li class="nav-item me-2" *ngIf="isUsuario() || isAdminAsUser()">
-          <button class="btn btn-danger report-cta" (click)="reportar()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>
-            <span>Reportar Ahora</span>
-          </button>
-        </li>
-        <!-- Botón para abrir Tour del sistema -->
-        <li class="nav-item me-2">
-          <button class="btn btn-outline-secondary" (click)="openTour()" title="Tour del sistema">Tour</button>
-        </li>
-        
-        
-
-      </ul>
+        <!-- Right side -->
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <!-- CTA Reportar Ahora -->
+          <!-- Reportar Ahora: solo Usuario o Admin actuando como usuario -->
+          <li class="nav-item me-2" *ngIf="isUsuario() || isAdminAsUser()">
+            <button class="btn btn-danger report-cta" (click)="reportar()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>
+              <span>Reportar Ahora</span>
+            </button>
+          </li>
+          <!-- Botón para abrir Tour del sistema -->
+          <li class="nav-item me-2">
+            <button class="btn btn-outline-secondary" (click)="openTour()" title="Tour del sistema">Tour</button>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
-  
 </nav>
 
 <app-tour *ngIf="tour.currentStepIndex !== -1"
