@@ -85,13 +85,25 @@ public class NotificationService {
     }
 
     public void notifyZoneStatusChange(Zona zona, String message) {
-        messagingTemplate.convertAndSend("/topic/zone-status", new NotificationMessage(message, mapToDto(zona)));
+        // Get the sedeId from the zona
+        Long sedeId = zona.getSede() != null ? zona.getSede().getId() : null;
 
-        // Send email to all users with ROLE_USER
-        rolRepository.findByNombre(ERol.ROLE_USUARIO).ifPresent(rol -> {
-            List<String> userEmails = usuarioRepository.findByRoles_Nombre(ERol.ROLE_USUARIO).stream()
-                                                    .map(usuario -> usuario.getCorreo()) // Assuming getCorreo() exists
+        if (sedeId != null) {
+            // Get users with ROLE_USUARIO for the specific sede
+            List<String> userEmails = usuarioRepository.findByRoles_NombreAndSede_Id(ERol.ROLE_USUARIO, sedeId).stream()
+                                                    .map(usuario -> usuario.getCorreo())
                                                     .collect(Collectors.toList());
+
+            // Send WebSocket notification to users of the specific sede
+            for (String email : userEmails) {
+                // Assuming the frontend subscribes to a topic like /topic/zone-status.{sedeId}.{username}
+                // For simplicity, we'll send to a general topic for the sede, and the frontend can filter.
+                // A more robust solution would involve user-specific topics or a custom WebSocket handler.
+                messagingTemplate.convertAndSend("/topic/zone-status." + sedeId, new NotificationMessage(message, mapToDto(zona)));
+            }
+
+
+            // Send email to users with ROLE_USUARIO for the specific sede
             String subject = "Actualización de Estado de Zona: " + zona.getNombre();
             Map<String, Object> templateVariables = new java.util.HashMap<>();
             templateVariables.put("zonaNombre", zona.getNombre());
@@ -105,7 +117,9 @@ public class NotificationService {
                     System.err.println("Error al enviar correo de cambio de estado de zona a " + email + ": " + e.getMessage());
                 }
             }
-        });
+        } else {
+            System.err.println("Zona sin sede asociada, no se pueden enviar notificaciones filtradas.");
+        }
     }
 
     public void notifyReportStatusChange(Long reporteId, String message) {

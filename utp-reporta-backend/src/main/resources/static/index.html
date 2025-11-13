@@ -6,30 +6,42 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
-    <h1>Report Status Notifications</h1>
+    <h1>WebSocket Test Page</h1>
+
+    <h2>Report Status Notifications</h2>
     <p>Enter username to subscribe to report notifications:</p>
     <input type="text" id="usernameInput" placeholder="Enter username">
-    <button onclick="subscribeToUserNotifications()">Subscribe</button>
-    <ul id="messages"></ul>
+    <button onclick="subscribeToUserNotifications()">Subscribe to User Reports</button>
+    <ul id="userMessages"></ul>
+
+    <h2>Zone Status Notifications</h2>
+    <p>Enter Sede ID to subscribe to zone status notifications for that Sede:</p>
+    <input type="number" id="sedeIdInput" placeholder="Enter Sede ID">
+    <button onclick="subscribeToZoneNotifications()">Subscribe to Zone Status</button>
+    <ul id="zoneMessages"></ul>
 
     <script type="text/javascript">
         var stompClient = null;
         var subscribedUsername = null;
+        var subscribedSedeId = null;
 
         function connect() {
             var socket = new SockJS('/ws');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
                 console.log('Connected: ' + frame);
-                // Subscribe to public zone status notifications (if still desired)
-                stompClient.subscribe('/topic/zone-status', function (message) {
-                    showMessage(JSON.parse(message.body));
-                });
 
                 // If a username was already set, re-subscribe to user-specific notifications
                 if (subscribedUsername) {
                     subscribeToUserNotifications(subscribedUsername);
                 }
+                // If a sedeId was already set, re-subscribe to sede-specific zone notifications
+                if (subscribedSedeId) {
+                    subscribeToZoneNotifications(subscribedSedeId);
+                }
+            }, function(error) {
+                console.error('STOMP error: ' + error);
+                alert('WebSocket connection error. Please check console for details.');
             });
         }
 
@@ -40,10 +52,11 @@
                     if (subscribedUsername) {
                         // Unsubscribe from previous user's notifications if any
                         stompClient.unsubscribe('/user/' + subscribedUsername + '/queue/notifications');
+                        console.log('Unsubscribed from previous user: ' + subscribedUsername);
                     }
                     subscribedUsername = username;
                     stompClient.subscribe('/user/' + username + '/queue/notifications', function (message) {
-                        showMessage(JSON.parse(message.body));
+                        showMessage(JSON.parse(message.body), 'userMessages');
                     });
                     console.log('Subscribed to notifications for user: ' + username);
                 } else {
@@ -54,18 +67,43 @@
             }
         }
 
-        function showMessage(notification) {
-            var messages = document.getElementById('messages');
+        function subscribeToZoneNotifications() {
+            if (stompClient && stompClient.connected) {
+                var sedeId = document.getElementById('sedeIdInput').value;
+                if (sedeId) {
+                    if (subscribedSedeId) {
+                        // Unsubscribe from previous sede's notifications if any
+                        stompClient.unsubscribe('/topic/zone-status.' + subscribedSedeId);
+                        console.log('Unsubscribed from previous sedeId: ' + subscribedSedeId);
+                    }
+                    subscribedSedeId = sedeId;
+                    stompClient.subscribe('/topic/zone-status.' + sedeId, function (message) {
+                        showMessage(JSON.parse(message.body), 'zoneMessages');
+                    });
+                    console.log('Subscribed to zone status for Sede ID: ' + sedeId);
+                } else {
+                    alert('Please enter a Sede ID.');
+                }
+            } else {
+                alert('WebSocket not connected. Please refresh the page.');
+            }
+        }
+
+        function showMessage(notification, elementId) {
+            var messages = document.getElementById(elementId);
             var li = document.createElement('li');
+            var textContent = '';
+
             if (notification.message) {
-                li.appendChild(document.createTextNode('Notification: ' + notification.message));
+                textContent += 'Notification: ' + notification.message;
             }
             if (notification.zona) {
-                li.appendChild(document.createTextNode('Zone: ' + notification.zona.nombre + ', Status: ' + notification.zona.estado));
+                textContent += ' | Zone: ' + notification.zona.nombre + ', Status: ' + notification.zona.estado;
             }
             if (notification.reporte) {
-                li.appendChild(document.createTextNode('Report ID: ' + notification.reporte.id + ', Status: ' + notification.reporte.reporteGestion.estado));
+                textContent += ' | Report ID: ' + notification.reporte.id + ', Status: ' + notification.reporte.reporteGestion.estado;
             }
+            li.appendChild(document.createTextNode(textContent));
             messages.appendChild(li);
         }
 
