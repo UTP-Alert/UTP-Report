@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChildren, QueryList, ElementRef, Renderer2, inject } from '@angular/core';
+import { Component, AfterViewInit, ViewChildren, QueryList, ElementRef, Renderer2, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Necesario para directivas como *ngIf, *ngFor
 import { TourService } from '../../shared/tour/tour.service'; // Import TourService
 
@@ -47,7 +47,31 @@ export class GuiaPage implements AfterViewInit {
   private bsModal: any; // Bootstrap modal instance
   private tourService = inject(TourService); // Inject TourService
 
-  constructor(private renderer: Renderer2) {}
+  darkMode = signal<boolean>(false);
+  private storageKey = 'guia_dark_mode';
+
+  constructor(private renderer: Renderer2) {
+    // Load dark mode preference from local storage
+    try {
+      const storedPreference = localStorage.getItem(this.storageKey);
+      if (storedPreference !== null) {
+        this.darkMode.set(JSON.parse(storedPreference));
+      } else {
+        this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+      }
+    } catch (e) {
+      console.error('Error reading dark mode preference from localStorage', e);
+      this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+
+    effect(() => {
+      try {
+        localStorage.setItem(this.storageKey, JSON.stringify(this.darkMode()));
+      } catch (e) {
+        console.error('Error writing dark mode preference to localStorage', e);
+      }
+    });
+  }
 
   ngAfterViewInit(): void {
     // Calculate initial heights after view is initialized
@@ -152,5 +176,9 @@ export class GuiaPage implements AfterViewInit {
     ];
     this.tourService.init(steps);
     this.tourService.open(0);
+  }
+
+  toggleDarkMode() {
+    this.darkMode.update(value => !value);
   }
 }
