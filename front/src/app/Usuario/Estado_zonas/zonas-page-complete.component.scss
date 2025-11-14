@@ -1,3 +1,5 @@
+@use "sass:color";
+
 /* Custom styles for Estado de Zonas page */
 
 $primary-color: #FF395C; // rojo #FF395C
@@ -71,10 +73,181 @@ $gray-light-text: #6B7280; // gray-500
   }
 }
 
+.dark-mode-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $gray-text;
+  z-index: 1000; /* Added to ensure visibility */
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  &:hover {
+    color: $primary-color;
+  }
+}
+
 .page-container {
+  position: relative; /* Added for absolute positioning of dark mode toggle */
   min-height: 100vh;
   background-color: $gray-bg;
   padding: 2rem 1rem; /* py-8 px-4 */
+
+  &.dark-mode {
+    background-color: #121212; /* Fondo principal */
+      color: #f5f5f5; /* Texto principal */
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    .main-header .header-title {
+      color: #f5f5f5; /* Texto principal */
+    }
+    .main-header .header-subtitle {
+      color: #b0b0b0; /* Texto secundario */
+    }
+    .main-header .header-icon {
+      color: #1e88e5; /* Botones con color de acento */
+    }
+
+    .read-only-alert {
+      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      border-color: #2a2a2a; /* Inputs */
+      color: #f5f5f5; /* Texto principal */
+    }
+    .read-only-alert .alert-icon {
+      color: #1e88e5; /* Botones con color de acento */
+    }
+    .read-only-alert .alert-description {
+      color: #f5f5f5; /* Texto principal */
+    }
+
+    .sede-selector-card {
+      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      border-color: #2a2a2a; /* Inputs */
+      color: #f5f5f5; /* Texto principal */
+    }
+    .sede-selector-card .sede-select {
+      background-color: #2a2a2a; /* Inputs */
+      border-color: #2a2a2a; /* Inputs */
+      color: #101010; /* Texto principal */
+    }
+    .sede-selector-card .sede-selector-icon {
+      color: #1e88e5; /* Botones con color de acento */
+    }
+    .sede-selector-card .sede-label {
+      color: #b0b0b0; /* Texto secundario */
+    }
+
+    .quick-stats-grid .stat-card {
+      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      border-color: #2a2a2a; /* Inputs */
+      .stat-label {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .stat-icon {
+        color: #1e88e5; /* Botones con color de acento */
+      }
+      &.stat-safe {
+        background-color: #1f1f1f;
+        border-color: #2a2a2a;
+        .stat-icon { color: #28a745; } /* Green for safe */
+      }
+      &.stat-caution {
+        background-color: #1f1f1f;
+        border-color: #2a2a2a;
+        .stat-icon { color: #ffc107; } /* Yellow for caution */
+      }
+      &.stat-dangerous {
+        background-color: #1f1f1f;
+        border-color: #2a2a2a;
+        .stat-icon { color: #dc3545; } /* Red for dangerous */
+      }
+      &.stat-students {
+        background-color: #1f1f1f;
+        border-color: #2a2a2a;
+        .stat-icon { color: #1e88e5; } /* Accent color for students */
+      }
+    }
+
+    .controls-section .action-button {
+      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      border-color: #2a2a2a; /* Inputs */
+      color: #f5f5f5; /* Texto principal */
+      &:hover {
+        background-color: #2a2a2a; /* Inputs */
+      }
+      .map-icon, .export-icon {
+        color: #1e88e5; /* Botones con color de acento */
+      }
+    }
+    .controls-section .update-badge {
+      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      border-color: #2a2a2a; /* Inputs */
+      color: #b0b0b0; /* Texto secundario */
+    }
+
+    .zone-cards-grid .zone-card {
+      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      border-color: #2a2a2a; /* Inputs */
+      .zone-card-header .zone-title {
+        color: #f5f5f5; /* Texto principal */
+      }
+      .zone-card-header .zone-details {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .zone-card-header .detail-icon {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .zone-status-badge {
+        &.zone-status-safe { background-color: #28a745; }
+        &.zone-status-caution { background-color: #ffc107; }
+        &.zone-status-dangerous { background-color: #dc3545; }
+      }
+      .trend-info {
+        color: #b0b0b0; /* Texto secundario */
+        &.trend-down { color: #28a745; }
+        &.trend-stable { color: #1e88e5; }
+      }
+      .trend-info .trend-timestamp {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .security-level-section .security-level-labels span {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .security-level-section .progress-bar-container {
+        background-color: #2a2a2a; /* Inputs */
+      }
+      .security-level-section .progress-bar-fill {
+        background-color: #1e88e5; /* Botones con color de acento */
+      }
+      .zone-image-wrapper {
+        background-color: #2a2a2a; /* Inputs */
+      }
+      .image-location {
+        color: #f5f5f5; /* Texto principal */
+      }
+      .security-description-section .security-description-label {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .security-description-section .security-description-text {
+        background-color: #2a2a2a; /* Inputs */
+        border-color: #2a2a2a; /* Inputs */
+        color: #f5f5f5; /* Texto principal */
+      }
+      .report-button-wrapper {
+        border-top-color: #2a2a2a; /* Inputs */
+      }
+      .report-button {
+        background-color: #1e88e5; /* Botones con color de acento */
+        &:hover {
+          background-color: color.adjust(#1e88e5, $lightness: -10%);
+        }
+      }
+    }
+  }
 }
 
 .content-wrapper {

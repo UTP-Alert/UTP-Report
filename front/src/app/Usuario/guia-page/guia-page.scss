@@ -28,13 +28,263 @@ $gray-700: #374151;
 $white-color: var(--background);
 $black-color: var(--foreground);
 
+/* Dark Mode Toggle Button */
+.dark-mode-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $gray-600;
+  z-index: 1000; /* Added to ensure visibility */
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  &:hover {
+    color: $primary-color;
+  }
+}
+
 .guia-page-container {
+  position: relative; /* Added for absolute positioning of dark mode toggle */
   background-color: $gray-50; // bg-gray-50
   padding-top: 32px; // py-8
   padding-bottom: 32px; // py-8
   padding-left: 16px; // px-4
   padding-right: 16px; // px-4
   min-height: 100vh; // min-h-screen
+
+  &.dark-mode {
+    background-color: #121212; /* Fondo principal */
+    color: #f5f5f5; /* Texto principal */
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    .header {
+      .icon-title h1 {
+        color: #f5f5f5; /* Texto principal */
+      }
+      p {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .book-open-icon {
+        color: #1e88e5; /* Botones con color de acento */
+      }
+    }
+
+    .tutorial-grid .card {
+      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      &:hover {
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+      }
+      .card-title {
+        color: #f5f5f5; /* Texto principal */
+      }
+      .card-description {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      &.tour-card {
+        border-color: #2a2a2a; /* Inputs */
+        .video-icon {
+          color: #1e88e5; /* Botones con color de acento */
+        }
+        .btn-tour {
+          background-color: #1e88e5; /* Botones con color de acento */
+          &:hover {
+            background-color: color.adjust(#1e88e5, $lightness: -10%);
+          }
+        }
+      }
+      &.report-card {
+        border-color: #2a2a2a; /* Inputs */
+        .alert-triangle-icon {
+          color: #1e88e5; /* Botones con color de acento */
+        }
+        .btn-report {
+          background-color: #1e88e5; /* Botones con color de acento */
+          &:hover {
+            background-color: color.adjust(#1e88e5, $lightness: -10%);
+          }
+        }
+      }
+    }
+
+    .emergency-contact-card {
+      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      border-color: #2a2a2a; /* Inputs */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      .card-title {
+        color: #f5f5f5; /* Texto principal */
+      }
+      .card-description {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .alert-triangle-icon {
+        color: #dc3545; /* Red for emergency */
+      }
+      .btn-emergency.call-911 {
+        background-color: #dc3545; /* Red for emergency */
+        &:hover {
+          background-color: color.adjust(#dc3545, $lightness: -10%);
+        }
+      }
+      .btn-emergency.campus-security {
+        border-color: #2a2a2a; /* Inputs */
+        color: #1e88e5; /* Botones con color de acento */
+        &:hover {
+          background-color: #2a2a2a; /* Inputs */
+        }
+        .btn-icon {
+          color: #1e88e5; /* Botones con color de acento */
+        }
+      }
+    }
+
+    .faq-card {
+      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      border-color: #2a2a2a; /* Inputs */
+      .card-title {
+        color: #f5f5f5; /* Texto principal */
+      }
+      .card-description {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .file-text-icon {
+        color: #1e88e5; /* Botones con color de acento */
+      }
+      .accordion-item {
+        border-bottom-color: #2a2a2a; /* Inputs */
+        .accordion-trigger {
+          background-color: #1f1f1f; /* Tarjetas o contenedores */
+          color: #f5f5f5; /* Texto principal */
+          &:hover {
+            background-color: #2a2a2a; /* Inputs */
+          }
+        }
+        .accordion-content {
+          background-color: #1f1f1f; /* Tarjetas o contenedores */
+          color: #b0b0b0; /* Texto secundario */
+        }
+      }
+    }
+
+    .modal {
+      --bs-modal-bg: #1f1f1f; /* Tarjetas o contenedores */
+      --bs-modal-box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+    }
+    .modal-header {
+      .modal-title {
+        color: #f5f5f5; /* Texto principal */
+        .tutorial-badge {
+          border-color: #2a2a2a; /* Inputs */
+          color: #b0b0b0; /* Texto secundario */
+        }
+      }
+      .tutorial-step-description {
+        color: #b0b0b0 !important; /* Texto secundario */
+      }
+      .btn-close {
+        filter: invert(1);
+      }
+    }
+    .modal-body {
+      .tutorial-progress-text {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .tutorial-h3-title {
+        color: #f5f5f5; /* Texto principal */
+      }
+      .tutorial-description {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .tutorial-alert-text {
+        color: #f5f5f5; /* Texto principal */
+      }
+      .bg-gray-50 {
+        background-color: #2a2a2a !important; /* Inputs */
+      }
+      .alert-info {
+        background-color: #2a2a2a !important; /* Inputs */
+        border-color: #1e88e5 !important; /* Botones con color de acento */
+      }
+      .alert-warning {
+        background-color: #2a2a2a !important; /* Inputs */
+      }
+      .bg-green-50 {
+        background-color: #2a2a2a !important; /* Inputs */
+      }
+      .bg-white {
+        background-color: #2a2a2a !important; /* Inputs */
+      }
+      .tutorial-footer-text {
+        color: #b0b0b0; /* Texto secundario */
+      }
+      .tutorial-main-icon, .tutorial-step-content-icon {
+        color: #1e88e5; /* Botones con color de acento */
+      }
+      .tutorial-checkmark-icon {
+        color: #28a745; /* Green for checkmarks */
+      }
+      .tutorial-star-icon {
+        color: #ffc107; /* Yellow for stars */
+      }
+      .tutorial-option-title.text-blue-800 { color: #1e88e5 !important; }
+      .tutorial-option-description.text-blue-700 { color: #f5f5f5 !important; }
+      .tutorial-option-title.text-green-800 { color: #28a745 !important; }
+      .tutorial-option-description.text-green-700 { color: #f5f5f5 !important; }
+      .tutorial-h4-title.text-yellow-800 { color: #ffc107 !important; }
+      .tutorial-list-text.text-yellow-700 { color: #f5f5f5 !important; }
+    }
+    .modal-footer {
+      .btn-outline-secondary {
+        border-color: #2a2a2a !important; /* Inputs */
+        color: #f5f5f5 !important; /* Texto principal */
+        &:hover {
+          background-color: #2a2a2a !important; /* Inputs */
+        }
+      }
+      .btn-link {
+        color: #b0b0b0 !important; /* Texto secundario */
+        &:hover {
+          color: #f5f5f5 !important; /* Texto principal */
+        }
+      }
+      .btn-primary {
+        background-color: #1e88e5 !important; /* Botones con color de acento */
+        border-color: #1e88e5 !important;
+        &:hover {
+          background-color: color.adjust(#1e88e5, $lightness: -10%) !important;
+          border-color: color.adjust(#1e88e5, $lightness: -10%) !important;
+        }
+      }
+      .btn-success {
+        background-color: #28a745 !important; /* Green for success */
+        border-color: #28a745 !important;
+        &:hover {
+          background-color: color.adjust(#28a745, $lightness: -10%) !important;
+          border-color: color.adjust(#28a745, $lightness: -10%) !important;
+        }
+      }
+    }
+    .progress {
+      background-color: #2a2a2a; /* Inputs */
+    }
+    .progress-bar {
+      background-color: #1e88e5; /* Botones con color de acento */
+    }
+    .step-indicator-bs {
+      background-color: #2a2a2a; /* Inputs */
+      &.active {
+        background-color: #1e88e5; /* Botones con color de acento */
+      }
+      &.completed {
+        background-color: #28a745; /* Green for completed */
+      }
+    }
+  }
 
   .content-wrapper {
     max-width: 1152px; // max-w-6xl

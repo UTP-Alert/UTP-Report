@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, signal, effect } from '@angular/core';
 import { CommonModule, NgIf, NgFor, NgClass } from '@angular/common';
 import { ReportaAhora } from './reporta-ahora/reporta-ahora';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -84,6 +84,9 @@ export class InicioUsuario implements OnInit {
   lastRefreshLabel: string = 'Hoy';
   private zoneStatusListenerBound = false;
 
+  darkMode = signal<boolean>(false);
+  private storageKey = 'inicio_dark_mode';
+
   // Handler para actualizaciones en tiempo real provenientes del Navbar (evento global 'zone-status-update')
   private onZoneStatusUpdate = (ev: Event) => {
     try {
@@ -119,7 +122,28 @@ export class InicioUsuario implements OnInit {
     private zonaService: ZonaService,
     private usuarioService: UsuarioService,
     private tipoService: TipoIncidenteService
-  ) {}
+  ) {
+    // Load dark mode preference from local storage
+    try {
+      const storedPreference = localStorage.getItem(this.storageKey);
+      if (storedPreference !== null) {
+        this.darkMode.set(JSON.parse(storedPreference));
+      } else {
+        this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+      }
+    } catch (e) {
+      console.error('Error reading dark mode preference from localStorage', e);
+      this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+
+    effect(() => {
+      try {
+        localStorage.setItem(this.storageKey, JSON.stringify(this.darkMode()));
+      } catch (e) {
+        console.error('Error writing dark mode preference to localStorage', e);
+      }
+    });
+  }
 
   ngOnInit(): void {
     // Cargar el conteo diario al iniciar para bloquear el botón si corresponde
@@ -605,5 +629,9 @@ export class InicioUsuario implements OnInit {
       const mi = String(d.getMinutes()).padStart(2, '0');
       return `${dd}/${mm}/${yyyy}, ${hh}:${mi}`;
     } catch { return fechaISO; }
+  }
+
+  toggleDarkMode() {
+    this.darkMode.update(value => !value);
   }
 }

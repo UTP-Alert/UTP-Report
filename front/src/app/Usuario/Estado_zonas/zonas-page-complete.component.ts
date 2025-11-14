@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PerfilService } from '../../services/perfil.service';
@@ -19,11 +19,35 @@ export class ZonasPageCompleteComponent implements OnInit {
   selectedSedeNombre: string | null = null;
   zonas: Array<Zona & { foto?: any; fotoUrl?: string; [k: string]: any } > = [];
 
+  darkMode = signal<boolean>(false);
+  private storageKey = 'zonas_dark_mode';
+
   constructor(
     private perfilService: PerfilService,
     private sedeService: SedeService,
     private zonaService: ZonaService,
-  ) {}
+  ) {
+    // Load dark mode preference from local storage
+    try {
+      const storedPreference = localStorage.getItem(this.storageKey);
+      if (storedPreference !== null) {
+        this.darkMode.set(JSON.parse(storedPreference));
+      } else {
+        this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+      }
+    } catch (e) {
+      console.error('Error reading dark mode preference from localStorage', e);
+      this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+
+    effect(() => {
+      try {
+        localStorage.setItem(this.storageKey, JSON.stringify(this.darkMode()));
+      } catch (e) {
+        console.error('Error writing dark mode preference to localStorage', e);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.loading = true;
@@ -122,5 +146,9 @@ export class ZonasPageCompleteComponent implements OnInit {
     }
     const estudiantes = 0; // sin fuente de datos, mostrar 0 por ahora
     return { seguras, precaucion, peligrosas, estudiantes };
+  }
+
+  toggleDarkMode() {
+    this.darkMode.update(value => !value);
   }
 }

@@ -25,6 +25,7 @@
 }
 .modal-header-left {
 	display: flex;
+	flex-wrap: wrap; /* Allow items to wrap on smaller screens */
 	align-items: flex-start; /* icono al inicio, título y subtítulo alineados en columna */
 	gap: 0.5rem; /* espacio reducido entre icono y bloque de título */
 }

@@ -80,6 +80,11 @@ $orange-600: #EA580C; /* Para hover */
   min-height: 100vh;
 }
 
+main {
+  overflow-y: auto; /* Allow vertical scrolling if content overflows */
+  -webkit-overflow-scrolling: touch; /* Improve scrolling performance on iOS */
+}
+
 .bg-gray-50 {
   background-color: $gray-50;
 }
@@ -860,9 +865,8 @@ $orange-600: #EA580C; /* Para hover */
 }
 
 .tabs-list {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* repartir los tabs a lo largo de todo el ancho */
+  display: grid; /* Cambiado a grid para mayor control en responsive */
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Ajuste automático de columnas */
   gap: 0.25rem; /* huecos grises más delgados */
   background-color: $gray-100;
   border-radius: 0.5rem; /* rectángulo con esquinas redondeadas */
@@ -873,18 +877,22 @@ $orange-600: #EA580C; /* Para hover */
 .tabs-trigger {
   background-color: transparent;
   border: none;
-  padding: 1.3rem 1.2rem; /* zona blanca más grande - vertical más ancho */
+  padding: 0.8rem 0.5rem; /* Ajustado para pantallas pequeñas */
   border-radius: 0.6rem; /* rectángulos con esquinas sutilmente redondeadas */
   cursor: pointer;
   color: $gray-600;
-  font-size: 0.95rem; /* letras un poco más grandes */
+  font-size: 0.8rem; /* Ajustado para pantallas pequeñas */
   transition: all 0.15s ease-in-out;
   position: relative;
   display: flex;
+  flex-direction: column; /* Apila icono y texto */
   align-items: center;
   justify-content: center;
   flex: 1 1 0; /* cada tab ocupa espacio igual */
   text-align: center;
+  white-space: nowrap; /* Evita que el texto se rompa */
+  overflow: hidden; /* Oculta el desbordamiento si el texto es muy largo */
+  text-overflow: ellipsis; /* Añade puntos suspensivos si el texto se desborda */
 
   &.active {
     background-color: $white;
@@ -900,12 +908,31 @@ $orange-600: #EA580C; /* Para hover */
   /* quitar subrayado/underline de enlaces si hay alguno */
   text-decoration: none;
   &::after { content: none; } /* eliminar pseudo-elementos de subrayado */
+
+  /* Estilos para los iconos dentro de los tabs */
+  i {
+    margin-bottom: 0.25rem; /* Espacio entre icono y texto */
+  }
 }
 
 @include sm {
   .tabs-trigger {
-    padding: 1.4rem 1.6rem; /* un poco más grande en pantallas sm+ */
-    font-size: 1.02rem;
+    padding: 1rem 0.8rem; /* un poco más grande en pantallas sm+ */
+    font-size: 0.9rem;
+    flex-direction: row; /* Vuelve a poner icono y texto en fila */
+    gap: 0.5rem; /* Espacio entre icono y texto */
+    white-space: normal; /* Permite que el texto se rompa si es necesario */
+    text-overflow: clip; /* Elimina los puntos suspensivos */
+    i {
+      margin-bottom: 0;
+    }
+  }
+}
+
+@include lg {
+  .tabs-trigger {
+    padding: 1.3rem 1.2rem; /* un poco más grande en pantallas lg+ */
+    font-size: 0.95rem;
   }
 }
 

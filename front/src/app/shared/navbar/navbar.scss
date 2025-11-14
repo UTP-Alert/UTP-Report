@@ -198,8 +198,113 @@ body {
   padding-top: 72px; /* altura extra para navbar con píldoras e iconos */
 }
 
+/* Ajustes responsive generales */
 @media (max-width: 992px) {
+  .utp-navbar {
+    .navbar-brand {
+      font-size: 1rem;
+    }
+
+    .brand-text {
+      display: inline-block;
+      font-size: 0.95rem;
+    }
+
+    .report-cta {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.7rem;
+    }
+
+    .user-name,
+    .user-status {
+      display: none; /* ocultamos info de usuario para simplificar navbar móvil */
+    }
+  }
+
+  /* Offcanvas personalizado */
+  .offcanvas {
+    background-color: #111 !important;
+  }
+
+  .offcanvas-title {
+    font-weight: 600;
+    color: #fff; /* Make the entire offcanvas title white */
+
+    .brand-text {
+      color: #fff; /* Ensure brand text is white */
+    }
+
+    .shield {
+      color: #ff3252; /* Keep the shield icon color */
+    }
+  }
+
+  .offcanvas-body {
+    display: flex; /* Enable flexbox for the offcanvas body */
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+    padding-top: 1rem; /* Add some padding at the top */
+
+    .navbar-nav {
+      width: 100%; /* Ensure nav takes full width to allow centering */
+      justify-content: center; /* Center nav items if they are flex items */
+      align-items: center; /* Center items vertically within the nav */
+      flex-direction: column; /* Stack nav items vertically */
+      margin-bottom: 1rem; /* Space between nav links and buttons */
+    }
+
+    .nav-item {
+      width: 100%; /* Ensure nav items take full width */
+      text-align: center; /* Center text within nav items */
+      margin-bottom: 0.5rem; /* Space between nav items */
+    }
+
+    .nav-link {
+      font-size: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      color: #fff;
+      opacity: 0.9;
+      display: flex; /* Use flex to align icon and text */
+      align-items: center;
+      justify-content: center; /* Center content within the nav-link */
+      gap: 0.6rem;
+      width: 100%; /* Ensure nav-link takes full width */
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        opacity: 1;
+      }
+
+      &.active {
+        background-color: #ff3252;
+        color: #fff;
+      }
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Style for the right side buttons (Reportar Ahora, Tour) */
+    .ms-auto { /* This class is on the ul containing the buttons */
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center buttons horizontally */
+      margin-top: 1rem; /* Space above buttons */
+    }
+
+    .report-cta,
+    .btn-outline-secondary {
+      width: 80%; /* Make buttons take up a good portion of the width */
+      max-width: 250px; /* Limit max width for larger screens */
+      margin-bottom: 0.75rem; /* Space between buttons */
+    }
+  }
+
   body {
-    padding-top: 64px; /* navbar compacto en móviles */
+    padding-top: 64px;
   }
 }

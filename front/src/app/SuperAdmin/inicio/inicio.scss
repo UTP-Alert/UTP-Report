@@ -16,10 +16,13 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  overflow-y: auto; /* Allow vertical scrolling if content overflows */
+  -webkit-overflow-scrolling: touch; /* Improve scrolling performance on iOS */
 }
 
 .panel-header {
   display: flex;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
   align-items: center;
   gap: .75rem;
   margin-bottom: 1.5rem;
@@ -64,8 +67,8 @@
 
 .summary-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjusted min-width for smaller screens */
+  gap: 1rem; /* Adjusted gap for smaller screens */
 }
 
 .summary-cards .card {
@@ -129,10 +132,9 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex; /* distribución en línea */
-  justify-content: space-between; /* ocupa todo el ancho con espacios */
-  align-items: center;
-  gap: .75rem;
+  display: grid; /* Changed to grid for better responsiveness */
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjust columns automatically */
+  gap: .5rem; /* Adjusted gap for smaller screens */
   width: 100%;
 }
 
@@ -142,20 +144,22 @@
   text-decoration: none;
   color: var(--foreground);
   font-weight: 500;
-  padding: .32rem .6rem; /* aún más delgado */
+  padding: .5rem .6rem; /* Adjusted padding for better touch targets */
   border-radius: 999px;
   transition: background-color .2s ease, color .2s ease, box-shadow .2s ease;
-  display: inline-flex;
+  display: flex; /* Changed to flex */
+  flex-direction: column; /* Stack icon and text */
   align-items: center;
-  gap: .5rem;
+  gap: .25rem; /* Reduced gap between icon and text */
   background: transparent; /* que se vea el gris del bloque */
   border: none; /* sin borde en estado inactivo */
-  width: auto; /* tamaño por contenido */
+  width: 100%; /* Full width within its grid column */
   justify-content: center;
-  white-space: nowrap; /* sin saltos de línea */
+  white-space: nowrap; /* no line breaks */
   line-height: 1.1;
   box-sizing: border-box;
-  min-height: 32px; /* altura consistente, evita que el texto se salga */
+  min-height: 40px; /* Consistent height, prevents text overflow */
+  font-size: 0.85rem; /* Adjusted font size for smaller screens */
 }
 
 .navigation-tabs a:hover { background: rgba(255,255,255,.5); }
@@ -177,12 +181,142 @@
   vertical-align: middle;
 }
 
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 1.5rem 1rem;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    .title-icon {
+      width: 24px;
+      height: 24px;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
+    p {
+      font-size: 0.85rem;
+    }
+  }
+
+  .summary-section {
+    padding: 1rem;
+    h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .summary-cards {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+    .card {
+      padding: 0.8rem 1rem;
+      gap: 0.75rem;
+    }
+    .card .summary-icon {
+      width: 20px;
+      height: 20px;
+    }
+    .card .metric-value {
+      font-size: 1.1rem;
+    }
+    .card .metric-label {
+      font-size: 0.8rem;
+    }
+  }
+
+  .navigation-tabs {
+    padding: 0.4rem;
+    margin-bottom: 1rem;
+    ul {
+      gap: 0.4rem;
+    }
+    a {
+      padding: 0.4rem 0.5rem;
+      min-height: 36px;
+      font-size: 0.75rem;
+    }
+    .tab-icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-content {
+    padding: 1rem 0.5rem;
+  }
+
+  .panel-header {
+    .title-icon {
+      width: 20px;
+      height: 20px;
+    }
+    h1 {
+      font-size: 1.25rem;
+    }
+    p {
+      font-size: 0.75rem;
+    }
+  }
+
+  .summary-section {
+    padding: 0.8rem;
+    h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+    }
+    .summary-cards {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+    .card {
+      padding: 0.6rem 0.8rem;
+      gap: 0.6rem;
+    }
+    .card .summary-icon {
+      width: 16px;
+      height: 16px;
+    }
+    .card .metric-value {
+      font-size: 1rem;
+    }
+    .card .metric-label {
+      font-size: 0.7rem;
+    }
+  }
+
+  .navigation-tabs {
+    padding: 0.3rem;
+    margin-bottom: 0.8rem;
+    ul {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+    a {
+      padding: 0.3rem 0.4rem;
+      min-height: 32px;
+      font-size: 0.7rem;
+    }
+    .tab-icon {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
 /* User Management Section */
 .user-management-section {
   background-color: var(--card);
   padding: 1.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow-y: auto; /* Allow vertical scrolling if content overflows */
+  -webkit-overflow-scrolling: touch; /* Improve scrolling performance on iOS */
 }
 
 .user-management-section .section-header {
