@@ -10,6 +10,7 @@ import { Sede, SedeService } from '../../services/sede.service';
 import { Zona, ZonaService } from '../../services/zona.service';
 import { UsuarioService, UsuarioDTO } from '../../services/usuario.service';
 import { TipoIncidenteService, TipoIncidenteDTO } from '../../services/tipo-incidente.service';
+import { NotificationService } from '../../services/notification.service'; // Importar el servicio de notificación
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -83,6 +84,8 @@ export class InicioUsuario implements OnInit {
   zonasSede: Array<(Zona & { _incidentes?: number; _status?: 'segura'|'precaucion'|'peligrosa' })> = [];
   lastRefreshLabel: string = 'Hoy';
   private zoneStatusListenerBound = false;
+  private previousMisReportes: Array<{ id?: number; estado: string }> = [];
+  private previousCompanerosReportes: Array<{ id: number }> = [];
 
   darkMode = signal<boolean>(false);
   private storageKey = 'inicio_dark_mode';
@@ -108,6 +111,11 @@ export class InicioUsuario implements OnInit {
         updated,
         ...this.zonasSede.slice(idx + 1)
       ];
+      // Reproducir sonido si el estado de la zona ha cambiado
+      if (current.estado !== updated.estado) {
+        console.log(`[InicioUsuario] Estado de zona ${updated.id} cambió de ${current.estado} a ${updated.estado}. Reproduciendo sonido.`);
+        this.notificationService.playNotificationSound();
+      }
     } catch (e) {
       console.warn('[InicioUsuario] Error procesando zone-status-update', e);
     }
@@ -121,7 +129,8 @@ export class InicioUsuario implements OnInit {
     private sedeService: SedeService,
     private zonaService: ZonaService,
     private usuarioService: UsuarioService,
-    private tipoService: TipoIncidenteService
+    private tipoService: TipoIncidenteService,
+    private notificationService: NotificationService // Inyectar el servicio de notificación
   ) {
     // Load dark mode preference from local storage
     try {
@@ -487,8 +496,8 @@ export class InicioUsuario implements OnInit {
     // Ya no leemos desde localStorage; consultamos al backend y filtramos por usuarioId
     this.reporteService.getAll().subscribe({
       next: (lista: ReporteDTO[]) => {
-        try{
-          this.misReportes = (lista || [])
+        try {
+          const newMisReportes = (lista || [])
             .filter(r => Number(r.usuarioId) === Number(uid))
             .map(r => {
               const estado = (r.ultimoEstado ?? r.reporteGestion?.estado ?? (r as any).estado ?? (r as any).estadoActual ?? 'nuevo') as string;
@@ -507,8 +516,22 @@ export class InicioUsuario implements OnInit {
                 _subtitle: info.subtitle
               } as any;
             });
+
+          // Detectar cambios de estado en los reportes del usuario
+          if (this.previousMisReportes.length > 0) {
+            newMisReportes.forEach(newReport => {
+              const oldReport = this.previousMisReportes.find(old => old.id === newReport.id);
+              if (oldReport && oldReport.estado !== newReport.estado) {
+                console.log(`[InicioUsuario] Estado de reporte ${newReport.id} cambió de ${oldReport.estado} a ${newReport.estado}. Reproduciendo sonido.`);
+                this.notificationService.playNotificationSound();
+              }
+            });
+          }
+          this.previousMisReportes = newMisReportes.map(r => ({ id: r.id, estado: r.estado })); // Guardar estado actual
+
+          this.misReportes = newMisReportes;
           this.actualizarEstadoResumen();
-        }catch(e){ this.misReportes = []; }
+        } catch (e) { this.misReportes = []; }
       },
       error: _ => { this.misReportes = []; }
     });
@@ -607,6 +630,18 @@ export class InicioUsuario implements OnInit {
               estadoLabel
             } as any;
           });
+
+          // Detectar nuevos reportes de compañeros
+          if (this.previousCompanerosReportes.length > 0) {
+            top.forEach(newColleagueReport => {
+              const isNew = !this.previousCompanerosReportes.some(old => old.id === newColleagueReport.id);
+              if (isNew) {
+                console.log(`[InicioUsuario] Nuevo reporte de compañero ${newColleagueReport.id} detectado. Reproduciendo sonido.`);
+                this.notificationService.playNotificationSound();
+              }
+            });
+          }
+          this.previousCompanerosReportes = top.map(r => ({ id: r.id })); // Guardar estado actual
 
           this.companerosReportes = top;
         } catch (e) {

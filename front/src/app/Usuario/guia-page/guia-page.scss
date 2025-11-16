@@ -61,6 +61,10 @@ $black-color: var(--foreground);
     color: #f5f5f5; /* Texto principal */
     transition: background-color 0.3s ease, color 0.3s ease;
 
+    .content-wrapper {
+      background-color: #121212; /* Ensure content wrapper is also dark */
+    }
+
     .header {
       .icon-title h1 {
         color: #f5f5f5; /* Texto principal */
@@ -121,6 +125,12 @@ $black-color: var(--foreground);
       .card-description {
         color: #b0b0b0; /* Texto secundario */
       }
+      .card-title {
+        color: #f5f5f5; /* Ensure title is white in dark mode */
+      }
+      .card-description {
+        color: #b0b0b0; /* Ensure description is light gray in dark mode */
+      }
       .alert-triangle-icon {
         color: #dc3545; /* Red for emergency */
       }
@@ -167,6 +177,9 @@ $black-color: var(--foreground);
         .accordion-content {
           background-color: #1f1f1f; /* Tarjetas o contenedores */
           color: #b0b0b0; /* Texto secundario */
+          p {
+            color: #b0b0b0; /* Ensure paragraph text in accordion content is light gray */
+          }
         }
       }
     }

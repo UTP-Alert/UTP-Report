@@ -17,14 +17,33 @@
     color: #FF395C; /* primary-color */
   }
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.dark-mode body,
+.dark-mode {
+  background-color: #111 !important;
+  color: #eee !important;
+}
+
+.dark-mode * {
+  color: inherit;
+}
 
 /* Base */
-body { margin: 0; font-family: sans-serif; color: #000; }
+body { margin: 0; font-family: sans-serif; color: #111827; } /* Default text color for light mode */
 
 .dark-mode {
   background-color: #121212; /* Fondo principal */
   color: #f5f5f5; /* Texto principal */
   transition: background-color 0.3s ease, color 0.3s ease;
+
+  main {
+    background-color: #121212; /* Ensure main content area is dark */
+  }
 
   .alert-banner {
     background-color: #1f1f1f; /* Tarjetas o contenedores */
@@ -166,58 +185,120 @@ body { margin: 0; font-family: sans-serif; color: #000; }
     }
     .companero-card.prio-alta::before { background: #dc3545; }
     .companero-card.prio-media::before { background: #ffc107; }
-  .companero-card.prio-baja::before { background: #1e88e5; }
+    .companero-card.prio-baja::before { background: #1e88e5; }
+  }
 
   /* Explicación del Flujo con Notificaciones */
-  section.mb-6.sm\:mb-12:nth-of-type(3) {
+  section.mb-6.sm\:mb-12 { /* Target the section directly */
+    h2 {
+      color: #f5f5f5 !important; /* Título principal de la sección */
+    }
     .border-2.border-blue-200.bg-blue-50 {
-      background-color: #1f1f1f; /* Tarjetas o contenedores */
-      border-color: #2a2a2a; /* Inputs */
+      background-color: #1f1f1f !important; /* Fondo del contenedor principal */
+      border-color: #2a2a2a !important; /* Borde del contenedor principal */
       h3.text-blue-800 {
-        color: #f5f5f5; /* Texto principal */
+        color: #f5f5f5 !important; /* Títulos de subsecciones (Alta Prioridad, Normales) */
       }
       ul.text-blue-700 li span {
-        color: #f5f5f5; /* Texto principal */
+        color: #f5f5f5 !important; /* Texto de los ítems de la lista */
+        strong {
+          color: #f5f5f5 !important; /* Texto en negrita dentro de los ítems */
+        }
       }
       .mt-6.p-4.bg-white.rounded-lg.border.border-blue-200 {
-        background-color: #2a2a2a; /* Inputs */
-        border-color: #2a2a2a; /* Inputs */
+        background-color: #2a2a2a !important; /* Fondo del contenedor "Flujo del Proceso" */
+        border-color: #2a2a2a !important; /* Borde del contenedor "Flujo del Proceso" */
         h4.text-blue-800 {
-          color: #f5f5f5; /* Texto principal */
+          color: #f5f5f5 !important; /* Título "Flujo del Proceso" */
         }
         div.text-blue-700 {
-          color: #f5f5f5; /* Texto principal */
+          color: #f5f5f5 !important; /* Texto general del flujo */
           span {
-            color: #f5f5f5; /* Texto principal para los pasos del flujo */
+            color: #f5f5f5 !important; /* Texto de los pasos del flujo */
           }
         }
+        span.px-2.py-1.rounded {
+          color: #f5f5f5 !important; /* Asegurar que el texto en los pasos del flujo sea blanco */
+        }
         span.bg-blue-100 {
-          background-color: #1e88e5; /* Botones con color de acento */
-          color: #f5f5f5;
+          background-color: #1e88e5 !important; /* Botones con color de acento */
+          color: #f5f5f5 !important;
         }
         span.bg-yellow-100 {
-          background-color: #ffc107; /* Yellow for caution */
-          color: #1f1f1f;
+          background-color: #ffc107 !important; /* Yellow for caution */
+          color: #f5f5f5 !important; /* Ensure text is light in dark mode */
         }
         span.bg-red-100 {
-          background-color: #dc3545; /* Red for dangerous */
-          color: #f5f5f5;
+          background-color: #dc3545 !important; /* Red for dangerous */
+          color: #f5f5f5 !important;
         }
         span.bg-purple-100 {
-          background-color: #6f42c1; /* Purple */
-          color: #f5f5f5;
+          background-color: #6f42c1 !important; /* Purple */
+          color: #f5f5f5 !important;
         }
         span.bg-green-100 {
-          background-color: #28a745; /* Green for safe */
-          color: #f5f5f5;
+          background-color: #28a745 !important; /* Green for safe */
+          color: #f5f5f5 !important;
         }
       }
     }
   }
-}
-  .companero-card::before {
-    transition: background-color 0.3s ease;
+
+  /* Additional dark mode styles for "Cómo Funciona el Sistema de Notificaciones" */
+  section.mb-6.sm\:mb-12 { /* Target the section directly */
+    color: #f5f5f5 !important; /* Ensure all text within this section is white */
+
+    ul.space-y-2.text-sm.text-blue-700 li {
+      color: #f5f5f5 !important; /* Ensure list item text is white */
+    }
+    .mt-6.p-4.bg-white.rounded-lg.border.border-blue-200 {
+      .text-blue-700 {
+        color: #f5f5f5 !important; /* Ensure text within "Flujo del Proceso" is white */
+      }
+      span {
+        color: #f5f5f5 !important; /* Ensure all spans within "Flujo del Proceso" are white */
+      }
+    }
   }
+
+  /* Reportes Recientes de Compañeros */
+  .companero-card {
+    &.bg-red-50, &.bg-yellow-100, &.bg-blue-50, &.bg-white {
+      background-color: #1f1f1f !important; /* Darker background for report cards */
+      border-color: #2a2a2a !important; /* Darker border */
+    }
+    .text-gray-500, .text-gray-600, .text-gray-700 {
+      color: #f5f5f5 !important; /* White text for report card details */
+    }
+    .bg-primary\/10 {
+      background-color: rgba(#1e88e5, 0.1) !important; /* Keep accent background */
+      border-color: #1e88e5 !important; /* Keep accent border */
+    }
+    .text-primary\/70 {
+      color: #f5f5f5 !important; /* White text for "Tipo de Incidente" label */
+    }
+    .text-primary {
+      color: #f5f5f5 !important; /* White text for incident type */
+    }
+  }
+  .user-report-tracker {
+    .border-2.border-blue-200.rounded-2xl.p-4.mb-3.last\:mb-0 {
+      background-color: #1f1f1f !important; /* Darker background for individual report items */
+      border-color: #2a2a2a !important; /* Darker border */
+    }
+    .bg-white.border.border-gray-300.rounded-full.px-3.py-1.shadow-sm {
+      background-color: #2a2a2a !important; /* Darker background for the "Tipo de Incidente" badge */
+      border-color: #555555 !important; /* Darker border */
+      color: #f5f5f5 !important; /* White text */
+    }
+    .text-gray-600, .text-gray-500, .text-gray-700 {
+      color: #f5f5f5 !important; /* White text for report details */
+    }
+    .bg-gray-200 {
+      background-color: #2a2a2a !important; /* Darker background for progress bar track */
+    }
+  }
+
 
   footer {
     background-color: #1f1f1f; /* Tarjetas o contenedores */

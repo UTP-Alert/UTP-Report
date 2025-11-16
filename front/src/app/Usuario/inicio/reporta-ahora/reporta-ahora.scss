@@ -1,8 +1,23 @@
-.ra-wrapper { padding: .75rem .875rem 1rem; font-size: .95rem; }
+@use "sass:color";
+
+.ra-wrapper {
+  padding: .75rem .875rem 1rem;
+  font-size: .95rem;
+  width: 100%; /* Ensure it takes full width within its container */
+  max-width: 600px; /* Set a max-width for larger screens */
+  margin: auto; /* Center the modal on larger screens */
+
+  @media (max-width: 640px) { /* Adjust for smaller screens */
+    padding: .5rem .75rem .75rem; /* Reduce padding */
+    font-size: .9rem; /* Slightly smaller font size */
+    max-width: 95%; /* Make it more fluid on smaller screens */
+  }
+} /* Closing brace for .ra-wrapper */
+
 .ra-header { position:sticky; top:0; z-index:20; background:#fff; display:flex; align-items:flex-start; justify-content:space-between; gap:.75rem; padding:.25rem .25rem .75rem; border-bottom:1px solid #E5E7EB; }
 .ra-title { display:flex; align-items:center; gap:.75rem; }
 .ra-title .icon { color:#FF395C; }
-.ra-title h2 { margin:0; font-size:1rem; line-height:1.375rem; }
+.ra-title h2 { margin:0; font-size:1rem; line-height:1.375rem; color:#111827; }
 .ra-title .subtitle { margin:.1rem 0 0; color:#4B5563; font-size:.8rem; }
 .ra-head-right { display:flex; align-items:center; gap:.5rem; }
 .ra-badge { display:flex; align-items:center; gap:.5rem; background:#F3F4F6; border-radius:10px; padding:.375rem .625rem; }
@@ -10,7 +25,7 @@
 .ra-close { background:transparent; border:none; font-size:1.1rem; line-height:1; color:#111827; padding:.25rem .4rem; border-radius:8px; cursor:pointer; }
 .ra-close:hover { background:#F3F4F6; }
 .ra-close:focus-visible { outline:2px solid #93C5FD; outline-offset:2px; }
-.ra-badge strong { display:block; font-size:.95rem; }
+.ra-badge strong { display:block; font-size:.95rem; color:#111827; }
 .ra-badge span { display:block; font-size:.75rem; color:#4B5563; line-height:1rem; }
 
 /* Banners */
@@ -27,24 +42,58 @@
 
 /* Form */
 .ra-form { display:block; }
-.ra-form label { display:block; font-weight:600; margin:.35rem 0 .2rem; font-size:.9rem; }
-.ra-select { width:100%; background:#F3F4F6; color:#6B7280; border:1px solid #E5E7EB; border-radius:10px; padding:.45rem .6rem; display:flex; align-items:center; gap:.5rem; -webkit-appearance:none; appearance:none; }
+.ra-form label { display:block; font-weight:600; margin:.35rem 0 .2rem; font-size:.9rem; color:#111827; }
+.ra-select { width:100%; background:#F3F4F6; color:#252525; border:1px solid #E5E7EB; border-radius:10px; padding:.45rem .6rem; display:flex; align-items:center; gap:.5rem; -webkit-appearance:none; appearance:none; }
 .ra-select { cursor: pointer; }
 .ra-select .placeholder, .ra-select .left-icon, .ra-select .chev { cursor: pointer; }
 .ra-select .placeholder { flex:1; text-align:center; }
 .ra-select.no-left { padding-left:.6rem; }
 .ra-select.no-left .placeholder { text-align:center; }
-.ra-select .chev { display:inline-flex; align-items:center; color:#6B7280; }
+.ra-select .chev { display:inline-flex; align-items:center; color:#0e0e0f; }
 .ra-select .chev svg { display:block; width:16px; height:16px; stroke:#6B7280; }
 .ra-select-wrap { position: relative; }
 .ra-select-menu { position:absolute; left:0; right:0; top: calc(100% + 4px); background:#fff; border:1px solid #E5E7EB; border-radius:10px; box-shadow: 0 8px 20px rgba(0,0,0,.08); z-index: 5; max-height: 220px; overflow:auto; cursor: default; }
 .ra-select-menu .menu-item { padding:.5rem .75rem; cursor:pointer; }
 .ra-select-menu .menu-item:hover { background:#F3F4F6; }
-.ra-select-menu .menu-empty { padding:.5rem .75rem; color:#9CA3AF; }
+.ra-select-menu .menu-empty { padding:.5rem .75rem; color:#121213; }
 .ra-select .left-icon { color:#6B7280; display:grid; place-items:center; }
 .ra-select .placeholder { flex:1; background:transparent !important; border:0 !important; display:inline; height:auto; width:auto; font-size:.9rem; color:#6B7280; }
 .ra-select .chev { color:#6B7280; }
 .ra-select *::before, .ra-select *::after { content:none !important; }
+
+/* Dark Mode adjustments for .ra-select */
+html.dark-mode .ra-select {
+  background: #fff; /* White background for the select box in dark mode */
+  border-color: #555555; /* Darker border */
+  color: #000; /* Black text for the select box in dark mode */
+  font-weight: 600; /* Make text bold */
+}
+
+html.dark-mode .ra-select .placeholder,
+html.dark-mode .ra-select .left-icon,
+html.dark-mode .ra-select .chev {
+  color: #000; /* Black text for placeholder, icon, and chevron in dark mode */
+  font-weight: 600; /* Make text bold */
+}
+
+html.dark-mode .ra-select-menu {
+  background: #333333; /* Darker background for the dropdown menu */
+  border-color: #555555; /* Darker border for the dropdown menu */
+  box-shadow: 0 8px 20px rgba(0,0,0,.3); /* Adjusted shadow for dark mode */
+}
+
+html.dark-mode .ra-select-menu .menu-item {
+  color: #f5f5f5; /* Light text for menu items */
+}
+
+html.dark-mode .ra-select-menu .menu-item:hover {
+  background: #555555; /* Hover background for menu items */
+}
+
+html.dark-mode .ra-select-menu .menu-empty {
+  color: #bbbbbb; /* Lighter grey for empty message */
+}
+
 
 .ra-textarea textarea { width:100%; resize:vertical; border:1px solid #E5E7EB; border-radius:10px; padding:.45rem .6rem; background:#F9FAFB; color:#111827; font: inherit; font-size:.85rem; line-height:1.25; }
 .ra-textarea textarea::placeholder { font-size:.8rem; color:#6B7280; opacity:1; }
@@ -76,9 +125,21 @@
 
 /* Cámara */
 .ra-cam-backdrop { position: fixed; inset:0; background: rgba(0,0,0,.6); display:grid; place-items:center; z-index: 1200; padding:1rem; }
-.ra-cam-modal { background:#fff; border-radius:12px; width: 100%; max-width: 560px; overflow:hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,.35); }
+.ra-cam-modal {
+  background:#fff;
+  border-radius:12px;
+  width: 100%;
+  max-width: 560px; /* Default max-width for larger screens */
+  overflow:hidden;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,.35);
+
+  @media (max-width: 768px) { /* Adjust for smaller screens */
+    max-width: 90%; /* Make it more fluid on smaller screens */
+    margin: 0 1rem; /* Add some horizontal margin */
+  }
+}
 .ra-cam-header { display:flex; justify-content:space-between; align-items:center; padding:.75rem 1rem; border-bottom:1px solid #E5E7EB; }
-.ra-cam-header .x { background:transparent; border:none; font-size:1.25rem; line-height:1; padding:.25rem .4rem; cursor:pointer; }
+.ra-cam-header .x { background:transparent; border:none; font-size:1.25rem; line-height:1; padding:.25rem .4rem; cursor:pointer; color:#111827; }
 .ra-cam-body { background:#000; }
 .ra-cam-body video { display:block; width:100%; height:auto; }
 .ra-cam-body.center { background:#111; display:grid; place-items:center; }
@@ -108,7 +169,7 @@
 .ra-anon .ra-top:hover .ra-check input:not(:checked) { background:#EFF6FF; }
 .ra-check .ico { color:#1D4ED8; display:inline-grid; place-items:center; margin-left:.6rem; margin-right:.6rem; }
 .ra-check .ico svg { width:18px; height:18px; stroke:#1D4ED8; }
-.ra-check span:not(.ico) { color:#111827; font-weight:400; }
+.ra-check span:not(.ico) { color:#0e0e0e; font-weight:400; }
 .ra-anon .desc { margin:.35rem 0 0; font-size:.85rem; color:#1D4ED8; line-height:1.35; margin-left: calc(18px + 1.2rem); }
 
 /* Botón neutral (Cancelar) */
