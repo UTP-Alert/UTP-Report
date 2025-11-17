@@ -9,6 +9,7 @@ import { PerfilService } from '../../../services/perfil.service';
 import { SedeService, Sede } from '../../../services/sede.service';
 import { HttpClient } from '@angular/common/http';
 import { TimeService } from '../../../services/time.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-reporta-ahora',
@@ -59,7 +60,8 @@ export class ReportaAhora implements OnInit {
     private sedeService: SedeService,
   private http: HttpClient,
   private timeService: TimeService,
-    private zone: NgZone
+    private zone: NgZone,
+    private notificationService: NotificationService
   ) {}
 
   get estaAutenticado(): boolean {
@@ -372,6 +374,10 @@ export class ReportaAhora implements OnInit {
     }
     this.attemptedSubmit = true;
     if (!this.canSubmit()) return;
+
+    // Reproducir sonido de notificación cuando todos los datos estén llenos y validados, antes de enviar el reporte.
+    this.notificationService.playNotificationSound();
+
     this.submitting = true;
     const base = 'http://localhost:8080';
     const username = this.extractUsernameFromToken();
