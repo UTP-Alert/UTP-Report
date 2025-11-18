@@ -89,14 +89,35 @@
 
 .header-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .top-banner { border:1px solid #fca5a5; background:#fff7f8; padding:14px; border-radius:10px; margin:8px 0 12px 0; }
-.top-banner .banner-inner { display:flex; align-items:center; justify-content:space-between; }
+.top-banner .banner-inner {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+  gap: 10px; /* Add gap for wrapped items */
+}
 .banner-title { font-weight:700; font-size:16px; color:#881337; }
 .banner-sub { color:#6b7280; margin-top:6px; font-size:13px; }
 .banner-left { display:flex; flex-direction:column; }
 .banner-right { display:flex; align-items:center; }
 
-.stats-row { display:flex; gap:12px; margin:12px 0 18px 0; }
-.stat-card { flex:1 1 0; display:flex; gap:12px; align-items:center; padding:12px 14px; border-radius:10px; border:1.5px solid transparent; background:white; }
+.stats-row {
+  display:flex;
+  gap:12px;
+  margin:12px 0 18px 0;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+.stat-card {
+  flex:1 1 0;
+  min-width: 180px; /* Ensure cards don't get too small */
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1.5px solid transparent;
+  background:white;
+}
 .stat-icon { font-size:20px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; border-radius:0; background:transparent; padding:0; }
 .stat-icon svg { width:22px; height:22px; color: #0f172a; background: transparent !important; border-radius: 0 !important; }
 .stat-icon svg [stroke] { stroke: currentColor; }
@@ -125,8 +146,30 @@
 .card-4 .stat-icon { background: transparent; }
 .card-5 { background:#faf5ff; border-color:#e8d7ff; }
 .card-5 .stat-icon { background: transparent; }
-.filters { display:flex; gap:12px; align-items:center; margin:12px 0 16px 0; }
-.filters .select-field { padding:8px 10px; border-radius:8px; border:1px solid #e5e7eb; }
+.filters {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin:12px 0 16px 0;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+.filters .input-field,
+.filters .select-field {
+  flex: 1; /* Allow fields to grow and shrink */
+  min-width: 150px; /* Ensure fields don't get too small */
+  padding:8px 10px;
+  border-radius:8px;
+  border:1px solid #e5e7eb;
+}
+.filters .filter-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filters .filter-actions .btn {
+  flex: 1;
+  min-width: 100px;
+}
 .report-list { display:flex; flex-direction:column; gap:14px; }
 .report-card { border:1px solid #eef2f7; padding:14px; border-radius:10px; background:white; position:relative; overflow:hidden; }
 /* Barra lateral izquierda con color por prioridad */
@@ -280,5 +323,81 @@
 
 @media (max-width: 1024px) {
 	.sa-grid { grid-template-columns: 1fr; }
+  .sa-states { grid-template-columns: 1fr; } /* Stack states on smaller screens */
 }
 
+@media (max-width: 768px) {
+  .top-banner .banner-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .top-banner .banner-right {
+    width: 100%;
+    justify-content: center;
+  }
+  .top-banner .banner-right .btn {
+    width: 100%;
+  }
+  .stats-row {
+    flex-direction: column;
+  }
+  .stat-card {
+    min-width: unset;
+    width: 100%;
+  }
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filters .input-field,
+  .filters .select-field {
+    width: 100%;
+    min-width: unset;
+  }
+  .filters .filter-actions {
+    width: 100%;
+  }
+  .report-card .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .report-card .card-header .btn {
+    width: 100%;
+  }
+  .report-card .confidential-box .conf-rows {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .report-card .card-footer.horizontal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .sa-detail-card {
+    width: calc(100% - 20px); /* Adjust modal width for very small screens */
+    padding: 10px;
+  }
+  .sa-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+  .sa-header .close {
+    margin-left: auto;
+  }
+  .sa-body {
+    padding: 15px 12px;
+  }
+  .sa-evidence {
+    flex-direction: column;
+    align-items: center;
+  }
+  .sa-evidence img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+  }
+}
