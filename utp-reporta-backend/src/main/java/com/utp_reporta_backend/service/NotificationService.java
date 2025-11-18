@@ -108,6 +108,54 @@ public class NotificationService {
         });
     }
 
+    public void notifyNewReport(Reporte reporte, ReporteGestionDTO reporteGestionDTO) {
+        String recipientUsername = reporte.getUsuario().getUsername();
+        String message = "Tu reporte ha sido creado exitosamente y está pendiente de aprobación.";
+        
+        // Create a ReporteDTO with the provided ReporteGestionDTO for WebSocket notification
+        ReporteDTO reporteDtoForNotification = mapReporteToDto(reporte);
+        if (reporteDtoForNotification != null) {
+            reporteDtoForNotification.setReporteGestion(reporteGestionDTO);
+        }
+
+        messagingTemplate.convertAndSendToUser(
+            recipientUsername,
+            "/queue/notifications",
+            new NotificationMessage(message, reporteDtoForNotification)
+        );
+        // Fallback broadcast por username si la sesión STOMP no tiene Principal asociado
+        // Permite que el frontend se suscriba a /topic/report-status.{username}
+        messagingTemplate.convertAndSend(
+            "/topic/report-status." + recipientUsername,
+            new NotificationMessage(message, reporteDtoForNotification)
+        );
+
+        // Send email to the user who created the report
+        String userEmail = reporte.getUsuario().getCorreo();
+        String subject = "Nuevo Reporte Creado - " + reporte.getTipoIncidente().getNombre() + " en " + reporte.getZona().getNombre();
+        Map<String, Object> templateVariables = new java.util.HashMap<>();
+        templateVariables.put("reporteId", reporte.getId());
+        templateVariables.put("reporteDescripcion", reporte.getDescripcion());
+        templateVariables.put("reporteTipoIncidente", reporte.getTipoIncidente().getNombre());
+        templateVariables.put("reporteZona", reporte.getZona().getNombre());
+        templateVariables.put("message", message); // Use the same message for email
+        templateVariables.put("reporteEstado", reporteGestionDTO.getEstado()); // Use estado from DTO
+
+        try {
+            if (userEmail == null || userEmail.trim().isEmpty()) {
+                System.err.println("Error: No se puede enviar correo. El correo del usuario para el nuevo reporte ID " + reporte.getId() + " es nulo o vacío.");
+            } else {
+                emailService.sendHtmlEmail(userEmail, subject, "new_report_created.html", templateVariables);
+            }
+        } catch (MessagingException e) {
+            System.err.println("Error al enviar correo de nuevo reporte a " + userEmail + ": " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error inesperado al procesar el envío de correo para el nuevo reporte ID " + reporte.getId() + " a " + userEmail + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public void notifyReportStatusChange(Long reporteId, String message) {
         reporteRepository.findById(reporteId).ifPresent(reporte -> {
             String recipientUsername = reporte.getUsuario().getUsername();
@@ -135,9 +183,17 @@ public class NotificationService {
             templateVariables.put("reporteEstado", reporte.getReporteGestion().getEstado());
 
             try {
-                emailService.sendHtmlEmail(userEmail, subject, "report_status_change.html", templateVariables);
+                if (userEmail == null || userEmail.trim().isEmpty()) {
+                    System.err.println("Error: No se puede enviar correo. El correo del usuario para el reporte ID " + reporteId + " es nulo o vacío.");
+                } else {
+                    emailService.sendHtmlEmail(userEmail, subject, "report_status_change.html", templateVariables);
+                }
             } catch (MessagingException e) {
                 System.err.println("Error al enviar correo de cambio de estado de reporte a " + userEmail + ": " + e.getMessage());
+                e.printStackTrace(); // Print full stack trace for more details
+            } catch (Exception e) { // Catch any other unexpected exceptions
+                System.err.println("Error inesperado al procesar el envío de correo para el reporte ID " + reporteId + " a " + userEmail + ": " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }
