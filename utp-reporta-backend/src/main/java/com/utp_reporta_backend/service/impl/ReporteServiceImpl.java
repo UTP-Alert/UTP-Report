@@ -176,6 +176,13 @@ public class ReporteServiceImpl implements ReporteService {
         try {
             createdGestionDto = reporteGestionService.updateReporteGestion(savedReporte.getId(),
                     EstadoReporte.PENDIENTE, null, null);
+            // After creating the ReporteGestion, we need to refresh the savedReporte object
+            // to ensure it has the associated ReporteGestion before sending notifications.
+            savedReporte = reporteRepository.findById(savedReporte.getId())
+                                .orElseThrow(() -> new RuntimeException("Reporte not found after creating gestion"));
+
+            // Notificar la creación del reporte solo si la gestión inicial fue exitosa
+            notificationService.notifyNewReport(savedReporte, createdGestionDto);
         } catch (Exception e) {
             // No detener la creación del reporte por un fallo al crear la gestión; pero
             // loguear en futura iteración.

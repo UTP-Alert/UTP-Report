@@ -23,6 +23,13 @@
       Panel de Administración
     </h1>
 
+    <!-- Gráficos de Chart.js -->
+    <div class="charts-grid">
+      <app-chart-card [title]="'Estado de Reportes'" [chartData]="reportStatusChartData"></app-chart-card>
+      <app-chart-card [title]="'Zonas con Reportes'" [chartData]="zoneChartData"></app-chart-card>
+      <app-chart-card [title]="'Reportes Enviados por Día'" [chartData]="reportsSentChartData"></app-chart-card>
+    </div>
+
     <!-- ESTADÍSTICAS DEL DASHBOARD (5 Tarjetas) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
       <!-- TARJETA 1: Alertas Críticas -->

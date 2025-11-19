@@ -147,6 +147,21 @@ main {
   margin-bottom: 2rem; /* 32px */
 }
 
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr); /* Default to single column on small screens */
+  gap: 1rem; /* Gap between chart cards */
+  margin-bottom: 1.5rem; /* Space below the charts */
+
+  @include md {
+    grid-template-columns: repeat(2, 1fr); /* Two columns on medium screens */
+  }
+
+  @include lg {
+    grid-template-columns: repeat(3, 1fr); /* Three columns on large screens */
+  }
+}
+
 .mb-auto {
   margin-bottom: auto;
 }
