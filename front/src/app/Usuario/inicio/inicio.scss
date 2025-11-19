@@ -17,32 +17,15 @@
     color: #FF395C; /* primary-color */
   }
 }
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-
-.dark-mode body,
-.dark-mode {
-  background-color: #111 !important;
-  color: #eee !important;
-}
-
-.dark-mode * {
-  color: inherit;
-}
-
-/* Base */
-body { margin: 0; font-family: sans-serif; color: #111827; } /* Default text color for light mode */
-
-.dark-mode {
+.dark-mode { /* This targets the div.min-h-screen with the dark-mode class */
   background-color: #121212; /* Fondo principal */
   color: #f5f5f5; /* Texto principal */
   transition: background-color 0.3s ease, color 0.3s ease;
+  margin-top: -16px;
 
+  /* Ensure main content area is dark */
   main {
-    background-color: #121212; /* Ensure main content area is dark */
+    background-color: #121212 !important; /* Ensure main content area is dark */
   }
 
   .alert-banner {
@@ -596,7 +579,6 @@ body { margin: 0; font-family: sans-serif; color: #111827; } /* Default text col
 
 /* Utilidades finales */
 .hidden { display: none; }
-body { padding-top: 100px; }
 .main-content { margin-top: 70px; }
 
 /* Modal base */
