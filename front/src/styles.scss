@@ -97,3 +97,16 @@ input, button { outline: none; }
 .resueltos-list .card p { color:#0f172a }
 .resueltos-list .card .actions { display:flex; gap:10px }
 .resueltos-list .card .actions .button { padding:8px 12px; border-radius:8px }
+
+/* While global loader is active, visually disable form controls and prevent interactions */
+body.is-loading input,
+body.is-loading button,
+body.is-loading select,
+body.is-loading textarea,
+body.is-loading .button {
+  pointer-events: none !important;
+  opacity: 0.6 !important;
+}
+
+/* Prevent scrolling while loading overlay is present */
+body.is-loading { overflow: hidden !important; }

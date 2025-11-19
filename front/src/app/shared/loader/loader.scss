@@ -1,0 +1,35 @@
+.loader-backdrop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  /* Capture all pointer events so underlying UI is not interactive */
+}
+
+.loader-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 6px solid rgba(255,255,255,0.25);
+  border-top-color: #ffffff;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.sr-only { position: absolute; left: -10000px; }

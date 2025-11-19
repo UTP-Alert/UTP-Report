@@ -338,6 +338,8 @@ export class ReportesRecientes {
         this.newReportsCount = Math.max(0, this.reports.filter(x => this.statusById[x.id] === 'nuevo').length);
         // opcional: navegar automáticamente a la pestaña En Proceso
         // this.router.navigateByUrl('/admin/en-proceso');
+        // Cerrar modal de asignación si sigue abierto (evita quedarse "pegado")
+        if(this.showAssignModal) this.closeAssignModal();
       }, error: err => {
         console.error('Error persistiendo asignación', err);
       }});

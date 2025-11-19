@@ -1,10 +1,12 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CommonModule, NgIf, NgForOf } from '@angular/common';
 import { ReporteService, ReporteDTO } from '../../../../services/reporte.service';
 import { UsuarioService } from '../../../../services/usuario.service';
 import { ZonaService } from '../../../../services/zona.service';
 import { TipoIncidenteService } from '../../../../services/tipo-incidente.service';
-import { finalize } from 'rxjs/operators';
+import { finalize, switchMap, map } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { ScrollLockService } from '../../../../services/scroll-lock.service';
 
 @Component({
   selector: 'app-asignar-seguridad',
@@ -13,13 +15,13 @@ import { finalize } from 'rxjs/operators';
   templateUrl: './asignar-seguridad.html',
   styleUrls: ['./asignar-seguridad.scss']
 })
-export class AsignarSeguridad {
+export class AsignarSeguridad implements OnDestroy {
   private _visible: boolean = false;
   @Input()
   set visible(v: boolean){
     this._visible = v;
     if(v){
-      document.body.style.overflow = 'hidden';
+      this.scrollLock.lock();
       // cuando se abre, cargar datos reales del reporte si se proporcionó reporteId
       // reset selectedCandidate a menos que se abra con initialSelectedUserId
       if(!this.initialSelectedUserId) this.selectedCandidate = null;
@@ -29,7 +31,7 @@ export class AsignarSeguridad {
         this.reporte = null;
       }
     } else {
-      document.body.style.overflow = '';
+      this.scrollLock.unlock();
     }
   }
   get visible(){ return this._visible; }
@@ -61,7 +63,13 @@ export class AsignarSeguridad {
   tiposCache: any[] = [];
   selectedCandidate: any | null = null;
   savingAssignment: boolean = false;
-  constructor(private reporteService: ReporteService, private usuarioService: UsuarioService, private zonaService: ZonaService, private tipoService: TipoIncidenteService){}
+  constructor(
+    private reporteService: ReporteService,
+    private usuarioService: UsuarioService,
+    private zonaService: ZonaService,
+    private tipoService: TipoIncidenteService,
+    private scrollLock: ScrollLockService
+  ){}
 
   loadReporte(id: number){
     this.loading = true;
@@ -99,20 +107,50 @@ export class AsignarSeguridad {
 
     // Cargar candidatos de seguridad por zona y sede
     loadCandidatos(zonaId?: number, reporte?: ReporteDTO | null){
-      const sedeId = (reporte && (reporte as any).sedeId) ? (reporte as any).sedeId : null;
-      console.debug('[AsignarSeguridad] loadCandidatos zonaId,sedeId:', zonaId, sedeId);
-      this.usuarioService.getSeguridadFiltered(zonaId ?? null, sedeId ?? null).subscribe({ next: data => {
-        console.debug('[AsignarSeguridad] candidatos recibidos:', data);
-        this.candidatos = data || [];
-        if((this.candidatos || []).length === 0){
-          console.debug('[AsignarSeguridad] fallback: no candidatos por zona/sede, cargando por rol');
+      // Resolver sedeId: 1) desde reporte.sedeId si existe, 2) derivado de zonaId consultando catálogo de zonas, 3) null
+      const sedeId$ = (reporte && (reporte as any).sedeId)
+        ? of((reporte as any).sedeId as number)
+        : (zonaId != null
+            ? this.zonaService.obtenerZonas().pipe(
+                map(zs => {
+                  this.zonasCache = zs || [];
+                  const zf = (this.zonasCache || []).find(z => z.id === zonaId);
+                  return (zf && typeof zf.sedeId === 'number') ? zf.sedeId as number : null;
+                })
+              )
+            : of(null));
+
+      sedeId$.pipe(
+        switchMap((sedeIdResolved: number | null) => {
+          console.debug('[AsignarSeguridad] loadCandidatos zonaId,sedeId:', zonaId, sedeIdResolved);
+          return this.usuarioService.getSeguridadFiltered(zonaId ?? null, sedeIdResolved ?? null)
+            .pipe(map(list => ({ list, sedeIdResolved })));
+        })
+      ).subscribe({ next: ({ list, sedeIdResolved }) => {
+        console.debug('[AsignarSeguridad] candidatos recibidos:', list);
+        // Salvaguarda: si el backend no filtró por sede, filtramos aquí si tenemos sedeIdResolved
+        const filtered = (Array.isArray(list) ? list : []).filter((c: any) => {
+          if (sedeIdResolved == null) return true;
+          // Aceptamos coincidencia por campo sedeId o por sede.id anidado en el objeto
+          const sid = (c && (c.sedeId ?? c.sede?.id)) ?? null;
+          return sid == null ? true : Number(sid) === Number(sedeIdResolved);
+        });
+        this.candidatos = filtered;
+        // Importante: si hay filtros (zona o sede), NO hacer fallback global por rol para no mezclar sedes
+        // Solo si no hay filtros en absoluto (ambos nulos) aplicar fallback por rol
+        if((this.candidatos || []).length === 0 && zonaId == null){
+          console.debug('[AsignarSeguridad] sin filtros activos, fallback por rol');
           this.usuarioService.getSeguridadByRol().subscribe({ next: list => { this.candidatos = list || []; console.debug('[AsignarSeguridad] candidatos por rol:', this.candidatos); }, error: err => console.warn('fallback getSeguridadByRol error', err) });
         }
         // resolver nombres de zona y tipo para mostrar en el panel
           if(reporte && reporte.zonaId){
             // intentar obtener nombre de zona y cachearla
-            this.zonaService.obtenerZonas().subscribe(zs => {
-              this.zonasCache = zs || [];
+            // Si ya se cargaron zonas arriba al resolver sedeId, se reutiliza cache; en caso contrario, cargar
+            const ensureZonas$ = (this.zonasCache && this.zonasCache.length)
+              ? of(this.zonasCache)
+              : this.zonaService.obtenerZonas();
+            ensureZonas$.subscribe(zs => {
+              this.zonasCache = zs || this.zonasCache || [];
               const zf = (this.zonasCache || []).find(z => z.id === reporte.zonaId);
               this.zonaNombre = zf ? zf.nombre : '';
             });
@@ -168,7 +206,7 @@ export class AsignarSeguridad {
     }
 
   closeModal(){
-    document.body.style.overflow = '';
+    this.scrollLock.unlock();
     // limpiar estado interno
     this.reporte = null;
     this.candidatos = [];
@@ -179,6 +217,11 @@ export class AsignarSeguridad {
     this.initialSelectedUserId = null;
     this.selectedCandidate = null;
     this.close.emit();
+  }
+
+  ngOnDestroy(): void {
+    // Failsafe en caso el componente se destruya con el modal abierto
+    this.scrollLock.reset();
   }
 
   // helper para clase de header según prioridad

@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReporteService, ReporteDTO } from '../../../services/reporte.service';
+import { finalize } from 'rxjs/operators';
 import { TipoIncidenteService, TipoIncidenteDTO } from '../../../services/tipo-incidente.service';
 import { ZonaService, Zona } from '../../../services/zona.service';
 import { ReportStateService } from '../../../services/report-state.service';
@@ -53,16 +54,28 @@ export class PendAprobacion implements OnInit, OnDestroy {
     if(!this.adminComment || this.adminComment.trim().length === 0) return; // require comment
     const id = this.selectedForReview.id;
     // Usar endpoint específico para que se guarde el mensaje del admin al resolver
-    this.reporteService.marcarResueltoPorAdmin(id, this.adminComment).subscribe({ next: _ => {
-      // refresh report and UI
-      this.reporteService.getById(id).subscribe(rf => {
-        this.reportState.setReporte(rf);
-        // marcar como resuelto en el estado compartido para que listas como "recientes" lo oculten
-        try{ this.reportState.markResolved(id); }catch(e){}
+    this.reporteService.marcarResueltoPorAdmin(id, this.adminComment)
+      .pipe(finalize(() => {
+        // Asegurar que el modal se cierra y la lista se refresca aunque la respuesta no incluya body
         this.loadPendientes();
         this.closeReview();
-      });
-    }, error: err => { console.error('Error approving', err); } });
+      }))
+      .subscribe({ next: _ => {
+        // refresh report and UI (best-effort)
+        this.reporteService.getById(id).subscribe(rf => {
+          this.reportState.setReporte(rf);
+          try{ this.reportState.markResolved(id); }catch(e){}
+          try {
+            const zonaId = (rf as any)?.zonaId;
+            if (typeof zonaId === 'number') {
+              this.zonaService.obtenerZonas().subscribe(zs => {
+                const z = (zs || []).find(zz => zz.id === zonaId);
+                if(z){ try { window.dispatchEvent(new CustomEvent('zone-status-update', { detail: z })); } catch {} }
+              });
+            }
+          } catch {}
+        }, err => { console.error('Error fetching updated report', err); });
+      }, error: err => { console.error('Error approving', err); } });
   }
 
   rejectSelected(){
@@ -71,9 +84,11 @@ export class PendAprobacion implements OnInit, OnDestroy {
     const id = this.selectedForReview.id;
     const prioridad = (this.selectedForReview as any).reporteGestion && (this.selectedForReview as any).reporteGestion.prioridad ? (this.selectedForReview as any).reporteGestion.prioridad : (this.selectedForReview.ultimaPrioridad || '');
     // Reject via new admin endpoint: set mensajeAdmin and move estado back to INVESTIGANDO
-    this.reporteService.rechazarPorAdmin(id, this.adminComment).subscribe({ next: _ => {
-      this.reporteService.getById(id).subscribe(rf => { this.reportState.setReporte(rf); this.loadPendientes(); this.closeReview(); });
-    }, error: err => { console.error('Error rejecting', err); } });
+    this.reporteService.rechazarPorAdmin(id, this.adminComment)
+      .pipe(finalize(() => { this.loadPendientes(); this.closeReview(); }))
+      .subscribe({ next: _ => {
+        this.reporteService.getById(id).subscribe(rf => { this.reportState.setReporte(rf); }, err => { console.error('Error fetching report after reject', err); });
+      }, error: err => { console.error('Error rejecting', err); } });
   }
 
   loadAux(){
