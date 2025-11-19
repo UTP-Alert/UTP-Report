@@ -130,7 +130,7 @@ export class InicioUsuario implements OnInit {
     private usuarioService: UsuarioService,
     private tipoService: TipoIncidenteService,
     private notificationService: NotificationService, // Inyectar el servicio de notificación
-    public darkModeService: DarkModeService // Inyectar el servicio de DarkMode
+    public darkModeService: DarkModeService, // Inyectar el servicio de DarkMode
     private scrollLock: ScrollLockService
   ) {
   }
