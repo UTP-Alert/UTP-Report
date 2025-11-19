@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, signal, effect } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule, NgIf, NgFor, NgClass } from '@angular/common';
 import { ReportaAhora } from './reporta-ahora/reporta-ahora';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -11,6 +11,7 @@ import { Zona, ZonaService } from '../../services/zona.service';
 import { UsuarioService, UsuarioDTO } from '../../services/usuario.service';
 import { TipoIncidenteService, TipoIncidenteDTO } from '../../services/tipo-incidente.service';
 import { NotificationService } from '../../services/notification.service'; // Importar el servicio de notificación
+import { DarkModeService } from '../../services/dark-mode.service'; // Importar el servicio de DarkMode
 import { forkJoin } from 'rxjs';
 import { ScrollLockService } from '../../services/scroll-lock.service';
 
@@ -88,9 +89,6 @@ export class InicioUsuario implements OnInit {
   private previousMisReportes: Array<{ id?: number; estado: string }> = [];
   private previousCompanerosReportes: Array<{ id: number }> = [];
 
-  darkMode = signal<boolean>(false);
-  private storageKey = 'inicio_dark_mode';
-
   // Handler para actualizaciones en tiempo real provenientes del Navbar (evento global 'zone-status-update')
   private onZoneStatusUpdate = (ev: Event) => {
     try {
@@ -132,28 +130,9 @@ export class InicioUsuario implements OnInit {
     private usuarioService: UsuarioService,
     private tipoService: TipoIncidenteService,
     private notificationService: NotificationService, // Inyectar el servicio de notificación
+    public darkModeService: DarkModeService // Inyectar el servicio de DarkMode
     private scrollLock: ScrollLockService
   ) {
-    // Load dark mode preference from local storage
-    try {
-      const storedPreference = localStorage.getItem(this.storageKey);
-      if (storedPreference !== null) {
-        this.darkMode.set(JSON.parse(storedPreference));
-      } else {
-        this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
-      }
-    } catch (e) {
-      console.error('Error reading dark mode preference from localStorage', e);
-      this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
-    }
-
-    effect(() => {
-      try {
-        localStorage.setItem(this.storageKey, JSON.stringify(this.darkMode()));
-      } catch (e) {
-        console.error('Error writing dark mode preference to localStorage', e);
-      }
-    });
   }
 
   ngOnInit(): void {
@@ -668,7 +647,4 @@ export class InicioUsuario implements OnInit {
     } catch { return fechaISO; }
   }
 
-  toggleDarkMode() {
-    this.darkMode.update(value => !value);
-  }
 }

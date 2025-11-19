@@ -25,16 +25,9 @@ export class DarkModeService {
 
     // Apply or remove dark mode class to body
     effect(() => {
-      const isDarkMode = this.darkMode();
-      const body = document.body;
-      if (isDarkMode) {
-        body.classList.add('dark-mode');
-      } else {
-        body.classList.remove('dark-mode');
-      }
       // Persist preference to local storage
       try {
-        localStorage.setItem(this.storageKey, JSON.stringify(isDarkMode));
+        localStorage.setItem(this.storageKey, JSON.stringify(this.darkMode()));
       } catch (e) {
         console.error('Error writing dark mode preference to localStorage', e);
       }
