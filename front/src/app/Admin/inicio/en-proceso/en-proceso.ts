@@ -254,6 +254,16 @@ export class EnProceso implements OnInit {
         this.items = this.items.filter(it => it.id !== reportId);
         // notificar al estado compartido
         try{ this.reportState.markCancelled(reportId); }catch(e){}
+        // Fallback: actualizar zona asociada (si la encontramos) para ajustar métricas si backend recalcula
+        try {
+          const zonaId = (item?.report as any)?.zonaId;
+          if(typeof zonaId === 'number'){
+            this.zonaService.obtenerZonas().subscribe(zs => {
+              const z = (zs || []).find((zz: any) => zz.id === zonaId);
+              if(z){ try { window.dispatchEvent(new CustomEvent('zone-status-update', { detail: z })); } catch {} }
+            });
+          }
+        } catch {}
       }, error: err => console.error('Error cancelando reporte en proceso', err) });
   }
 

@@ -2,6 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChang
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './interceptors/auth.interceptor'; // Ruta relativa al interceptor
+import { loadingInterceptor } from './interceptors/loading.interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations'; // Required for NgxToastr
 import { provideToastr } from 'ngx-toastr'; // NgxToastr
 
@@ -12,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor])),
     provideAnimations(), // Required for NgxToastr
     provideToastr({
       timeOut: 3000,

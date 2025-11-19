@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule, NgIf, NgForOf, NgClass } from '@angular/common';
 import { ReporteService, ReporteDTO } from '../../../services/reporte.service';
+import { finalize } from 'rxjs/operators';
 import { PerfilService } from '../../../services/perfil.service';
 import { ReportStateService } from '../../../services/report-state.service';
 import { ZonaService } from '../../../services/zona.service';
@@ -67,27 +68,30 @@ export class ReportesAsignados {
   }
 
   async irALaZona(reporte: ReporteDTO){
-    // Show modal UI immediately and call backend to set estado = 'UBICANDO'
-    // We avoid setting the global `loading` flag so the rest of the UI does not get hidden.
+    // Mostrar modal inmediatamente y llamar al backend que marca 'UBICANDO'
+    // No cerrar el modal aquí: debe permanecer abierto y bloqueado hasta que el usuario pulse "He Llegado".
     this.selectedReport = reporte;
     this.modalVisible = true;
-    this.modalLocked = true; // lock modal while we optimistically set UBICANDO
-    // fire-and-handle the backend update; keep UI responsive
-    (async () => {
-      try{
-        // use dedicated backend endpoint PUT /ir-a-zona
-        this.reporteService.irAZona(reporte.id).subscribe({ next: (g: any) => {
-          const idx = this.reportes.findIndex(r => r.id === reporte.id);
-          if(idx !== -1){
-            this.reportes[idx] = {
-              ...this.reportes[idx],
-              ultimaPrioridad: (g && g.prioridad) ? String(g.prioridad).toLowerCase() : (this.reportes[idx].ultimaPrioridad || ''),
-              ultimoEstado: (g && g.estado) ? String(g.estado) : 'UBICANDO'
-            } as ReporteDTO;
-          }
-        }, error: (_: any) => { console.error('Error irAZona', _); this.modalLocked = false; } });
-      }catch(e){ this.modalLocked = false; }
-    })();
+    this.modalLocked = true;
+
+    // Llamada al backend para marcar UBICANDO; actualizar estado local si devuelve datos.
+    this.reporteService.irAZona(reporte.id).subscribe({
+      next: (g: any) => {
+        const idx = this.reportes.findIndex(r => r.id === reporte.id);
+        if (idx !== -1) {
+          this.reportes[idx] = {
+            ...this.reportes[idx],
+            ultimaPrioridad: (g && g.prioridad) ? String(g.prioridad).toLowerCase() : (this.reportes[idx].ultimaPrioridad || ''),
+            ultimoEstado: (g && g.estado) ? String(g.estado) : 'UBICANDO'
+          } as ReporteDTO;
+        }
+      },
+      error: (_: any) => {
+        console.error('Error irAZona', _);
+        // permitir cerrar el modal si la petición falla para no bloquear al usuario
+        this.modalLocked = false;
+      }
+    });
   }
 
   private async getCurrentUserId(): Promise<number | null> {
@@ -106,12 +110,27 @@ export class ReportesAsignados {
   async heLlegadoALaZona(){
     if(!this.selectedReport) return;
     this.modalLocked = true;
-    this.reporteService.zonaUbicada(this.selectedReport.id).subscribe({ next: (g: any) => {
-      this.modalVisible = false;
-      this.modalLocked = false;
-      this.selectedReport = null;
-      this.loadReportesAsignados();
-    }, error: (_: any) => { this.modalLocked = false; } });
+    this.reporteService.zonaUbicada(this.selectedReport.id)
+      .pipe(finalize(() => {
+        // Asegurar que el modal se cierre y la UI se refresque aunque la respuesta no contenga cuerpo
+        this.modalVisible = false;
+        this.modalLocked = false;
+        this.selectedReport = null;
+        this.loadReportesAsignados();
+      }))
+      .subscribe({ next: (g: any) => {
+        // si el backend devuelve información útil, actualizar localmente también
+        try{
+          const idx = this.reportes.findIndex(r => r.id === (this.selectedReport ? this.selectedReport.id : -1));
+          if(idx !== -1 && g){
+            this.reportes[idx] = {
+              ...this.reportes[idx],
+              ultimaPrioridad: (g && g.prioridad) ? String(g.prioridad).toLowerCase() : (this.reportes[idx].ultimaPrioridad || ''),
+              ultimoEstado: (g && g.estado) ? String(g.estado) : (this.reportes[idx].ultimoEstado || '')
+            } as ReporteDTO;
+          }
+        }catch(e){}
+      }, error: (_: any) => { console.error('Error en zonaUbicada', _); } });
   }
 
   closeModal(){
@@ -191,29 +210,30 @@ export class ReportesAsignados {
     if(!msg) return;
     // capture id locally to avoid race conditions if selectedReport is cleared before response
     const reporteId = this.selectedReport.id;
-    this.reporteService.completarReporteConParte(reporteId, msg).subscribe({ next: (g: any) => {
-      // optimistic local update so UI shows pending approval immediately
-      const idx = this.reportes.findIndex(r => r.id === reporteId);
-      if(idx !== -1){
-        this.reportes[idx] = {
-          ...this.reportes[idx],
-          mensajeSeguridad: msg,
-          ultimoEstado: (g && g.estado) ? String(g.estado) : 'PENDIENTE_APROBACION'
-        } as ReporteDTO;
-        // publish to global snapshot so admin views (pend-aprobacion) can refresh live
-        try{ this.reportState.setReporte(this.reportes[idx]); }catch(e){}
-      }
-      this.completeModalVisible = false;
-      // clear selection
-      this.selectedReport = null;
-      this.policeDescription = '';
-      this.loadReportesAsignados();
-      console.log('Reporte completado y mensaje guardado');
-    }, error: (_: any) => {
-      // keep modal open and optionally show error
-      console.error('Error completando reporte', _);
-      alert('Error al completar el reporte. Revisa la consola o intenta de nuevo.');
-    } });
+    this.reporteService.completarReporteConParte(reporteId, msg)
+      .pipe(finalize(() => {
+        this.completeModalVisible = false;
+        this.selectedReport = null;
+        this.policeDescription = '';
+        this.loadReportesAsignados();
+      }))
+      .subscribe({
+        next: (g: any) => {
+          const idx = this.reportes.findIndex(r => r.id === reporteId);
+          if (idx !== -1) {
+            this.reportes[idx] = {
+              ...this.reportes[idx],
+              mensajeSeguridad: msg,
+              ultimoEstado: (g && g.estado) ? String(g.estado) : 'PENDIENTE_APROBACION'
+            } as ReporteDTO;
+            try { this.reportState.setReporte(this.reportes[idx]); } catch (e) {}
+          }
+          console.log('Reporte completado y mensaje guardado');
+        },
+        error: (_: any) => {
+          console.error('Error completando reporte', _);
+        }
+      });
   }
 
   openImage(src: string){

@@ -12,6 +12,7 @@ import { UsuarioService, UsuarioDTO } from '../../services/usuario.service';
 import { TipoIncidenteService, TipoIncidenteDTO } from '../../services/tipo-incidente.service';
 import { NotificationService } from '../../services/notification.service'; // Importar el servicio de notificación
 import { forkJoin } from 'rxjs';
+import { ScrollLockService } from '../../services/scroll-lock.service';
 
 @Component({
   selector: 'app-inicio-usuario',
@@ -130,7 +131,8 @@ export class InicioUsuario implements OnInit {
     private zonaService: ZonaService,
     private usuarioService: UsuarioService,
     private tipoService: TipoIncidenteService,
-    private notificationService: NotificationService // Inyectar el servicio de notificación
+    private notificationService: NotificationService, // Inyectar el servicio de notificación
+    private scrollLock: ScrollLockService
   ) {
     // Load dark mode preference from local storage
     try {
@@ -363,22 +365,22 @@ export class InicioUsuario implements OnInit {
       return;
     }
     this.showReportModal = true;
-    try { document.body.style.overflow = 'hidden'; } catch {}
+    this.scrollLock.lock();
   }
   closeReportModal() {
     this.showReportModal = false;
-    try { document.body.style.overflow = ''; } catch {}
+    this.scrollLock.unlock();
   }
 
   // Abrir/Cerrar Detalle de Reporte
   openDetalleModal() {
     if (!this.usuarioId) return;
     this.showDetalleModal = true;
-    try { document.body.style.overflow = 'hidden'; } catch {}
+    this.scrollLock.lock();
   }
   closeDetalleModal() {
     this.showDetalleModal = false;
-    try { document.body.style.overflow = ''; } catch {}
+    this.scrollLock.unlock();
   }
 
   // Recepción del evento de éxito desde el modal hijo
@@ -462,7 +464,7 @@ export class InicioUsuario implements OnInit {
 
   ngOnDestroy() {
     // En caso el componente se destruya con el modal abierto, restablecer scroll
-    try { document.body.style.overflow = ''; } catch {}
+    this.scrollLock.reset();
     if (this.toastTimer) { try { clearTimeout(this.toastTimer); } catch {} }
     if (this.dialogTimer) { try { clearTimeout(this.dialogTimer); } catch {} }
     if (this.reportsRefreshTimer) { try { clearInterval(this.reportsRefreshTimer); } catch {} }
