@@ -46,31 +46,10 @@ export class GuiaPage implements AfterViewInit {
 
   private bsModal: any; // Bootstrap modal instance
   private tourService = inject(TourService); // Inject TourService
-
-  darkMode = signal<boolean>(false);
-  private storageKey = 'guia_dark_mode';
+  // dark mode is now managed globally by DarkModeService (toggle moved to navbar)
 
   constructor(private renderer: Renderer2) {
-    // Load dark mode preference from local storage
-    try {
-      const storedPreference = localStorage.getItem(this.storageKey);
-      if (storedPreference !== null) {
-        this.darkMode.set(JSON.parse(storedPreference));
-      } else {
-        this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
-      }
-    } catch (e) {
-      console.error('Error reading dark mode preference from localStorage', e);
-      this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
-    }
-
-    effect(() => {
-      try {
-        localStorage.setItem(this.storageKey, JSON.stringify(this.darkMode()));
-      } catch (e) {
-        console.error('Error writing dark mode preference to localStorage', e);
-      }
-    });
+    // previously handled per-page; no longer needed here
   }
 
   ngAfterViewInit(): void {
@@ -179,6 +158,10 @@ export class GuiaPage implements AfterViewInit {
   }
 
   toggleDarkMode() {
-    this.darkMode.update(value => !value);
+    // kept for backward compatibility but no-op (dark mode moved to navbar)
+    try {
+      // Intentionally no-op: prefer the global toggle in navbar
+      console.info('[GuiaPage] toggleDarkMode called but dark mode is global in navbar');
+    } catch {}
   }
 }

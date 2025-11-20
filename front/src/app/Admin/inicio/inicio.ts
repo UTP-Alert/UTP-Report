@@ -59,10 +59,11 @@ export class InicioAdmin implements OnInit {
       const p = this.perfil.perfil(); // Obtiene el perfil del servicio.
       if(p) this.nombreAdmin = p.nombreCompleto; // Si el perfil existe, asigna el nombre completo.
     },300);
-    // Sincroniza la pestaña inicial con la URL actual
-    this.syncTabWithUrl();
-    // Escucha cambios de navegación para mantener la pestaña sincronizada si la URL cambia
-    this.router.events.subscribe(()=> this.syncTabWithUrl());
+    // Sincroniza la pestaña con el parámetro :tab y reutiliza el mismo componente
+    this.route.paramMap.subscribe(params => {
+      const slug = params.get('tab') || 'recientes';
+      this.activeTab = this.slugToTab(slug);
+    });
   }
 
   ngOnInit(): void {
@@ -141,29 +142,29 @@ export class InicioAdmin implements OnInit {
    */
   setActiveTab(tabName: string) {
     this.activeTab = tabName;
-    // Navegar a la ruta correspondiente para que la barra de direcciones refleje la pestaña
-    const pathMap: Record<string,string> = {
-      'recent': '/admin/recientes',
-      'in-process': '/admin/en-proceso',
-      'pending-approval': '/admin/pend-aprobacion',
-      'resolved': '/admin/resueltos',
-      'cancelled': '/admin/cancelados'
-    };
-    const target = pathMap[tabName] || '/admin';
-    // Use replaceUrl to avoid stacking history if lo deseas, aquí usamos push
-    this.router.navigateByUrl(target, { replaceUrl: false });
+    // La navegación la realiza el [routerLink] de las pestañas; aquí solo actualizamos estado inmediato
   }
 
-  // Sincroniza this.activeTab con la ruta actual
-  private syncTabWithUrl(){
-    try{
-      const url = this.router.url || '';
-      if(url.includes('/admin/en-proceso')) this.activeTab = 'in-process';
-      else if(url.includes('/admin/pend-aprobacion')) this.activeTab = 'pending-approval';
-      else if(url.includes('/admin/resueltos')) this.activeTab = 'resolved';
-      else if(url.includes('/admin/cancelados')) this.activeTab = 'cancelled';
-      else this.activeTab = 'recent';
-    }catch(e){/* noop */}
+  private slugToTab(slug: string): string {
+    switch(slug){
+      case 'en-proceso': return 'in-process';
+      case 'pend-aprobacion': return 'pending-approval';
+      case 'resueltos': return 'resolved';
+      case 'cancelados': return 'cancelled';
+      case 'recientes':
+      default: return 'recent';
+    }
+  }
+
+  private tabToSlug(tab: string): string {
+    switch(tab){
+      case 'in-process': return 'en-proceso';
+      case 'pending-approval': return 'pend-aprobacion';
+      case 'resolved': return 'resueltos';
+      case 'cancelled': return 'cancelados';
+      case 'recent':
+      default: return 'recientes';
+    }
   }
 
   /**

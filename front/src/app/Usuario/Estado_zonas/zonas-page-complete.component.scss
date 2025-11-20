@@ -253,6 +253,212 @@ $gray-light-text: #6B7280; // gray-500
     }
   }
 }
+/* Global dark-mode enforcement for Estado de Zonas (covers html.dark-mode and component host) */
+html.dark-mode .page-container,
+:host-context(.dark-mode) .page-container {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+html.dark-mode .page-container *, :host-context(.dark-mode) .page-container * {
+  color: inherit !important;
+  background-color: transparent !important;
+}
+
+/* Force darker surfaces for cards and controls inside this page */
+html.dark-mode .sede-selector-card,
+:host-context(.dark-mode) .sede-selector-card,
+html.dark-mode .quick-stats-grid .stat-card,
+:host-context(.dark-mode) .quick-stats-grid .stat-card,
+html.dark-mode .zone-card,
+:host-context(.dark-mode) .zone-card,
+html.dark-mode .controls-section .action-button,
+:host-context(.dark-mode) .controls-section .action-button {
+  background-color: #0b0b0b !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #e6eef8 !important;
+  box-shadow: none !important;
+}
+
+/* Stat cards: keep accent icons but darken surface */
+html.dark-mode .quick-stats-grid .stat-card.stat-safe,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-safe,
+html.dark-mode .quick-stats-grid .stat-card.stat-caution,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-caution,
+html.dark-mode .quick-stats-grid .stat-card.stat-dangerous,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-dangerous,
+html.dark-mode .quick-stats-grid .stat-card.stat-students,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-students {
+  background-color: rgba(255,255,255,0.02) !important;
+  /* keep a subtle colored border to preserve identity */
+}
+
+/* Colored borders and icons for stat variants */
+html.dark-mode .quick-stats-grid .stat-card.stat-safe,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-safe {
+  border-color: rgba(#22c55e, 0.12) !important;
+}
+html.dark-mode .quick-stats-grid .stat-card.stat-safe .stat-icon,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-safe .stat-icon {
+  color: #22c55e !important;
+}
+
+html.dark-mode .quick-stats-grid .stat-card.stat-caution,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-caution {
+  border-color: rgba(#eab308, 0.12) !important;
+}
+html.dark-mode .quick-stats-grid .stat-card.stat-caution .stat-icon,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-caution .stat-icon {
+  color: #eab308 !important;
+}
+
+html.dark-mode .quick-stats-grid .stat-card.stat-dangerous,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-dangerous {
+  border-color: rgba(#ef4444, 0.12) !important;
+}
+html.dark-mode .quick-stats-grid .stat-card.stat-dangerous .stat-icon,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-dangerous .stat-icon {
+  color: #ef4444 !important;
+}
+
+html.dark-mode .quick-stats-grid .stat-card.stat-students,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-students {
+  border-color: rgba(#3b82f6, 0.12) !important;
+}
+html.dark-mode .quick-stats-grid .stat-card.stat-students .stat-icon,
+:host-context(.dark-mode) .quick-stats-grid .stat-card.stat-students .stat-icon {
+  color: #3b82f6 !important;
+}
+
+/* Zone card specifics */
+html.dark-mode .zone-card,
+:host-context(.dark-mode) .zone-card {
+  background-color: #0b0b0b !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+html.dark-mode .zone-card .zone-title,
+:host-context(.dark-mode) .zone-card .zone-title {
+  color: #ffffff !important;
+}
+html.dark-mode .zone-card .zone-details,
+:host-context(.dark-mode) .zone-card .zone-details {
+  color: #bfc8d3 !important;
+}
+
+/* Dark-mode: ensure icons, status badges and security progress are visible and colored appropriately */
+html.dark-mode .zone-card .detail-icon,
+:host-context(.dark-mode) .zone-card .detail-icon,
+html.dark-mode .zone-card .location-icon,
+:host-context(.dark-mode) .zone-card .location-icon,
+html.dark-mode .zone-card .zone-title svg,
+:host-context(.dark-mode) .zone-card .zone-title svg {
+  color: #bfc8d3 !important; /* slightly brightened icon color */
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* Status badges keep their semantic color in dark mode */
+html.dark-mode .zone-card .zone-status-badge.zone-status-safe,
+:host-context(.dark-mode) .zone-card .zone-status-badge.zone-status-safe {
+  background-color: #22c55e !important; /* $green-safe */
+  color: #ffffff !important;
+  border: none !important;
+}
+html.dark-mode .zone-card .zone-status-badge.zone-status-caution,
+:host-context(.dark-mode) .zone-card .zone-status-badge.zone-status-caution {
+  background-color: #eab308 !important; /* $yellow-caution */
+  color: #1a1a1a !important;
+  border: none !important;
+}
+html.dark-mode .zone-card .zone-status-badge.zone-status-dangerous,
+:host-context(.dark-mode) .zone-card .zone-status-badge.zone-status-dangerous {
+  background-color: #ef4444 !important; /* $red-dangerous */
+  color: #ffffff !important;
+  border: none !important;
+}
+
+/* Security level progress: make container visible and color fill per zone state */
+html.dark-mode .zone-card .security-level-section .progress-bar-container,
+:host-context(.dark-mode) .zone-card .security-level-section .progress-bar-container {
+  background-color: rgba(255,255,255,0.03) !important;
+  height: 0.5rem !important;
+}
+
+/* Default fill visible */
+html.dark-mode .zone-card .security-level-section .progress-bar-fill,
+:host-context(.dark-mode) .zone-card .security-level-section .progress-bar-fill {
+  background-color: #1e88e5 !important; /* accent fallback */
+  height: 100% !important;
+  border-radius: 9999px !important;
+  min-width: 6% !important; /* ensure a thin visible line even for very low values */
+}
+
+/* If zone card carries a semantic zone class, color the fill accordingly */
+html.dark-mode .zone-card.zone-safe .security-level-section .progress-bar-fill,
+:host-context(.dark-mode) .zone-card.zone-safe .security-level-section .progress-bar-fill {
+  background-color: #22c55e !important; /* green */
+}
+html.dark-mode .zone-card.zone-caution .security-level-section .progress-bar-fill,
+:host-context(.dark-mode) .zone-card.zone-caution .security-level-section .progress-bar-fill {
+  background-color: #eab308 !important; /* yellow */
+}
+html.dark-mode .zone-card.zone-dangerous .security-level-section .progress-bar-fill,
+:host-context(.dark-mode) .zone-card.zone-dangerous .security-level-section .progress-bar-fill {
+  background-color: #ef4444 !important; /* red */
+}
+
+/* Ensure badges and progress are not affected by the aggressive global dark-mode "inherit" rules */
+html.dark-mode .zone-card .zone-status-badge,
+:host-context(.dark-mode) .zone-card .zone-status-badge,
+html.dark-mode .zone-card .security-level-section .progress-bar-fill,
+:host-context(.dark-mode) .zone-card .security-level-section .progress-bar-fill {
+  color: inherit !important;
+  background-color: inherit !important;
+}
+
+/* Image wrapper and overlays */
+html.dark-mode .zone-image-wrapper,
+:host-context(.dark-mode) .zone-image-wrapper {
+  background-color: #111111 !important;
+}
+html.dark-mode .zone-image-wrapper .image-overlay,
+:host-context(.dark-mode) .zone-image-wrapper .image-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.65), transparent) !important;
+}
+
+/* Inputs and description areas */
+html.dark-mode .security-description-text,
+:host-context(.dark-mode) .security-description-text {
+  background-color: #111111 !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #e6eef8 !important;
+}
+
+/* Buttons */
+html.dark-mode .report-button,
+:host-context(.dark-mode) .report-button,
+html.dark-mode .controls-section .action-button,
+:host-context(.dark-mode) .controls-section .action-button {
+  background-color: #FF395C !important;
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Read-only alert */
+html.dark-mode .read-only-alert,
+:host-context(.dark-mode) .read-only-alert {
+  background-color: rgba(255,255,255,0.02) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #e6eef8 !important;
+}
+
+/* Sede select */
+html.dark-mode .sede-select,
+:host-context(.dark-mode) .sede-select {
+  background-color: rgba(255,255,255,0.03) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #ffffff !important;
+}
 .content-wrapper {
   max-width: 80rem; /* max-w-7xl */
   margin-left: auto;

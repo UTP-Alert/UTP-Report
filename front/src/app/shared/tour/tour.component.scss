@@ -209,3 +209,75 @@
 .next-button i {
   font-size: 1.1em;
 }
+
+/* Dark mode overrides for the tour modal */
+html.dark-mode .tour-overlay,
+:host-context(.dark-mode) .tour-overlay {
+  background-color: rgba(0,0,0,0.85) !important;
+}
+
+html.dark-mode .tour-card,
+:host-context(.dark-mode) .tour-card {
+  background-color: #000000 !important;
+  border: 2px solid rgba(255,57,92,0.14) !important; /* soft primary border */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6) !important;
+  color: #f5f5f5 !important;
+}
+
+html.dark-mode .tour-arrow,
+:host-context(.dark-mode) .tour-arrow {
+  display: block !important;
+  background-color: #000000 !important;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.6) !important;
+  outline: 2px solid rgba(255,57,92,0.08);
+}
+
+html.dark-mode .tour-card-header,
+:host-context(.dark-mode) .tour-card-header,
+html.dark-mode .tour-card-footer,
+:host-context(.dark-mode) .tour-card-footer {
+  background-color: transparent !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+html.dark-mode .tour-card-body h3,
+:host-context(.dark-mode) .tour-card-body h3 {
+  color: #ffffff !important;
+}
+
+html.dark-mode .tour-card-body p,
+:host-context(.dark-mode) .tour-card-body p {
+  color: #dbe7ef !important;
+}
+
+/* Progress bar more visible in dark */
+html.dark-mode .progress-bar {
+  background-color: #FF395C !important;
+}
+
+/* Tip box dark variant */
+html.dark-mode .tip-box,
+:host-context(.dark-mode) .tip-box {
+  background-color: rgba(30,136,229,0.08) !important; /* subtle blue */
+  border-left: 4px solid #1e88e5 !important;
+  color: #cfe5ff !important;
+}
+html.dark-mode .tip-box i,
+:host-context(.dark-mode) .tip-box i {
+  color: #1e88e5 !important;
+}
+
+/* Semantic icon colors for common tour icons */
+html.dark-mode .tour-card-body .bi-shield-fill { color: #FF395C !important; }
+html.dark-mode .tour-card-body .bi-megaphone-fill { color: #FF395C !important; }
+html.dark-mode .tour-card-body .bi-geo-alt-fill { color: #22C55E !important; }
+html.dark-mode .tour-card-body .bi-send-fill { color: #1e88e5 !important; }
+html.dark-mode .tour-card-body .bi-bell-fill { color: #FF395C !important; }
+html.dark-mode .tour-card-body .bi-file-earmark-text-fill { color: #FF395C !important; }
+html.dark-mode .tour-card-body .bi-check-circle-fill { color: #22C55E !important; }
+
+/* Buttons styling adjustments in dark mode */
+html.dark-mode .prev-button { background-color: rgba(255,255,255,0.04) !important; color: #ffffff !important; }
+html.dark-mode .next-button { background-color: #FF395C !important; color: #ffffff !important; }
+html.dark-mode .skip-button { color: #bfc8d3 !important; }
+

@@ -2,6 +2,47 @@
 	display:block; padding: 8px 0;
 }
 
+/* Strong global dark-mode overrides for Review modal to ensure high specificity and ordering */
+html.dark-mode, :host-context(.dark-mode) {
+  /* Modal backdrop and card */
+  .modal-overlay { background: rgba(0,0,0,0.7) !important; }
+  .modal-card { background: #070707 !important; color: #e6eef8 !important; border: 1px solid rgba(255,255,255,0.04) !important; box-shadow: none !important; }
+
+  /* Header / Title */
+  .modal-card .modal-header, .modal-card .modal-footer { background: transparent !important; border-color: rgba(255,255,255,0.04) !important; }
+  .modal-card .modal-header h3, .modal-card h3 { color: #ffffff !important; }
+  .modal-card .close-x { color: #e6eef8 !important; }
+
+  /* Info boxes inside modal */
+  .modal-card .info-box,
+  .modal-card .parte-box,
+  .modal-card .parte-content,
+  .modal-card .bg-gray-50,
+  .modal-card .input {
+    background: #0b0b0b !important;
+    color: #e6eef8 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+  }
+
+  .modal-card .parte-title { color: #f5f6f7 !important; }
+  .modal-card .parte-meta { color: #9fbef2 !important; }
+
+  /* Buttons in modal: keep semantic colors but ensure contrast on dark bg */
+  .modal-card .btn { background: rgba(255,255,255,0.02) !important; color: #e6eef8 !important; border: 1px solid rgba(255,255,255,0.03) !important; }
+  .modal-card .btn.btn-reject { background: transparent !important; border: 1px solid #f87171 !important; color: #f87171 !important; }
+  .modal-card .btn.btn-approve { background: #16a34a !important; color: #fff !important; }
+
+  /* Input / textarea inside modal */
+  .modal-card .input, .modal-card textarea, .modal-card .input:focus, .modal-card textarea:focus {
+    background: #0b0b0b !important;
+    color: #e6eef8 !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+  }
+
+  /* Thumbnails / images */
+  .modal-card .small-thumb, .modal-card .inline-thumb { border-color: rgba(255,255,255,0.04) !important; }
+}
+
 .text-2xl.mb-4.flex.items-center.gap-3 {
   flex-wrap: wrap;
 }
@@ -122,6 +163,29 @@
     }
     .modal-card .input {
       padding: 8px;
+  
+/* Dark mode overrides */
+html.dark-mode,
+:host-context(.dark-mode) {
+  .card, .card-content, .parte-box, .parte-content, .modal-card, .modal-body, .modal-header, .modal-footer {
+    background: #000 !important;
+    color: #f5f6f7 !important;
+    border-color: rgba(255,255,255,0.04) !important;
+    box-shadow: none !important;
+  }
+
+  .badge.pending { background: #A855F7 !important; }
+  .badge.priority.high { background: #EF4444 !important; }
+  .badge.priority.medium { background: #EAB308 !important; color: #000 !important }
+  .badge.priority.low { background: #3B82F6 !important; }
+
+  .parte-title { color: #ffffff !important; }
+  .parte-meta { color: #1D4ED8 !important; }
+  .small-thumb, .inline-thumb { border-color: rgba(255,255,255,0.03) !important; }
+
+  .modal-overlay { background: rgba(0,0,0,0.6) !important; }
+  .modal-card .input { background: #0b0b0b !important; border: 1px solid rgba(255,255,255,0.04) !important; color: #f5f6f7 !important; }
+}
       font-size: 0.85rem;
     }
   }

@@ -28,3 +28,108 @@
 	.dr-actions { padding:.55rem .7rem; }
 	.dr-select { padding: 0 .4rem; }
 }
+
+/* Dark mode overrides (also for component encapsulation) */
+html.dark-mode .dr-modal,
+body.dark-mode .dr-modal,
+:host-context(.dark-mode) .dr-modal {
+	background-color: #0b0b0b !important;
+	color: #ffffff !important;
+	border-color: rgba(255,255,255,0.06) !important;
+	box-shadow: none !important;
+}
+
+html.dark-mode .dr-header,
+body.dark-mode .dr-header,
+:host-context(.dark-mode) .dr-header {
+	/* Ensure header has solid dark background when modal content scrolls */
+	background: rgba(11,11,11,0.95) !important;
+	border-bottom-color: rgba(255,255,255,0.06) !important;
+	color: #ffffff !important;
+	backdrop-filter: blur(4px);
+}
+
+html.dark-mode .dr-body,
+body.dark-mode .dr-body,
+:host-context(.dark-mode) .dr-body {
+	background: transparent !important;
+	color: #ffffff !important;
+}
+
+html.dark-mode .dr-select-btn,
+body.dark-mode .dr-select-btn,
+:host-context(.dark-mode) .dr-select-btn,
+html.dark-mode .dr-menu,
+body.dark-mode .dr-menu,
+:host-context(.dark-mode) .dr-menu,
+html.dark-mode .dr-item,
+body.dark-mode .dr-item,
+:host-context(.dark-mode) .dr-item {
+	background-color: rgba(255,255,255,0.02) !important;
+	border-color: rgba(255,255,255,0.06) !important;
+	color: #ffffff !important;
+}
+
+html.dark-mode .dr-img img,
+body.dark-mode .dr-img img,
+:host-context(.dark-mode) .dr-img img {
+	border-color: rgba(255,255,255,0.06) !important;
+}
+
+html.dark-mode .dr-actions .btn,
+body.dark-mode .dr-actions .btn,
+:host-context(.dark-mode) .dr-actions .btn {
+	background-color: #FF395C !important;
+	color: #fff !important;
+}
+
+/* ensure small neutral buttons look dark */
+html.dark-mode .btn[style*="background:#fff"],
+body.dark-mode .btn[style*="background:#fff"],
+:host-context(.dark-mode) .btn[style*="background:#fff"] {
+	background: #222 !important;
+	color: #e6eef8 !important;
+	border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* stronger labels and helper text */
+:host-context(.dark-mode) .dr-select label { color: #ffffff !important; font-weight:600 !important; }
+:host-context(.dark-mode) .dr-select-btn .txt { color: #ffffff !important; }
+:host-context(.dark-mode) .dr-item[aria-selected="true"], :host-context(.dark-mode) .dr-item:hover { background-color: rgba(255,255,255,0.04) !important; }
+:host-context(.dark-mode) .dr-empty, :host-context(.dark-mode) .dr-note { color: #d0d7df !important; }
+:host-context(.dark-mode) .dr-content .dr-desc { color: #ffffff !important; }
+
+/* Ensure dropdown menu items are dark and readable in dark mode */
+:host-context(.dark-mode) {
+	.dr-menu {
+		/* Make the dropdown fully opaque and above modal content */
+		background-color: rgba(11,11,11,0.98) !important;
+		border-color: rgba(255,255,255,0.06) !important;
+		box-shadow: 0 12px 30px rgba(0,0,0,0.7) !important;
+		z-index: 9999 !important;
+	}
+
+	.dr-item {
+		background: transparent !important;
+		color: #ffffff !important;
+		position: relative !important;
+		z-index: 10000 !important; /* ensure each item sits above modal content */
+	}
+
+	.dr-item:hover,
+	.dr-item[aria-selected="true"] {
+		background: rgba(255,255,255,0.06) !important;
+		color: #ffffff !important;
+		font-weight: 600 !important;
+	}
+
+	.dr-select-btn {
+		background: rgba(255,255,255,0.02) !important;
+		border-color: rgba(255,255,255,0.06) !important;
+		color: #ffffff !important;
+	}
+
+	.dr-select-btn .txt { color: #e6eef8 !important; }
+
+	.dr-empty-menu { color: #cfd6dd !important; background: transparent !important; }
+}

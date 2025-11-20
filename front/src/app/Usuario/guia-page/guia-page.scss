@@ -57,8 +57,8 @@ $black-color: var(--foreground);
   min-height: 100vh; // min-h-screen
 
   &.dark-mode {
-    background-color: #121212; /* Fondo principal */
-    color: #f5f5f5; /* Texto principal */
+    background-color: #000000; /* Fondo totalmente negro */
+    color: #f5f5f5; /* Texto principal claro */
     transition: background-color 0.3s ease, color 0.3s ease;
 
     .content-wrapper {
@@ -78,7 +78,7 @@ $black-color: var(--foreground);
     }
 
     .tutorial-grid .card {
-      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      background-color: #0b0b0b; /* Tarjetas más oscuras */
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       &:hover {
         box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
@@ -87,12 +87,12 @@ $black-color: var(--foreground);
         color: #f5f5f5; /* Texto principal */
       }
       .card-description {
-        color: #b0b0b0; /* Texto secundario */
+        color: #bfc8d3; /* Texto secundario claro */
       }
       &.tour-card {
-        border-color: #2a2a2a; /* Inputs */
+        border-color: rgba(#2563EB, 0.18); /* border azul tenue */
         .video-icon {
-          color: #1e88e5; /* Botones con color de acento */
+          color: $blue-600; /* icono azul */
         }
         .btn-tour {
           background-color: #1e88e5; /* Botones con color de acento */
@@ -102,12 +102,12 @@ $black-color: var(--foreground);
         }
       }
       &.report-card {
-        border-color: #2a2a2a; /* Inputs */
+        border-color: rgba(#EF4444, 0.16); /* border rojo tenue */
         .alert-triangle-icon {
-          color: #1e88e5; /* Botones con color de acento */
+          color: $red-500; /* icono rojo */
         }
         .btn-report {
-          background-color: #1e88e5; /* Botones con color de acento */
+          background-color: $primary-color; /* Botones con color primario (rojo) */
           &:hover {
             background-color: color.adjust(#1e88e5, $lightness: -10%);
           }
@@ -116,8 +116,8 @@ $black-color: var(--foreground);
     }
 
     .emergency-contact-card {
-      background-color: #1f1f1f; /* Tarjetas o contenedores */
-      border-color: #2a2a2a; /* Inputs */
+      background-color: #0b0b0b; /* Tarjetas oscuras */
+      border-color: rgba(#EF4444, 0.2); /* borde rojo tenue */
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       .card-title {
         color: #f5f5f5; /* Texto principal */
@@ -132,7 +132,7 @@ $black-color: var(--foreground);
         color: #b0b0b0; /* Ensure description is light gray in dark mode */
       }
       .alert-triangle-icon {
-        color: #dc3545; /* Red for emergency */
+        color: $red-500; /* Red for emergency */
       }
       .btn-emergency.call-911 {
         background-color: #dc3545; /* Red for emergency */
@@ -141,8 +141,8 @@ $black-color: var(--foreground);
         }
       }
       .btn-emergency.campus-security {
-        border-color: #2a2a2a; /* Inputs */
-        color: #1e88e5; /* Botones con color de acento */
+        border-color: rgba($primary-color, 0.18); /* borde primario tenue */
+        color: $blue-600; /* icono/borde azul para opción secundaria */
         &:hover {
           background-color: #2a2a2a; /* Inputs */
         }
@@ -153,17 +153,17 @@ $black-color: var(--foreground);
     }
 
     .faq-card {
-      background-color: #1f1f1f; /* Tarjetas o contenedores */
+      background-color: #0b0b0b; /* Tarjetas oscuras */
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      border-color: #2a2a2a; /* Inputs */
+      border-color: rgba(#2563EB, 0.08); /* borde azul muy tenue */
       .card-title {
         color: #f5f5f5; /* Texto principal */
       }
       .card-description {
-        color: #b0b0b0; /* Texto secundario */
+        color: #bfc8d3; /* Texto secundario claro */
       }
       .file-text-icon {
-        color: #1e88e5; /* Botones con color de acento */
+        color: $primary-color; /* icono distintivo (rojo) */
       }
       .accordion-item {
         border-bottom-color: #2a2a2a; /* Inputs */
@@ -283,7 +283,7 @@ $black-color: var(--foreground);
       }
     }
     .progress {
-      background-color: #2a2a2a; /* Inputs */
+      background-color: #0b0b0b; /* barra de progreso fondo oscuro */
     }
     .progress-bar {
       background-color: #1e88e5; /* Botones con color de acento */
@@ -298,6 +298,187 @@ $black-color: var(--foreground);
       }
     }
   }
+
+/* Force dark mode for guia page when html has dark-mode class or host context */
+html.dark-mode .guia-page-container,
+:host-context(.dark-mode) .guia-page-container {
+  background-color: #000000 !important;
+  color: #f5f5f5 !important;
+}
+
+/* Force every inner surface to pure black to remove residual gray surfaces */
+html.dark-mode .guia-page-container *,
+:host-context(.dark-mode) .guia-page-container * {
+  background-color: transparent !important; /* default to transparent so parent black shows through */
+}
+
+/* Exceptions: cards, sections and modal surfaces should be pure black */
+html.dark-mode .guia-page-container .content-wrapper,
+:host-context(.dark-mode) .guia-page-container .content-wrapper,
+html.dark-mode .guia-page-container .content-section,
+:host-context(.dark-mode) .guia-page-container .content-section,
+html.dark-mode .guia-page-container .tutorial-grid .card,
+:host-context(.dark-mode) .guia-page-container .tutorial-grid .card,
+html.dark-mode .guia-page-container .emergency-contact-card,
+:host-context(.dark-mode) .guia-page-container .emergency-contact-card,
+html.dark-mode .guia-page-container .faq-card,
+:host-context(.dark-mode) .guia-page-container .faq-card,
+html.dark-mode .guia-page-container .modal,
+:host-context(.dark-mode) .guia-page-container .modal,
+html.dark-mode .guia-page-container .modal-content,
+:host-context(.dark-mode) .guia-page-container .modal-content {
+  background-color: #000000 !important;
+  color: #f5f5f5 !important;
+  box-shadow: none !important;
+}
+
+/* Ensure accordion/content panels are black, not gray */
+html.dark-mode .guia-page-container .accordion-trigger,
+:host-context(.dark-mode) .guia-page-container .accordion-trigger,
+html.dark-mode .guia-page-container .accordion-content,
+:host-context(.dark-mode) .guia-page-container .accordion-content {
+  background-color: #000000 !important;
+  color: #bfc8d3 !important;
+}
+
+/* Keep borders subtle but visible on black */
+html.dark-mode .guia-page-container .card,
+:host-context(.dark-mode) .guia-page-container .card,
+html.dark-mode .guia-page-container .faq-card,
+:host-context(.dark-mode) .guia-page-container .faq-card,
+html.dark-mode .guia-page-container .emergency-contact-card,
+:host-context(.dark-mode) .guia-page-container .emergency-contact-card {
+  border-color: rgba(255,255,255,0.04) !important;
+}
+
+html.dark-mode .guia-page-container .card,
+:host-context(.dark-mode) .guia-page-container .card {
+  background-color: #000000 !important;
+  color: #f5f5f5 !important;
+  border-color: rgba(255,255,255,0.04) !important;
+}
+
+/* Semantic borders and icons in dark mode */
+html.dark-mode .guia-page-container .tutorial-grid .card.tour-card,
+:host-context(.dark-mode) .guia-page-container .tutorial-grid .card.tour-card {
+  border-color: rgba(#2563EB, 0.18) !important;
+}
+html.dark-mode .guia-page-container .tutorial-grid .card.report-card,
+:host-context(.dark-mode) .guia-page-container .tutorial-grid .card.report-card {
+  border-color: rgba(#EF4444, 0.16) !important;
+}
+html.dark-mode .guia-page-container .faq-card,
+:host-context(.dark-mode) .guia-page-container .faq-card {
+  border-color: rgba(#2563EB, 0.08) !important;
+}
+
+/* Icons keep semantic color */
+html.dark-mode .guia-page-container .video-icon { color: $blue-600 !important; }
+html.dark-mode .guia-page-container .alert-triangle-icon { color: $red-500 !important; }
+html.dark-mode .guia-page-container .file-text-icon { color: $primary-color !important; }
+
+/* Additional enforcement to remove remaining white surfaces and fix button colors */
+html.dark-mode .guia-page-container .content-wrapper,
+:host-context(.dark-mode) .guia-page-container .content-wrapper,
+html.dark-mode .guia-page-container .content-section,
+:host-context(.dark-mode) .guia-page-container .content-section,
+html.dark-mode .guia-page-container .faq-card,
+:host-context(.dark-mode) .guia-page-container .faq-card,
+html.dark-mode .guia-page-container .emergency-contact-card,
+:host-context(.dark-mode) .guia-page-container .emergency-contact-card,
+html.dark-mode .guia-page-container .tutorial-grid .card,
+:host-context(.dark-mode) .guia-page-container .tutorial-grid .card {
+  background-color: #0b0b0b !important;
+  color: #f5f5f5 !important;
+  border-color: rgba(255,255,255,0.04) !important;
+}
+
+/* Ensure header title is white and visible */
+html.dark-mode .guia-page-container .header .icon-title h1,
+:host-context(.dark-mode) .guia-page-container .header .icon-title h1 {
+  color: #ffffff !important;
+}
+
+/* Buttons: ensure tour uses blue, report uses primary red */
+html.dark-mode .guia-page-container .tutorial-grid .card.tour-card .btn-tour,
+:host-context(.dark-mode) .guia-page-container .tutorial-grid .card.tour-card .btn-tour {
+  background-color: $blue-600 !important;
+  border-color: rgba($blue-600, 0.2) !important;
+  color: #ffffff !important;
+}
+html.dark-mode .guia-page-container .tutorial-grid .card.report-card .btn-report,
+:host-context(.dark-mode) .guia-page-container .tutorial-grid .card.report-card .btn-report {
+  background-color: $primary-color !important;
+  border-color: rgba($primary-color, 0.18) !important;
+  color: #ffffff !important;
+}
+
+/* Emergency card: keep buttons red but surface dark */
+html.dark-mode .guia-page-container .emergency-contact-card {
+  background-color: #0b0b0b !important;
+  border-color: rgba($red-500, 0.16) !important;
+}
+html.dark-mode .guia-page-container .emergency-contact-card .btn-emergency.call-911 {
+  background-color: $red-500 !important;
+  color: #ffffff !important;
+}
+html.dark-mode .guia-page-container .emergency-contact-card .btn-emergency.campus-security {
+  background-color: transparent !important;
+  border-color: rgba($red-500, 0.14) !important;
+  color: $red-500 !important;
+}
+
+/* Accordion / FAQ: dark triggers and content */
+html.dark-mode .guia-page-container .accordion-trigger,
+:host-context(.dark-mode) .guia-page-container .accordion-trigger {
+  background-color: #0b0b0b !important;
+  color: #f5f5f5 !important;
+  border-bottom-color: rgba(255,255,255,0.04) !important;
+}
+html.dark-mode .guia-page-container .accordion-content,
+:host-context(.dark-mode) .guia-page-container .accordion-content {
+  background-color: #0b0b0b !important;
+  color: #bfc8d3 !important;
+}
+
+/* Generic button safeguard: prevent other rules turning tour button red */
+html.dark-mode .guia-page-container .btn { color: #ffffff !important; }
+
+
+/* FORCE: eliminate any residual lighter container backgrounds */
+html.dark-mode .guia-page-container .content-wrapper,
+:host-context(.dark-mode) .guia-page-container .content-wrapper,
+html.dark-mode .guia-page-container .header,
+:host-context(.dark-mode) .guia-page-container .header,
+html.dark-mode .guia-page-container .tutorial-grid,
+:host-context(.dark-mode) .guia-page-container .tutorial-grid,
+html.dark-mode .guia-page-container .content-section,
+:host-context(.dark-mode) .guia-page-container .content-section {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Ensure faq and emergency panels are pure black (not gray) */
+html.dark-mode .guia-page-container .faq-card,
+:host-context(.dark-mode) .guia-page-container .faq-card,
+html.dark-mode .guia-page-container .emergency-contact-card,
+:host-context(.dark-mode) .guia-page-container .emergency-contact-card {
+  background-color: #000000 !important;
+  box-shadow: none !important;
+  border-color: rgba(255,255,255,0.04) !important;
+}
+
+/* Remove subtle inner backgrounds from accordion and other helpers */
+html.dark-mode .guia-page-container .accordion-item,
+:host-context(.dark-mode) .guia-page-container .accordion-item,
+html.dark-mode .guia-page-container .accordion-trigger,
+:host-context(.dark-mode) .guia-page-container .accordion-trigger,
+html.dark-mode .guia-page-container .accordion-content,
+:host-context(.dark-mode) .guia-page-container .accordion-content {
+  background-color: transparent !important;
+}
+
 
   .content-wrapper {
     max-width: 1152px; // max-w-6xl

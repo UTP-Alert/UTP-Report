@@ -32,15 +32,11 @@ export const routes: Routes = [
 		return true;
 	}] },
 	{ path: 'usuario', component: InicioUsuario, canActivate: [roleGuard], data: { roles: ['ROLE_USUARIO','ROLE_ADMIN'] } },
-	// Rutas específicas para las pestañas del área Admin que reutilizan el componente InicioAdmin
-	{ path: 'admin/recientes', component: InicioAdmin, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
-	{ path: 'admin/en-proceso', component: InicioAdmin, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
-	{ path: 'admin/pend-aprobacion', component: InicioAdmin, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
-	{ path: 'admin/resueltos', component: InicioAdmin, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
-	{ path: 'admin/cancelados', component: InicioAdmin, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
-	{ path: 'admin', component: InicioAdmin, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
 	{ path: 'admin/reportes', component: ReportesComponent, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
 	{ path: 'admin/estado-zonas', component: AdminZonasPageCompleteComponent, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
+	// Área Admin: una sola ruta con parámetro para tabs, así Angular reutiliza el mismo componente y no lo recrea
+	{ path: 'admin/:tab', component: InicioAdmin, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
+	{ path: 'admin', component: InicioAdmin, canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
 	{ path: 'seguridad', component: InicioSeguridad, canActivate: [roleGuard], data: { roles: ['ROLE_SEGURIDAD'] } },
 	{ path: 'usuario/estado-zonas', component: ZonasPageCompleteComponent, canActivate: [roleGuard], data: { roles: ['ROLE_USUARIO', 'ROLE_ADMIN'] } },
 { 

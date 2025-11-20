@@ -17,24 +17,30 @@
 } /* Closing brace for .ra-wrapper */
 
 html.dark-mode .ra-wrapper {
-  background: #1a1a1a; /* Dark mode background */
+  background: transparent; /* let the global black root show through */
   color: #f5f5f5; /* Dark mode text color */
 }
 
 .ra-header { position:sticky; top:0; z-index:20; background:#fff; display:flex; align-items:flex-start; justify-content:space-between; gap:.75rem; padding:.25rem .25rem .75rem; border-bottom:1px solid #E5E7EB; }
-html.dark-mode .ra-header { background:#1a1a1a; border-bottom-color:#333; }
+html.dark-mode .ra-header { background: transparent; border-bottom-color: rgba(255,255,255,0.04); }
 
 .ra-title { display:flex; align-items:center; gap:.75rem; }
 .ra-title .icon { color:#FF395C; }
 .ra-title h2 { margin:0; font-size:1rem; line-height:1.375rem; color:#111827; }
 html.dark-mode .ra-title h2 { color:#f5f5f5; }
 
+:host-context(.dark-mode) .ra-title h2 {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.4) !important;
+}
+
 .ra-title .subtitle { margin:.1rem 0 0; color:#4B5563; font-size:.8rem; }
 html.dark-mode .ra-title .subtitle { color:#bbb; }
 
 .ra-head-right { display:flex; align-items:center; gap:.5rem; }
 .ra-badge { display:flex; align-items:center; gap:.5rem; background:#F3F4F6; border-radius:10px; padding:.375rem .625rem; }
-html.dark-mode .ra-badge { background:#333; }
+html.dark-mode .ra-badge { background: rgba(255,255,255,0.03); }
 
 .ra-badge .dot { width:8px; height:8px; background:#22C55E; border-radius:9999px; }
 .ra-close { background:transparent; border:none; font-size:1.1rem; line-height:1; color:#111827; padding:.25rem .4rem; border-radius:8px; cursor:pointer; }
@@ -60,7 +66,7 @@ html.dark-mode .ra-banner.warn { border-color:#78350f; background:#7c2d12; color
 
 /* Emergencia */
 .ra-emergency { --ico-offset-y: 2px; /* ajusta aquí: ej. -1px o 1px */ border:1px solid #fecaca; background:#fff1f2; color:#991b1b; border-radius:10px; padding:.5rem .75rem; margin-bottom:.75rem; text-align:left; }
-html.dark-mode .ra-emergency { border-color:#991b1b; background:#450a0a; color:#fca5a5; }
+html.dark-mode .ra-emergency { border-color:#991b1b; background: rgba(124,17,17,0.12); color:#fca5a5; }
 
 .ra-emergency .title { margin:0 0 .15rem; font-weight:700; font-size:.95rem; display:flex; align-items:baseline; gap:.4rem; }
 .ra-emergency .title .ico { display:inline-flex; align-items:baseline; line-height:0; color:#111827; opacity:.95; }
@@ -97,23 +103,23 @@ html.dark-mode .ra-form label { color:#f5f5f5; }
 
 /* Dark Mode adjustments for .ra-select */
 html.dark-mode .ra-select {
-  background: #fff; /* White background for the select box in dark mode */
-  border-color: #555555; /* Darker border */
-  color: #000; /* Black text for the select box in dark mode */
+  background: rgba(255,255,255,0.03); /* subtle translucent control */
+  border-color: #333333; /* Darker border */
+  color: #f5f5f5; /* Light text for the select box in dark mode */
   font-weight: 600; /* Make text bold */
 }
 
 html.dark-mode .ra-select .placeholder,
 html.dark-mode .ra-select .left-icon,
 html.dark-mode .ra-select .chev {
-  color: #000; /* Black text for placeholder, icon, and chevron in dark mode */
+  color: #f5f5f5; /* Light text for placeholder, icon, and chevron in dark mode */
   font-weight: 600; /* Make text bold */
 }
 
 html.dark-mode .ra-select-menu {
-  background: #333333; /* Darker background for the dropdown menu */
-  border-color: #555555; /* Darker border for the dropdown menu */
-  box-shadow: 0 8px 20px rgba(0,0,0,.3); /* Adjusted shadow for dark mode */
+  background: rgba(255,255,255,0.03); /* translucent menu to show black root */
+  border-color: #333333; /* Darker border for the dropdown menu */
+  box-shadow: 0 8px 20px rgba(0,0,0,.6); /* Adjusted shadow for dark mode */
 }
 
 html.dark-mode .ra-select-menu .menu-item {
@@ -121,7 +127,7 @@ html.dark-mode .ra-select-menu .menu-item {
 }
 
 html.dark-mode .ra-select-menu .menu-item:hover {
-  background: #555555; /* Hover background for menu items */
+  background: rgba(255,255,255,0.04); /* Subtle hover */
 }
 
 html.dark-mode .ra-select-menu .menu-empty {
@@ -197,7 +203,7 @@ html.dark-mode .ra-select-menu .menu-empty {
 html.dark-mode .ra-check label { color:#f5f5f5; }
 
 .ra-check input { width:18px; height:18px; display:inline-block; appearance:none; -webkit-appearance:none; margin:0; border:2px solid #9CA3AF; border-radius:4px; background:#fff; vertical-align:middle; position:relative; transition: background .15s ease, border-color .15s ease, box-shadow .15s ease; }
-html.dark-mode .ra-check input { background:#333; border-color:#777; }
+html.dark-mode .ra-check input { background:#222; border-color:#555; }
 
 .ra-check input:checked { background:#fff; border-color:#1D4ED8; }
 html.dark-mode .ra-check input:checked { background:#1D4ED8; border-color:#1D4ED8; }
@@ -264,7 +270,68 @@ html.dark-mode .ra-contact-list p { color:#f5f5f5; }
 html.dark-mode .ra-contact-list p strong { color:#60A5FA; }
 
 .ra-input { width:100%; border:1px solid #E5E7EB; border-radius:10px; padding:.5rem .6rem; background:#F9FAFB; color:#111827; font: inherit; font-size:.9rem; }
-html.dark-mode .ra-input { background:#333; border-color:#555; color:#f5f5f5; }
+html.dark-mode .ra-input { background: rgba(255,255,255,0.03); border-color:#333; color:#f5f5f5; }
 
 .ra-note { margin:.35rem 0 0; font-size:.78rem; color:#6B7280; }
 html.dark-mode .ra-note { color:#bbb; }
+
+/* Support Angular component encapsulation: ensure same rules when host is inside .dark-mode */
+:host-context(.dark-mode) {
+  .ra-wrapper {
+    background: #0b0b0b !important;
+    color: #ffffff !important;
+  }
+
+  .ra-header {
+    /* Keep header readable when sticky/scrolling: solid dark surface */
+    background: rgba(11,11,11,0.95) !important;
+    border-bottom-color: rgba(255,255,255,0.06) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(4px);
+  }
+
+  .ra-banner { background: rgba(255,255,255,0.02) !important; border-color: rgba(255,255,255,0.06) !important; color: #e6eef8 !important; }
+  .ra-banner.success { background: rgba(16,185,129,0.06) !important; border-color: rgba(16,185,129,0.14) !important; color: #d1fae5 !important; }
+  .ra-banner.warn { background: rgba(245,158,11,0.04) !important; border-color: rgba(245,158,11,0.12) !important; color: #fcd34d !important; }
+
+  .ra-emergency { background: rgba(124,17,17,0.12) !important; border-color: rgba(124,17,17,0.22) !important; color: #fca5a5 !important; }
+  .ra-emergency .title .ico svg { stroke: #fca5a5 !important; }
+
+  .ra-badge { background: rgba(255,255,255,0.03) !important; border-color: rgba(255,255,255,0.06) !important; color: #e6eef8 !important; }
+  .ra-badge strong { color: #ffffff !important; }
+  .ra-badge span { color: #e6eef8 !important; }
+
+  .ra-select, .ra-select-menu, .ra-upload, .ra-upload-menu, .ra-textarea textarea, .ra-input, .ra-check input {
+    background: rgba(255,255,255,0.03) !important;
+    border-color: rgba(255,255,255,0.06) !important;
+    color: #ffffff !important;
+  }
+
+  .ra-select .chev svg, .ra-select .left-icon, .ra-upload .icon-wrap, .ra-btn .icon {
+    color: rgba(255,255,255,0.95) !important;
+  }
+
+  .ra-upload { background: rgba(255,255,255,0.02) !important; border-color: rgba(255,255,255,0.06) !important; }
+  .ra-upload .icon-wrap { background: rgba(255,255,255,0.03) !important; color: #FF395C !important; }
+  .ra-upload strong { color: #ffffff !important; }
+  .ra-upload .helper, .ra-upload .file-name { color: #d0d7df !important; }
+
+  .ra-anon { background: rgba(255,255,255,0.02) !important; border-color: rgba(255,255,255,0.06) !important; color: #ffffff !important; }
+  .ra-anon .desc { color: #9fd0ff !important; }
+  .ra-anon .ra-top:hover .ra-check input:not(:checked) { background:#333 !important; }
+
+  .ra-btn.neutral { background:#222 !important; color:#ffffff !important; border-color:#444 !important; }
+  .ra-btn.primary { background:#FF395C !important; color:#fff !important; }
+
+  .ra-divider { border-top-color: rgba(255,255,255,0.06) !important; }
+  .ra-disclaimer { color:#e6eef8 !important; }
+  .ra-note { color:#d0d7df !important; }
+
+  /* Stronger text for labels and placeholders */
+  .ra-form label { color: #ffffff !important; font-weight: 600 !important; }
+  .ra-select .placeholder { color: #cbd5e1 !important; font-weight: 600 !important; }
+  .ra-textarea textarea::placeholder, .ra-input::placeholder { color: #9aa3ad !important; opacity: 1 !important; }
+  .ra-select-menu .menu-item { color: #ffffff !important; }
+  .ra-select .chev svg { stroke: #e6eef8 !important; }
+  .ra-check span:not(.ico) { color: #ffffff !important; }
+}

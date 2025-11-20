@@ -251,3 +251,33 @@
     font-size: 0.75rem;
   }
 }
+
+/* Dark mode overrides for Assign Modal (Admin -> Asignar Seguridad) */
+html.dark-mode, :host-context(.dark-mode) {
+  .modal-overlay { background: rgba(0,0,0,0.65); }
+  .modal-panel {
+    background: #000 !important;
+    color: #f5f6f7 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    box-shadow: none !important;
+  }
+
+  .modal-header { background: transparent; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .modal-sub { color: #bfc8d3 !important; }
+  .modal-header-left svg { filter: none; }
+
+  .modal-body { background: transparent; color: #e6eef8; }
+  .report-card-small { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.03); }
+
+  .report-title { color: #f5f6f7 !important; }
+  .recommendation { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.12); color: #d1fae5; }
+  .person-card { background: rgba(16,185,94,0.04); border: 1px solid rgba(34,197,94,0.10); color: #e6f9ed; }
+
+  .zone { background: rgba(255,255,255,0.02); color: #e6eef8; }
+  .zone.active { background: rgba(191,235,255,0.04); }
+
+  .btn-assign-official { background: #ef4444; color: #fff; border: 1px solid rgba(255,255,255,0.02); }
+  .btn-assign-official[disabled], .btn-assign-official:disabled { background: rgba(255,255,255,0.02); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.03); }
+
+  .modal-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); }
+}

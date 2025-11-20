@@ -1406,4 +1406,102 @@ main {
       font-size: 0.7rem;
     }
   }
+
+  
+}
+
+/* Dark mode overrides for Admin Inicio - global scope */
+html.dark-mode,
+:host-context(.dark-mode) {
+  /* Fuerza fondo totalmente negro en toda la página y contenedores */
+  html, body, .min-h-screen, .bg-gray-50 {
+    background-color: #000 !important;
+  }
+
+  main {
+    background-color: #000 !important;
+    color: #f5f6f7 !important;
+  }
+
+  /* General cards and surfaces */
+  .card,
+  .reporte-card,
+  .alert,
+  .tabs-list,
+  .tabs-trigger,
+  .estado-proceso,
+  .badge.badge-outline,
+  .button.button-outline {
+    background-color: #000 !important;
+    border-color: rgba(255,255,255,0.04) !important;
+    color: #f5f6f7 !important;
+    box-shadow: none !important;
+  }
+
+  /* Tabs: ensure container has no white backdrop */
+  .tabs-list {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .tabs-trigger {
+    color: #bfc8d3 !important;
+    background: transparent !important;
+    &:hover { background: rgba(255,255,255,0.02) !important; }
+
+    &.active {
+      background-color: rgba(255,255,255,0.04) !important;
+      color: #fff !important;
+      box-shadow: none !important;
+    }
+  }
+
+  /* reporte-card specifics: keep left border semantic while dark */
+  .reporte-card {
+    background: #000 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    border-left: 4px solid $orange-500 !important;
+    color: #f5f6f7 !important;
+
+    .reporte-header {
+      .icono {
+        background: radial-gradient(circle, $yellow-500 40%, $yellow-600 100%) !important;
+      }
+      .info {
+        h3 { color: #ffffff !important; }
+        .detalle { color: #bfc8d3 !important; }
+      }
+      .etiquetas .badge {
+        &.prioridad { background: $yellow-500 !important; color: #000 !important; }
+        &.estado { background: $purple-500 !important; color: #fff !important; }
+      }
+    }
+    .descripcion { color: #d3d7db !important; }
+    .estado-proceso {
+      background: #0b0b0b !important;
+      border: 1px solid rgba(255,255,255,0.03) !important;
+      h4 { color: #f5f6f7 !important; }
+      .info-grid { strong { color: #f5f6f7 !important; } }
+    }
+    .acciones {
+      label { color: #bfc8d3 !important; }
+      select {
+        background: #0b0b0b !important;
+        border: 1px solid rgba(255,255,255,0.04) !important;
+        color: #f5f6f7 !important;
+      }
+      .botones .btn {
+        &.verde { background: $green-500 !important; color: #fff !important; }
+        &.rojo { background: $red-500 !important; color: #fff !important; }
+      }
+    }
+  }
+
+  /* Utilities */
+  .badge { &.badge-outline { border-color: rgba(255,255,255,0.06) !important; color: #bfc8d3 !important; } }
+  .button.button-outline { background: transparent !important; color: #f5f6f7 !important; border-color: rgba(255,255,255,0.04) !important; }
+  .text-gray-600, .text-gray-700, .text-gray-500, .text-gray-400 { color: #bfc8d3 !important; }
+  .text-white { color: #fff !important; }
+  .reporte-card, .card { border-radius: 10px; }
 }

@@ -1,12 +1,13 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule, NgClass, NgIf } from '@angular/common';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { PerfilService } from '../../services/perfil.service';
 import { ROLES } from '../../constants/roles';
 import { PageConfigService, PageKey } from '../../services/page-config.service';
 import { TourService } from '../tour/tour.service';
+import { DarkModeService } from '../../services/dark-mode.service';
 import { TourComponent } from '../tour/tour.component';
 import { Notificaciones } from '../../Usuario/notificaciones/notificaciones';
 
@@ -38,6 +39,8 @@ export class NavbarComponent {
   pageCfg = inject(PageConfigService);
   // Tour service inyectado como campo
   tour = inject(TourService);
+  // Dark mode service
+  darkModeService = inject(DarkModeService);
 
   // Estado público requerido
   userRole = signal<string>('');
@@ -164,6 +167,10 @@ export class NavbarComponent {
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((e: any) => {
       this.currentUrl.set(e.urlAfterRedirects || e.url || '');
     });
+    // Cerrar dropdown de notificaciones al iniciar navegación (cambiar de pestaña/ruta)
+    this.router.events.pipe(filter(e => e instanceof NavigationStart)).subscribe(() => {
+      try { this.showNotifs.set(false); } catch {}
+    });
     // Rellenar nombre + rol en cuanto haya perfil o roles
     effect(() => {
       const p = this.perfilSrv.perfil();
@@ -237,6 +244,26 @@ export class NavbarComponent {
         } catch {}
       }
     });
+
+    // Cerrar notificaciones al hacer click fuera del área o al ocultar la pestaña
+    try {
+      document.addEventListener('click', (ev: Event) => {
+        try {
+          if (!this.showNotifs()) return;
+          const t = ev.target as HTMLElement | null;
+          if (!t) return;
+          // Si el click ocurrió dentro del area de notificaciones (icono o dropdown), no cerrar
+          if (t.closest && (t.closest('.notifications-area') || t.closest('.notifications-dropdown'))) return;
+          this.showNotifs.set(false);
+        } catch {}
+      }, true);
+    } catch {}
+
+    try {
+      document.addEventListener('visibilitychange', () => {
+        try { if (document.hidden) this.showNotifs.set(false); } catch {}
+      });
+    } catch {}
   }
 
   // ====== Reset diario de notificaciones ======
@@ -581,6 +608,26 @@ openGuide(){
       // Marcar como leídas al abrir
       const marked = this.notifications().map(n => ({ ...n, read: true }));
       this.notifications.set(marked);
+
+      // Posicionar el dropdown centrado bajo el icono con ajuste en píxeles
+      // Usamos next animation frame para asegurar que el DOM del dropdown ya exista
+      try {
+        requestAnimationFrame(() => {
+          try {
+            const container = document.querySelector('.notifications-area') as HTMLElement | null;
+            const dropdown = container ? container.querySelector('.notifications-dropdown') as HTMLElement | null : null;
+            if (!container || !dropdown) return;
+            // Medidas
+            const containerWidth = container.clientWidth;
+            const dropdownWidth = dropdown.offsetWidth;
+            // Calcular left relativo al contenedor para centrar
+            const leftPx = Math.round((containerWidth / 2) - (dropdownWidth / 2));
+            dropdown.style.left = leftPx + 'px';
+            // Anular transform centrar CSS para evitar desplazamientos dobles
+            dropdown.style.transform = 'none';
+          } catch {}
+        });
+      } catch {}
     }
   }
   reportar(){

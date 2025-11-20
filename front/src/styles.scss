@@ -6,13 +6,13 @@ html, body { height: 100%; }
 body { margin:0; font-family: 'Poppins', 'Inter', 'Segoe UI', Roboto, system-ui, Arial, sans-serif; background:#ffffff; -webkit-font-smoothing: antialiased; }
 /* Dark Mode global styles */
 html.dark-mode, body.dark-mode {
-  background-color: #121212 !important; /* Ensure full dark background */
+  background-color: #000000 !important; /* Use pure black for dark background */
   color: #f5f5f5; /* Default text color for dark mode */
 
-  /* General dark mode styles for common elements */
+  /* Let structural elements be transparent so the black root shows through */
   div, section, main, article, aside, header, footer, nav {
-    background-color: #121212; /* Dark background for structural elements */
-    border-color: #2a2a2a; /* Darker border color */
+    background-color: transparent; /* inherit the black background from root */
+    border-color: #1a1a1a; /* slightly darker border color for contrast */
   }
 
   /* Ensure text within these elements also adapts */
@@ -25,6 +25,176 @@ html.dark-mode, body.dark-mode {
 html.dark-mode *, body.dark-mode * {
   background-color: inherit;
   color: inherit;
+}
+
+/* Global utility overrides to enforce dark surfaces in dark-mode */
+html.dark-mode .bg-white,
+body.dark-mode .bg-white,
+html.dark-mode .bg-gray-50,
+body.dark-mode .bg-gray-50,
+html.dark-mode .bg-gray-100,
+body.dark-mode .bg-gray-100,
+html.dark-mode .bg-blue-50,
+body.dark-mode .bg-blue-50,
+html.dark-mode .bg-green-50,
+body.dark-mode .bg-green-50,
+html.dark-mode .bg-purple-50,
+body.dark-mode .bg-purple-50,
+html.dark-mode .bg-red-50,
+body.dark-mode .bg-red-50,
+html.dark-mode .bg-yellow-50,
+body.dark-mode .bg-yellow-50,
+html.dark-mode .bg-gray-200,
+body.dark-mode .bg-gray-200,
+html.dark-mode .rounded-2xl,
+body.dark-mode .rounded-2xl,
+html.dark-mode .border-2,
+body.dark-mode .border-2,
+html.dark-mode .border,
+body.dark-mode .border {
+  background-color: #0b0b0b !important;
+  color: #e6eef8 !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  box-shadow: none !important;
+}
+
+/* Specific KPI card and report cards enforcement */
+html.dark-mode .kpi-card,
+body.dark-mode .kpi-card,
+html.dark-mode .companero-card,
+body.dark-mode .companero-card,
+html.dark-mode .report-main-button > div,
+body.dark-mode .report-main-button > div {
+  background-color: #0b0b0b !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #e6eef8 !important;
+  box-shadow: none !important;
+}
+
+/* Keep small colored accents but darken the surface */
+html.dark-mode .kpi-card.bg-blue-50,
+body.dark-mode .kpi-card.bg-blue-50,
+html.dark-mode .kpi-card.bg-green-50,
+body.dark-mode .kpi-card.bg-green-50,
+html.dark-mode .kpi-card.bg-purple-50,
+body.dark-mode .kpi-card.bg-purple-50 {
+  background-color: rgba(255,255,255,0.02) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #e6eef8 !important;
+}
+
+/* Make alert banner dark */
+html.dark-mode .alert-banner,
+body.dark-mode .alert-banner {
+  background-color: rgba(255,255,255,0.02) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #e6eef8 !important;
+}
+
+/* Ensure utility gray text is readable */
+html.dark-mode .text-gray-500,
+body.dark-mode .text-gray-500,
+html.dark-mode .text-gray-600,
+body.dark-mode .text-gray-600,
+html.dark-mode .text-gray-700,
+body.dark-mode .text-gray-700 {
+  color: #c3c9d3 !important;
+}
+
+/* Remove light box-shadows that make cards look bright */
+html.dark-mode .shadow-sm,
+body.dark-mode .shadow-sm,
+html.dark-mode .shadow-lg,
+body.dark-mode .shadow-lg,
+html.dark-mode .shadow-2xl,
+body.dark-mode .shadow-2xl {
+  box-shadow: none !important;
+}
+
+/* Modal-specific dark mode enforcement for various modal implementations */
+html.dark-mode .modal-container,
+body.dark-mode .modal-container,
+html.dark-mode .dr-modal,
+body.dark-mode .dr-modal,
+html.dark-mode .ra-cam-modal,
+body.dark-mode .ra-cam-modal {
+  background-color: #0b0b0b !important;
+  color: #e6eef8 !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  box-shadow: none !important;
+}
+
+/* Ensure inner modal content and form controls are dark */
+html.dark-mode .modal-container .ra-wrapper,
+body.dark-mode .modal-container .ra-wrapper,
+html.dark-mode .ra-wrapper,
+body.dark-mode .ra-wrapper,
+html.dark-mode .dr-header,
+body.dark-mode .dr-header,
+html.dark-mode .dr-body,
+body.dark-mode .dr-body {
+  background: transparent !important;
+  color: #e6eef8 !important;
+}
+
+/* Inputs, selects, textarea inside modals */
+html.dark-mode .ra-input,
+body.dark-mode .ra-input,
+html.dark-mode textarea,
+body.dark-mode textarea,
+html.dark-mode .ra-textarea textarea,
+body.dark-mode .ra-textarea textarea,
+html.dark-mode .ra-select,
+body.dark-mode .ra-select,
+html.dark-mode .dr-select-btn,
+body.dark-mode .dr-select-btn,
+html.dark-mode .ra-upload,
+body.dark-mode .ra-upload {
+  background-color: rgba(255,255,255,0.03) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #e6eef8 !important;
+}
+
+/* Dropdown/menu items inside modals */
+html.dark-mode .ra-select-menu,
+body.dark-mode .ra-select-menu,
+html.dark-mode .ra-upload-menu,
+body.dark-mode .ra-upload-menu,
+html.dark-mode .dr-menu,
+body.dark-mode .dr-menu {
+  background-color: rgba(255,255,255,0.02) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+  color: #e6eef8 !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6) !important;
+}
+
+/* Images and previews inside modals get subtle borders */
+html.dark-mode .dr-img img,
+body.dark-mode .dr-img img,
+html.dark-mode .preview-box img,
+body.dark-mode .preview-box img,
+html.dark-mode .ra-preview img,
+body.dark-mode .ra-preview img {
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Buttons inside modals */
+html.dark-mode .ra-btn.primary,
+body.dark-mode .ra-btn.primary,
+html.dark-mode .btn,
+body.dark-mode .btn {
+  background-color: #FF395C !important;
+  color: #fff !important;
+}
+
+/* Close buttons */
+html.dark-mode .modal-close,
+body.dark-mode .modal-close,
+html.dark-mode .ra-close,
+body.dark-mode .ra-close,
+html.dark-mode .dr-header .x,
+body.dark-mode .dr-header .x {
+  color: #e6eef8 !important;
 }
 /* Compensación por navbar fixed-top: solo cuando el navbar está visible */
 body.with-fixed-navbar { padding-top: 72px; }

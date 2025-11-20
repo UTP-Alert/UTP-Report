@@ -383,6 +383,40 @@ export class ReportesRecientes {
     return map[p] || '#d1d5db';
   }
 
+  // --- Helpers añadidos para plantilla dinámica (status / selects) ---
+  statusBadgeClassFor(status?: string): string {
+    const s = (status || '').toString().toLowerCase();
+    const map: Record<string,string> = {
+      'nuevo': 'badge bg-blue-500',
+      'assigned_to_security': 'badge bg-purple-500',
+      'investigando': 'badge bg-yellow-500',
+      'en_proceso': 'badge bg-green-500',
+      'resuelto': 'badge bg-green-500',
+      'cancelado': 'badge bg-red-500'
+    };
+    return map[s] || 'badge badge-outline';
+  }
+
+  statusLabelFor(status?: string): string {
+    const s = (status || '').toString().toLowerCase();
+    const map: Record<string,string> = {
+      'nuevo': 'Nuevo',
+      'assigned_to_security': 'Asignado',
+      'investigando': 'Investigando',
+      'en_proceso': 'En Proceso',
+      'resuelto': 'Resuelto',
+      'cancelado': 'Cancelado'
+    };
+    return map[s] || (status ? (status.charAt(0).toUpperCase() + status.slice(1)) : 'Sin estado');
+  }
+
+  // Clase para el select de prioridad (permite añadir estilos por prioridad)
+  prioritySelectClassFor(reportId: number): string {
+    const p = this.priorityById[reportId] || '';
+    if(!p) return 'select';
+    return 'select prio-' + p; // p.ej. 'select prio-baja'
+  }
+
   // Convierte el campo rep.foto a data URL si es necesario
   toDataUrl(foto: any): string | null{
     if(!foto) return null;

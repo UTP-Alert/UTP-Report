@@ -305,3 +305,64 @@ select, input[type="text"] { padding:0.5rem; border-radius:0.35rem; border:1px s
     }
   }
 }
+
+
+/* Dark mode overrides */
+html.dark-mode,
+:host-context(.dark-mode) {
+  .card, .report-card, .report-card-wrapper, .card-content, .report-inner {
+    background: #000 !important;
+    color: #f5f6f7 !important;
+    border-color: rgba(255,255,255,0.04) !important;
+    box-shadow: none !important;
+  }
+
+  .btn-outline, .button-outline, .btn-new, .btn { background: transparent !important; border-color: rgba(255,255,255,0.04) !important; color: #f5f6f7 !important; }
+  .button-primary, .btn-primary { background: #3B82F6 !important; color: #fff !important; }
+
+  .badge-outline { background: transparent !important; border-color: rgba(255,255,255,0.06) !important; color: #bfc8d3 !important; }
+
+  select, .select, .input { background: #0b0b0b !important; border: 1px solid rgba(255,255,255,0.04) !important; color: #f5f6f7 !important; }
+
+  .meta-row, .meta-icons, .description, .label { color: #bfc8d3 !important; }
+
+  /* Forzar oscuridad en el panel interno (.info-grid) incluso si lleva style="background:#fff" */
+  .report-card .info-grid,
+  .report-card .info-grid[style] {
+    background: #0b0b0b !important;
+    color: #e6eef8 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+  }
+  .report-card .info-grid p,
+  .report-card .info-grid .small-muted { color: #bfc8d3 !important; }
+  .report-card .info-grid strong,
+  .report-card .info-grid .parte-title { color: #f5f6f7 !important; }
+  /* Forzar que el panel padre (.filters-panel) deje de ser blanco en modo oscuro */
+  .report-card .filters-panel,
+  .report-card .filters-panel[style],
+  .report-card .filters-actions-row .filters-panel {
+    background: #0b0b0b !important;
+    color: #e6eef8 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    box-shadow: none !important;
+  }
+  .report-card .filters-panel .form-row, .report-card .filters-panel .form-col { color: #bfc8d3 !important; }
+}
+
+/* Reforzar colores semánticos en dark-mode: bordes laterales y badges */
+html.dark-mode,
+:host-context(.dark-mode) {
+  .border-l-blue-500 { border-left-color: #3b82f6 !important; }
+  .border-l-yellow-500 { border-left-color: #f59e0b !important; }
+  .border-l-red-500 { border-left-color: #ef4444 !important; }
+  .border-l-green-500 { border-left-color: #10b981 !important; }
+  .border-l-purple-500 { border-left-color: #8b5cf6 !important; }
+
+  .badge.bg-blue-500 { background: #3b82f6 !important; }
+  .badge.bg-yellow-500 { background: #f59e0b !important; }
+  .badge.bg-red-500 { background: #ef4444 !important; }
+  .badge.bg-green-500 { background: #10b981 !important; }
+  .badge.bg-purple-500 { background: #8b5cf6 !important; }
+}

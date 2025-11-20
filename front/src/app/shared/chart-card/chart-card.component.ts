@@ -16,6 +16,7 @@ export class ChartCardComponent implements OnInit, AfterViewInit, OnDestroy, OnC
   @ViewChild('chartCanvas') chartCanvas!: ElementRef;
 
   private chartInstance: Chart | undefined;
+  private themeObserver: MutationObserver | undefined;
 
   constructor() { }
 
@@ -32,11 +33,21 @@ export class ChartCardComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     if (this.chartData) {
       this.renderChart();
     }
+
+    // Observe changes to the html class to re-render on dark-mode toggle
+    const htmlEl = document.documentElement;
+    this.themeObserver = new MutationObserver(() => {
+      this.updateChartTheme();
+    });
+    this.themeObserver.observe(htmlEl, { attributes: true, attributeFilter: ['class'] });
   }
 
   ngOnDestroy(): void {
     if (this.chartInstance) {
       this.chartInstance.destroy();
+    }
+    if (this.themeObserver) {
+      this.themeObserver.disconnect();
     }
   }
 
@@ -67,17 +78,41 @@ export class ChartCardComponent implements OnInit, AfterViewInit, OnDestroy, OnC
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: {
-              beginAtZero: true
-            }
+            y: { beginAtZero: true },
+            x: {}
           },
           plugins: {
-            legend: {
-              display: true
-            }
+            legend: { display: true }
           }
         }
       });
+
+      // Apply theme-dependent colors
+      this.updateChartTheme();
     }
+  }
+
+  private updateChartTheme(): void {
+    if (!this.chartInstance) return;
+    const isDark = document.documentElement.classList.contains('dark-mode');
+    const gridColor = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)';
+    const tickColor = isDark ? '#d1d5db' : '#374151';
+    const legendColor = isDark ? '#f5f6f7' : '#111827';
+
+    const scales: any = this.chartInstance.options.scales;
+    if (scales) {
+      if (scales.x) {
+        scales.x.grid = { color: gridColor };
+        scales.x.ticks = { color: tickColor };
+      }
+      if (scales.y) {
+        scales.y.grid = { color: gridColor };
+        scales.y.ticks = { color: tickColor };
+      }
+    }
+    if (this.chartInstance.options.plugins && (this.chartInstance.options.plugins as any).legend) {
+      (this.chartInstance.options.plugins as any).legend.labels = { color: legendColor };
+    }
+    this.chartInstance.update();
   }
 }

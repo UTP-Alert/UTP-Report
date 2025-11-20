@@ -580,3 +580,53 @@
 @media (max-width: 640px){
 	.reports-section .report-details { flex-direction: column; align-items: flex-start; gap: 6px }
 }
+
+/* Dark mode overrides for Reportes Asignados (Seguridad) */
+html.dark-mode, :host-context(.dark-mode) {
+  .reports-list .report-card,
+  .report-card,
+  .reports-section,
+  .completed-reports,
+  .modal-card,
+  .modal,
+  .modal-backdrop {
+    background: #000 !important;
+    color: #f5f6f7 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    box-shadow: none !important;
+  }
+
+  .report-title, .report-description, .detail-text, .detail-item .material-icons { color: #e6eef8 !important; }
+  .report-id, .completed-date { color: #bfc8d3 !important; }
+
+  /* keep buttons semantic */
+  .go-to-zone { background: #f97316 !important; color: #fff !important; }
+  .complete-report { background: #16a34a !important; color: #fff !important; }
+  .action-btn { background: rgba(255,255,255,0.02) !important; color: #e6eef8 !important; border: 1px solid rgba(255,255,255,0.03); }
+
+  .modal-close .material-icons { color: #e6eef8 !important; }
+  .modal-circle { background: rgba(255,255,255,0.02) !important; }
+  .modal-info, .modal-lead, .modal-sub { color: #e6eef8 !important; }
+  /* Ensure modal info boxes are dark and readable */
+  .modal-info, .destination-info {
+    background: #0b0b0b !important;
+    color: #e6eef8 !important;
+    border: 1px solid rgba(255,255,255,0.03) !important;
+    padding: 10px !important;
+    border-radius: 6px !important;
+  }
+  /* stronger, more specific selectors in case of encapsulation/order issues */
+  .modal-card .modal-info, html.dark-mode .modal-card .modal-info, :host-context(.dark-mode) .modal-card .modal-info {
+    background: #0b0b0b !important;
+    color: #f5f6f7 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+  }
+  .modal-card .modal-info strong, html.dark-mode .modal-card .modal-info strong { color: #ffffff !important; }
+
+  .report-thumb, .inline-thumb { border: 1px solid rgba(255,255,255,0.04) !important; }
+
+  .modal-body { background: transparent !important; }
+  .report-summary { background: rgba(255,255,255,0.02) !important; border: 1px solid rgba(255,255,255,0.03) !important; }
+
+  .modal-backdrop { background: rgba(0,0,0,0.6) !important; }
+}

@@ -31,17 +31,15 @@
         </li>
         
         <!-- Secciones por rol -->
-        <!-- SUPERADMIN: gestión, reportes sensibles, estado de zonas -->
-        <ng-container *ngIf="isSuperAdmin()">
-          <li class="nav-item"><a class="nav-link" [routerLink]="['/superadmin','usuarios']" routerLinkActive="active">
+        <!-- Ocultar para SuperAdmin: gestión, reportes sensibles, estado de zonas -->
+        <ng-container *ngIf="!isSuperAdmin()">
+          <li class="nav-item" *ngIf="canShow('usuarios')"><a class="nav-link" [routerLink]="['/superadmin','usuarios']" routerLinkActive="active">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>
             <span>Gestión de Usuarios</span></a></li>
           <li class="nav-item" *ngIf="canShow('sensibles')"><a class="nav-link" [routerLink]="['/superadmin','reportes-sensibles']" routerLinkActive="active">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" /></svg>
             <span>Reportes Sensibles</span></a></li>
-          <li class="nav-item" *ngIf="canShow('zonas')"><a class="nav-link" [routerLink]="getZonasPath()" routerLinkActive="active">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" /></svg>
-            <span>Estado de Zonas</span></a></li>
+          
         </ng-container>
 
         <!-- ADMIN (rol admin no actuando como usuario): Inicio, Estado de Zonas, Reportes -->
@@ -123,10 +121,17 @@
               <span>Reportar Ahora</span>
             </button>
           </li>
-          <!-- Botón para abrir Tour del sistema (oculto para Admin) -->
-          <li class="nav-item me-2" *ngIf="!isAdmin() && !isSeguridad()">
-            <button class="btn btn-outline-secondary" (click)="openTour()" title="Tour del sistema">Tour</button>
-          </li>
+            <!-- Botón para abrir Tour del sistema (oculto para Admin, Seguridad y SuperAdmin) -->
+            <li class="nav-item me-2" *ngIf="!isAdmin() && !isSeguridad() && !isSuperAdmin()">
+              <button class="btn btn-outline-secondary" (click)="openTour()" title="Tour del sistema">Tour</button>
+            </li>
+            <!-- Global Dark Mode toggle (oculto para SuperAdmin) -->
+            <li class="nav-item me-2" *ngIf="!isSuperAdmin()">
+              <button class="btn btn-outline-secondary" (click)="darkModeService.toggleDarkMode()" title="Alternar Modo Oscuro" aria-label="Alternar modo oscuro">
+                <svg *ngIf="!darkModeService.darkMode()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <svg *ngIf="darkModeService.darkMode()" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              </button>
+            </li>
         </ul>
       </div>
     </div>

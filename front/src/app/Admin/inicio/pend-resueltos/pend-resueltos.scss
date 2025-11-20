@@ -207,3 +207,28 @@
     }
   }
 }
+
+/* Dark mode overrides */
+html.dark-mode,
+:host-context(.dark-mode) {
+  .resolved-card {
+    background: #000 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    color: #f5f6f7 !important;
+    box-shadow: none !important;
+  }
+
+  .resolved-card .card-content.row-flex { padding: 0.75rem 1rem !important; }
+  .avatar-circle { box-shadow: none !important; background: transparent !important; }
+  .resolved-card .meta.small { color: #bfc8d3 !important; }
+  .resolved-card .desc { color: #BBF7D0 !important; }
+  .icons-row { color: #d1d5db !important; }
+
+  .badge { &.resuelto { background: #22C55E !important; } }
+  .badge.priority.high { background: #EF4444 !important; }
+  .badge.priority.medium { background: #EAB308 !important; color: #000 !important }
+  .badge.priority.low { background: #3B82F6 !important; }
+
+  .button-outline { background: transparent !important; border-color: rgba(255,255,255,0.04) !important; color: #f5f6f7 !important; }
+  .report-thumb-lg, .inline-thumb { border-color: rgba(255,255,255,0.03) !important; }
+}

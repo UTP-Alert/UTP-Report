@@ -34,3 +34,15 @@
     height: 200px; /* Slightly smaller height on mobile */
   }
 }
+
+/* Dark mode overrides */
+html.dark-mode,
+:host-context(.dark-mode) {
+  .chart-card {
+    background-color: #000 !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+  }
+  .chart-title { color: #f5f6f7 !important; }
+  .chart-container { background: transparent !important; }
+}

@@ -22,8 +22,7 @@ export class ZonasPageCompleteComponent implements OnInit {
   selectedSedeNombre: string | null = null;
   zonas: Array<Zona & { foto?: any; fotoUrl?: string; [k: string]: any } > = [];
 
-  darkMode = signal<boolean>(false);
-  private storageKey = 'zonas_dark_mode';
+  // dark mode handled globally by DarkModeService (toggle is in navbar)
 
   constructor(
     private perfilService: PerfilService,
@@ -32,25 +31,7 @@ export class ZonasPageCompleteComponent implements OnInit {
     private router: Router,
   ) {
     // Load dark mode preference from local storage
-    try {
-      const storedPreference = localStorage.getItem(this.storageKey);
-      if (storedPreference !== null) {
-        this.darkMode.set(JSON.parse(storedPreference));
-      } else {
-        this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
-      }
-    } catch (e) {
-      console.error('Error reading dark mode preference from localStorage', e);
-      this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
-    }
-
-    effect(() => {
-      try {
-        localStorage.setItem(this.storageKey, JSON.stringify(this.darkMode()));
-      } catch (e) {
-        console.error('Error writing dark mode preference to localStorage', e);
-      }
-    });
+    // previously per-page dark mode logic removed; DarkModeService manages it globally
   }
 
   ngOnInit(): void {
@@ -153,7 +134,8 @@ export class ZonasPageCompleteComponent implements OnInit {
   }
 
   toggleDarkMode() {
-    this.darkMode.update(value => !value);
+    // no-op: dark mode is controlled globally from navbar
+    try { console.info('[ZonasPage] toggleDarkMode called but dark mode is global in navbar'); } catch {}
   }
 
   // Abre el modal de reporte navegando al home del usuario y disparando evento global

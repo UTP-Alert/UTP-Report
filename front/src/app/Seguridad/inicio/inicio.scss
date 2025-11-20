@@ -170,11 +170,6 @@ $purple-500: #A855F7;
   font-size: 16px; /* AlertTriangle size 16px */
 }
 
-// Tarjetas de Estadísticas
-.stats-section {
-  /* No specific styles needed here, gap is handled by parent */
-}
-
 .stats-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -650,6 +645,92 @@ $purple-500: #A855F7;
     justify-content: center;
   }
 }
+
+/* Dark mode overrides for Seguridad inicio */
+html.dark-mode, :host-context(.dark-mode) {
+  .security-panel { background-color: #000 !important; color: #f5f6f7 !important; }
+
+  .stat-card,
+  .control-panel,
+  .reports-section,
+  .reports-list .report-card,
+  .report-card,
+  .completed-reports,
+  .modal,
+  #complete-modal .modal,
+  .destination-info,
+  .report-summary {
+    background-color: #070707 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    box-shadow: none !important;
+    color: #e6eef8 !important;
+  }
+
+  .header-title,
+  .header-subtitle,
+  .stat-number,
+  .stat-label,
+  .panel-title,
+  .reports-number,
+  .reports-label,
+  .report-title,
+  .report-description,
+  .detail-text,
+  .completed-title,
+  .completed-date { color: #e6eef8 !important; }
+
+  .panel-icon, .detail-icon, .modal-icon, .modal-close { color: #e6eef8 !important; }
+
+  .control-select, select.control-select, .police-description, textarea, .report-summary {
+    background: #0b0b0b !important;
+    color: #e6eef8 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+  }
+
+  .status-badge.available { background-color: #10B981 !important; }
+  .status-badge.occupied { background-color: #EAB308 !important; }
+  .status-badge.out-of-service { background-color: #EF4444 !important; }
+  .priority-badge.high { background-color: #EF4444 !important; }
+  .priority-badge.medium { background-color: #F59E0B !important; }
+  .priority-badge.low { background-color: #3B82F6 !important; }
+
+  .nav-arrow { background-color: rgba(249,115,22,0.06); color: #F97316 !important; }
+
+  .action-btn { background: rgba(255,255,255,0.02) !important; color: #e6eef8 !important; border: 1px solid rgba(255,255,255,0.03); }
+  .action-btn.go-to-zone { background: #f97316 !important; color: #fff !important; }
+  .action-btn.complete-report { background: #059669 !important; color: #fff !important; }
+
+  .modal-overlay { background: rgba(0,0,0,0.6) !important; }
+  .modal-close { color: #e6eef8 !important; }
+
+  .modal-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); }
+}
+
+/* Specific fix: ensure destination/info boxes inside modal are dark and readable */
+html.dark-mode .modal-card .destination-info,
+html.dark-mode .modal-card .modal-info,
+:host-context(.dark-mode) .modal-card .destination-info {
+  background: #0b0b0b !important;
+  color: #f5f6f7 !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+}
+html.dark-mode .modal-card .destination-info strong, html.dark-mode .modal-card .modal-info strong { color: #fff !important; }
+
+  /* Fix remaining white boxes (active reports / small panels) */
+  .active-reports,
+  .active-reports *,
+  .reports-number,
+  .reports-label,
+  .control-panel .active-reports {
+    background: #070707 !important;
+    color: #dfe9f3 !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+  }
+
+  /* If there are small inline white boxes use this catch-all */
+  .security-panel .panel-header, .security-panel .stats-section, .security-panel .active-reports {
+    background: transparent !important;
+  }
 
 /* Additional Responsive Adjustments */
 

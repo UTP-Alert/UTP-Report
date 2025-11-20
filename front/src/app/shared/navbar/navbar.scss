@@ -90,10 +90,43 @@
   /* Dropdown flotante de notificaciones */
   .notifications-dropdown {
     position: absolute;
-    top: 54px; /* debajo del navbar */
-    right: 1rem;
+    top: calc(100% + 10px); /* justo debajo del icono */
+    left: 50%; /* centrar respecto al padre (.notifications-area) */
+    transform: translateX(-50%);
     z-index: 2000;
     animation: notifFade .18s ease-out;
+    /* ancho máximo y centrado ya gestionado por el panel interno */
+  }
+
+  /* Asegurar que el contenedor de la campana sea relativo para posicionar el dropdown */
+  .notifications-area { position: relative; }
+
+  /* Conector tipo "hilo" entre icono y desplegable: pequeño círculo y barra fina */
+  .notifications-dropdown::before,
+  .notifications-dropdown::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 1999;
+  }
+  /* circulito justo por encima del panel */
+  .notifications-dropdown::before {
+    top: -10px;
+    width: 10px;
+    height: 10px;
+    background: #ff395c; /* color primario para que destaque */
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(255,57,92,0.06);
+  }
+  /* barra fina (hilo) que conecta al icono - extendida hacia arriba */
+  .notifications-dropdown::after {
+    top: -26px;
+    width: 2px;
+    height: 16px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 2px;
   }
 
   @keyframes notifFade {
@@ -146,6 +179,30 @@
     background-color: rgba(128,128,128,.2); /* sombreado gris translúcido permanente */
     padding: .375rem .5rem;
     border-radius: .5rem;
+  }
+
+  /* Ajustes específicos para modo oscuro: eliminar el pill gris y suavizar hovers */
+  :global(html.dark-mode) & {
+    .user-name {
+      background-color: transparent; /* quitar fondo gris en dark mode */
+    }
+
+    .nav-link:hover,
+    .nav-link:focus {
+      background-color: rgba(255,255,255,0.04); /* sutil en oscuro */
+    }
+
+    .left-nav .logout-link:hover {
+      background-color: rgba(255,255,255,0.04);
+    }
+  }
+
+  /* Compatibilidad con encapsulado Angular: aplicar cuando un ancestro tenga .dark-mode */
+  :host-context(.dark-mode) {
+    .user-name { background-color: transparent; }
+    .nav-link:hover,
+    .nav-link:focus { background-color: rgba(255,255,255,0.04); }
+    .left-nav .logout-link:hover { background-color: rgba(255,255,255,0.04); }
   }
 
   .user-status {

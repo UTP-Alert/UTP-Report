@@ -242,6 +242,23 @@ export class EnProceso implements OnInit {
     return map[p] || '#d1d5db';
   }
 
+  // Devuelve clases del card para un item completo (prioridad > estado)
+  cardClassForReport(item: InProcessItem): string{
+    // Prioridad explícita tiene preferencia
+    if(item && item.priority){
+      return this.cardClassFor(String(item.priority));
+    }
+    // Si no hay prioridad, derivar del estado del reporte
+    const estadoRaw = (item && item.report && ((item.report as any).reporteGestion?.estado || (item.report as any).ultimoEstado)) || '';
+    const estado = String(estadoRaw).toUpperCase();
+    switch(estado){
+      case 'INVESTIGANDO': return 'border-l-4 border-l-purple-500 bg-purple-50';
+      case 'UBICANDO': return 'border-l-4 border-l-yellow-500 bg-yellow-50';
+      case 'EN_PROCESO': return 'border-l-4 border-l-green-500 bg-green-50';
+      default: return '';
+    }
+  }
+
   // Cancelar un reporte en proceso: persistir y notificar al estado compartido
   cancelReport(reportId: number){
     if(!reportId) return;

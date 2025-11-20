@@ -45,7 +45,7 @@
   }
 
   .kpi-card {
-    background-color: #1f1f1f; /* Tarjetas o contenedores */
+    background-color: transparent; /* Tarjetas o contenedores - transparent to show black root */
     border-color: #2a2a2a; /* Inputs */
     .text-gray-600 {
       color: #b0b0b0; /* Texto secundario */
@@ -54,34 +54,22 @@
       color: #1e88e5; /* Botones con color de acento */
     }
   }
+  /* Specific tint for KPI utility background variants to keep colored identity but dark */
+  .kpi-card.bg-blue-50 { background-color: rgba(59,130,246,0.06) !important; border-color: rgba(59,130,246,0.14) !important; }
+  .kpi-card.bg-green-50 { background-color: rgba(34,197,94,0.06) !important; border-color: rgba(34,197,94,0.14) !important; }
+  .kpi-card.bg-purple-50 { background-color: rgba(168,85,247,0.06) !important; border-color: rgba(168,85,247,0.14) !important; }
+  .kpi-card .text-gray-600 { color: #cbd5e1 !important; }
+  .kpi-card .text-gray-700 { color: #e2e8f0 !important; }
   .kpi-card.bg-blue-50, .kpi-card.bg-green-50, .kpi-card.bg-purple-50 {
-    background-color: #1f1f1f; /* Tarjetas o contenedores */
+    background-color: transparent; /* Tarjetas o contenedores */
     border-color: #2a2a2a; /* Inputs */
   }
 
-  .report-main-button .border {
-    border-color: #2a2a2a !important; /* Inputs */
-  }
-  .report-main-button .text-gray-700 {
-    color: #b0b0b0; /* Texto secundario */
-  }
-  .report-main-button button.bg-gray-200 {
-    background-color: #2a2a2a !important; /* Inputs */
-    color: #b0b0b0 !important; /* Texto secundario */
-  }
-  .report-main-button button.bg-primary {
-    background-color: #1e88e5 !important; /* Botones con color de acento */
-    &:hover {
-      background-color: color.adjust(#1e88e5, $lightness: -10%) !important; /* Darken accent color on hover */
-    }
-  }
-  .report-main-button button.border-primary {
-    border-color: #1e88e5 !important; /* Botones con color de acento */
-    color: #1e88e5 !important; /* Botones con color de acento */
-    &:hover {
-      background-color: rgba(#1e88e5, 0.1) !important; /* Light hover for outline buttons */
-    }
-  }
+    .report-main-button .border { border-color: #2a2a2a !important; }
+    .report-main-button .text-gray-700 { color: #b0b0b0; }
+    .report-main-button button.bg-gray-200 { background-color: rgba(255,255,255,0.03) !important; color: #b0b0b0 !important; }
+    .report-main-button button.bg-primary { background-color: #1e88e5 !important; &:hover { background-color: color.adjust(#1e88e5, $lightness: -10%) !important; } }
+    .report-main-button button.border-primary { border-color: #1e88e5 !important; color: #1e88e5 !important; &:hover { background-color: rgba(#1e88e5, 0.1) !important; } }
 
   .zones-status-section .border-2 {
     border-color: #2a2a2a; /* Inputs */
@@ -317,6 +305,52 @@
     &:hover {
       filter: brightness(.95);
     }
+  }
+
+  /* Force darker backgrounds and readable text for any utility classes/cards */
+  .kpi-card,
+  .report-main-button > div,
+  .border-2,
+  .border,
+  .bg-white,
+  .bg-gray-50,
+  .bg-gray-100,
+  .bg-blue-50,
+  .bg-green-50,
+  .bg-purple-50,
+  .bg-red-50,
+  .bg-yellow-50,
+  .bg-gray-200,
+  .border-blue-200,
+  .border-green-200,
+  .border-red-200,
+  .border-yellow-200,
+  .rounded-2xl {
+    background-color: #0b0b0b !important; /* very dark card background */
+    border-color: rgba(255,255,255,0.04) !important; /* subtle light border on dark */
+    color: #e6eef8 !important; /* readable text */
+  }
+
+  /* Keep colored accents (icons / small tints) but keep card surface dark */
+  .kpi-card.bg-blue-50 { background-color: rgba(59,130,246,0.06) !important; border-color: rgba(59,130,246,0.18) !important; color: #e6eef8 !important; }
+  .kpi-card.bg-green-50 { background-color: rgba(34,197,94,0.06) !important; border-color: rgba(34,197,94,0.18) !important; color: #e6eef8 !important; }
+  .kpi-card.bg-purple-50 { background-color: rgba(168,85,247,0.06) !important; border-color: rgba(168,85,247,0.18) !important; color: #e6eef8 !important; }
+
+  /* Make utility badges and small white elements readable */
+  .bg-primary\/10, .bg-blue-100, .bg-yellow-100, .bg-red-100, .bg-green-100, .bg-purple-100 {
+    background-color: rgba(255,255,255,0.02) !important;
+    color: #e6eef8 !important;
+    border-color: rgba(255,255,255,0.04) !important;
+  }
+
+  /* Text tone overrides for gray text classes inside dark mode */
+  .text-gray-500, .text-gray-600, .text-gray-700, .text-gray-800 {
+    color: #c3c9d3 !important;
+  }
+
+  /* Icons inside cards should be lighter for contrast */
+  .kpi-card svg, .companero-card svg, .alert-banner svg {
+    color: rgba(255,255,255,0.85) !important;
   }
 }
 
