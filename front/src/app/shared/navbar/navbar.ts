@@ -530,6 +530,26 @@ openGuide(){
       this.notifications.set(marked);
     }
   }
-  reportar(){ /* TODO: modal de reporte */ }
+  reportar(){
+    // Solo usuarios (o admin actuando como usuario) pueden abrir el modal
+    if (!(this.isUsuario() || this.isAdminAsUser())) return;
+    const homePath = this.getHomePath();
+    const homeUrl = homePath.join('/');
+    const current = this.router.url;
+    // Necesitamos estar EXACTAMENTE en la ruta base (no un sub-path) para que el componente InicioUsuario escuche el evento.
+    const normalizedCurrent = current.replace(/\/+$/,'');
+    const normalizedHome = homeUrl.replace(/\/+$/,'');
+    const isExactHome = normalizedCurrent === normalizedHome;
+    if (!isExactHome) {
+      this.router.navigate(homePath).then(() => {
+        // Dar un pequeño margen para que el componente InicioUsuario monte y escuche el evento
+        setTimeout(() => {
+          try { window.dispatchEvent(new Event('open-report-modal')); } catch {}
+        }, 150);
+      });
+    } else {
+      try { window.dispatchEvent(new Event('open-report-modal')); } catch {}
+    }
+  }
   logout(){ this.auth.logout(); }
 }

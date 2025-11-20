@@ -16,6 +16,7 @@ export class DetalleReporte implements OnInit {
 
   reportesHoy: ReporteDTO[] = [];
   seleccionado: ReporteDTO | null = null;
+  showMenu = false;
 
   constructor(private reporteService: ReporteService) {}
 
@@ -40,6 +41,14 @@ export class DetalleReporte implements OnInit {
 
   @HostListener('document:keydown.escape') onEsc() { this.cerrar(); }
 
+  // Cerrar menú al hacer click fuera
+  @HostListener('document:click', ['$event']) onDocClick(ev: MouseEvent){
+    const target = ev.target as HTMLElement | null;
+    if (!target) return;
+    const container = target.closest('.dr-select');
+    if (!container) this.showMenu = false;
+  }
+
   fotoSrc(rep: ReporteDTO | null): string | null {
     if (!rep || !rep.foto || (rep.foto as any).length === 0) return null;
     try {
@@ -53,6 +62,17 @@ export class DetalleReporte implements OnInit {
       const b64 = btoa(binary);
       return `data:image/jpeg;base64,${b64}`;
     } catch { return null; }
+  }
+
+  // UI helpers para el dropdown personalizado
+  toggleMenu(ev?: Event){ if (ev) ev.stopPropagation(); this.showMenu = !this.showMenu; }
+  selectReporte(r: ReporteDTO){ this.seleccionado = r; this.showMenu = false; }
+  label(r: ReporteDTO | null): string {
+    if (!r) return 'Selecciona un reporte del día';
+    const desc = String(r.descripcion || '').trim();
+    const slice = desc.length > 34 ? (desc.slice(0,34) + '…') : desc;
+    const time = r.fechaCreacion ? new Date(r.fechaCreacion as any).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+    return `${slice} - ${time}`;
   }
 
 }

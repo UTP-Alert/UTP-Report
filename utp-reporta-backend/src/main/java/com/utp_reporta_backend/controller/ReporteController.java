@@ -64,6 +64,17 @@ public class ReporteController {
             @RequestParam Boolean isAnonimo,
             @RequestParam(value = "contacto", required = false) String contacto,
             @RequestParam("usuarioId") Long usuarioId) {
+            // Validación básica de archivo: solo imágenes JPG/PNG <=10MB
+            if (foto != null && !foto.isEmpty()) {
+                String ct = foto.getContentType();
+                long size = foto.getSize();
+                if (ct == null || !(ct.equalsIgnoreCase("image/jpeg") || ct.equalsIgnoreCase("image/png"))) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+                if (size > 10 * 1024 * 1024) { // 10MB
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+            }
         ReporteDTO createdReporte = reporteService.createReporte(
                 tipoIncidenteId, zonaId, descripcion, foto, isAnonimo, contacto, usuarioId);
         return new ResponseEntity<>(createdReporte, HttpStatus.CREATED);
@@ -79,6 +90,16 @@ public class ReporteController {
             @RequestParam("isAnonimo") Boolean isAnonimo,
             @RequestParam(value = "contacto", required = false) String contacto,
             @RequestParam("usuarioId") Long usuarioId) {
+            if (foto != null && !foto.isEmpty()) {
+                String ct = foto.getContentType();
+                long size = foto.getSize();
+                if (ct == null || !(ct.equalsIgnoreCase("image/jpeg") || ct.equalsIgnoreCase("image/png"))) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+                if (size > 10 * 1024 * 1024) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+                }
+            }
         ReporteDTO updatedReporte = reporteService.updateReporte(
                 id, tipoIncidenteId, zonaId, descripcion, foto, isAnonimo, contacto, usuarioId);
         if (updatedReporte != null) {

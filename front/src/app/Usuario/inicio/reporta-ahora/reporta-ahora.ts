@@ -179,7 +179,22 @@ export class ReportaAhora implements OnInit {
   onFileChange(ev: Event) {
     const input = ev.target as HTMLInputElement;
     if (input.files && input.files.length) {
-      this.evidenciaFile = input.files[0];
+      const file = input.files[0];
+      // Validaciones: solo imágenes JPG/PNG y <=10MB
+      const allowedMime = ['image/jpeg','image/png'];
+      const maxBytes = 10 * 1024 * 1024; // 10MB
+      const mime = file.type;
+      if (!allowedMime.includes(mime)) {
+        alert('Archivo inválido. Solo se permiten imágenes JPG o PNG.');
+        input.value = '';
+        return;
+      }
+      if (file.size > maxBytes) {
+        alert('La imagen excede el límite de 10MB.');
+        input.value = '';
+        return;
+      }
+      this.evidenciaFile = file;
       if (this.previewUrl) URL.revokeObjectURL(this.previewUrl);
       this.previewUrl = URL.createObjectURL(this.evidenciaFile);
     }

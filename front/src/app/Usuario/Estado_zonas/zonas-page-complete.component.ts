@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { PerfilService } from '../../services/perfil.service';
 import { Sede, SedeService } from '../../services/sede.service';
 import { Zona, ZonaService } from '../../services/zona.service';
@@ -26,6 +27,7 @@ export class ZonasPageCompleteComponent implements OnInit {
     private perfilService: PerfilService,
     private sedeService: SedeService,
     private zonaService: ZonaService,
+    private router: Router,
   ) {
     // Load dark mode preference from local storage
     try {
@@ -150,5 +152,20 @@ export class ZonasPageCompleteComponent implements OnInit {
 
   toggleDarkMode() {
     this.darkMode.update(value => !value);
+  }
+
+  // Abre el modal de reporte navegando al home del usuario y disparando evento global
+  openReportIncident() {
+    const homePath = ['/usuario'];
+    const current = this.router.url.replace(/\/+$/,'');
+    const homeUrl = homePath.join('/').replace(/\/+$/,'');
+    const isExactHome = current === homeUrl;
+    if (!isExactHome) {
+      this.router.navigate(homePath).then(() => {
+        setTimeout(() => { try { window.dispatchEvent(new Event('open-report-modal')); } catch {} }, 150);
+      });
+    } else {
+      try { window.dispatchEvent(new Event('open-report-modal')); } catch {}
+    }
   }
 }

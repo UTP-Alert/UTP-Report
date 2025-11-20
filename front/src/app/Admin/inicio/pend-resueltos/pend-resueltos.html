@@ -140,7 +140,7 @@
 				<div style="display:flex; flex-direction:column; gap:22px;">
 					<div style="font-weight:700; font-size:15px;">Estados y tiempos</div>
 											<div class="states-columns" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:18px; max-width:100%; overflow-x:auto;">
-												<div *ngFor="let e of estadosDetalle(); let i=index" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:12px; position:relative;">
+												<div *ngFor="let e of estadosDetalleList; trackBy: trackEstado; let i=index" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:14px 16px; display:flex; flex-direction:column; gap:12px; position:relative;">
 							<div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
 								<div style="display:flex; align-items:center; gap:8px;">
 												<span [style.background]="

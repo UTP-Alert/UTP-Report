@@ -6,13 +6,18 @@
 		</div>
 		<div class="dr-body">
 			<ng-container *ngIf="(reportesHoy?.length || 0) > 0; else noReports">
-				<div class="dr-select">
+				<div class="dr-select" (click)="$event.stopPropagation()">
 					<label>Selecciona reporte del día</label>
-					<select [(ngModel)]="seleccionado">
-						<option *ngFor="let r of reportesHoy" [ngValue]="r">
-							{{ r.descripcion | slice:0:40 }}{{ r.descripcion.length>40?'…':'' }} - {{ r.fechaCreacion | date:'shortTime' }}
-						</option>
-					</select>
+					<button type="button" class="dr-select-btn" (click)="toggleMenu($event)" [attr.aria-expanded]="showMenu">
+						<span class="txt">{{ label(seleccionado) }}</span>
+						<span class="chev" aria-hidden="true">▾</span>
+					</button>
+					<div class="dr-menu" *ngIf="showMenu" role="listbox">
+						<button class="dr-item" type="button" *ngFor="let r of reportesHoy" (click)="selectReporte(r)" [attr.aria-selected]="seleccionado?.id===r.id">
+							{{ label(r) }}
+						</button>
+						<div class="dr-empty-menu" *ngIf="reportesHoy.length===0">Sin reportes hoy</div>
+					</div>
 				</div>
 				<div class="dr-content" *ngIf="seleccionado">
 					<p class="dr-desc">{{ seleccionado.descripcion }}</p>

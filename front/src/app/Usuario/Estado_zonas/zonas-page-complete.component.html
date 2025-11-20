@@ -94,22 +94,6 @@
       </div>
     </div>
 
-    <!-- CONTROLES (Botones de Acción) -->
-    <div class="controls-section">
-      <button class="action-button">
-        <!-- Navigation Icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="map-icon"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-        Ver Mapa Interactivo
-      </button>
-      <button class="action-button">
-        <!-- Export Icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="export-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Exportar Reporte
-      </button>
-      <span class="update-badge">
-        🔄 Actualizado cada 2 minutos
-      </span>
-    </div>
 
     <!-- TARJETAS DE ZONAS (Grid de Zonas) -->
     <div class="zone-cards-grid">
@@ -185,7 +169,7 @@
 
         <!-- BOTÓN DE ACCIÓN (Reportar) -->
         <div class="report-button-wrapper">
-          <button class="report-button" type="button">
+          <button class="report-button" type="button" (click)="openReportIncident()" aria-label="Reportar incidente ahora">
             📢 Reportar Incidente
           </button>
         </div>

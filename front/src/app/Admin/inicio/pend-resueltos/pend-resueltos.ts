@@ -9,7 +9,7 @@ import { ZonaService } from '../../../services/zona.service';
   standalone: true,
   imports: [CommonModule, NgIf, NgFor, NgClass],
   templateUrl: './pend-resueltos.html',
-  styleUrl: './pend-resueltos.scss'
+  styleUrls: ['./pend-resueltos.scss']
 })
 export class PendResueltos implements OnInit {
   reportes: ReporteDTO[] = [];
@@ -20,6 +20,8 @@ export class PendResueltos implements OnInit {
   detalleVisible = false;
   reporteSeleccionado: ReporteDTO | null = null;
   private sub: any = null; // suscripción para refrescar al cambiar estados
+  // Lista memoizada de estados para el reporte seleccionado
+  estadosDetalleList: Array<{ key: 'PENDIENTE'|'UBICANDO'|'INVESTIGANDO'|'PENDIENTE_APROBACION'|'RESUELTO'|'CANCELADO'; label: string; fecha?: string | Date | null; comentarios?: string | null; origin?: 'admin'|'seguridad'|null }> = [];
 
   constructor(private reporteService: ReporteService, private tipoService: TipoIncidenteService, private zonaService: ZonaService){}
 
@@ -85,13 +87,14 @@ export class PendResueltos implements OnInit {
   abrirDetalle(r: ReporteDTO){
     this.reporteSeleccionado = r;
     this.detalleVisible = true;
+    this.estadosDetalleList = this._buildEstadosDetalle();
   }
   cerrarDetalle(){ this.detalleVisible = false; this.reporteSeleccionado = null; }
 
   // Construye columnas por estado (mostrar SIEMPRE todas las etapas conocidas en orden fijo)
   // Estados esperados: PENDIENTE, UBICANDO, INVESTIGANDO, PENDIENTE_APROBACION, RESUELTO, CANCELADO.
   // Heurística de fechas: sólo conocemos fechaCreacion y fechaActualizacion final; las demás quedan sin registro.
-  estadosDetalle(): Array<{ key: 'PENDIENTE'|'UBICANDO'|'INVESTIGANDO'|'PENDIENTE_APROBACION'|'RESUELTO'|'CANCELADO'; label: string; fecha?: string | Date | null; comentarios?: string | null; origin?: 'admin'|'seguridad'|null }>{
+  private _buildEstadosDetalle(): Array<{ key: 'PENDIENTE'|'UBICANDO'|'INVESTIGANDO'|'PENDIENTE_APROBACION'|'RESUELTO'|'CANCELADO'; label: string; fecha?: string | Date | null; comentarios?: string | null; origin?: 'admin'|'seguridad'|null }>{
     const r: any = this.reporteSeleccionado;
     if(!r) return [];
     const comentarioAdmin = r.mensajeAdmin || null; // comentario opcional del Admin
@@ -134,6 +137,9 @@ export class PendResueltos implements OnInit {
       { key: 'CANCELADO',            label: 'Cancelado',            fecha: fechaPara('CANCELADO') }
     ];
   }
+
+  // trackBy para estados en el *ngFor
+  trackEstado = (_: number, item: { key: string }) => item.key;
 
   ngOnDestroy(){ try{ this.sub?.unsubscribe(); }catch(e){} }
 

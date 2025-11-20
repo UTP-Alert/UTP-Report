@@ -200,7 +200,20 @@ export class InicioUsuario implements OnInit {
       window.addEventListener('zone-status-update', this.onZoneStatusUpdate);
       this.zoneStatusListenerBound = true;
     }
+
+    // Escuchar apertura global del modal de reporte (desde navbar u otros componentes)
+    window.addEventListener('open-report-modal', this.onOpenReportModal as EventListener);
   }
+
+  // Handler para abrir modal desde evento global
+  private onOpenReportModal = () => {
+    if (this.limiteAlcanzado) {
+      this.showLimitDialog();
+      return;
+    }
+    this.showReportModal = true;
+    this.scrollLock.lock();
+  };
 
   private extractUsernameFromToken(): string | null {
     try {
@@ -452,6 +465,7 @@ export class InicioUsuario implements OnInit {
       window.removeEventListener('zone-status-update', this.onZoneStatusUpdate);
       this.zoneStatusListenerBound = false;
     }
+    try { window.removeEventListener('open-report-modal', this.onOpenReportModal as EventListener); } catch {}
   }
 
   private checkReportesHoy(uid: number) {
