@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, effect } from '@angular/core';
+import { Component, OnInit, signal, effect, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Router } from '@angular/router';
@@ -14,6 +14,8 @@ import { Zona, ZonaService } from '../../services/zona.service';
   styleUrls: ['./zonas-page-complete.component.scss']
 })
 export class ZonasPageCompleteComponent implements OnInit {
+  @Input() contextLabel: string = 'alumno';
+  @Input() showReportButton: boolean = true;
   loading = false;
   sedes: Sede[] = [];
   selectedSedeId: number | null = null;

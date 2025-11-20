@@ -4,6 +4,7 @@ import { ReporteService, ReporteDTO } from '../../../../services/reporte.service
 import { UsuarioService } from '../../../../services/usuario.service';
 import { ZonaService } from '../../../../services/zona.service';
 import { TipoIncidenteService } from '../../../../services/tipo-incidente.service';
+import { ReportStateService } from '../../../../services/report-state.service';
 import { finalize, switchMap, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ScrollLockService } from '../../../../services/scroll-lock.service';
@@ -68,7 +69,8 @@ export class AsignarSeguridad implements OnDestroy {
     private usuarioService: UsuarioService,
     private zonaService: ZonaService,
     private tipoService: TipoIncidenteService,
-    private scrollLock: ScrollLockService
+    private scrollLock: ScrollLockService,
+    private reportState: ReportStateService
   ){}
 
   loadReporte(id: number){
@@ -136,6 +138,28 @@ export class AsignarSeguridad implements OnDestroy {
           return sid == null ? true : Number(sid) === Number(sedeIdResolved);
         });
         this.candidatos = filtered;
+        // Marcar candidatos ocupados si están asignados en el estado global o tienen reportes en curso
+        try{
+          const snap = this.reportState.getSnapshotValue();
+          const reportsMap = snap.reports || {};
+          const assigned = snap.assignedSecurity || {};
+          const occupiedUserIds = new Set<number>();
+          // from assignedSecurity map values (could be security objects)
+          Object.values(assigned).forEach(v => { try{ const id = v && (v.id || v.seguridadId || v.segurId) ? Number(v.id || v.seguridadId || v.segurId) : null; if(id) occupiedUserIds.add(id); }catch{} });
+          // from reports map: if a report has seguridadAsignadoId and is not resolved/cancelado, mark occupied
+          Object.values(reportsMap).forEach((r: any) => {
+            try{
+              const sid = r && (r.seguridadAsignadoId || (r.reporteGestion && r.reporteGestion.seguridadId)) ? Number(r.seguridadAsignadoId || (r.reporteGestion && r.reporteGestion.seguridadId)) : null;
+              const estado = r && ((r.reporteGestion && r.reporteGestion.estado) ? String(r.reporteGestion.estado).toLowerCase() : (r.ultimoEstado ? String(r.ultimoEstado).toLowerCase() : ''));
+              if(sid != null && estado && !estado.includes('resuel') && !estado.includes('cancel')) occupiedUserIds.add(sid);
+            }catch{}
+          });
+          // Apply occupancy to candidatos
+          this.candidatos = (this.candidatos || []).map((c:any) => {
+            const isOccupied = c && (occupiedUserIds.has(Number(c.id)) || occupiedUserIds.has(Number(c.usuarioId || c.userId || c.id)));
+            return { ...c, enabled: Boolean(c.enabled) && !isOccupied, _occupied: isOccupied };
+          });
+        }catch(e){ console.warn('Error computing candidate occupancy', e); }
         // Importante: si hay filtros (zona o sede), NO hacer fallback global por rol para no mezclar sedes
         // Solo si no hay filtros en absoluto (ambos nulos) aplicar fallback por rol
         if((this.candidatos || []).length === 0 && zonaId == null){

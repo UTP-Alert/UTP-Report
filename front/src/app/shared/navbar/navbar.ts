@@ -109,6 +109,8 @@ export class NavbarComponent {
   showNotifs = signal(false);
   notifications = signal<Array<{ id: number; title: string; body: string; zonaNombre?: string; estado?: string; ts: Date; read: boolean }>>([]);
   unreadCount = computed(() => this.notifications().filter(n => !n.read).length);
+  // Buffer temporal para notificaciones recibidas antes de que el perfil/rol esté listo
+  private pendingVisualNotifications: Array<any> = [];
   private storageKey = 'utp_notifications';
   private storageMetaKey = 'utp_notifications_meta';
   private dailyResetTimer: any = null;
@@ -189,6 +191,22 @@ export class NavbarComponent {
       const shouldConnect = this.isAuthenticated();
       if (shouldConnect) {
         this.ensureWsConnected();
+      }
+    });
+
+    // Si el rol cambia y ahora somos Usuario o Admin actuando como Usuario,
+    // volcar cualquier notificación pendiente que recibimos mientras el perfil cargaba.
+    effect(() => {
+      const showForUser = this.isUsuario() || this.isAdminAsUser();
+      if (showForUser && this.pendingVisualNotifications.length) {
+        try { console.info('[Navbar] Flushing pending visual notifications', this.pendingVisualNotifications.length); } catch {}
+        // insertar en orden FIFO (las que llegaron primero al final)
+        const combined = [...this.pendingVisualNotifications, ...this.notifications()];
+        this.notifications.set(combined.slice(0, 50));
+        // reproducir sonido por cada nueva (limitado a 3 para no spam)
+        const toPlay = Math.min(this.pendingVisualNotifications.length, 3);
+        for (let i = 0; i < toPlay; i++) this.playAlertSound();
+        this.pendingVisualNotifications = [];
       }
     });
 
@@ -278,6 +296,41 @@ export class NavbarComponent {
   // Inserta una notificación de reporte con deduplicación (para evitar duplicados por doble suscripción)
   private addReportNotification(rep: any, text: string) {
     if (!text) return;
+
+    // Siempre emitir el evento para que componentes interesados (p.ej. Seguridad)
+    // puedan reaccionar.
+    try { window.dispatchEvent(new CustomEvent('reporte-status-update', { detail: rep })); } catch {}
+
+    // Mostrar notificación visual únicamente para Usuario o Admin actuando como Usuario.
+    const shouldShowVisual = this.isUsuario() || this.isAdminAsUser();
+    if (!shouldShowVisual) {
+      // Dedupe antes de agregar al buffer
+      const key = this.makeReportKey(rep, text);
+      if (this.recentReportKeys.has(key)) {
+        try { console.info('[Navbar] Ignoring duplicate buffered notification'); } catch {}
+        return;
+      }
+      this.recentReportKeys.add(key);
+      this.recentReportKeysQueue.push(key);
+      if (this.recentReportKeysQueue.length > 100) {
+        const rm = this.recentReportKeysQueue.shift();
+        if (rm) this.recentReportKeys.delete(rm);
+      }
+
+      // Guardar en buffer para mostrarla más tarde cuando el perfil/rol esté listo.
+      this.pendingVisualNotifications.push({
+        id: Date.now(),
+        title: 'Actualización de tu reporte',
+        body: text,
+        zonaNombre: undefined,
+        estado: (rep && rep.reporteGestion && rep.reporteGestion.estado) ? String(rep.reporteGestion.estado) : undefined,
+        ts: new Date(),
+        read: false,
+      });
+      try { console.info('[Navbar] Buffered visual notification (role not ready)'); } catch {}
+      return;
+    }
+
     const key = this.makeReportKey(rep, text);
     if (this.recentReportKeys.has(key)) return; // duplicada, ignorar
     // registrar clave reciente (cap 100)
@@ -298,9 +351,9 @@ export class NavbarComponent {
       read: false,
     };
     const next = [item, ...this.notifications()].slice(0, 50);
+    try { console.info('[Navbar] New visual notification for usuario', item); } catch {}
     this.notifications.set(next);
-    if (this.isUsuario() || this.isAdminAsUser()) this.playAlertSound();
-    try { window.dispatchEvent(new CustomEvent('reporte-status-update', { detail: rep })); } catch {}
+    this.playAlertSound();
   }
 
   private initAlertAudio() {
@@ -490,9 +543,9 @@ export class NavbarComponent {
   }
 
   getZonasPath(): string[] {
-    if (this.isSuperAdmin()) return ['/superadmin','zonas'];
-    if (this.isAdmin()) return ['/admin','zonas'];
-    if (this.isSeguridad()) return ['/seguridad','zonas'];
+    if (this.isSuperAdmin()) return ['/superadmin','dashboard'];
+    if (this.isAdmin()) return ['/admin','estado-zonas'];
+    if (this.isSeguridad()) return ['/seguridad','estado-zonas'];
     // Usuario puro o admin como usuario
     return ['/usuario','estado-zonas'];
   }

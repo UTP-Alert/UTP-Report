@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Para directivas comunes como ngIf, ngFor
 import { RouterModule } from '@angular/router'; // Para funcionalidades de enrutamiento
 import { FormsModule } from '@angular/forms'; // Importa FormsModule para el enlace de datos bidireccional (ngModel)
+import { ZonasPageCompleteComponent } from '../../Usuario/Estado_zonas/zonas-page-complete.component';
 
 // Define la interfaz para una Zona, especificando la estructura de los datos de cada zona.
 interface Zone {
@@ -23,7 +24,7 @@ interface Zone {
 @Component({
   selector: 'app-admin-zonas-page-complete', // Selector CSS para usar este componente
   standalone: true, // Indica que este es un componente independiente
-  imports: [CommonModule, RouterModule, FormsModule], // Módulos que este componente utiliza
+  imports: [CommonModule, RouterModule, FormsModule, ZonasPageCompleteComponent], // Módulos que este componente utiliza
   templateUrl: './zonas-page-complete.component.html', // Ruta al archivo de plantilla HTML
   styleUrls: ['./zonas-page-complete.component.scss'] // Rutas a los archivos de estilos SCSS
 })

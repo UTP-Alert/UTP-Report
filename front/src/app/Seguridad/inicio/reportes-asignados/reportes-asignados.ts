@@ -21,6 +21,9 @@ export class ReportesAsignados {
   zonasMap: Record<number,string> = {};
   usuariosMap: Record<number,string> = {};
   tiposMap: Record<number,string> = {};
+  // filtros aplicables desde la vista padre
+  currentFilterPrioridad: string = '';
+  currentFilterZonaId: number | null = null;
 
   constructor(
     private reporteService: ReporteService,
@@ -94,6 +97,13 @@ export class ReportesAsignados {
     });
   }
 
+  /** Método público para aplicar filtros desde la vista padre (inicio) */
+  applyFilters(prioridad?: string, zonaId?: string | number | null){
+    this.currentFilterPrioridad = (prioridad || '').toString().trim().toLowerCase();
+    this.currentFilterZonaId = zonaId ? (isNaN(Number(zonaId)) ? null : Number(zonaId)) : null;
+    this.loadReportesAsignados(this.currentFilterPrioridad, this.currentFilterZonaId);
+  }
+
   private async getCurrentUserId(): Promise<number | null> {
     try{
       const perfilObs: any = (this.perfil as any).obtenerPerfil ? (this.perfil as any).obtenerPerfil() : null;
@@ -155,15 +165,28 @@ export class ReportesAsignados {
     this.tipoService.getAll().subscribe({ next: list => { (list||[]).forEach(t => this.tiposMap[t.id] = t.nombre); }, error: _ => {} });
   }
 
-  loadReportesAsignados(){
+    loadReportesAsignados(filterPrioridad?: string, filterZonaId?: number | null){
     this.loading = true;
     // intención: mostrar reportes donde seguridadAsignadoId === perfil.id
     const perfilObs: any = (this.perfil as any).obtenerPerfil ? (this.perfil as any).obtenerPerfil() : null;
     const finishWithList = (list: ReporteDTO[], myId: number | null) => {
   // Mostrar sólo reportes que estén asignados a este usuario (seguridadAsignadoId === myId)
-  // y excluir reportes sin asignación previa (seguridadAsignadoId == null). Esto evita que
-  // reportes cancelados que nunca fueron asignados aparezcan cuando el perfil aún no carga.
-  const filtered = (list || []).filter(r => r.seguridadAsignadoId != null && r.seguridadAsignadoId === myId);
+  // y excluir reportes sin asignación previa (seguridadAsignadoId == null).
+  let filtered = (list || []).filter(r => r.seguridadAsignadoId != null && r.seguridadAsignadoId === myId);
+  // aplicar filtro por prioridad si se pidió
+  if(filterPrioridad && typeof filterPrioridad === 'string' && filterPrioridad.trim() !== ''){
+    const fp = (filterPrioridad || '').toString().toLowerCase();
+    filtered = filtered.filter(r => {
+      const prioridadRaw = (r && (r as any).reporteGestion && (r as any).reporteGestion.prioridad) ? (r as any).reporteGestion.prioridad : (r && (r as any).ultimaPrioridad ? (r as any).ultimaPrioridad : '');
+      const prioridad = (prioridadRaw || '').toString().toLowerCase();
+      return prioridad.includes(fp);
+    });
+  }
+  // aplicar filtro por zona si se pidió
+  if(filterZonaId != null){
+    const zid = Number(filterZonaId);
+    filtered = filtered.filter(r => (r && (r as any).zonaId) ? Number((r as any).zonaId) === zid : false);
+  }
       // normalize prioridad/estado to lowercase keys we expect, prefer backend.reporteGestion
       this.reportes = filtered.map(r => ({
         ...r,

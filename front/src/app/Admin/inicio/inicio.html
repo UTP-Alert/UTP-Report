@@ -114,33 +114,34 @@
     </div>
 
     <!-- PESTAÑAS DE NAVEGACIÓN -->
-    <div class="tabs-list grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 mb-4 sm:mb-6 h-auto">
+    <!-- Móvil: fila horizontal desplazable; sm+: grid regular de 5 columnas -->
+    <div class="tabs-list flex gap-2 overflow-x-auto pb-2 flex-nowrap lg:grid lg:grid-cols-5 w-full mb-4 lg:mb-6 h-auto">
     <!-- PESTAÑA 1: Reportes Recientes -->
-  <a class="tabs-trigger flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3" [routerLink]="['/admin/recientes']" routerLinkActive="active" (click)="setActiveTab('recent')">
+  <a class="tabs-trigger inline-flex items-center gap-1 lg:gap-2 text-xs lg:text-sm p-2 lg:p-3 min-w-[140px] lg:min-w-0 whitespace-nowrap" [routerLink]="['/admin/recientes']" routerLinkActive="active" (click)="setActiveTab('recent')">
       <!-- Icono de archivo de texto (FileText icon) como marcador de posición. -->
       <i class="file-text-icon h-3 w-3 sm:h-4 sm:w-4"></i>
       <span class="hidden sm:inline">Reportes</span> Recientes
     </a>
     <!-- PESTAÑA 2: En Proceso -->
-  <a class="tabs-trigger flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3" [routerLink]="['/admin/en-proceso']" routerLinkActive="active" (click)="setActiveTab('in-process')">
+  <a class="tabs-trigger inline-flex items-center gap-1 lg:gap-2 text-xs lg:text-sm p-2 lg:p-3 min-w-[140px] lg:min-w-0 whitespace-nowrap" [routerLink]="['/admin/en-proceso']" routerLinkActive="active" (click)="setActiveTab('in-process')">
       <!-- Icono de reloj (Clock icon) como marcador de posición. -->
       <i class="clock-icon h-3 w-3 sm:h-4 sm:w-4"></i>
       <span class="hidden sm:inline">En</span> Proceso
     </a>
     <!-- PESTAÑA 3: Pendiente Aprobación -->
-  <a class="tabs-trigger flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3 col-span-2 sm:col-span-1" [routerLink]="['/admin/pend-aprobacion']" routerLinkActive="active" (click)="setActiveTab('pending-approval')">
+  <a class="tabs-trigger inline-flex items-center gap-1 lg:gap-2 text-xs lg:text-sm p-2 lg:p-3 min-w-[140px] lg:min-w-0 whitespace-nowrap" [routerLink]="['/admin/pend-aprobacion']" routerLinkActive="active" (click)="setActiveTab('pending-approval')">
       <!-- Icono de círculo de alerta (AlertCircle icon) como marcador de posición. -->
       <i class="alert-circle-icon h-3 w-3 sm:h-4 sm:w-4"></i>
       <span class="hidden lg:inline">Pend.</span> Aprobación <!-- Marcador de posición para el número de reportes pendientes de aprobación. -->
     </a>
     <!-- PESTAÑA 4: Resueltos -->
-  <a class="tabs-trigger flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3" [routerLink]="['/admin/resueltos']" routerLinkActive="active" (click)="setActiveTab('resolved')">
+  <a class="tabs-trigger inline-flex items-center gap-1 lg:gap-2 text-xs lg:text-sm p-2 lg:p-3 min-w-[140px] lg:min-w-0 whitespace-nowrap" [routerLink]="['/admin/resueltos']" routerLinkActive="active" (click)="setActiveTab('resolved')">
       <!-- Icono de círculo de verificación (CheckCircle icon) como marcador de posición. -->
       <i class="check-circle-icon h-3 w-3 sm:h-4 sm:w-4"></i>
       Resueltos
     </a>
     <!-- PESTAÑA 5: Cancelados -->
-  <a class="tabs-trigger flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3" [routerLink]="['/admin/cancelados']" routerLinkActive="active" (click)="setActiveTab('cancelled')">
+  <a class="tabs-trigger inline-flex items-center gap-1 lg:gap-2 text-xs lg:text-sm p-2 lg:p-3 min-w-[140px] lg:min-w-0 whitespace-nowrap" [routerLink]="['/admin/cancelados']" routerLinkActive="active" (click)="setActiveTab('cancelled')">
       <!-- Icono de X (X icon) como marcador de posición. -->
       <i class="x-icon h-3 w-3 sm:h-4 sm:w-4"></i>
       Cancelados

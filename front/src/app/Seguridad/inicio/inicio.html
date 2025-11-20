@@ -12,11 +12,12 @@
       </div>
     </div>
     <div class="header-right">
-      <span class="status-badge available">DISPONIBLE</span>
-      <button class="report-btn">
-        <span class="btn-icon material-icons">warning</span>
-        Reportar Incidente
-      </button>
+      <span class="status-badge"
+            [class.available]="statusBadge === 'DISPONIBLE'"
+            [class.occupied]="statusBadge === 'OCUPADO'"
+            [class.offline]="statusBadge === 'FUERA'">
+        {{ statusBadge }}
+      </span>
     </div>
   </header>
 
@@ -26,28 +27,28 @@
       <div class="stat-card pending">
         <div class="stat-icon material-icons">schedule</div>
         <div class="stat-content">
-          <div class="stat-number">3</div>
+          <div class="stat-number">{{ pendingCount }}</div>
           <div class="stat-label">Reportes<br>Pendientes</div>
         </div>
       </div>
       <div class="stat-card investigating">
         <div class="stat-icon material-icons">visibility</div>
         <div class="stat-content">
-          <div class="stat-number">1</div>
+          <div class="stat-number">{{ investigatingCount }}</div>
           <div class="stat-label">Investigando</div>
         </div>
       </div>
       <div class="stat-card completed">
         <div class="stat-icon material-icons">check_circle</div>
         <div class="stat-content">
-          <div class="stat-number">2</div>
+          <div class="stat-number">{{ completedTodayCount }}</div>
           <div class="stat-label">Completados<br>Hoy</div>
         </div>
       </div>
       <div class="stat-card high-priority">
         <div class="stat-icon material-icons">warning</div>
         <div class="stat-content">
-          <div class="stat-number">1</div>
+          <div class="stat-number">{{ highPriorityCount }}</div>
           <div class="stat-label">Alta<br>Prioridad</div>
         </div>
       </div>
@@ -62,37 +63,34 @@
     </div>
     <div class="control-grid">
       <div class="control-item">
-        <label class="control-label">Estado Actual</label>
-        <select class="control-select">
-          <option>✅ Disponible</option>
-          <option>🟡 Ocupado</option>
-          <option>🔴 Fuera de Servicio</option>
+        <label class="control-label">Filtrar por Prioridad</label>
+        <select #prioridadSel class="control-select" (change)="ra.applyFilters(prioridadSel.value, zonaSel.value)">
+          <option value="">-- Todas --</option>
+          <option value="baja">Baja</option>
+          <option value="media">Media</option>
+          <option value="alta">Alta</option>
         </select>
       </div>
       <div class="control-item">
-        <label class="control-label">Zona Actual</label>
-        <select class="control-select">
-          <option>Campus Norte</option>
-          <!-- Add more options -->
+        <label class="control-label">Filtrar por Zona</label>
+        <select #zonaSel class="control-select" (change)="ra.applyFilters(prioridadSel.value, zonaSel.value)">
+          <option value="">-- Todas las Zonas --</option>
+          <option *ngFor="let z of zonesList" [value]="z.id">{{ z.nombre }}</option>
         </select>
       </div>
       <div class="control-item">
         <label class="control-label">Reportes Activos</label>
         <div class="active-reports">
-          <div class="reports-number">3</div>
+          <div class="reports-number">{{ assignedCount }}</div>
           <div class="reports-label">casos asignados</div>
         </div>
       </div>
-    </div>
-    <div class="patrol-alert">
-      <span class="alert-icon material-icons">location_on</span>
-      <span class="alert-text">Actualmente en patrullaje: Biblioteca Central</span>
     </div>
   </section>
 
   <!-- Reportes Asignados a Seguridad -->
   <!-- Reportes Asignados a Seguridad (migrado al componente) -->
-  <app-reportes-asignados></app-reportes-asignados>
+  <app-reportes-asignados #ra></app-reportes-asignados>
 
   <!-- Reportes Completados se renderizan dentro del componente de asignados -->
 </div>

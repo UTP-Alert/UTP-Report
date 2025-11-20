@@ -880,13 +880,32 @@ main {
 }
 
 .tabs-list {
-  display: grid; /* Cambiado a grid para mayor control en responsive */
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Ajuste automático de columnas */
-  gap: 0.25rem; /* huecos grises más delgados */
+  display: flex; /* fila horizontal por defecto (móvil) */
+  flex-wrap: nowrap; /* evitar que las tabs hagan wrap */
+  overflow-x: auto; /* permitir scroll horizontal */
+  -webkit-overflow-scrolling: touch;
+  gap: 0.25rem;
   background-color: $gray-100;
-  border-radius: 0.5rem; /* rectángulo con esquinas redondeadas */
-  padding: 0.2rem; /* reducir el "gutter" gris */
+  border-radius: 0.5rem;
+  padding: 0.2rem;
   width: 100%;
+  align-items: stretch;
+  white-space: nowrap;
+
+  /* cada tab no se encoge y mantiene su ancho mínimo */
+  & > .tabs-trigger {
+    flex: 0 0 auto;
+  }
+
+  /* volver a grid en pantallas grandes para mostrar varias columnas */
+  @include lg {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.25rem;
+    & > .tabs-trigger {
+      flex: 1 1 0; /* recuperar comportamiento de escritorio */
+    }
+  }
 }
 
 .tabs-trigger {
