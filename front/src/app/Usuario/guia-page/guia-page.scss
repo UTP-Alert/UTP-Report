@@ -1100,3 +1100,113 @@ html.dark-mode .guia-page-container .accordion-content,
     color: #{$gray-700} !important;
   }
 }
+
+/* ==========================================
+   Modal de Tutorial (Bootstrap) - Dark Mode
+   Alcance: Solo dentro de Guia Page
+   - Hace opaco el modal y backdrop
+   - Aclara el título de cada paso
+   ========================================== */
+
+/* Variables y fondo del modal (usa id del modal para afectar solo este) */
+html.dark-mode #reportTutorialModal,
+:host-context(.dark-mode) #reportTutorialModal {
+  /* Fondo y color base del modal */
+  --bs-modal-bg: #101010;
+  --bs-modal-color: #f5f5f5;
+  --bs-modal-border-color: rgba(255, 255, 255, 0.08);
+  --bs-modal-header-border-color: rgba(255, 255, 255, 0.06);
+  --bs-modal-footer-border-color: rgba(255, 255, 255, 0.06);
+
+  /* Backdrop opaco y más oscuro (se aplica por variables al modal) */
+  --bs-backdrop-bg: #000000;
+  --bs-backdrop-opacity: 0.75;
+}
+
+/* Forzar superficies internas del modal a sólido y sin transparencias */
+html.dark-mode #reportTutorialModal .modal-content,
+:host-context(.dark-mode) #reportTutorialModal .modal-content {
+  background-color: #101010 !important;
+  color: #f5f5f5 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75) !important;
+}
+
+html.dark-mode #reportTutorialModal .modal-header,
+html.dark-mode #reportTutorialModal .modal-body,
+html.dark-mode #reportTutorialModal .modal-footer,
+:host-context(.dark-mode) #reportTutorialModal .modal-header,
+:host-context(.dark-mode) #reportTutorialModal .modal-body,
+:host-context(.dark-mode) #reportTutorialModal .modal-footer {
+  background-color: #101010 !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Aclarar el título de cada paso dentro del modal */
+html.dark-mode #reportTutorialModal .tutorial-h3-title,
+:host-context(.dark-mode) #reportTutorialModal .tutorial-h3-title {
+  color: #ffffff !important;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Aclarar títulos y descripciones del header/body del modal */
+html.dark-mode #reportTutorialModal .modal-title,
+:host-context(.dark-mode) #reportTutorialModal .modal-title {
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+html.dark-mode #reportTutorialModal .tutorial-step-description,
+:host-context(.dark-mode) #reportTutorialModal .tutorial-step-description {
+  color: #d9dde5 !important;
+}
+
+/* Oscurecer bloques claros y alertas dentro del modal y poner texto claro */
+html.dark-mode #reportTutorialModal .alert,
+:host-context(.dark-mode) #reportTutorialModal .alert {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html.dark-mode #reportTutorialModal .alert-info,
+:host-context(.dark-mode) #reportTutorialModal .alert-info {
+  border-color: #1e88e5 !important; /* borde informativo */
+}
+
+html.dark-mode #reportTutorialModal .alert-warning,
+:host-context(.dark-mode) #reportTutorialModal .alert-warning {
+  border-color: #f59e0b !important; /* borde de advertencia */
+}
+
+html.dark-mode #reportTutorialModal .alert *,
+:host-context(.dark-mode) #reportTutorialModal .alert * {
+  color: #ffffff !important;
+}
+
+/* Normalizar fondos utilitarios claros dentro del modal */
+html.dark-mode #reportTutorialModal .bg-white,
+html.dark-mode #reportTutorialModal .bg-gray-50,
+html.dark-mode #reportTutorialModal .bg-green-50,
+html.dark-mode #reportTutorialModal .bg-primary-subtle,
+:host-context(.dark-mode) #reportTutorialModal .bg-white,
+:host-context(.dark-mode) #reportTutorialModal .bg-gray-50,
+:host-context(.dark-mode) #reportTutorialModal .bg-green-50,
+:host-context(.dark-mode) #reportTutorialModal .bg-primary-subtle {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+/* Asegurar texto claro dentro de bloques utilitarios */
+html.dark-mode #reportTutorialModal .bg-white *,
+html.dark-mode #reportTutorialModal .bg-gray-50 *,
+html.dark-mode #reportTutorialModal .bg-green-50 *,
+html.dark-mode #reportTutorialModal .bg-primary-subtle *,
+:host-context(.dark-mode) #reportTutorialModal .bg-white *,
+:host-context(.dark-mode) #reportTutorialModal .bg-gray-50 *,
+:host-context(.dark-mode) #reportTutorialModal .bg-green-50 *,
+:host-context(.dark-mode) #reportTutorialModal .bg-primary-subtle * {
+  color: #ffffff !important;
+}
+

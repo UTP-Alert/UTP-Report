@@ -52,13 +52,23 @@ export class DetalleReporte implements OnInit {
   fotoSrc(rep: ReporteDTO | null): string | null {
     if (!rep || !rep.foto || (rep.foto as any).length === 0) return null;
     try {
-      // En el DTO del backend, foto es byte[]; la convertimos a base64
-      // Si ya viniera como base64 en rep.foto, basta con prefijar
-      // Aquí asumimos que llega como bytes serializados a array de números
-      const bytes: number[] = rep.foto as any;
+      // Backend (Spring) serializa byte[] como base64 (string). Soportar ambos casos.
+      const f: any = rep.foto as any;
+      // Si ya es string base64, devolver con el prefijo correcto
+      if (typeof f === 'string') {
+        const base64: string = f;
+        // Heurística simple para tipo MIME
+        const mime = base64.startsWith('iVBORw0') ? 'image/png'
+                   : base64.startsWith('/9j/') || base64.startsWith('/9j') ? 'image/jpeg'
+                   : base64.startsWith('R0lGOD') ? 'image/gif'
+                   : 'image/*';
+        return `data:${mime};base64,${base64}`;
+      }
+      // Si viene como arreglo de números, convertir a base64
+      const bytes: number[] = f as number[];
       const bin = new Uint8Array(bytes);
       let binary = '';
-      bin.forEach(b => binary += String.fromCharCode(b));
+      for (let i = 0; i < bin.length; i++) binary += String.fromCharCode(bin[i]);
       const b64 = btoa(binary);
       return `data:image/jpeg;base64,${b64}`;
     } catch { return null; }

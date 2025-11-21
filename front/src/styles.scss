@@ -27,6 +27,7 @@ html.dark-mode *, body.dark-mode * {
   color: inherit;
 }
 
+
 /* Global utility overrides to enforce dark surfaces in dark-mode */
 html.dark-mode .bg-white,
 body.dark-mode .bg-white,
@@ -280,3 +281,27 @@ body.is-loading .button {
 
 /* Prevent scrolling while loading overlay is present */
 body.is-loading { overflow: hidden !important; }
+
+/* Dark mode: asegurar que los toasts de ngx-toastr NO sean transparentes */
+html.dark-mode #toast-container .ngx-toastr,
+body.dark-mode #toast-container .ngx-toastr {
+  background-color: #101010 !important; /* Fondo sólido oscuro */
+  color: #f5f5f5 !important; /* Texto claro legible */
+  border: 1px solid rgba(255,255,255,0.08) !important; /* Borde sutil */
+  box-shadow: 0 0 12px rgba(0,0,0,0.6), 0 0 4px rgba(255,255,255,0.05) !important; /* Realce ligero sin transparencia */
+  backdrop-filter: none !important; /* Evitar blur que puede dar sensación de transparencia */
+}
+
+/* Asegurar que el título y mensaje dentro del toast mantengan contraste */
+html.dark-mode #toast-container .ngx-toastr .toast-title,
+body.dark-mode #toast-container .ngx-toastr .toast-title,
+html.dark-mode #toast-container .ngx-toastr .toast-message,
+body.dark-mode #toast-container .ngx-toastr .toast-message {
+  color: #f5f5f5 !important;
+}
+
+/* Evitar que las reglas globales de transparencia afecten al contenedor */
+html.dark-mode #toast-container,
+body.dark-mode #toast-container {
+  background: transparent !important; /* El contenedor puede seguir transparente */
+}

@@ -103,10 +103,10 @@ html.dark-mode .ra-form label { color:#f5f5f5; }
 
 /* Dark Mode adjustments for .ra-select */
 html.dark-mode .ra-select {
-  background: rgba(255,255,255,0.03); /* subtle translucent control */
-  border-color: #333333; /* Darker border */
-  color: #f5f5f5; /* Light text for the select box in dark mode */
-  font-weight: 600; /* Make text bold */
+  background: #151515; /* superficie sólida en dark */
+  border-color: #333333; /* borde oscuro */
+  color: #f5f5f5; /* texto claro */
+  font-weight: 600; /* texto más fuerte */
 }
 
 html.dark-mode .ra-select .placeholder,
@@ -117,9 +117,9 @@ html.dark-mode .ra-select .chev {
 }
 
 html.dark-mode .ra-select-menu {
-  background: rgba(255,255,255,0.03); /* translucent menu to show black root */
-  border-color: #333333; /* Darker border for the dropdown menu */
-  box-shadow: 0 8px 20px rgba(0,0,0,.6); /* Adjusted shadow for dark mode */
+  background: #101010; /* menú sólido */
+  border-color: #333333; /* borde oscuro */
+  box-shadow: 0 8px 20px rgba(0,0,0,.6); /* sombra para separación */
 }
 
 html.dark-mode .ra-select-menu .menu-item {
@@ -127,7 +127,7 @@ html.dark-mode .ra-select-menu .menu-item {
 }
 
 html.dark-mode .ra-select-menu .menu-item:hover {
-  background: rgba(255,255,255,0.04); /* Subtle hover */
+  background: #1a1a1a; /* hover sólido */
 }
 
 html.dark-mode .ra-select-menu .menu-empty {
@@ -301,11 +301,16 @@ html.dark-mode .ra-note { color:#bbb; }
   .ra-badge strong { color: #ffffff !important; }
   .ra-badge span { color: #e6eef8 !important; }
 
-  .ra-select, .ra-select-menu, .ra-upload, .ra-upload-menu, .ra-textarea textarea, .ra-input, .ra-check input {
+  .ra-select, .ra-upload, .ra-upload-menu, .ra-textarea textarea, .ra-input, .ra-check input {
     background: rgba(255,255,255,0.03) !important;
     border-color: rgba(255,255,255,0.06) !important;
     color: #ffffff !important;
   }
+
+  /* Menús del selector y control con superficies sólidas para evitar transparencia */
+  .ra-select { background: #151515 !important; }
+  .ra-select-menu { background: #101010 !important; border-color: rgba(255,255,255,0.08) !important; }
+  .ra-select-menu .menu-item:hover { background: #1a1a1a !important; }
 
   .ra-select .chev svg, .ra-select .left-icon, .ra-upload .icon-wrap, .ra-btn .icon {
     color: rgba(255,255,255,0.95) !important;

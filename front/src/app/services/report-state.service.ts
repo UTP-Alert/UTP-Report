@@ -78,8 +78,15 @@ export class ReportStateService {
 
   /** Marca un reporte como cancelado para que otras vistas lo muestren/oculten */
   markCancelled(reportId: number){
-    if(reportId) this.cancelledIdsSet.add(reportId);
-    // If it was previously in resolved set, remove it (cancel overrides)
+    if(!reportId) return;
+    // agregar a cancelados
+    this.cancelledIdsSet.add(reportId);
+    // dejar de considerarlo "en proceso" inmediatamente en la UI
+    this.inProcessIdsSet.delete(reportId);
+    // limpieza de datos auxiliares en memoria (no afectan backend)
+    delete this.assignedSecurity[reportId];
+    delete this.priorities[reportId];
+    // si estaba como resuelto, cancelar prevalece
     this.resolvedIdsSet.delete(reportId);
     this.emit();
   }

@@ -36,6 +36,110 @@ $transition: .25s cubic-bezier(.4,0,.2,1);
 	margin:0;
 }
 
+/* ===== Modo oscuro (reaplicar): izquierda negra, derecha blanca, mantener colores del formulario ===== */
+html.dark-mode, :host-context(.dark-mode) {
+	/* Fondo general negro para que la izquierda quede negra pura */
+	.login-page { background: #000 !important; }
+
+	/* IZQUIERDA: panel welcome en negro puro y texto claro */
+	.welcome { background: #000 !important; color: #e6eef8 !important; }
+	.welcome .feature-svg { stroke: #e6eef8 !important; }
+	.brand-title h1, .brand-title .subtitle, .welcome-text h2, .welcome-text p, .features li { color: #e6eef8 !important; }
+
+	/* Mantener la ilustración en una caja blanca para contraste sobre el fondo negro */
+	.illustration-box { background: #fff !important; border: 1px solid rgba(255,255,255,0.04) !important; box-shadow: 0 10px 32px -12px rgba(0,0,0,.6) !important; }
+
+	/* DERECHA: columna derecha debe ser blanca; el contenedor .login se vuelve blanco */
+	.login { background: #ffffff !important; }
+	.card {
+		background: $color-card !important; /* mantiene color actual de la tarjeta */
+		color: $color-text !important;
+		border: 1px solid rgba(0,0,0,0.06) !important;
+		box-shadow: 0 8px 28px -10px rgba(0,0,0,0.25), 0 4px 14px -6px rgba(0,0,0,0.15) !important;
+	}
+
+	.card-desc, .hint { color: rgba(38,38,38,0.7) !important; }
+	.footer { color: rgba(38,38,38,0.6) !important; }
+
+	/* FORZAR que los inputs y el botón principal conserven sus colores actuales (no se oscurecen) */
+	.input-wrapper input {
+		background: $color-input-bg !important;
+		color: $color-text !important;
+		border: 1px solid $color-border !important;
+	}
+	.input-wrapper input:focus {
+		border-color: $color-primary !important;
+		box-shadow: 0 0 0 3px rgba(255,57,92,.35) !important;
+		background: #fff !important;
+	}
+	.input-wrapper input::placeholder { color: rgba(0,0,0,0.45) !important; opacity: 1 !important; }
+
+	/* Botón principal mantiene estilos actuales */
+	.primary-btn { background: $color-primary !important; color: $color-primary-foreground !important; box-shadow: 0 6px 18px -6px rgba(255,57,92,0.55) !important; }
+
+	/* Iconos y toggles del formulario: ligeramente más oscuros para contraste sobre el input blanco */
+	.input-wrapper .icon, .toggle-pass { color: rgba(0,0,0,0.45) !important; }
+
+}
+
+/* ===== Forzar colores EXACTOS del modo claro dentro de la tarjeta (titulo, labels, placeholders, iconos) ===== */
+html.dark-mode .login-page .card,
+:host-context(.dark-mode) .login-page .card {
+	/* texto base e inputs usan las variables de modo claro */
+	color: $color-text !important;
+}
+
+/* Título principal de la tarjeta: mantener acento (rojo) como en modo claro */
+html.dark-mode .login-page .card .card-title-heading,
+:host-context(.dark-mode) .login-page .card .card-title-heading {
+	color: $color-primary !important;
+}
+
+/* Descripción y hints: igual que en modo claro */
+html.dark-mode .login-page .card .card-desc,
+:host-context(.dark-mode) .login-page .card .card-desc,
+html.dark-mode .login-page .card .hint,
+:host-context(.dark-mode) .login-page .card .hint {
+	color: $color-muted-foreground !important;
+}
+
+/* Labels y textos de formulario: mismo color que en light mode */
+html.dark-mode .login-page .card .field-group label,
+:host-context(.dark-mode) .login-page .card .field-group label {
+	color: $color-muted-foreground !important;
+}
+
+/* Placeholder y texto de input: legible y como en light mode */
+html.dark-mode .login-page .card .input-wrapper input,
+:host-context(.dark-mode) .login-page .card .input-wrapper input {
+	color: $color-text !important;
+	background: $color-input-bg !important;
+	border: 1px solid $color-border !important;
+}
+html.dark-mode .login-page .card .input-wrapper input::placeholder,
+:host-context(.dark-mode) .login-page .card .input-wrapper input::placeholder {
+	color: rgba(0,0,0,0.45) !important;
+	opacity: 1 !important;
+}
+
+/* Icono de usuario y stroke: mantener color primario si aplica */
+html.dark-mode .login-page .card .user-icon svg,
+:host-context(.dark-mode) .login-page .card .user-icon svg {
+	stroke: $color-primary !important;
+}
+
+/* Enlaces dentro de la tarjeta (olvidé contraseña, links) */
+html.dark-mode .login-page .card .link,
+:host-context(.dark-mode) .login-page .card .link {
+	color: $color-primary !important;
+}
+
+/* Footer y textos pequeños */
+html.dark-mode .login-page .card .footer,
+:host-context(.dark-mode) .login-page .card .footer { color: $color-muted-foreground !important; }
+
+
+
 .login-grid {
 	display: grid;
 	grid-template-columns: 1fr;

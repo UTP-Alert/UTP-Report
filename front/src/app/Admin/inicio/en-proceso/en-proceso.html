@@ -26,7 +26,7 @@
 </div>
 
 <div *ngIf="items && items.length; else noItems">
-  <article *ngFor="let it of items" [ngClass]="cardClassForReport(it) + ' report-card'">
+  <article *ngFor="let it of items" [ngClass]="cardClassFor(it.priority || '') + ' report-card'">
     <div class="badges">
       <span [ngClass]="priorityBadgeClassFor(it.priority)">{{ (it.priority || '') | uppercase }}</span>
       <span class="badge bg-blue-500">{{ estadoDisplay(it.report) }}</span>
