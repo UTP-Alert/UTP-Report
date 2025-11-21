@@ -22,8 +22,13 @@ export class DarkModeService {
     // Compute current role key and initialize dark mode from map or system preference
     this.roleKey = this.computeRoleKey();
     const stored = this.map[this.roleKey];
-    if (typeof stored === 'boolean') this.darkMode.set(stored);
-    else this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (this.roleKey === 'SUPERADMIN') {
+      // Forzar siempre modo claro para SUPERADMIN independientemente de preferencias almacenadas
+      this.darkMode.set(false);
+    } else {
+      if (typeof stored === 'boolean') this.darkMode.set(stored);
+      else this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
 
     // Persist per-role preference whenever it changes
     effect(() => {
@@ -36,7 +41,7 @@ export class DarkModeService {
     // Apply/remove global class on <html> and <body> so the whole app is affected
     effect(() => {
       try {
-        const enabled = this.darkMode();
+        const enabled = this.darkMode() && this.roleKey !== 'SUPERADMIN';
         const html = document.documentElement;
         const body = document.body;
         if (enabled) {
@@ -60,14 +65,37 @@ export class DarkModeService {
       if (newKey !== this.roleKey) {
         // save current state already handled by persistence effect; now switch
         this.roleKey = newKey;
-        const val = this.map[this.roleKey];
-        if (typeof val === 'boolean') this.darkMode.set(val);
-        else this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (this.roleKey === 'SUPERADMIN') {
+          // Siempre claro para SUPERADMIN
+          this.darkMode.set(false);
+          // Remover inmediatamente cualquier clase residual de modo oscuro
+          try {
+            document.documentElement.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode');
+          } catch {}
+        } else {
+          const val = this.map[this.roleKey];
+          if (typeof val === 'boolean') this.darkMode.set(val);
+          else this.darkMode.set(window.matchMedia('(prefers-color-scheme: dark)').matches);
+        }
+      }
+    });
+
+    // Refuerzo: si por alguna razón la clase dark-mode persiste estando en SUPERADMIN, quitarla.
+    effect(() => {
+      const isSuper = (this.auth as any).hasRole && (this.auth as any).hasRole('SUPERADMIN');
+      if (isSuper) {
+        try {
+          document.documentElement.classList.remove('dark-mode');
+          document.body.classList.remove('dark-mode');
+        } catch {}
       }
     });
   }
 
   toggleDarkMode() {
+    // Ignorar toggles en SUPERADMIN para mantener modo claro
+    if (this.roleKey === 'SUPERADMIN') return;
     this.darkMode.update(v => !v);
   }
 

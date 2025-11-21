@@ -716,15 +716,31 @@ html.dark-mode .modal-card .modal-info,
 }
 html.dark-mode .modal-card .destination-info strong, html.dark-mode .modal-card .modal-info strong { color: #fff !important; }
 
-  /* Fix remaining white boxes (active reports / small panels) */
-  .active-reports,
-  .active-reports *,
-  .reports-number,
-  .reports-label,
-  .control-panel .active-reports {
+  /* Fix remaining white boxes (active reports / small panels) - dark mode ONLY */
+  html.dark-mode .active-reports,
+  html.dark-mode .active-reports *,
+  html.dark-mode .reports-number,
+  html.dark-mode .reports-label,
+  html.dark-mode .control-panel .active-reports,
+  :host-context(.dark-mode) .active-reports,
+  :host-context(.dark-mode) .active-reports *,
+  :host-context(.dark-mode) .reports-number,
+  :host-context(.dark-mode) .reports-label,
+  :host-context(.dark-mode) .control-panel .active-reports {
     background: #070707 !important;
     color: #dfe9f3 !important;
     border: 1px solid rgba(255,255,255,0.04) !important;
+  }
+
+  /* Light mode reset to ensure it does not stay black after toggling */
+  html:not(.dark-mode) .active-reports,
+  html:not(.dark-mode) .active-reports *,
+  html:not(.dark-mode) .reports-number,
+  html:not(.dark-mode) .reports-label,
+  html:not(.dark-mode) .control-panel .active-reports {
+    background: #ffffff !important;
+    color: inherit !important;
+    border: 1px solid $gray-200 !important;
   }
 
   /* If there are small inline white boxes use this catch-all */

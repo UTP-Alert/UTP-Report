@@ -253,6 +253,52 @@ input, button { outline: none; }
   --sidebar-border: oklch(0.922 0 0);    /* ≈ #EBEBEB */
 }
 
+/* =============================================================
+   SUPERADMIN FORCE LIGHT THEME
+   Si el html/body tienen la clase superadmin-force-light, se
+   revierte cualquier estilo global de dark-mode para ese rol.
+   ============================================================= */
+html.superadmin-force-light.dark-mode,
+body.superadmin-force-light.dark-mode {
+  background-color: #ffffff !important;
+  color: oklch(0.145 0 0) !important;
+}
+html.superadmin-force-light.dark-mode *,
+body.superadmin-force-light.dark-mode * {
+  background-color: initial !important;
+  color: initial !important;
+  border-color: initial !important;
+  box-shadow: initial !important;
+}
+/* Reforzar fondos claros en contenedores clave del dashboard SuperAdmin */
+html.superadmin-force-light.dark-mode .super-admin-dashboard,
+html.superadmin-force-light.dark-mode .summary-section,
+html.superadmin-force-light.dark-mode .summary-cards .card,
+html.superadmin-force-light.dark-mode .navigation-tabs,
+html.superadmin-force-light.dark-mode .user-management-section,
+html.superadmin-force-light.dark-mode .user-item,
+html.superadmin-force-light.dark-mode .card,
+body.superadmin-force-light.dark-mode .super-admin-dashboard,
+body.superadmin-force-light.dark-mode .summary-section,
+body.superadmin-force-light.dark-mode .summary-cards .card,
+body.superadmin-force-light.dark-mode .navigation-tabs,
+body.superadmin-force-light.dark-mode .user-management-section,
+body.superadmin-force-light.dark-mode .user-item,
+body.superadmin-force-light.dark-mode .card {
+  background-color: #ffffff !important;
+  color: oklch(0.145 0 0) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+/* Ajustar textos secundarios que quedaron heradados oscuros en modo oscuro */
+html.superadmin-force-light.dark-mode .text-gray-500,
+html.superadmin-force-light.dark-mode .text-gray-600,
+html.superadmin-force-light.dark-mode .text-gray-700,
+body.superadmin-force-light.dark-mode .text-gray-500,
+body.superadmin-force-light.dark-mode .text-gray-600,
+body.superadmin-force-light.dark-mode .text-gray-700 {
+  color: #717182 !important;
+}
+
 /* Styles for Resueltos cards (Admin) */
 .resueltos-header { display:flex; align-items:center; gap:12px; }
 .resueltos-list .card { border-radius:12px; overflow:hidden; }

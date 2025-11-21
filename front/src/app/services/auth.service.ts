@@ -4,23 +4,15 @@ import { Observable, tap, catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ROLES } from '../constants/roles';
 
-interface LoginRequest {
-  usernameOrCorreo: string;
-  password: string;
-}
-
-interface JwtResponse {
-  token: string;
-  tipoToken: string;
-  roles: string[];
-}
+interface LoginRequest { usernameOrCorreo: string; password: string; }
+interface JwtResponse { token: string; tipoToken: string; roles: string[]; }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = 'http://localhost:8080/api/auth'; // Ajustar si cambia el puerto backend
+  private baseUrl = 'http://localhost:8080/api/auth';
   isAuthenticated = signal<boolean>(false);
   private rolesSignal = signal<string[]>([]);
-  private adminActingAsUser = signal<boolean>(false); // flag cuando admin entra como usuario
+  private adminActingAsUser = signal<boolean>(false);
   roles = computed(() => this.rolesSignal());
   private tokenExpirationTimer: any = null;
   private readonly ADMIN_AS_USER_KEY = 'admin_as_user';
@@ -39,6 +31,15 @@ export class AuthService {
         }
         this.isAuthenticated.set(true);
         this.scheduleTokenExpiration(res.token);
+        // Fuerza modo claro si es SUPERADMIN
+        try {
+          if (res.roles && res.roles.includes(ROLES.SUPERADMIN)) {
+            document.documentElement.classList.remove('dark-mode');
+            document.body.classList.remove('dark-mode');
+            document.documentElement.classList.add('superadmin-force-light');
+            document.body.classList.add('superadmin-force-light');
+          }
+        } catch {}
       }),
       catchError(err => {
         this.isAuthenticated.set(false);
@@ -56,48 +57,43 @@ export class AuthService {
     this.rolesSignal.set([]);
     this.adminActingAsUser.set(false);
     if (this.tokenExpirationTimer) { clearTimeout(this.tokenExpirationTimer); this.tokenExpirationTimer = null; }
-  this.router.navigate(['/login'], { replaceUrl: true });
+    this.router.navigate(['/login'], { replaceUrl: true });
+    try {
+      document.documentElement.classList.remove('superadmin-force-light');
+      document.body.classList.remove('superadmin-force-light');
+    } catch {}
   }
 
-  getToken(): string | null {
-    return localStorage.getItem('auth_token');
-  }
+  getToken(): string | null { return localStorage.getItem('auth_token'); }
 
   loadFromStorage() {
     const token = this.getToken();
     if (token) {
       this.isAuthenticated.set(true);
       const stored = localStorage.getItem('auth_roles');
-      if (stored) {
-        try { this.rolesSignal.set(JSON.parse(stored)); } catch (_) {}
-      }
+      if (stored) { try { this.rolesSignal.set(JSON.parse(stored)); } catch (_) {} }
       const acting = localStorage.getItem(this.ADMIN_AS_USER_KEY);
       if (acting === '1') this.adminActingAsUser.set(true);
       this.scheduleTokenExpiration(token);
+      // Refuerzo SUPERADMIN modo claro
+      try {
+        const roles = this.rolesSignal();
+        if (roles.includes(ROLES.SUPERADMIN)) {
+          document.documentElement.classList.remove('dark-mode');
+          document.body.classList.remove('dark-mode');
+          document.documentElement.classList.add('superadmin-force-light');
+          document.body.classList.add('superadmin-force-light');
+        }
+      } catch {}
     }
   }
 
-  hasRole(role: string) {
-    return this.rolesSignal().includes(role);
-  }
-
-  setAdminActingAsUser(value: boolean) { 
-    this.adminActingAsUser.set(value); 
-    if (value) localStorage.setItem(this.ADMIN_AS_USER_KEY,'1');
-    else localStorage.removeItem(this.ADMIN_AS_USER_KEY);
-  }
+  hasRole(role: string) { return this.rolesSignal().includes(role); }
+  setAdminActingAsUser(value: boolean) { this.adminActingAsUser.set(value); if (value) localStorage.setItem(this.ADMIN_AS_USER_KEY,'1'); else localStorage.removeItem(this.ADMIN_AS_USER_KEY); }
   isAdminAsUser() { return this.adminActingAsUser(); }
-
-  // Marca si el admin ya eligió un rol en el selector (User/Admin)
-  setAdminRoleSelected(value: boolean) {
-    if (value) localStorage.setItem(this.ADMIN_ROLE_SELECTED_KEY, '1');
-    else localStorage.removeItem(this.ADMIN_ROLE_SELECTED_KEY);
-  }
+  setAdminRoleSelected(value: boolean) { if (value) localStorage.setItem(this.ADMIN_ROLE_SELECTED_KEY,'1'); else localStorage.removeItem(this.ADMIN_ROLE_SELECTED_KEY); }
   isAdminRoleSelected(): boolean { return localStorage.getItem(this.ADMIN_ROLE_SELECTED_KEY) === '1'; }
 
-  // Prefijo según requisitos:
-  // Alumno: "alum.[nombre]"  Docente: "doc.[nombre]"  Admin como usuario: "Admin.[nombre]"
-  // Seguridad: "seg.[nombre]"  Superadmin: "superadmin.[nombre]"
   buildDisplayName(nombreCompleto: string, tipoUsuario?: string): string {
     const name = nombreCompleto?.trim() || 'Usuario';
     if (this.hasRole(ROLES.SUPERADMIN)) return `superadmin. ${name}`;
@@ -122,17 +118,13 @@ export class AuthService {
 
   private scheduleTokenExpiration(token: string) {
     const decoded = this.decodeToken(token);
-    if (!decoded || !decoded.exp) return; // exp en segundos
+    if (!decoded || !decoded.exp) return;
     const expMs = decoded.exp * 1000;
     const now = Date.now();
     const remaining = expMs - now;
-    if (remaining <= 0) {
-      this.logout();
-      return;
-    }
+    if (remaining <= 0) { this.logout(); return; }
     if (this.tokenExpirationTimer) clearTimeout(this.tokenExpirationTimer);
-    // Logout 5 segundos antes para margen
-    const timeout = remaining - 5000;
+    const timeout = remaining - 5000; // margen 5s
     this.tokenExpirationTimer = setTimeout(() => this.logout(), timeout > 0 ? timeout : 0);
   }
 }
