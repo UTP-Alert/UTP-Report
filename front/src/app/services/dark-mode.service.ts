@@ -1,4 +1,6 @@
 import { Injectable, effect, signal, inject } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { PerfilService } from './perfil.service';
 
@@ -11,6 +13,7 @@ export class DarkModeService {
 
   private auth = inject(AuthService);
   private perfilSrv = inject(PerfilService);
+  private router = inject(Router);
 
   constructor() {
     // Load persisted map (role -> preference)
@@ -39,11 +42,26 @@ export class DarkModeService {
     });
 
     // Apply/remove global class on <html> and <body> so the whole app is affected
+    // EXCEPTION: keep the login/select-role pages always in light mode (no dark-mode class)
     effect(() => {
       try {
         const enabled = this.darkMode() && this.roleKey !== 'SUPERADMIN';
+        // Determinar ruta actual para excluir login
+        let currentUrl = '';
+        try {
+          currentUrl = (this.router && (this.router as any).url) ? String((this.router as any).url) : window.location.pathname || '';
+        } catch {}
+        const isLoginRoute = currentUrl.startsWith('/login') || currentUrl.startsWith('/select-role');
+
         const html = document.documentElement;
         const body = document.body;
+        if (isLoginRoute) {
+          // Asegurar que login se mantenga en modo claro
+          html.classList.remove('dark-mode');
+          body.classList.remove('dark-mode');
+          return;
+        }
+
         if (enabled) {
           html.classList.add('dark-mode');
           body.classList.add('dark-mode');
@@ -91,6 +109,31 @@ export class DarkModeService {
         } catch {}
       }
     });
+
+    // Escuchar cambios de ruta para forzar que la página de login permanezca en modo claro
+    try {
+      this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((ev: any) => {
+        try {
+          const url = ev && (ev.urlAfterRedirects || ev.url) ? String(ev.urlAfterRedirects || ev.url) : (window.location.pathname || '');
+          const isLogin = url.startsWith('/login') || url.startsWith('/select-role');
+          const html = document.documentElement;
+          const body = document.body;
+          if (isLogin) {
+            html.classList.remove('dark-mode');
+            body.classList.remove('dark-mode');
+          } else {
+            const enabled = this.darkMode() && this.roleKey !== 'SUPERADMIN';
+            if (enabled) {
+              html.classList.add('dark-mode');
+              body.classList.add('dark-mode');
+            } else {
+              html.classList.remove('dark-mode');
+              body.classList.remove('dark-mode');
+            }
+          }
+        } catch {}
+      });
+    } catch {}
   }
 
   toggleDarkMode() {

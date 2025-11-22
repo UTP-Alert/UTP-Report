@@ -609,22 +609,88 @@ openGuide(){
       const marked = this.notifications().map(n => ({ ...n, read: true }));
       this.notifications.set(marked);
 
-      // Posicionar el dropdown centrado bajo el icono con ajuste en píxeles
-      // Usamos next animation frame para asegurar que el DOM del dropdown ya exista
+      // Posicionar el dropdown; si el icono está dentro de un offcanvas (móvil),
+      // posicionarlo como `fixed` fuera del menú a la derecha del icono.
       try {
         requestAnimationFrame(() => {
           try {
             const container = document.querySelector('.notifications-area') as HTMLElement | null;
             const dropdown = container ? container.querySelector('.notifications-dropdown') as HTMLElement | null : null;
             if (!container || !dropdown) return;
-            // Medidas
-            const containerWidth = container.clientWidth;
-            const dropdownWidth = dropdown.offsetWidth;
-            // Calcular left relativo al contenedor para centrar
-            const leftPx = Math.round((containerWidth / 2) - (dropdownWidth / 2));
-            dropdown.style.left = leftPx + 'px';
-            // Anular transform centrar CSS para evitar desplazamientos dobles
-            dropdown.style.transform = 'none';
+
+            // Detectar si estamos dentro de un offcanvas desplegado
+            const off = container.closest('.offcanvas') as HTMLElement | null;
+            const offIsOpen = !!(off && off.classList.contains('show'));
+
+            // Considerar tamaño de pantalla: en pantallas muy pequeñas (celular)
+            // preferimos el comportamiento por defecto (panel dentro del offcanvas,
+            // debajo del icono). Solo usamos la variante fija cuando el offcanvas
+            // está abierto y la pantalla es al menos de tamaño tablet.
+            const viewportW = window.innerWidth || document.documentElement.clientWidth;
+            const isSmallScreen = viewportW <= 576; // móvil (sm breakpoint)
+
+            if (offIsOpen && !isSmallScreen) {
+              // Posicionar respecto a la ventana (fuera del offcanvas)
+              const button = container.querySelector('.nav-link.icon-only') as HTMLElement | null;
+              if (!button) return;
+              const rect = button.getBoundingClientRect();
+              // Forzar posicion fija y calcular top/left para situar el panel a la derecha
+              dropdown.style.position = 'fixed';
+              const DROPDOWN_GAP = 22; // espacio horizontal desde el botón: mayor para quedar fuera del offcanvas
+              const VERTICAL_NUDGE = -4; // ajuste fino vertical (positivo mueve hacia abajo)
+              const viewportW = window.innerWidth || document.documentElement.clientWidth;
+              const viewportH = window.innerHeight || document.documentElement.clientHeight;
+              const dropdownW = dropdown.offsetWidth;
+              const dropdownH = dropdown.offsetHeight;
+
+              // Preferir derecha del botón (fuera del offcanvas)
+              let leftPx = Math.round(rect.right + DROPDOWN_GAP);
+              // Si no cabe completamente a la derecha, clampear al borde derecho del viewport
+              if (leftPx + dropdownW > viewportW - 8) {
+                leftPx = Math.max(8, viewportW - dropdownW - 8);
+              }
+              // Si aun así queda demasiado a la izquierda, intentar ponerlo a la izquierda del botón
+              if (leftPx < 8) {
+                leftPx = Math.round(rect.left - dropdownW - DROPDOWN_GAP);
+              }
+
+              // Centrar verticalmente respecto al botón, con pequeño nudge
+              let topPx = Math.round(rect.top + (rect.height / 2) - (dropdownH / 2) + VERTICAL_NUDGE);
+              // Mantener dentro de la ventana
+              topPx = Math.max(8, Math.min(topPx, viewportH - dropdownH - 8));
+
+              dropdown.style.left = leftPx + 'px';
+              dropdown.style.top = topPx + 'px';
+              dropdown.style.transform = 'none';
+              dropdown.classList.add('floating-to-right');
+            } else {
+              // Comportamiento por defecto: centrar debajo del icono dentro del contenedor
+              const containerWidth = container.clientWidth;
+              const dropdownWidth = dropdown.offsetWidth;
+              const leftPx = Math.round((containerWidth / 2) - (dropdownWidth / 2));
+              dropdown.style.position = '';
+              dropdown.style.left = leftPx + 'px';
+              dropdown.style.top = '';
+              dropdown.style.transform = 'none';
+              dropdown.classList.remove('floating-to-right');
+            }
+          } catch {}
+        });
+      } catch {}
+    }
+    else {
+      // Limpiar estilos inline si cerramos el dropdown
+      try {
+        requestAnimationFrame(() => {
+          try {
+            const container = document.querySelector('.notifications-area') as HTMLElement | null;
+            const dropdown = container ? container.querySelector('.notifications-dropdown') as HTMLElement | null : null;
+            if (!dropdown) return;
+            dropdown.style.position = '';
+            dropdown.style.left = '';
+            dropdown.style.top = '';
+            dropdown.style.transform = '';
+            dropdown.classList.remove('floating-to-right');
           } catch {}
         });
       } catch {}

@@ -98,6 +98,14 @@
     /* ancho máximo y centrado ya gestionado por el panel interno */
   }
 
+  /* Variante cuando el dropdown flota fuera del offcanvas hacia la derecha */
+  .notifications-dropdown.floating-to-right {
+    position: fixed !important;
+    transform: none !important;
+    /* top/left serán establecidos inline desde TS para posicion exacta */
+    z-index: 3000;
+  }
+
   /* Asegurar que el contenedor de la campana sea relativo para posicionar el dropdown */
   .notifications-area { position: relative; }
 
@@ -127,6 +135,32 @@
     height: 16px;
     background: rgba(255,255,255,0.12);
     border-radius: 2px;
+  }
+
+  /* Ajustes para la variante flotante: el conector debe apuntar hacia la izquierda */
+  .notifications-dropdown.floating-to-right::before,
+  .notifications-dropdown.floating-to-right::after {
+    transform: none;
+  }
+  .notifications-dropdown.floating-to-right::before {
+    /* mover el circulito más hacia la izquierda para crear el espacio entre offcanvas y panel */
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ff395c;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(255,57,92,0.06);
+  }
+  .notifications-dropdown.floating-to-right::after {
+    /* barra horizontal conectando al circulito hacia el borde del panel */
+    top: 50%;
+    height: 2px;
+    width: 24px;
+    background: rgba(0,0,0,0.06);
+    left: -28px;
+    transform: translateY(-50%);
   }
 
   @keyframes notifFade {
