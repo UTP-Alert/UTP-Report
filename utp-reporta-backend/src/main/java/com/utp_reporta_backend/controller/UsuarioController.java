@@ -3,6 +3,7 @@ package com.utp_reporta_backend.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -40,7 +41,7 @@ public class UsuarioController {
         if (updatedUsuario != null) {
             return ResponseEntity.ok(updatedUsuario);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null); // Return 409 Conflict for phone number not unique
         }
     }
 
@@ -156,5 +157,10 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioDTO>> getAllUsersExcludingSuperAdmin() {
         List<UsuarioDTO> usuarios = usuarioService.getAllUsersExcludingSuperAdmin();
         return ResponseEntity.ok(usuarios);
+    }
+
+    @GetMapping("/check-telefono")
+    public ResponseEntity<Boolean> checkTelefonoUnique(@RequestParam String telefono, @RequestParam(required = false) Long id) {
+        return ResponseEntity.ok(usuarioService.isTelefonoUnique(telefono, id));
     }
 }

@@ -327,7 +327,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         if (usuarioDTO.getCorreo() != null) {
             usuario.setCorreo(usuarioDTO.getCorreo());
         }
-        if (usuarioDTO.getTelefono() != null) {
+        if (usuarioDTO.getTelefono() != null && !usuarioDTO.getTelefono().equals(usuario.getTelefono())) {
+            // Validate if the new phone number is unique for other users
+            if (usuarioRepository.existsByTelefonoAndIdNot(usuarioDTO.getTelefono(), id)) {
+                return null; // Indicate validation failure by returning null
+            }
             usuario.setTelefono(usuarioDTO.getTelefono());
         }
         if (usuarioDTO.getTipoUsuario() != null) {
@@ -403,5 +407,16 @@ public class UsuarioServiceImpl implements UsuarioService {
                     .collect(Collectors.toList()));
             return usuarioDTO;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public Boolean isTelefonoUnique(String telefono, Long id) {
+        if (id == null) {
+            // For creation, check if any user has this phone number
+            return !usuarioRepository.existsByTelefono(telefono);
+        } else {
+            // For update, check if any *other* user has this phone number
+            return !usuarioRepository.existsByTelefonoAndIdNot(telefono, id);
+        }
     }
 }

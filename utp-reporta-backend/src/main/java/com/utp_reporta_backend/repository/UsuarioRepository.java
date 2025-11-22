@@ -32,4 +32,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
     List<Usuario> findByRoles_Nombre(ERol role);
     List<Usuario> findByEnabled(boolean enabled);
     List<Usuario> findByRoles_NombreNot(ERol role);
+
+    // Verificar si un usuario existe por su número de teléfono.
+    Boolean existsByTelefono(String telefono);
+
+    // Verificar si un número de teléfono existe para otro usuario (excluyendo el id actual).
+    Boolean existsByTelefonoAndIdNot(String telefono, Long id);
 }

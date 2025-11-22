@@ -3,10 +3,11 @@ import { CommonModule, KeyValuePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Sede, SedeService } from '../../services/sede.service';
 import { Zona, ZonaService } from '../../services/zona.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'; // Import HttpErrorResponse
 import { UsuarioService } from '../../services/usuario.service';
 import { PerfilService } from '../../services/perfil.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs'; // Import Subject
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators'; // Import operators
 import { RegistroAdminDTO, RegistroDTO, RegistroSecurityDTO, UsuarioRolService } from '../../services/usuario-rol.service';
 
 @Component({
@@ -19,6 +20,8 @@ import { RegistroAdminDTO, RegistroDTO, RegistroSecurityDTO, UsuarioRolService }
 export class GestorUsuario implements OnInit {
   // Datos de apoyo
   sedes: Sede[] = [];
+
+  private phoneChanged: Subject<string> = new Subject<string>(); // Subject for phone number changes
   zonas: Zona[] = [];
 
   // Estado UI
@@ -137,6 +140,20 @@ export class GestorUsuario implements OnInit {
     this.cargarZonas();
     // Cargar usuarios al iniciar
     this.loadUsers();
+
+    // Subscribe to phone number changes for debounced validation
+    this.phoneChanged.pipe(
+      debounceTime(500), // Wait for 500ms after the last event
+      distinctUntilChanged(), // Only emit if value is different from previous value
+      switchMap(telefono => this.usuarioService.isTelefonoUnique(telefono, this.editingUser ? this.editingUser.id : null))
+    ).subscribe(isUnique => {
+      // Update formErrors based on uniqueness
+      if (!isUnique) {
+        this.formErrors.phone = 'El número de teléfono ya está registrado.';
+      } else {
+        this.formErrors.phone = ''; // Clear error if unique
+      }
+    });
   }
 
   // Computed lista filtrada segun buscador y filtros
@@ -474,7 +491,12 @@ export class GestorUsuario implements OnInit {
     this.formErrors = { name: '', username: '', correo: '', password: '', phone: '', role: '', userType: '', campus: '', assignedZones: '' };
   }
 
-  validateForm(): boolean {
+  // Handle phone number input changes for debounced validation
+  onPhoneInputChange() {
+    this.phoneChanged.next(this.formData.phone);
+  }
+
+  async validateForm(): Promise<boolean> { // Make validateForm async
     let isValid = true;
     this.formErrors = { name: '', username: '', correo: '', password: '', phone: '', role: '', userType: '', campus: '', assignedZones: '' };
     // Nombre: obligatorio, solo letras y espacios, máximo 50 caracteres
@@ -483,18 +505,28 @@ export class GestorUsuario implements OnInit {
     if (!nameVal) { this.formErrors.name = 'El nombre completo es obligatorio.'; isValid = false; }
     else if (nameVal.length > 50) { this.formErrors.name = 'El nombre no puede exceder 50 caracteres.'; isValid = false; }
     else if (!nameRegex.test(nameVal)) { this.formErrors.name = 'El nombre solo puede contener letras y espacios.'; isValid = false; }
-  if (!this.isUsernameAuto && !this.formData.username.trim()) { this.formErrors.username = 'El username es obligatorio.'; isValid = false; }
+    if (!this.isUsernameAuto && !this.formData.username.trim()) { this.formErrors.username = 'El username es obligatorio.'; isValid = false; }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!this.isCorreoAuto && !this.formData.correo.trim()) { this.formErrors.correo = 'El correo es obligatorio.'; isValid = false; }
-  else if (!this.isCorreoAuto && !emailRegex.test(this.formData.correo)) { this.formErrors.correo = 'Formato de correo inválido.'; isValid = false; }
+    if (!this.isCorreoAuto && !this.formData.correo.trim()) { this.formErrors.correo = 'El correo es obligatorio.'; isValid = false; }
+    else if (!this.isCorreoAuto && !emailRegex.test(this.formData.correo)) { this.formErrors.correo = 'Formato de correo inválido.'; isValid = false; }
 
     if (!this.formData.password) { this.formErrors.password = 'La contraseña es obligatoria.'; isValid = false; }
     else if (this.formData.password.length < 6) { this.formErrors.password = 'La contraseña debe tener al menos 6 caracteres.'; isValid = false; }
 
     const phoneRegex = /^\d{9}$/;
-    if (!this.formData.phone.trim()) { this.formErrors.phone = 'El teléfono es obligatorio.'; isValid = false; }
-    else if (!phoneRegex.test(this.formData.phone)) { this.formErrors.phone = 'Formato de teléfono inválido. Debe ser 9 dígitos numéricos (Ej: 999000000).'; isValid = false; }
+    if (!this.formData.phone.trim()) {
+      this.formErrors.phone = 'El teléfono es obligatorio.'; isValid = false;
+    } else if (!phoneRegex.test(this.formData.phone)) {
+      this.formErrors.phone = 'Formato de teléfono inválido. Debe ser 9 dígitos numéricos (Ej: 999000000).'; isValid = false;
+    } else {
+      // Async validation for phone number uniqueness
+      const isUnique = await firstValueFrom(this.usuarioService.isTelefonoUnique(this.formData.phone, this.editingUser ? this.editingUser.id : null));
+      if (!isUnique) {
+        this.formErrors.phone = 'El número de teléfono ya está registrado.';
+        isValid = false;
+      }
+    }
 
     if (!this.formData.role) { this.formErrors.role = 'El rol es obligatorio.'; isValid = false; }
     if (!this.formData.campus) { this.formErrors.campus = 'La sede es obligatoria.'; isValid = false; }
@@ -503,8 +535,8 @@ export class GestorUsuario implements OnInit {
     return isValid;
   }
 
-  handleCreateUser() {
-    if (!this.validateForm()) { alert('Por favor, corrija los errores del formulario.'); return; }
+  async handleCreateUser() {
+    if (!await this.validateForm()) { alert('Por favor, corrija los errores del formulario.'); return; }
     const { role } = this.formData;
     if (role === 'usuario') {
       const dto: RegistroDTO = {
@@ -525,7 +557,14 @@ export class GestorUsuario implements OnInit {
           // recargar lista de usuarios
           this.loadUsers();
         },
-        error: (err) => { console.error('❌ Error al registrar:', err); alert(err.error?.message || err.message || 'Error al registrar usuario'); }
+        error: (err: HttpErrorResponse) => { // Use HttpErrorResponse for type safety
+          console.error('❌ Error al registrar:', err);
+          let errorMessage = err.error?.message || err.message || 'Error al registrar usuario';
+          if (err.status === 409) { // Conflict status for unique constraint violation
+            errorMessage = 'El número de teléfono ya está registrado.';
+          }
+          alert(errorMessage);
+        }
       });
     } else if (role === 'admin') {
       const dto: RegistroAdminDTO = {
@@ -544,7 +583,14 @@ export class GestorUsuario implements OnInit {
           this.isCreating = false;
           this.loadUsers();
         },
-        error: (err) => { console.error('❌ Error al registrar:', err); alert(err.error?.message || err.message || 'Error al registrar usuario'); }
+        error: (err: HttpErrorResponse) => {
+          console.error('❌ Error al registrar:', err);
+          let errorMessage = err.error?.message || err.message || 'Error al registrar usuario';
+          if (err.status === 409) {
+            errorMessage = 'El número de teléfono ya está registrado.';
+          }
+          alert(errorMessage);
+        }
       });
     } else if (role === 'seguridad') {
       const dto: RegistroSecurityDTO = {
@@ -564,24 +610,30 @@ export class GestorUsuario implements OnInit {
           this.isCreating = false;
           this.loadUsers();
         },
-        error: (err) => { console.error('❌ Error al registrar:', err); alert(err.error?.message || err.message || 'Error al registrar usuario'); }
+        error: (err: HttpErrorResponse) => {
+          console.error('❌ Error al registrar:', err);
+          let errorMessage = err.error?.message || err.message || 'Error al registrar usuario';
+          if (err.status === 409) {
+            errorMessage = 'El número de teléfono ya está registrado.';
+          }
+          alert(errorMessage);
+        }
       });
     } else {
       alert('Rol no válido. Por favor, seleccione un rol válido.');
     }
   }
 
-  handleUpdateUser() {
+  async handleUpdateUser() { // Make it async to await validation
     if (!this.editingUser || !this.editingUser.id) {
       alert('No hay usuario seleccionado para actualizar.');
       return;
     }
 
-    // Validación ligera para actualización (contraseña opcional)
-    this.formErrors = { name: '', username: '', correo: '', password: '', phone: '', role: '', userType: '', campus: '', assignedZones: '' };
-    if (!this.formData.name.trim()) { this.formErrors.name = 'El nombre completo es obligatorio.'; alert('Corrige los errores del formulario'); return; }
-    const phoneRegex = /^\d{9}$/;
-    if (!this.formData.phone.trim() || !phoneRegex.test(this.formData.phone)) { this.formErrors.phone = 'Teléfono inválido (9 dígitos).'; alert('Corrige los errores del formulario'); return; }
+    if (!await this.validateForm()) { // Await the async validation
+      alert('Por favor, corrija los errores del formulario.');
+      return;
+    }
 
     // Construir payload para enviar al backend.
     const payload: any = {
@@ -622,7 +674,14 @@ export class GestorUsuario implements OnInit {
         this.isCreating = false;
         this.resetForm();
       },
-      error: (err) => { console.error('Error actualizando usuario', err); alert(err?.error?.message || err?.message || 'Error al actualizar usuario'); }
+      error: (err: HttpErrorResponse) => {
+        console.error('Error actualizando usuario', err);
+        let errorMessage = err?.error?.message || err?.message || 'Error al actualizar usuario';
+        if (err.status === 409) { // Conflict status for unique constraint violation
+          errorMessage = 'El número de teléfono ya está registrado.';
+        }
+        alert(errorMessage);
+      }
     });
   }
 

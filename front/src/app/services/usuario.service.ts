@@ -57,4 +57,18 @@ export class UsuarioService {
     const url = `${this.baseUrl}/api/usuarios/${id}`;
     return this.http.put<any>(url, payload).pipe(catchError(err => { console.warn('[UsuarioService] updateUser falló', err); return of(null); }));
   }
+
+  // Check if a phone number is unique
+  isTelefonoUnique(telefono: string, id?: number): Observable<boolean> {
+    let url = `${this.baseUrl}/api/usuarios/check-telefono?telefono=${encodeURIComponent(telefono)}`;
+    if (id != null) {
+      url += `&id=${encodeURIComponent(String(id))}`;
+    }
+    return this.http.get<boolean>(url).pipe(
+      catchError(err => {
+        console.warn('[UsuarioService] isTelefonoUnique falló', err);
+        return of(false); // Assume not unique on error to prevent duplicates
+      })
+    );
+  }
 }

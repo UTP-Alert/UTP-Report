@@ -51,6 +51,7 @@ public class Usuario implements UserDetails {
 	//Correo electrónico único del usuario.
 	 private String correo;
 	//Número de teléfono del usuario.
+	@Column(nullable = true, unique = true)
 	private String telefono;
 	//Tipo de usuario basado en el enum TipoUsuario.
 	@Enumerated(EnumType.STRING) // Esto almacena el nombre del enum como String

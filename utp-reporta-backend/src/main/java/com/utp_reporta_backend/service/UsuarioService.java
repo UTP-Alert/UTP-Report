@@ -16,4 +16,5 @@ public interface UsuarioService {
     UsuarioDTO updateUsuarioEnabledStatus(Long id, boolean enabled);
     UsuarioDTO updateUsuario(Long id, UsuarioDTO usuarioDTO, String password); // Optional password as parameter
     List<UsuarioDTO> getAllUsersExcludingSuperAdmin();
+    Boolean isTelefonoUnique(String telefono, Long id); // New method for phone number uniqueness check
 }

@@ -168,7 +168,7 @@
 					<input type="text" placeholder="999000000" [(ngModel)]="formData.phone" maxlength="9"
 						[class.border-red-500]="formErrors.phone" class="input-field"
 						inputmode="numeric" pattern="\\d*"
-						(input)="onPhoneInput($event)"
+						(input)="onPhoneInput($event); onPhoneInputChange()"
 						(keypress)="onPhoneKeypress($event)"
 						(paste)="onPhonePaste($event)" />
 					<p *ngIf="formErrors.phone" class="text-xs text-red-500 mt-1">{{ formErrors.phone }}</p>
@@ -364,4 +364,3 @@
 				</div>
 			</ng-template>
 		</div>
-	
